@@ -1,0 +1,408 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		E4908EB219C7CC850007E874 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E4908EB119C7CC850007E874 /* lib */; };
+		E4908EC719C7CCC20007E874 /* cancellation.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC119C7CCC20007E874 /* cancellation.js */; };
+		E4908ECB19C7CCC20007E874 /* owinjs-browser.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC519C7CCC20007E874 /* owinjs-browser.js */; };
+		E4908ECC19C7CCC20007E874 /* owinserver.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC619C7CCC20007E874 /* owinserver.js */; };
+		E4908EDD19C7F0B80007E874 /* NSObject+logProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = E4908EDC19C7F0B80007E874 /* NSObject+logProperties.m */; };
+		E4B74A4519C7B39300F07883 /* NKWKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */; };
+		E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3C19C7B39300F07883 /* NKUrlProtocolLocalFile.swift */; };
+		E4B74A4719C7B39300F07883 /* NKNodekit.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3D19C7B39300F07883 /* NKNodekit.swift */; };
+		E4B74A4819C7B39300F07883 /* NKUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3E19C7B39300F07883 /* NKUIWebView.swift */; };
+		E4B74A4919C7B39300F07883 /* NKJSContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3F19C7B39300F07883 /* NKJSContextFactory.swift */; };
+		E4B74A4A19C7B39300F07883 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4019C7B39300F07883 /* main.swift */; };
+		E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4119C7B39300F07883 /* NKMenu.swift */; };
+		E4B74A4C19C7B39300F07883 /* NKUrlProtocolCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */; };
+		E4B74A5919C7B3AA00F07883 /* NKWebViewDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4E19C7B3AA00F07883 /* NKWebViewDebug.m */; };
+		E4B74A5A19C7B3AA00F07883 /* NKURLProtocolCustom.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4F19C7B3AA00F07883 /* NKURLProtocolCustom.m */; };
+		E4B74A5B19C7B3AA00F07883 /* NKURLFileDecode.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */; };
+		E4B74A5C19C7B3AA00F07883 /* NKJSBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A5519C7B3AA00F07883 /* NKJSBridge.m */; };
+		E4B74A5D19C7B3AA00F07883 /* jsc.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A5619C7B3AA00F07883 /* jsc.swift */; };
+		E4B74A5E19C7B3AA00F07883 /* jsc.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A5719C7B3AA00F07883 /* jsc.m */; };
+		E4B74A6819C7B3CD00F07883 /* app in Resources */ = {isa = PBXBuildFile; fileRef = E4B74A6719C7B3CD00F07883 /* app */; };
+		E4B74A6C19C7B5D700F07883 /* NodeKitIcons.icns in Resources */ = {isa = PBXBuildFile; fileRef = E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */; };
+		E4B74A6E19C7B7BC00F07883 /* app-shared in Resources */ = {isa = PBXBuildFile; fileRef = E4B74A6D19C7B7BC00F07883 /* app-shared */; };
+		E4F7A4D519CCE445002D9F01 /* NKFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F7A4D419CCE445002D9F01 /* NKFileSystem.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		E4908EB119C7CC850007E874 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
+		E4908EC119C7CCC20007E874 /* cancellation.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = cancellation.js; sourceTree = "<group>"; };
+		E4908EC319C7CCC20007E874 /* nodeBinding.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = nodeBinding.js; sourceTree = "<group>"; };
+		E4908EC519C7CCC20007E874 /* owinjs-browser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "owinjs-browser.js"; sourceTree = "<group>"; };
+		E4908EC619C7CCC20007E874 /* owinserver.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = owinserver.js; sourceTree = "<group>"; };
+		E4908EDB19C7F0B80007E874 /* NSObject+logProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+logProperties.h"; path = "objective-c/NSObject+logProperties.h"; sourceTree = SOURCE_ROOT; };
+		E4908EDC19C7F0B80007E874 /* NSObject+logProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+logProperties.m"; path = "objective-c/NSObject+logProperties.m"; sourceTree = SOURCE_ROOT; };
+		E4B749E919C7B11B00F07883 /* NodeKitMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NodeKitMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E4B74A3A19C7B39300F07883 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = swift/Info.plist; sourceTree = SOURCE_ROOT; };
+		E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKWKWebView.swift; path = swift/NKWKWebView.swift; sourceTree = SOURCE_ROOT; };
+		E4B74A3C19C7B39300F07883 /* NKUrlProtocolLocalFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUrlProtocolLocalFile.swift; path = swift/NKUrlProtocolLocalFile.swift; sourceTree = SOURCE_ROOT; };
+		E4B74A3D19C7B39300F07883 /* NKNodekit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKNodekit.swift; path = swift/NKNodekit.swift; sourceTree = SOURCE_ROOT; };
+		E4B74A3E19C7B39300F07883 /* NKUIWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUIWebView.swift; path = swift/NKUIWebView.swift; sourceTree = SOURCE_ROOT; };
+		E4B74A3F19C7B39300F07883 /* NKJSContextFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKJSContextFactory.swift; path = swift/NKJSContextFactory.swift; sourceTree = SOURCE_ROOT; };
+		E4B74A4019C7B39300F07883 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = swift/main.swift; sourceTree = SOURCE_ROOT; };
+		E4B74A4119C7B39300F07883 /* NKMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMenu.swift; path = swift/NKMenu.swift; sourceTree = SOURCE_ROOT; };
+		E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUrlProtocolCustom.swift; path = swift/NKUrlProtocolCustom.swift; sourceTree = SOURCE_ROOT; };
+		E4B74A4E19C7B3AA00F07883 /* NKWebViewDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKWebViewDebug.m; path = "objective-c/NKWebViewDebug.m"; sourceTree = SOURCE_ROOT; };
+		E4B74A4F19C7B3AA00F07883 /* NKURLProtocolCustom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKURLProtocolCustom.m; path = "objective-c/NKURLProtocolCustom.m"; sourceTree = SOURCE_ROOT; };
+		E4B74A5019C7B3AA00F07883 /* NKWebViewDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NKWebViewDebug.h; path = "objective-c/NKWebViewDebug.h"; sourceTree = SOURCE_ROOT; };
+		E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKURLFileDecode.m; path = "objective-c/NKURLFileDecode.m"; sourceTree = SOURCE_ROOT; };
+		E4B74A5219C7B3AA00F07883 /* NKURLFileDecode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NKURLFileDecode.h; path = "objective-c/NKURLFileDecode.h"; sourceTree = SOURCE_ROOT; };
+		E4B74A5319C7B3AA00F07883 /* NKSwift-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NKSwift-Bridging-Header.h"; path = "objective-c/NKSwift-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
+		E4B74A5419C7B3AA00F07883 /* NKJSBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NKJSBridge.h; path = "objective-c/NKJSBridge.h"; sourceTree = SOURCE_ROOT; };
+		E4B74A5519C7B3AA00F07883 /* NKJSBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKJSBridge.m; path = "objective-c/NKJSBridge.m"; sourceTree = SOURCE_ROOT; };
+		E4B74A5619C7B3AA00F07883 /* jsc.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = jsc.swift; path = "objective-c/jsc.swift"; sourceTree = SOURCE_ROOT; };
+		E4B74A5719C7B3AA00F07883 /* jsc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = jsc.m; path = "objective-c/jsc.m"; sourceTree = SOURCE_ROOT; };
+		E4B74A5819C7B3AA00F07883 /* NKURLProtocolCustom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NKURLProtocolCustom.h; path = "objective-c/NKURLProtocolCustom.h"; sourceTree = SOURCE_ROOT; };
+		E4B74A6719C7B3CD00F07883 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; path = app; sourceTree = "<group>"; };
+		E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = NodeKitIcons.icns; path = swift/NodeKitIcons.icns; sourceTree = SOURCE_ROOT; };
+		E4B74A6D19C7B7BC00F07883 /* app-shared */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "app-shared"; sourceTree = "<group>"; };
+		E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NodeKitMac.entitlements; sourceTree = "<group>"; };
+		E4F7A4D419CCE445002D9F01 /* NKFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKFileSystem.swift; path = bindings/NKFileSystem.swift; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E4B749E619C7B11B00F07883 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		E4908EC019C7CCC20007E874 /* javascript */ = {
+			isa = PBXGroup;
+			children = (
+				E4908ECD19C7CCE90007E874 /* helpers */,
+			);
+			path = javascript;
+			sourceTree = "<group>";
+		};
+		E4908ECD19C7CCE90007E874 /* helpers */ = {
+			isa = PBXGroup;
+			children = (
+				E4908EC519C7CCC20007E874 /* owinjs-browser.js */,
+				E4908EC619C7CCC20007E874 /* owinserver.js */,
+				E4908EC119C7CCC20007E874 /* cancellation.js */,
+				E4908EC319C7CCC20007E874 /* nodeBinding.js */,
+			);
+			name = helpers;
+			sourceTree = "<group>";
+		};
+		E4B749E019C7B11B00F07883 = {
+			isa = PBXGroup;
+			children = (
+				E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */,
+				E4B74A6719C7B3CD00F07883 /* app */,
+				E4B74A6D19C7B7BC00F07883 /* app-shared */,
+				E4908EB119C7CC850007E874 /* lib */,
+				E4B749EB19C7B11B00F07883 /* swift */,
+				E4908EC019C7CCC20007E874 /* javascript */,
+				E4B74A1D19C7B1F700F07883 /* objective-c */,
+				E4B749EA19C7B11B00F07883 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		E4B749EA19C7B11B00F07883 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E4B749E919C7B11B00F07883 /* NodeKitMac.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		E4B749EB19C7B11B00F07883 /* swift */ = {
+			isa = PBXGroup;
+			children = (
+				E4F7A4D319CCE41A002D9F01 /* bindings */,
+				E4B74A4019C7B39300F07883 /* main.swift */,
+				E4B74A4119C7B39300F07883 /* NKMenu.swift */,
+				E4B74A3F19C7B39300F07883 /* NKJSContextFactory.swift */,
+				E4B74A3D19C7B39300F07883 /* NKNodekit.swift */,
+				E4B74A3E19C7B39300F07883 /* NKUIWebView.swift */,
+				E4B74A3C19C7B39300F07883 /* NKUrlProtocolLocalFile.swift */,
+				E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */,
+				E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */,
+				E4B749EC19C7B11B00F07883 /* Supporting Files */,
+			);
+			name = swift;
+			path = NodeKitMac;
+			sourceTree = "<group>";
+		};
+		E4B749EC19C7B11B00F07883 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */,
+				E4B74A3A19C7B39300F07883 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		E4B74A1D19C7B1F700F07883 /* objective-c */ = {
+			isa = PBXGroup;
+			children = (
+				E4B74A5319C7B3AA00F07883 /* NKSwift-Bridging-Header.h */,
+				E4B74A5819C7B3AA00F07883 /* NKURLProtocolCustom.h */,
+				E4B74A4F19C7B3AA00F07883 /* NKURLProtocolCustom.m */,
+				E4B74A5019C7B3AA00F07883 /* NKWebViewDebug.h */,
+				E4B74A4E19C7B3AA00F07883 /* NKWebViewDebug.m */,
+				E4B74A5219C7B3AA00F07883 /* NKURLFileDecode.h */,
+				E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */,
+				E4B74A5419C7B3AA00F07883 /* NKJSBridge.h */,
+				E4B74A5519C7B3AA00F07883 /* NKJSBridge.m */,
+				E4B74A5619C7B3AA00F07883 /* jsc.swift */,
+				E4B74A5719C7B3AA00F07883 /* jsc.m */,
+				E4908EDB19C7F0B80007E874 /* NSObject+logProperties.h */,
+				E4908EDC19C7F0B80007E874 /* NSObject+logProperties.m */,
+			);
+			name = "objective-c";
+			path = "src/objective-c";
+			sourceTree = "<group>";
+		};
+		E4F7A4D319CCE41A002D9F01 /* bindings */ = {
+			isa = PBXGroup;
+			children = (
+				E4F7A4D419CCE445002D9F01 /* NKFileSystem.swift */,
+			);
+			name = bindings;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		E4B749E819C7B11B00F07883 /* NodeKitMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E4B74A0319C7B11B00F07883 /* Build configuration list for PBXNativeTarget "NodeKitMac" */;
+			buildPhases = (
+				E4B749E519C7B11B00F07883 /* Sources */,
+				E4B749E619C7B11B00F07883 /* Frameworks */,
+				E4B749E719C7B11B00F07883 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NodeKitMac;
+			productName = NodeKitMac;
+			productReference = E4B749E919C7B11B00F07883 /* NodeKitMac.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E4B749E119C7B11B00F07883 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = nodekit.io;
+				TargetAttributes = {
+					E4B749E819C7B11B00F07883 = {
+						CreatedOnToolsVersion = 6.1;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 0;
+							};
+						};
+					};
+				};
+			};
+			buildConfigurationList = E4B749E419C7B11B00F07883 /* Build configuration list for PBXProject "NodeKitMac" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = E4B749E019C7B11B00F07883;
+			productRefGroup = E4B749EA19C7B11B00F07883 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E4B749E819C7B11B00F07883 /* NodeKitMac */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		E4B749E719C7B11B00F07883 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4B74A6819C7B3CD00F07883 /* app in Resources */,
+				E4B74A6C19C7B5D700F07883 /* NodeKitIcons.icns in Resources */,
+				E4908ECC19C7CCC20007E874 /* owinserver.js in Resources */,
+				E4908ECB19C7CCC20007E874 /* owinjs-browser.js in Resources */,
+				E4908EC719C7CCC20007E874 /* cancellation.js in Resources */,
+				E4908EB219C7CC850007E874 /* lib in Resources */,
+				E4B74A6E19C7B7BC00F07883 /* app-shared in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		E4B749E519C7B11B00F07883 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */,
+				E4908EDD19C7F0B80007E874 /* NSObject+logProperties.m in Sources */,
+				E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */,
+				E4B74A5D19C7B3AA00F07883 /* jsc.swift in Sources */,
+				E4B74A5C19C7B3AA00F07883 /* NKJSBridge.m in Sources */,
+				E4B74A5E19C7B3AA00F07883 /* jsc.m in Sources */,
+				E4B74A5919C7B3AA00F07883 /* NKWebViewDebug.m in Sources */,
+				E4B74A4A19C7B39300F07883 /* main.swift in Sources */,
+				E4B74A4819C7B39300F07883 /* NKUIWebView.swift in Sources */,
+				E4B74A4719C7B39300F07883 /* NKNodekit.swift in Sources */,
+				E4B74A5B19C7B3AA00F07883 /* NKURLFileDecode.m in Sources */,
+				E4F7A4D519CCE445002D9F01 /* NKFileSystem.swift in Sources */,
+				E4B74A4919C7B39300F07883 /* NKJSContextFactory.swift in Sources */,
+				E4B74A5A19C7B3AA00F07883 /* NKURLProtocolCustom.m in Sources */,
+				E4B74A4C19C7B39300F07883 /* NKUrlProtocolCustom.swift in Sources */,
+				E4B74A4519C7B39300F07883 /* NKWKWebView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		E4B74A0119C7B11B00F07883 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		E4B74A0219C7B11B00F07883 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E4B74A0419C7B11B00F07883 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NodeKitMac.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = NodeKitMac.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/swift/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "objective-c/NKSwift-Bridging-Header.h";
+			};
+			name = Debug;
+		};
+		E4B74A0519C7B11B00F07883 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = NodeKitMac.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				INFOPLIST_FILE = "$(SRCROOT)/swift/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "objective-c/NKSwift-Bridging-Header.h";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		E4B749E419C7B11B00F07883 /* Build configuration list for PBXProject "NodeKitMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4B74A0119C7B11B00F07883 /* Debug */,
+				E4B74A0219C7B11B00F07883 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E4B74A0319C7B11B00F07883 /* Build configuration list for PBXNativeTarget "NodeKitMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E4B74A0419C7B11B00F07883 /* Debug */,
+				E4B74A0519C7B11B00F07883 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = E4B749E119C7B11B00F07883 /* Project object */;
+}

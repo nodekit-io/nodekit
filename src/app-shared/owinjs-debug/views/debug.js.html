@@ -1,0 +1,45 @@
+@{
+layout = "layout.js.html";
+viewBag.Title = "Debug";
+var e = process.debugException();
+var fileName = e.locals['__filename'];
+/*
+* "source"
+* "lineNumber"
+* "sourceLine"
+* "callStack"
+* "exception"
+* "description"
+* "locals"
+*/
+
+}
+<h2>@e.exception</h2>
+
+
+<p>@e.description at line @e.lineNumber in @fileName</p>
+<xmp>@e.sourceLine</xmp>
+<ul>
+    @{e.callStack.forEach(function(entry) {
+    @:<li>
+        @:@entry
+        @:</li>
+    });
+    }
+</ul>
+<ul>
+    @{for(var key in e.locals) {
+    var value = e.locals[key];
+    var string = JSON.stringify(value);
+    @:<li>
+        @:@key
+        @:&nbsp;
+        @:@string;
+        @:</li>
+    }}
+</ul>
+
+
+<xmp>
+    @e.source
+</xmp>

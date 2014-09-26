@@ -1,0 +1,54 @@
+{
+  "name": "native-dns",
+  "version": "0.6.3",
+  "author": {
+    "name": "Timothy J Fontaine",
+    "email": "tjfontaine@gmail.com",
+    "url": "http://atxconsulting.com"
+  },
+  "description": "Replacement for the core DNS module, includes server implementation",
+  "keywords": [
+    "dns",
+    "bind",
+    "native"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/liminex/node-dns.git"
+  },
+  "main": "dns.js",
+  "engines": {
+    "node": ">= 0.5.0"
+  },
+  "scripts": {
+    "test": "nodeunit test"
+  },
+  "dependencies": {
+    "ipaddr.js": ">= 0.1.1",
+    "native-dns-cache": ">= 0.0.1",
+    "native-dns-packet": "https://github.com/liminex/native-dns-packet/tarball/master"
+  },
+  "devDependencies": {
+    "optimist": "",
+    "nodeunit": ">= 0.7.4"
+  },
+  "private": true,
+  "contributors": [
+    {
+      "name": "Timothy J Fontaine",
+      "email": "tjfontaine@gmail.com"
+    }
+  ],
+  "readme": "[![Build Status](https://secure.travis-ci.org/tjfontaine/node-dns.png)](http://travis-ci.org/tjfontaine/node-dns)\r\n\r\nnative-dns -- A replacement DNS stack for node.js\r\n=================================================\r\n\r\nInstallation\r\n------------\r\n\r\n`npm install native-dns` and then `var dns = require('native-dns');`\r\n\r\nClient\r\n------\r\n\r\nnative-dns exports what should be a 1:1 mapping of the upstream node.js dns\r\nmodule. That is to say if it's listed in the [docs](http://nodejs.org/docs/latest/api/dns.html)\r\nit should behave similarly. If it doesn't please file an [issue](https://github.com/tjfontaine/node-dns/issues/new)\r\n\r\nRequest\r\n-------\r\n\r\nBeyond matching the upstream module, native-dns also provides a method for\r\ncustomizing queries.\r\n\r\n```javascript\r\nvar dns = require('../dns'),\r\n  util = require('util');\r\n\r\nvar question = dns.Question({\r\n  name: 'www.google.com',\r\n  type: 'A',\r\n});\r\n\r\nvar start = Date.now();\r\n\r\nvar req = dns.Request({\r\n  question: question,\r\n  server: { address: '8.8.8.8', port: 53, type: 'udp' },\r\n  timeout: 1000,\r\n});\r\n\r\nreq.on('timeout', function () {\r\n  console.log('Timeout in making request');\r\n});\r\n\r\nreq.on('message', function (err, answer) {\r\n  answer.answer.forEach(function (a) {\r\n    console.log(a.address);\r\n  });\r\n});\r\n\r\nreq.on('end', function () {\r\n  var delta = (Date.now()) - start;\r\n  console.log('Finished processing request: ' + delta.toString() + 'ms');\r\n});\r\n\r\nreq.send();\r\n```\r\n\r\nRequest creation takes an object with the following fields\r\n\r\n * `question` -- an instance of Question (required)\r\n * `server` -- defines the remote end point (required)\r\n  - as an object it should be\r\n    * `address` -- a string ip address (required)\r\n    * `port` -- a number for the remote port (optional, default 53)\r\n    * `type` -- a string indicating `udp` or `tcp` (optional, default `udp`)\r\nYou do not need to indicate ipv4 or ipv6, the backend will handle that\r\n  - a string ip address\r\n * `additional` -- an array of Additional Resource Records (optional)\r\n * `timeout` -- a number in milliseconds indicating how long to wait for the\r\nrequest to finish. (optional, default 4000)\r\n * `try_edns` -- a boolean indicating whether to use an `EDNSPacket` (optional)\r\n * `cache` -- can be false to disable caching, or implement the cache model, or\r\nan instance of Cache but with a different store (optional, default\r\nplatform.cache)\r\n * `header` -- an object containing header flags (optional)\r\n\r\nThere are only two methods\r\n\r\n * `send` -- sends the actual request to the remote endpoint\r\n * `cancel` -- cancels the request and ignores any responses\r\n\r\nRequest emits the following events\r\n\r\n * `message` -- This is where you get a response, passes `(err, answer)` where\r\nanswer is an instance of `Packet`\r\n * `timeout` -- Fired when the timeout is reached\r\n * `cancelled` -- Fired if the request is cancelled\r\n * `end` -- Always fired after a request finished, regardless of disposition\r\n\r\nPlatform\r\n--------\r\n\r\nIf you want to customize all `resolve` or `lookup`s with the replacement client\r\nstack you can modify the platform settings accessible in the top level `platform`\r\nobject.\r\n\r\nMethods:\r\n\r\n * `reload` -- Re-read system configuration files to populate name servers and\r\nhosts\r\n\r\nProperties:\r\n\r\n * `ready` -- Boolean whether requests are safe to transit, true after hosts\r\nand name servers are filled\r\n * `watching` -- Boolean indicating if system configuration files are watched\r\nfor changes, default to false (currently can only be enabled on !win32)\r\n * `name_servers` -- An array of servers used for resolving queries against\r\n  - Each entry is an object of `{ address: <string ip>, port: 53 }`\r\n  - On win32 this is hard coded to be google dns until there's a sane way to get\r\nthe data\r\n * `search_path` -- An array of domains to try and append after a failed lookup\r\n * `attempts` -- The number of retries for a failed lookup/timeout (default: 5)\r\n * `timeout` -- The time each query is allowed to take before trying another\r\nserver. (in milliseconds, default: 5000 (5 seconds))\r\n * `edns` -- Whether to try and send edns queries first (default: false)\r\n * `cache` -- The system wide cache used by default for `lookup` and `resolve`,\r\nset this to false to disable caching\r\n\r\nEvents:\r\n\r\n * `ready` -- Emitted after hosts and name servers have been loaded\r\n * `unready` -- Emitted when hosts and name servers configuration is being\r\nreloaded.\r\n\r\nServer\r\n------\r\n\r\nThere is also a rudimentary server implementation\r\n\r\n```javascript\r\nvar dns = require('../dns'),\r\n  server = dns.createServer();\r\n\r\nserver.on('request', function (request, response) {\r\n  //console.log(request)\r\n  response.answer.push(dns.A({\r\n    name: request.question[0].name,\r\n    address: '127.0.0.1',\r\n    ttl: 600,\r\n  }));\r\n  response.answer.push(dns.A({\r\n    name: request.question[0].name,\r\n    address: '127.0.0.2',\r\n    ttl: 600,\r\n  }));\r\n  response.additional.push(dns.A({\r\n    name: 'hostA.example.org',\r\n    address: '127.0.0.3',\r\n    ttl: 600,\r\n  }));\r\n  response.send();\r\n});\r\n\r\nserver.on('error', function (err, buff, req, res) {\r\n  console.log(err.stack);\r\n});\r\n\r\nserver.serve(15353);\r\n```\r\n\r\nServer creation\r\n\r\n * `createServer` and `createUDPServer` -- both create a `UDP` based server,\r\nthey accept an optional object for configuration,\r\n  - `{ dgram_type: 'udp4' }` is the default option, the other is `udp6`\r\n * `createTCPServer` -- creates a TCP based server\r\n\r\nServer methods\r\n\r\n * `serve(port, [address])` -- specify which port and optional address to listen\r\non\r\n * `close()` -- stop the server/close sockets.\r\n\r\nServer events\r\n\r\n * `listening` -- emitted when underlying socket is listening\r\n * `close` -- emitted when the underlying socket is closed\r\n * `request` -- emitted when a dns message is received, and the packet was\r\nsuccessfully unpacked, passes `(request, response)`\r\n  - Both `request` and `response` are instances of `Packet` when you're finished\r\ncreating the response, you merely need to call `.send()` and the packet will\r\nDoTheRightThing\r\n * `error` -- emitted when unable to properly unpack the packet, passed `(err, msg, response)`\r\n * `socketError` -- remap of the underlying socket for the server, passes `(err, socket)`\r\n\r\nPacket\r\n------\r\n\r\nProperties:\r\n\r\n * `header`\r\n  - `id` -- request id\r\n  - `qdcount` -- the number of questions (inferred from array size)\r\n  - `ancount` -- the number of questions (inferred from array size)\r\n  - `nscount` -- the number of questions (inferred from array size)\r\n  - `arcount` -- the number of questions (inferred from array size)\r\n  - `qr` -- is a query response\r\n  - `opcode`\r\n  - `aa` -- Authoritative Answer\r\n  - `tc` -- Truncation bit\r\n  - `rd` -- Recursion Desired\r\n  - `ra` -- Recursion Available\r\n  - `res1` -- Reserved field\r\n  - `res2` -- Reserved field\r\n  - `res3` -- Reserved field\r\n  - `rcode` -- Response Code (see `consts.NAME_TO_RCODE`)\r\n * `question` -- array of `Question`s\r\n * `answer` -- array of `ResourceRecord`s\r\n * `authority` -- array of `ResourceRecord`s\r\n * `additional` -- array of `ResourceRecord`s\r\n\r\nMethods:\r\n\r\n * `send()` -- Handles sending the packet to the right end point\r\n\r\nQuestion\r\n--------\r\n\r\nA `Question` is instantiated by passing an object like:\r\n\r\n * `name` -- i.e. 'www.google.com' (required)\r\n * `type` -- Either the string representation of the record type, or the integer\r\nvalue, see `consts.NAME_TO_QTYPE` (default: 'A')\r\n * `class` -- The class of service, default to 1 meaning internet\r\n\r\nResourceRecord\r\n--------------\r\n\r\nResourceRecords are what populate `answer`, `authority`, and `additional`.\r\nThis is a generic type, and each derived type inherits the following properties:\r\n\r\n * `name` -- The name of the resource\r\n * `type` -- The numerical representation of the resource record type\r\n * `class` -- The numerical representation of the class of service (usually 1 for internet)\r\n * `ttl` -- The Time To Live for the record, in seconds\r\n\r\nAvailable Types:\r\n\r\n * `SOA`\r\n  - `primary` -- string\r\n  - `admin` -- string\r\n  - `serial` -- number\r\n  - `refresh` -- number\r\n  - `retry` -- number\r\n  - `expiration` -- number\r\n  - `minimum` -- number\r\n * `A` and `AAAA`\r\n  - `address` -- string\r\n * `MX`\r\n  - `priority` -- number\r\n  - `exchange` -- string\r\n * `TXT`\r\n  - `data` -- string\r\n * `SRV`\r\n  - `priority` -- number\r\n  - `weight` -- number\r\n  - `port` -- number\r\n  - `target` -- string\r\n * `NS`\r\n  - `data` -- string\r\n * `CNAME`\r\n  - `data` -- string\r\n * `PTR`\r\n  - `data` -- string\r\n * `NAPTR`\r\n  - `order` -- number\r\n  - `preference` -- number\r\n  - `flags` -- string\r\n  - `service` -- string\r\n  - `regexp` -- string\r\n  - `replacement` -- string\r\n",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/liminex/node-dns/issues"
+  },
+  "homepage": "https://github.com/liminex/node-dns",
+  "_id": "native-dns@0.6.3",
+  "dist": {
+    "shasum": "7d14811ca99cebea55394dffc46b3b1e8bce340b"
+  },
+  "_resolved": "git://github.com/liminex/node-dns.git#ddfc414687743cd6f924f1e9b0bceeb5eafb3500",
+  "_from": "git://github.com/liminex/node-dns.git"
+}
