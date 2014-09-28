@@ -20,7 +20,6 @@
 #import "NKWebViewDebug.h"
 #import "Webkit/Webkit.h"
 #import "NKJSBridge.h"
-#import "NSObject+logProperties.h"
 
 @interface WebView ()
 -(id)setScriptDebugDelegate:(id)delegate;

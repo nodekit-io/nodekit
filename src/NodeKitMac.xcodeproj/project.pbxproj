@@ -11,7 +11,6 @@
 		E4908EC719C7CCC20007E874 /* cancellation.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC119C7CCC20007E874 /* cancellation.js */; };
 		E4908ECB19C7CCC20007E874 /* owinjs-browser.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC519C7CCC20007E874 /* owinjs-browser.js */; };
 		E4908ECC19C7CCC20007E874 /* owinserver.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC619C7CCC20007E874 /* owinserver.js */; };
-		E4908EDD19C7F0B80007E874 /* NSObject+logProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = E4908EDC19C7F0B80007E874 /* NSObject+logProperties.m */; };
 		E4B74A4519C7B39300F07883 /* NKWKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */; };
 		E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3C19C7B39300F07883 /* NKUrlProtocolLocalFile.swift */; };
 		E4B74A4719C7B39300F07883 /* NKNodekit.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3D19C7B39300F07883 /* NKNodekit.swift */; };
@@ -38,8 +37,6 @@
 		E4908EC319C7CCC20007E874 /* nodeBinding.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = nodeBinding.js; sourceTree = "<group>"; };
 		E4908EC519C7CCC20007E874 /* owinjs-browser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "owinjs-browser.js"; sourceTree = "<group>"; };
 		E4908EC619C7CCC20007E874 /* owinserver.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = owinserver.js; sourceTree = "<group>"; };
-		E4908EDB19C7F0B80007E874 /* NSObject+logProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSObject+logProperties.h"; path = "objective-c/NSObject+logProperties.h"; sourceTree = SOURCE_ROOT; };
-		E4908EDC19C7F0B80007E874 /* NSObject+logProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSObject+logProperties.m"; path = "objective-c/NSObject+logProperties.m"; sourceTree = SOURCE_ROOT; };
 		E4B749E919C7B11B00F07883 /* NodeKitMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NodeKitMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B74A3A19C7B39300F07883 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = swift/Info.plist; sourceTree = SOURCE_ROOT; };
 		E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKWKWebView.swift; path = swift/NKWKWebView.swift; sourceTree = SOURCE_ROOT; };
@@ -161,8 +158,6 @@
 				E4B74A5519C7B3AA00F07883 /* NKJSBridge.m */,
 				E4B74A5619C7B3AA00F07883 /* jsc.swift */,
 				E4B74A5719C7B3AA00F07883 /* jsc.m */,
-				E4908EDB19C7F0B80007E874 /* NSObject+logProperties.h */,
-				E4908EDC19C7F0B80007E874 /* NSObject+logProperties.m */,
 			);
 			name = "objective-c";
 			path = "src/objective-c";
@@ -256,7 +251,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */,
-				E4908EDD19C7F0B80007E874 /* NSObject+logProperties.m in Sources */,
 				E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */,
 				E4B74A5D19C7B3AA00F07883 /* jsc.swift in Sources */,
 				E4B74A5C19C7B3AA00F07883 /* NKJSBridge.m in Sources */,
