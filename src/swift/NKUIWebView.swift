@@ -27,7 +27,7 @@ class NKUIWebView: NSObject {
     {
         
         
-        var windowRect : NSRect = NSScreen.mainScreen().frame
+        var windowRect : NSRect = (NSScreen.mainScreen()!).frame
         var frameRect : NSRect = NSMakeRect(
             (NSWidth(windowRect) - width)/2,
             (NSHeight(windowRect) - height)/2,

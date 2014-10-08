@@ -20,6 +20,7 @@ module = require('module');
 var util = require('util');
 var path = require('path');
 util.isBuffer = Buffer.isBuffer;
+global.process.sources = [];
 
 console.warn = console.log;
 
@@ -32,7 +33,8 @@ process.versions = { http_parser: '1.0', node: '0.10.4', v8: '3.14.5.8', ares: '
 
 module._extensions['.js'] = function nodeappkit_module_jsread(module, filename) {
     var file = path.basename(filename);
-    var content = require('fs').readFileSync(filename, 'utf8') + '\r\n// # sourceURL=' + file;
+    var content = require('fs').readFileSync(filename, 'utf8') + '\r\n//# sourceURL=' + file;
+    global.process.sources[file] = content;
     module._compile(stripBOM(content), filename);
 };
 

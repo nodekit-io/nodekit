@@ -19,7 +19,6 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NKURLFileDecode.h"
 #import "NKJSBridge.h"
-#import "NKWebViewDebug.h"
 JSValue *getJSVinJSC(JSContext *ctx, NSString *key);
 void setJSVinJSC(JSContext *ctx, NSString *key, id val);
 void setJSV2inJSC(JSContext *ctx, NSString *key,NSString *key2, id val);

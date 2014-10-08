@@ -30,7 +30,7 @@ class NKMenu {
         for (title, items) in tree() {
             let item = mainMenu.addItemWithTitle(title, action: nil, keyEquivalent:"")
             let menu = NSMenu(title: title)
-            mainMenu.setSubmenu(menu, forItem: item)
+            mainMenu.setSubmenu(menu, forItem: item!)
             for item in items { menu.addItem(item) }
         }
         self.app.menu = mainMenu

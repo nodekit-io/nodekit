@@ -19,7 +19,6 @@
 		E4B74A4A19C7B39300F07883 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4019C7B39300F07883 /* main.swift */; };
 		E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4119C7B39300F07883 /* NKMenu.swift */; };
 		E4B74A4C19C7B39300F07883 /* NKUrlProtocolCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */; };
-		E4B74A5919C7B3AA00F07883 /* NKWebViewDebug.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4E19C7B3AA00F07883 /* NKWebViewDebug.m */; };
 		E4B74A5A19C7B3AA00F07883 /* NKURLProtocolCustom.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4F19C7B3AA00F07883 /* NKURLProtocolCustom.m */; };
 		E4B74A5B19C7B3AA00F07883 /* NKURLFileDecode.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */; };
 		E4B74A5C19C7B3AA00F07883 /* NKJSBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A5519C7B3AA00F07883 /* NKJSBridge.m */; };
@@ -47,9 +46,7 @@
 		E4B74A4019C7B39300F07883 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = swift/main.swift; sourceTree = SOURCE_ROOT; };
 		E4B74A4119C7B39300F07883 /* NKMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMenu.swift; path = swift/NKMenu.swift; sourceTree = SOURCE_ROOT; };
 		E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUrlProtocolCustom.swift; path = swift/NKUrlProtocolCustom.swift; sourceTree = SOURCE_ROOT; };
-		E4B74A4E19C7B3AA00F07883 /* NKWebViewDebug.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKWebViewDebug.m; path = "objective-c/NKWebViewDebug.m"; sourceTree = SOURCE_ROOT; };
 		E4B74A4F19C7B3AA00F07883 /* NKURLProtocolCustom.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKURLProtocolCustom.m; path = "objective-c/NKURLProtocolCustom.m"; sourceTree = SOURCE_ROOT; };
-		E4B74A5019C7B3AA00F07883 /* NKWebViewDebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NKWebViewDebug.h; path = "objective-c/NKWebViewDebug.h"; sourceTree = SOURCE_ROOT; };
 		E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKURLFileDecode.m; path = "objective-c/NKURLFileDecode.m"; sourceTree = SOURCE_ROOT; };
 		E4B74A5219C7B3AA00F07883 /* NKURLFileDecode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NKURLFileDecode.h; path = "objective-c/NKURLFileDecode.h"; sourceTree = SOURCE_ROOT; };
 		E4B74A5319C7B3AA00F07883 /* NKSwift-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NKSwift-Bridging-Header.h"; path = "objective-c/NKSwift-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
@@ -150,8 +147,6 @@
 				E4B74A5319C7B3AA00F07883 /* NKSwift-Bridging-Header.h */,
 				E4B74A5819C7B3AA00F07883 /* NKURLProtocolCustom.h */,
 				E4B74A4F19C7B3AA00F07883 /* NKURLProtocolCustom.m */,
-				E4B74A5019C7B3AA00F07883 /* NKWebViewDebug.h */,
-				E4B74A4E19C7B3AA00F07883 /* NKWebViewDebug.m */,
 				E4B74A5219C7B3AA00F07883 /* NKURLFileDecode.h */,
 				E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */,
 				E4B74A5419C7B3AA00F07883 /* NKJSBridge.h */,
@@ -255,7 +250,6 @@
 				E4B74A5D19C7B3AA00F07883 /* jsc.swift in Sources */,
 				E4B74A5C19C7B3AA00F07883 /* NKJSBridge.m in Sources */,
 				E4B74A5E19C7B3AA00F07883 /* jsc.m in Sources */,
-				E4B74A5919C7B3AA00F07883 /* NKWebViewDebug.m in Sources */,
 				E4B74A4A19C7B39300F07883 /* main.swift in Sources */,
 				E4B74A4819C7B39300F07883 /* NKUIWebView.swift in Sources */,
 				E4B74A4719C7B39300F07883 /* NKNodekit.swift in Sources */,

@@ -1,2 +1,5 @@
 console.log("NODEKIT DEFAULT APPLICATION STARTED");
 
+throw new Error('TEST');
+
+console.log("NODEKIT DEFAULT APPLICATION ENDED");

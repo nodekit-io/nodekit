@@ -29,8 +29,7 @@ class NKNodekit {
     
     func run() {
         
-        NKJSContextFactory.createDebugContext( { (context: JSContext!) -> () in
-    // NKJSContextFactory.createRegularContext( { (context: JSContext!) -> () in
+     NKJSContextFactory.createRegularContext( { (context: JSContext!) -> () in
             
             NKJSBridge.attachToContext(context)
             self.context = context;

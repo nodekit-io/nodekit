@@ -23,55 +23,11 @@ import JavaScriptCore
 
 struct NKJSContextFactory {
     
-    static var debug : NKWebViewDebug! = nil;
-    static var _debugView : WebView! = nil;
-    
     static func createRegularContext(callback: (JSContext!)-> () )
     {
         println("Starting javascriptcore native engine")
         var vm = JSVirtualMachine()
         var context = JSContext(virtualMachine: vm)
         callback(context)
-    }
-    
-    static func createDebugContext(callback: (JSContext!)-> () )
-    {
-        
-        println("Starting javascriptcore embedded engine")
-        
-        _debugView = WebView()
-        
-        var webPrefs : WebPreferences = WebPreferences.standardPreferences()
-        
-        webPrefs.javaEnabled = false
-        webPrefs.plugInsEnabled = false
-        webPrefs.javaScriptEnabled = true
-        webPrefs.javaScriptCanOpenWindowsAutomatically = false
-        webPrefs.loadsImagesAutomatically = true
-        webPrefs.allowsAnimatedImages = false
-        webPrefs.allowsAnimatedImageLooping = false
-        webPrefs.shouldPrintBackgrounds = false
-        webPrefs.userStyleSheetEnabled = false
-        
-        _debugView.setMaintainsBackForwardList(true)
-        
-        _debugView.applicationNameForUserAgent = "nodekit"
-        _debugView.drawsBackground = false
-        _debugView.preferences = webPrefs
-        
-        debug = NKWebViewDebug(callBack: callback);
-        
-        _debugView.frameLoadDelegate = debug;
-        
-        var url = NSURL(string: "about:blank")
-        var requestObj: NSURLRequest = NSURLRequest(URL: url!)
-        
-        _debugView.mainFrame.loadRequest(requestObj)
-        
-        var scriptObject : WebScriptObject = _debugView.windowScriptObject
-        scriptObject.setValue("TEST", forKey: "TEST")
-        
-        
-
     }
 }

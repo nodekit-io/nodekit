@@ -15,12 +15,13 @@
  */
 
 "use strict";
+var path = require('path');
 
-function ContextifyScript(script,options) {
-    
-    
+function ContextifyScript(script, options) {
     this._script = script;
-    /*
+    this._filename = path.basename(options.filename) || '<eval>';
+    
+     /*
   options = options || {};
 
   var filename = options.filename || '<eval>';
@@ -38,18 +39,20 @@ function ContextifyScript(script,options) {
 }
 
 ContextifyScript.prototype.runInThisContext = function() {
-    return eval(this._script);
-   // document.head.appendChild(this._script);
-}
+    io.nodekit.console.log(this._filename);
+
+    return io.nodekit.fs.eval(this._script, this._filename);
+   }
 
 ContextifyScript.prototype.runInContext = function(context) {
     return eval(this._script);
-   // document.head.appendChild(this._script);
+
+    // document.head.appendChild(this._script);
 }
 
 ContextifyScript.prototype.runInNewContext = function() {
-    return eval(this._script);
-  //  document.head.appendChild(this._script);
+   return eval(this._script);
+    //  document.head.appendChild(this._script);
 }
 
 module.exports.isContext = function isContext(ctx) {

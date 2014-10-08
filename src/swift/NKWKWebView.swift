@@ -29,7 +29,7 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
     init(urlAddress: NSString, title:NSString, width:CGFloat, height:CGFloat )
     {
 
-        var windowRect : NSRect = NSScreen.mainScreen().frame
+        var windowRect : NSRect = (NSScreen.mainScreen()!).frame
         
         var frameRect : NSRect = NSMakeRect(
             (NSWidth(windowRect) - width)/2,

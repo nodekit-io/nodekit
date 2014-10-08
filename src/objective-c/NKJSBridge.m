@@ -38,6 +38,10 @@ static urlNavigator _urlNavigator = nil;
                                                   @"execPath": NSBundle.mainBundle.executablePath
                                                   } inContext:context];
         
+   /*     context.exceptionHandler = ^(JSContext *ctx, JSValue *e) {
+             NSLog(@"Context exception thrown: %@; sourceURL: %@, stack: %@", e, e[@"sourceURL"],[e valueForProperty:@"stack"]);
+        };*/
+        
         context[@"process"] = process;
         
         JSValue *fs = [JSValue valueWithObject:@{  @"platform": @"darwin"                                                         } inContext:context];
@@ -111,6 +115,9 @@ static urlNavigator _urlNavigator = nil;
             [NKFileSystem getContentAsync: storageItem completionHandler:callBack];
         };
         
+        fs[@"eval"] = (JSValue*)^(NSString* script, NSString* filename){
+            return [[JSContext currentContext] evaluateScript:script withSourceURL:[NSURL URLWithString:[@"file://" stringByAppendingString:filename]]];
+        };
         
         console[@"log"] = ^(NSString* msg){
             NSLog(@"%@", msg);
@@ -130,6 +137,11 @@ static urlNavigator _urlNavigator = nil;
         
         };
         
+        console[@"loadString"] = ^(NSString* html, NSString* title){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [NKJSBridge showString:html Title: title];
+            });
+        };
         
         console[@"navigateTo"] = ^(NSString* url, NSString* title){
             dispatch_async(dispatch_get_main_queue(), ^{
