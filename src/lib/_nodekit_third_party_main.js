@@ -51,6 +51,12 @@ function stripBOM(content) {
  */
 
 //process.package =  require('app/package.json');
+var invoke = module._load('lib/_nodekit_invoke.js');
+io.nodekit.invokeContext = invoke.invokeContext;
+io.nodekit.createEmptyContext = invoke.createEmptyContext;
+io.nodekit.cancelContext = invoke.cancelContext;
+io.nodekit.createServer = invoke.createServer;
+
 process.package =  module._load('app/package.json', null, false);
 // global.Browser = require('owinjs-browser.js');
 // process.owinJS = require('owinserver');
@@ -58,10 +64,12 @@ process.package =  module._load('app/package.json', null, false);
 
 module._load(process.package['main'], null, true);
 
-io.nodekit.console.setTimeout(2, function(){
+process.owinJS = module._load('lib/_nodekit_invoke.js');
+
+io.nodekit.console.setTimeout(1, function(){
              io.nodekit.console.navigateTo(process.package["node-baseurl"] + process.package["node-main"], process.package.window.title)
                               });
-;
+
 
 // # sourceURL=nodekit_third_party_main.js
 

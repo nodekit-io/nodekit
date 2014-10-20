@@ -38,46 +38,15 @@ var Startup = function Startup() {
     process.nextTick = _nextTick;
     console.log = io.nodekit.console.log;
     console.warn = console.log;
+    io.nodekit.console.error = BootstrapModule.error;
    try
     {
        process._tickCallback();
     }
     catch (e)
     {
-        io.nodekit.console.log(JSON.stringify(e));
-        var sourceFile = e.sourceURL.replace("file://","");
-        var message = "";
-        
-        message += "<head></head>";
-        message += "<body>";
-        message += "<h1>Exception</h1>";
-        message += "<h2>" + e + "</h2>";
-        source = global.process.sources[sourceFile];
-        message += "<p><i>" + e["message"] +"</i> in file " + sourceFile + ": " + e.line;
-        
-        if (source)
-        {
-            message += "<h3>Source</h3>";
-            message += "<pre id='preview' style='font-family: monospace; tab-size: 3; -moz-tab-size: 3; -o-tab-size: 3; -webkit-tab-size: 3;'><ol>";
-            message += "<li>" + source.split("\n").join("</li><li>") + "</li>";
-            message += "</ol></pre>";
-        }
-        
-        if (e.stack)
-        {
-            message += "<h3>Call Stack</h3>";
-            message += "<pre id='preview' style='font-family: monospace;'><ul>";
-            message += "<li>" + e.stack.split("\n").join("</li><li>").split("file://").join("") + "</li>";
-            message += "</ul></pre>";
-        }
-        
-        message += "</body>";
-        io.nodekit.console.loadString(message, "Debug");
-        
-        io.nodekit.console.log("EXCEPTION: " + e);
-        io.nodekit.console.log("Source: " + sourceFile );
-        io.nodekit.console.log("Stack: " + e.stack );
-    }
+        io.nodekit.console.error(e);
+            }
  }
 
 /* *******************************************************
@@ -128,6 +97,56 @@ BootstrapModule._load = function(id)
     bootstrapModule.compile();
     
     return bootstrapModule.exports;
+};
+
+BootstrapModule.error = function(e)
+{
+    io.nodekit.console.log("ERROR OCCURED");
+    io.nodekit.console.log("EXCEPTION: " + e);
+    
+    io.nodekit.console.log(JSON.stringify(e));
+    var message = "";
+    var sourceFile = "unknown";
+    
+    if (e.sourceURL)
+    {
+        sourceFile = e.sourceURL.replace("file://","");
+    }
+    
+    message += "<head></head>";
+    message += "<body>";
+    message += "<h1>Exception</h1>";
+    message += "<h2>" + e + "</h2>";
+    message += "<p><i>" + e["message"] +"</i> in file " + sourceFile + ": " + e.line;
+    
+    
+    if (e.sourceURL)
+    {
+        source = global.process.sources[sourceFile];
+        if (source)
+        {
+            message += "<h3>Source</h3>";
+            message += "<pre id='preview' style='font-family: monospace; tab-size: 3; -moz-tab-size: 3; -o-tab-size: 3; -webkit-tab-size: 3;'><ol>";
+            message += "<li>" + source.split("\n").join("</li><li>") + "</li>";
+            message += "</ol></pre>";
+        }
+    }
+    
+    if (e.stack)
+    {
+        message += "<h3>Call Stack</h3>";
+        message += "<pre id='preview' style='font-family: monospace;'><ul>";
+        message += "<li>" + e.stack.split("\n").join("</li><li>").split("file://").join("") + "</li>";
+        message += "</ul></pre>";
+    }
+    
+    message += "</body>";
+    io.nodekit.console.loadString(message, "Debug");
+    
+    io.nodekit.console.log("EXCEPTION: " + e);
+    io.nodekit.console.log("Source: " + sourceFile );
+    io.nodekit.console.log("Stack: " + e.stack );
+
 };
 
 BootstrapModule.bootstrap = function(id) {

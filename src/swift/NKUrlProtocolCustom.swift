@@ -21,6 +21,14 @@ import Cocoa
 
 class NKUrlProtocolCustom: NSURLProtocol {
     
+    
+    var context : JSContext? = nil;
+    var httpContext : JSValue? = nil;
+    
+    var isLoading: Bool = false;
+    var isCancelled: Bool = false;
+    var headersWritten: Bool = false;
+    
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         
         if (request.URL.host == nil)
@@ -48,22 +56,127 @@ class NKUrlProtocolCustom: NSURLProtocol {
     
     override func startLoading() {
         
-        let request: NSURLRequest = self.request
-        let client: NSURLProtocolClient = self.client!;
+        let hostRequest: NSURLRequest = self.request
+        let client: NSURLProtocolClient = self.client!
+        context = NKJavascriptBridge.currentContext()
         
-         println(request.URL.absoluteString!)
+        println(hostRequest.URL.absoluteString!)
         
-        let data: NSData = NSData()
+        httpContext = NKJavascriptBridge.createHttpContext()
         
-        let response: NSURLResponse = NSURLResponse(URL: request.URL, MIMEType: "text/html", expectedContentLength: data.length, textEncodingName: "utf-8")
+        let req: JSValue = httpContext!.valueForProperty("req");
+        let res: JSValue = httpContext!.valueForProperty("res");
+        
+        var path = request.URL.relativePath
+        var query = request.URL.query
+        
+        if (path == "")
+        {
+            path = "/"
+        }
+        
+        if (query == nil) {query = ""}
+        
+        var pathWithQuery = path!;
+        
+        if (query != "")
+        {
+            pathWithQuery = pathWithQuery + "?" + query!;
+        }
+    
+        req.setValue(hostRequest.HTTPMethod, forProperty: "method")
+        req.setValue(pathWithQuery, forProperty: "url")
+        req.setValue(hostRequest.allHTTPHeaderFields, forProperty: "headers")
+        
+        if (request.HTTPMethod == "POST")
+        {
             
-            client.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: NSURLCacheStoragePolicy.AllowedInMemoryOnly)
+            let body : NSString = NSString(data:request.HTTPBody!, encoding: NSUTF8StringEncoding)!
+            let length : String = body.length.description
             
-            client.URLProtocol(self, didLoadData: data)
-            client.URLProtocolDidFinishLoading(self)
+            req.valueForProperty("headers").setValue( length, forKey: "Content-Length")
+            req.valueForProperty("body").valueForProperty("setData").callWithArguments([body])
+        }
+        
+        isLoading = true
+        headersWritten = false
+        
+        let this = self
+        
+        NKJavascriptBridge.setJavascriptClosure(res, key: "_writeString",  callBack: { () -> Void in
+            
+            var str : NSString = this.httpContext!.valueForProperty("_chunk").toString();
+            var data : NSData? = str.dataUsingEncoding(NSUTF8StringEncoding)
+            
+            if (!this.headersWritten)
+            {
+                this.writeHeaders()
+                this.client!.URLProtocol(this, didLoadData: data!)
+                data = nil
+            }
+        })
+     
+        NKJavascriptBridge.invokeHttpContext(httpContext!, callBack: { () -> Void in
+            if (this.isCancelled)  {return};
+            
+            var str : NSString = this.httpContext!.valueForProperty("_chunk").toString();
+            var data : NSData! = str.dataUsingEncoding(NSUTF8StringEncoding)
+            
+            if (!this.headersWritten)
+                {
+                    this.writeHeaders()
+                }
+            
+            this.isLoading = false;
+            
+             this.client!.URLProtocol(self, didLoadData: data)
+             this.client!.URLProtocolDidFinishLoading(self)
+            })
+
             
     }
     
     override func stopLoading() {
+        
+        if (self.isLoading)
+        {
+            self.isCancelled = true
+            NSLog("CANCELLED")
+            NKJavascriptBridge.cancelHttpContext(self.httpContext!)
+        }
+        self.httpContext = nil;
+    }
+    
+    func writeHeaders() {
+        NSLog("writeHeaders");
+        let res: JSValue = self.httpContext!.valueForProperty("res");
+        
+        self.headersWritten = true;
+        var headers : NSDictionary? = res.valueForProperty("headers").toDictionary()
+        var version : String = "HTTP/1.1"
+        var statusCode : Int = (res.valueForProperty("statusCode").toString() as NSString).integerValue
+      
+        if (statusCode == 302)
+        {
+            var location = headers!.valueForKey("location") as NSString
+            
+            var url : NSURL = NSURL(string: location)!
+            
+             NSLog("Redirection location to %@", url)
+            
+            var response = NSHTTPURLResponse(URL: url, statusCode: statusCode, HTTPVersion: version, headerFields: headers)!
+      
+            self.client?.URLProtocol(self, wasRedirectedToRequest: NSURLRequest(URL: url), redirectResponse: response)
+            self.isLoading = false
+            self.client?.URLProtocolDidFinishLoading(self)
+
+        }
+        else
+        {
+            
+            var response = NSHTTPURLResponse(URL: self.request.URL, statusCode: statusCode, HTTPVersion: version, headerFields: headers)!
+            self.client?.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: NSURLCacheStoragePolicy.NotAllowed)
+            
+        }
     }
 }

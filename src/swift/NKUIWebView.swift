@@ -71,13 +71,13 @@ class NKUIWebView: NSObject {
         NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
         NSURLProtocol.registerClass(NKUrlProtocolCustom)
         
-        NKJSBridge.registerStringViewer( { (msg: String?, title: String?) -> () in
+        NKJavascriptBridge.registerStringViewer( { (msg: String?, title: String?) -> () in
           webview.mainFrame.loadHTMLString(msg, baseURL: NSURL(string: "about:blank"))
             return
         });
         
         
-        NKJSBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
+        NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
             var requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
             webview.mainFrame.loadRequest(requestObj)
             return

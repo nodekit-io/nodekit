@@ -31,7 +31,7 @@ class NKNodekit {
         
      NKJSContextFactory.createRegularContext( { (context: JSContext!) -> () in
             
-            NKJSBridge.attachToContext(context)
+            NKJavascriptBridge.attachToContext(context)
             self.context = context;
             
             var fileManager = NSFileManager.defaultManager()
@@ -56,8 +56,7 @@ class NKNodekit {
             
             if (fileManager.fileExistsAtPath(externalPackage))
             {
-                
-                context.store("process", key2: "workingDirectory", appPath)
+                NKJavascriptBridge.setWorkingDirectory(appPath)
                 
                 resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(appPath).stringByAppendingString(":").stringByAppendingString(nodeModulePathWeb).stringByAppendingString(":").stringByAppendingString(nodeModulePathWeb2).stringByAppendingString(":").stringByAppendingString(appModulePath)
             }
@@ -68,14 +67,14 @@ class NKNodekit {
                     println("Missing package.json in main bundle /Resources/app");
                     return;
                 }
-                context.store("process", key2: "workingDirectory", webPath)
+                NKJavascriptBridge.setWorkingDirectory(webPath)
                 
                 resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(webPath).stringByAppendingString(":").stringByAppendingString(nodeModulePathWeb).stringByAppendingString(":").stringByAppendingString(nodeModulePathWeb2).stringByAppendingString(":").stringByAppendingString(appModulePath)
                 
             }
-            
-            context.store("process" , key2: "env", key3: "NODE_PATH", resPaths)
-
+        
+            NKJavascriptBridge.setNodePaths(resPaths)
+      
             var url = mainBundle.pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
             
             var bootstrapper = NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding, error: nil);

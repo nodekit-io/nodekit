@@ -20,17 +20,21 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 
 typedef void (^nodeCallBack)(id error, id value);
+typedef void (^closure)();
 typedef void (^stringViewer)(NSString *msg, NSString *title);
 typedef void (^urlNavigator)(NSString *uri, NSString *title);
 
-@interface NKJSBridge: NSObject
+@interface NKJavascriptBridge: NSObject
 + (void)attachToContext:(JSContext *)context;
-+ (JSValue*) createOwinContext;
-+ (void) invokeAppFunc:(JSValue *)owinContext callBack:(nodeCallBack)callBack;
-+ (void) cancelOwinContext:(JSValue *)owinContext;
-+ (void) createResponseStream:(JSValue *)owinContext;
++ (JSContext *)currentContext;
++ (JSValue*) createHttpContext;
++ (void) invokeHttpContext:(JSValue *)httpContext callBack:(closure)callBack;
++ (void) cancelHttpContext:(JSValue *)httpContext;
 + (void)registerStringViewer:(stringViewer)callBack;
 + (void)registerNavigator:(urlNavigator)callBack;
 + (void)showString:(NSString *)message  Title:(NSString *)title;
 + (void)navigateTo:(NSString *)uri Title:(NSString *)title;
++ (void) setJavascriptClosure:(JSValue *)httpContext key:(NSString *)key  callBack:(closure)callBack;
++ (void) setWorkingDirectory:(NSString *)directory;
++ (void) setNodePaths:(NSString *)directory;
 @end

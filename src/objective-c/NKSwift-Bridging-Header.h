@@ -18,12 +18,4 @@
 
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NKURLFileDecode.h"
-#import "NKJSBridge.h"
-JSValue *getJSVinJSC(JSContext *ctx, NSString *key);
-void setJSVinJSC(JSContext *ctx, NSString *key, id val);
-void setJSV2inJSC(JSContext *ctx, NSString *key,NSString *key2, id val);
-void setJSV3inJSC(JSContext *ctx, NSString *key,NSString *key2,NSString *key3, id val);
-void setB0JSVinJSC(JSContext *ctx, NSString *key,id(^block)());
-void setB1JSVinJSC(JSContext *ctx, NSString *key,id(^block)(id));
-void setB2JSVinJSC(JSContext *ctx, NSString *key,id(^block)(id,id));
-
+#import "NKJavascriptBridge.h"

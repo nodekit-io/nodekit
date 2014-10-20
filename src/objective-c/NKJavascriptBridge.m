@@ -16,14 +16,14 @@
  * limitations under the License.
  */
 
-#import "NKJSBridge.h"
+#import "NKJavascriptBridge.h"
 #import "NodeKitMac-swift.h"
 
 static JSContext *_context = nil;
 static stringViewer  _stringViewer = nil;
 static urlNavigator _urlNavigator = nil;
 
-@implementation NKJSBridge
+@implementation NKJavascriptBridge
 
 + (void)attachToContext:(JSContext *)context
     {
@@ -139,13 +139,13 @@ static urlNavigator _urlNavigator = nil;
         
         console[@"loadString"] = ^(NSString* html, NSString* title){
             dispatch_async(dispatch_get_main_queue(), ^{
-                [NKJSBridge showString:html Title: title];
+                [NKJavascriptBridge showString:html Title: title];
             });
         };
         
         console[@"navigateTo"] = ^(NSString* url, NSString* title){
             dispatch_async(dispatch_get_main_queue(), ^{
-                [NKJSBridge navigateTo: url Title: title];
+                [NKJavascriptBridge navigateTo: url Title: title];
             });
         };
         
@@ -181,23 +181,38 @@ static urlNavigator _urlNavigator = nil;
     _urlNavigator(uri, title);
 }
 
-+ (JSValue*) createOwinContext
++ (JSValue*) createHttpContext
     {
-        return [_context evaluateScript:@"process.owinJS.createEmptyContext();"];
+        return [_context evaluateScript:@"io.nodekit.createEmptyContext();"];
+    }
+
++ (JSContext *)currentContext
+{
+    return _context;
+}
+
++ (void) setJavascriptClosure:(JSValue *)httpContext key:(NSString *)key  callBack:(closure)callBack
+{
+    httpContext[key] = ^(){ callBack(); };
+}
+
++ (void) setWorkingDirectory:(NSString *)directory
+{
+    _context[@"process"][@"workingDirectory"] = directory;
+}
+
++ (void) setNodePaths:(NSString *)directory
+{
+    _context[@"process"][@"env"][@"NODE_PATH"] = directory;
+}
+
++ (void) cancelHttpContext:(JSValue *)httpContext
+    {
+        [_context[@"io"][@"nodekit"][@"cancelContext"] callWithArguments:@[httpContext]];
     }
     
-+ (void) createResponseStream:(JSValue *)owinContext 
++ (void) invokeHttpContext:(JSValue *)httpContext callBack:(closure)callBack
     {
-        [_context[@"process"][@"owinJS"][@"createResponseStream"] callWithArguments:@[owinContext]];
-    }
-    
-+ (void) cancelOwinContext:(JSValue *)owinContext
-    {
-        [_context[@"process"][@"owinJS"][@"cancelContext"] callWithArguments:@[owinContext]];
-    }
-    
-+ (void) invokeAppFunc:(JSValue *)owinContext callBack:(nodeCallBack)callBack
-    {
-        [_context[@"process"][@"owinJS"][@"invokeContext"] callWithArguments:@[owinContext, callBack]];
+        [_context[@"io"][@"nodekit"][@"invokeContext"] callWithArguments:@[httpContext, callBack]];
     }
     @end

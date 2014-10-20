@@ -81,13 +81,13 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
          NSURLProtocol.registerClass(NKUrlProtocolCustom)
         
         
-        NKJSBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
+        NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
             webview.loadHTMLString(msg, baseURL: NSURL(string: "about:blank"))
             return
         })
         
         
-        NKJSBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
+        NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
             var requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
             webview.loadRequest(requestObj)
             return

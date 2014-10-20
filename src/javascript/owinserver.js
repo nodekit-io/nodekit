@@ -198,7 +198,6 @@ exports.createResponseStream = function(context) {
     context["owin.ResponseBody"] = new ResponseStream(context);
 };
 
-
 var Writable = stream.Writable;
 util.inherits(ResponseStream, Writable);
 
@@ -278,8 +277,4 @@ function private_addDefaultFields(context) {
     else
         context["server.appId"] = "default";
 }
-
-
-
-
 
