@@ -104,20 +104,24 @@ exports.cancelContext = function(httpContext) {
 exports.invokeContext = function invokeContext(httpContext, callBack) {
     
     try{
-        private_BrowserEventHost.emit("request", httpContext.req, httpContext.res);
    
-        var data = httpContext.res.getBody();
-        httpContext["_chunk"] = data;
-        httpContext.res.headers["Access-Control-Allow-Origin"] = "*";
-        callBack();
+        httpContext.res.on('finish', function() {
+                                  var data = httpContext.res.getBody();
+                                  httpContext["_chunk"] = data;
+                                  httpContext.res.headers["Access-Control-Allow-Origin"] = "*";
+                                  callBack();
+                                  
+                                  for (var _key in httpContext) {
+                                  if (httpContext.hasOwnProperty(_key))
+                                  delete httpContext[_key];
+                                  };
+                                  //   contextFactory.free(context);
+                                  httpContext = null;
+                                  data = null;
+
+                                  });
         
-        for (var _key in httpContext) {
-            if (httpContext.hasOwnProperty(_key))
-                delete httpContext[_key];
-        };
-        //   contextFactory.free(context);
-        httpContext = null;
-        data = null;
+        private_BrowserEventHost.emit("request", httpContext.req, httpContext.res);
         
     }  catch (e)
     {

@@ -22,7 +22,6 @@ import Cocoa
 class NKUrlProtocolCustom: NSURLProtocol {
     
     
-    var context : JSContext? = nil;
     var httpContext : JSValue? = nil;
     
     var isLoading: Bool = false;
@@ -58,7 +57,6 @@ class NKUrlProtocolCustom: NSURLProtocol {
         
         let hostRequest: NSURLRequest = self.request
         let client: NSURLProtocolClient = self.client!
-        context = NKJavascriptBridge.currentContext()
         
         println(hostRequest.URL.absoluteString!)
         
@@ -116,24 +114,7 @@ class NKUrlProtocolCustom: NSURLProtocol {
             }
         })
      
-        NKJavascriptBridge.invokeHttpContext(httpContext!, callBack: { () -> Void in
-            if (this.isCancelled)  {return};
-            
-            var str : NSString = this.httpContext!.valueForProperty("_chunk").toString();
-            var data : NSData! = str.dataUsingEncoding(NSUTF8StringEncoding)
-            
-            if (!this.headersWritten)
-                {
-                    this.writeHeaders()
-                }
-            
-            this.isLoading = false;
-            
-             this.client!.URLProtocol(self, didLoadData: data)
-             this.client!.URLProtocolDidFinishLoading(self)
-            })
-
-            
+        NKJavascriptBridge.invokeHttpContext(httpContext!, callBack: response_end)
     }
     
     override func stopLoading() {
@@ -145,10 +126,30 @@ class NKUrlProtocolCustom: NSURLProtocol {
             NKJavascriptBridge.cancelHttpContext(self.httpContext!)
         }
         self.httpContext = nil;
+        
+    }
+    
+    func response_end() {
+        
+        if (self.isCancelled)  {return};
+        
+        var str : NSString = self.httpContext!.valueForProperty("_chunk").toString();
+        var data : NSData! = str.dataUsingEncoding(NSUTF8StringEncoding)
+        
+        if (!self.headersWritten)
+        {
+            self.writeHeaders()
+        }
+        
+        self.isLoading = false;
+        
+        self.client!.URLProtocol(self, didLoadData: data)
+        self.client!.URLProtocolDidFinishLoading(self)
+        
+        self.httpContext = nil
     }
     
     func writeHeaders() {
-        NSLog("writeHeaders");
         let res: JSValue = self.httpContext!.valueForProperty("res");
         
         self.headersWritten = true;

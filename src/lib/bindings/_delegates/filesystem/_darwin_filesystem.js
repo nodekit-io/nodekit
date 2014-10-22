@@ -42,11 +42,7 @@ function FileSystem() {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.getItemAsync = function (filepath) {
-    console.log('fs ' + filepath);
-    
     var fs_StatAsync = Promise.denodeify(function(id, callback){io.nodekit.fs.statAsync(id, callback);});
-    
-    io.nodekit.console.log("Getting " + filepath);
     
     return fs_StatAsync(filepath)
     .then(function(storageItem){
@@ -133,8 +129,6 @@ FileSystem.prototype.loadContentSync = function (file) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.loadContentAsync = function (file) {
-    io.nodekit.console.log("loadContentAsync ");
-    
     var fs_getContent = Promise.denodeify(function(id, callback){io.nodekit.fs.getContentAsync(id, callback);});
     
     return fs_getContent(file._storageItem)

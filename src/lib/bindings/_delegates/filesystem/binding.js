@@ -339,7 +339,6 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
                                                  }
                                                  
                                                  },  function (e) {
-                                                 io.nodekit.console.log("open error " + filepath);
                                                  callback(e);});
     } else
     {
