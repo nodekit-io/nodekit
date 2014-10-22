@@ -20,7 +20,7 @@ import Cocoa
 
 class NKAppDelegate: NSObject, NSApplicationDelegate {
     
-    var mainWindowView = NKUIWebView(urlAddress: "http://internal/owinjs-splash/views/StartupSplash.html", title: "NodeKit", width: 800, height: 600)
+    var mainWindowView = NKUIWebView(urlAddress: "http://internal/nodekit-splash/views/StartupSplash.html", title: "NodeKit", width: 800, height: 600)
     
     var _nodekit : NKNodekit;
     

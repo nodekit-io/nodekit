@@ -33,7 +33,7 @@ var SymbolicLink = require('./symlink');
  * @constructor
  */
 function FileSystem() {
-
+    throw test;
 }
 
 FileSystem.prototype.toSync = function (promise) {

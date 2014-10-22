@@ -45,8 +45,8 @@ var Startup = function Startup() {
     }
     catch (e)
     {
-        io.nodekit.console.error(e);
-            }
+        io.nodekit.console.error(e, "tickCallBack in nodekit_bootstrapper");
+    }
  }
 
 /* *******************************************************
@@ -99,9 +99,9 @@ BootstrapModule._load = function(id)
     return bootstrapModule.exports;
 };
 
-BootstrapModule.error = function(e)
+BootstrapModule.error = function(e, source)
 {
-    io.nodekit.console.log("ERROR OCCURED");
+    io.nodekit.console.log("ERROR OCCURED via " + source);
     io.nodekit.console.log("EXCEPTION: " + e);
     
     io.nodekit.console.log(JSON.stringify(e));

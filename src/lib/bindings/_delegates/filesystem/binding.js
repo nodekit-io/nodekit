@@ -232,7 +232,7 @@ Binding.prototype._getDescriptorById = function(fd) {
  * @return {number} Identifier for file descriptor.
  */
 Binding.prototype._trackDescriptor = function(descriptor) {
-  var fd = ++this._counter;
+   var fd = ++this._counter;
   this._openFiles[fd] = descriptor;
   return fd;
 };
@@ -258,8 +258,16 @@ Binding.prototype._untrackDescriptorById = function(fd) {
  */
 Binding.prototype.stat = function (filepath, callback) {
     if (callback) {
-        this._system.getItemAsync(filepath).then(function(item) { if (!item)  throw new FSError('ENOENT', filepath);
-                                                callback(null, item);},  function (e) { callback(e);});
+        
+        this._system.getItemAsync(filepath)
+        .then(
+              function(item) {
+              if (!item) throw new FSError('ENOENT', filepath);
+              callback(null, item);
+              },
+              function (e) {
+              callback(e);
+              });
     } else
     {
         var item = this._system.getItemSync(filepath);
@@ -287,7 +295,7 @@ Binding.prototype.fstat = function (fd, callback) {
     var item = descriptor.getItem();
     var ret = new Stats(item.getStats());
     if (callback)
-        callback(nulll, ret);
+        callback(null, ret);
     else
         return ret;
 };
@@ -303,20 +311,36 @@ Binding.prototype.fstat = function (fd, callback) {
 Binding.prototype.open = function (filepath, flags, mode, callback) {
     
     var descriptor = new FileDescriptor(flags);
+    var self=this;
     
     if (callback) {
         this._system.getItemAsync(filepath).then(function(item) {
                                                  
                                                  if (descriptor.isRead()) {
+                                                 
                                                  if (!item) {
-                                                 throw new FSError('ENOENT', pathname);
+                                                    throw new FSError('ENOENT', pathname);
                                                  }
+                                                 
                                                  if (!item.canRead()) {
-                                                 throw new FSError('EACCES', pathname);
+                                                    throw new FSError('EACCES', pathname);
                                                  }
                                                  }
+                                                 
                                                  descriptor.setItem(item);
-                                                callback(null, this._trackDescriptor(descriptor));},  function (e) { callback(e);});
+                                                 try
+                                                 {
+                                                    callback(null, self._trackDescriptor(descriptor));
+                                                 }
+                                                 catch (ex)
+                                                 {
+                                                 io.nodekit.console.log(ex);
+                                                 
+                                                 }
+                                                 
+                                                 },  function (e) {
+                                                 io.nodekit.console.log("open error " + filepath);
+                                                 callback(e);});
     } else
     {
          var item = this._system.getItemSync(filepath);
@@ -361,10 +385,42 @@ Binding.prototype.close = function(fd, callback) {
  * @return {number} Number of bytes read 
  */
 Binding.prototype.read = function(fd, buffer, offset, length, position, callback) {
-    
     if (callback)
     {
-            throw "not implemented";
+        var descriptor = this._getDescriptorById(fd);
+        
+        if (!descriptor.isRead()) {
+            throw new FSError('EBADF');
+        }
+        
+        var file = descriptor.getItem();
+        
+        if (!(file instanceof File)) {
+            // deleted or not a regular file
+            throw new FSError('EBADF');
+        }
+        
+        if (!(file.getIsLoaded()))
+            this._system.loadContentSync(file);
+        
+        if (typeof position !== 'number' || position < 0) {
+            position = descriptor.getPosition();
+        }
+        var content = file.getContent();
+        
+        var start = Math.min(position, content.length);
+        
+        var end = Math.min(position + length, content.length);
+        
+        content.copy(buffer, offset, start, end);
+        
+        var read = (start < end) ? content.copy(buffer, offset, start, end) : 0;
+        if (read === undefined)
+            read = end-start;
+        
+        descriptor.setPosition(position + read);
+        callback(null, read);
+    
     }
     else
     {
@@ -382,18 +438,25 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
         }
         
         if (!(file.getIsLoaded()))
-            this._system.loadContentSync(item);
+            this._system.loadContentSync(file);
         
         if (typeof position !== 'number' || position < 0) {
             position = descriptor.getPosition();
         }
         var content = file.getContent();
+        
         var start = Math.min(position, content.length);
+        
         var end = Math.min(position + length, content.length);
+        
+        content.copy(buffer, offset, start, end);
+        
         var read = (start < end) ? content.copy(buffer, offset, start, end) : 0;
+        if (read === undefined)
+            read = end-start;
+        
         descriptor.setPosition(position + read);
         return read;
-
     }
 };
 

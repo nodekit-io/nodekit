@@ -34,14 +34,7 @@ var Promise = require('promise');
  * @constructor
  */
 function FileSystem() {
-
 }
-
-FileSystem.prototype.toSync = function (promise) {
-    throw "not implemented";
-  //  return io.nodekit.natives.util.toSync(promise);
-}
-
 
 /**
  * Get a file system item.
@@ -49,8 +42,17 @@ FileSystem.prototype.toSync = function (promise) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.getItemAsync = function (filepath) {
-   throw "not implemented";
-  };
+    console.log('fs ' + filepath);
+    
+    var fs_StatAsync = Promise.denodeify(function(id, callback){io.nodekit.fs.statAsync(id, callback);});
+    
+    io.nodekit.console.log("Getting " + filepath);
+    
+    return fs_StatAsync(filepath)
+    .then(function(storageItem){
+         return FileSystem.storageItemtoItemWithStat(storageItem);
+          });
+}
 
 /**
  * Get a file system item.
@@ -58,13 +60,21 @@ FileSystem.prototype.getItemAsync = function (filepath) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.getItemSync = function (filepath) {
-    var stat = {};
-    var item;
-    
     var storageItem = io.nodekit.fs.stat(filepath);
+    return FileSystem.storageItemtoItemWithStat(storageItem);
+};
+
+/**
+ * Get a file system item.
+ * @param {string} filepath Path to item.
+ * @return {Promise<Item>} The item (or null if not found).
+ */
+FileSystem.storageItemtoItemWithStat = function (storageItem) {
+    
+    var stat = {};
     
     if (storageItem) {
-        stat.path = filepath;
+        stat.path = storageItem.path;
         stat.birthtime = storageItem.birthtime;
         stat.mtime = storageItem.DateModified;
         stat.atime = stat.mtime;
@@ -84,7 +94,7 @@ FileSystem.prototype.getItemSync = function (filepath) {
             var dir = new FileSystem.directory(stat)();
             dir._storageItem = storageItem;
             return dir;
-         
+            
         }
         else
         {
@@ -98,7 +108,10 @@ FileSystem.prototype.getItemSync = function (filepath) {
         };
     }
     else
+    {
         throw new FSError('ENOENT');
+    }
+    
 
 };
 
@@ -120,7 +133,8 @@ FileSystem.prototype.loadContentSync = function (file) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.loadContentAsync = function (file) {
-
+    io.nodekit.console.log("loadContentAsync ");
+    
     var fs_getContent = Promise.denodeify(function(id, callback){io.nodekit.fs.getContentAsync(id, callback);});
     
     return fs_getContent(file._storageItem)

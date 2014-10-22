@@ -32,13 +32,15 @@ internal class NKFileSystem: NSObject {
     
     class func statAsync(module: String, completionHandler: nodeCallBack) {
         
-    //    let defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        
-     //   dispatch_async(defaultQueue) {
+        let ret = self.stat(module)
+        if (ret != nil)
+        {
+            completionHandler(NSNull(), ret)
             
-            completionHandler(NSNull(), self.stat(module))
-            
-      //  }
+        } else
+        {
+            completionHandler("stat error", NSNull())
+        }
     }
     
     class func stat(module: String) -> Dictionary<String, NSObject>? {

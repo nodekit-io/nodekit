@@ -64,7 +64,7 @@ exports.createEmptyContext = function() {
     }
     catch (e)
     {
-        io.nodekit.console.error(e);
+        io.nodekit.console.error(e, "createEmptyContext in _nodekit_invoke");
     }
 }
 
@@ -84,7 +84,7 @@ exports.cancelContext = function(httpContext) {
     }
     catch (e)
     {
-        io.nodekit.console.error(e);
+        io.nodekit.console.error(e, "cancelContext in _nodekit_invoke");
     }
 }
 
@@ -104,13 +104,9 @@ exports.cancelContext = function(httpContext) {
 exports.invokeContext = function invokeContext(httpContext, callBack) {
     
     try{
-        
-        io.nodekit.console.log(JSON.stringify(httpContext));
         private_BrowserEventHost.emit("request", httpContext.req, httpContext.res);
+   
         var data = httpContext.res.getBody();
-        
-        io.nodekit.console.log("DATA:" + data);
-        
         httpContext["_chunk"] = data;
         httpContext.res.headers["Access-Control-Allow-Origin"] = "*";
         callBack();
@@ -121,10 +117,11 @@ exports.invokeContext = function invokeContext(httpContext, callBack) {
         };
         //   contextFactory.free(context);
         httpContext = null;
+        data = null;
         
     }  catch (e)
     {
-       io.nodekit.console.error(e);
+       io.nodekit.console.error(e, "invokeContext in _nodekit_invoke");
     }
 };
 

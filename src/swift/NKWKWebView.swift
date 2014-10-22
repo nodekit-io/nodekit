@@ -82,7 +82,7 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
         
         
         NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
-            webview.loadHTMLString(msg, baseURL: NSURL(string: "about:blank"))
+            webview.loadHTMLString(msg!, baseURL: NSURL(string: "about:blank"))
             return
         })
         
@@ -100,8 +100,8 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
 
     }
     
-    func userContentController(userContentController: WKUserContentController!,
-        didReceiveScriptMessage message: WKScriptMessage!)
+    
+    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage)
     {
         NSLog(message.description)
     }

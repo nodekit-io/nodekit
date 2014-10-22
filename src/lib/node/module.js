@@ -84,7 +84,8 @@ var debug = Module._debug;
 function statPath(path) {
   try {
     return fs.statSync(path);
-  } catch (ex) {}
+  } catch (ex) {
+  }
   return false;
 }
 
