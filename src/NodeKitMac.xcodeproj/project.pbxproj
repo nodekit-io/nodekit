@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E4700BD019F832870020621C /* NKSocketStream.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4700BCF19F832870020621C /* NKSocketStream.swift */; };
+		E4700BD219F883D70020621C /* NFSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4700BD119F883D70020621C /* NFSocketServer.swift */; };
+		E4700BD519F889A30020621C /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E4700BD419F889A30020621C /* GCDAsyncSocket.m */; };
 		E4908EB219C7CC850007E874 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E4908EB119C7CC850007E874 /* lib */; };
 		E4908EC719C7CCC20007E874 /* cancellation.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC119C7CCC20007E874 /* cancellation.js */; };
 		E4908ECB19C7CCC20007E874 /* owinjs-browser.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC519C7CCC20007E874 /* owinjs-browser.js */; };
@@ -28,6 +31,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		E4700BCF19F832870020621C /* NKSocketStream.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKSocketStream.swift; sourceTree = SOURCE_ROOT; };
+		E4700BD119F883D70020621C /* NFSocketServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NFSocketServer.swift; sourceTree = SOURCE_ROOT; };
+		E4700BD319F889A30020621C /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = "objective-c/GCDAsyncSocket.h"; sourceTree = SOURCE_ROOT; };
+		E4700BD419F889A30020621C /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = "objective-c/GCDAsyncSocket.m"; sourceTree = SOURCE_ROOT; };
 		E4908EB119C7CC850007E874 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
 		E4908EC119C7CCC20007E874 /* cancellation.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = cancellation.js; sourceTree = "<group>"; };
 		E4908EC319C7CCC20007E874 /* nodeBinding.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = nodeBinding.js; sourceTree = "<group>"; };
@@ -137,6 +144,8 @@
 		E4B74A1D19C7B1F700F07883 /* objective-c */ = {
 			isa = PBXGroup;
 			children = (
+				E4700BD319F889A30020621C /* GCDAsyncSocket.h */,
+				E4700BD419F889A30020621C /* GCDAsyncSocket.m */,
 				E4B74A5319C7B3AA00F07883 /* NKSwift-Bridging-Header.h */,
 				E4B74A5219C7B3AA00F07883 /* NKURLFileDecode.h */,
 				E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */,
@@ -151,6 +160,8 @@
 			isa = PBXGroup;
 			children = (
 				E4F7A4D419CCE445002D9F01 /* NKFileSystem.swift */,
+				E4700BCF19F832870020621C /* NKSocketStream.swift */,
+				E4700BD119F883D70020621C /* NFSocketServer.swift */,
 			);
 			name = bindings;
 			sourceTree = "<group>";
@@ -240,10 +251,13 @@
 				E4B74A4A19C7B39300F07883 /* main.swift in Sources */,
 				E4B74A4819C7B39300F07883 /* NKUIWebView.swift in Sources */,
 				E4B74A4719C7B39300F07883 /* NKNodekit.swift in Sources */,
+				E4700BD219F883D70020621C /* NFSocketServer.swift in Sources */,
 				E4B74A5B19C7B3AA00F07883 /* NKURLFileDecode.m in Sources */,
+				E4700BD019F832870020621C /* NKSocketStream.swift in Sources */,
 				E4F7A4D519CCE445002D9F01 /* NKFileSystem.swift in Sources */,
 				E4B74A4919C7B39300F07883 /* NKJSContextFactory.swift in Sources */,
 				E4B74A4C19C7B39300F07883 /* NKUrlProtocolCustom.swift in Sources */,
+				E4700BD519F889A30020621C /* GCDAsyncSocket.m in Sources */,
 				E4B74A4519C7B39300F07883 /* NKWKWebView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

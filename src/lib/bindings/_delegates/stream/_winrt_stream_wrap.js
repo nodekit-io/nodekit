@@ -38,12 +38,11 @@ Stream.prototype.close = function (callback) {
 };
 
 Stream.prototype.setStreams = function (inputstream, outputstream) {
-    var writer = new Windows.Storage.Streams.DataWriter(outputstream);
-    self._writer = writer;
-    self._writer.unicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.utf8;
+    self._writer = new Windows.Storage.Streams.DataWriter(outputstream);
+     self._writer.unicodeEncoding = Windows.Storage.Streams.UnicodeEncoding.utf8;
     self._writer.byteOrder = Windows.Storage.Streams.ByteOrder.littleEndian;
 
-    var reader = new Windows.Storage.Streams.DataReader(inputstream);
+    self._reader = new Windows.Storage.Streams.DataReader(inputstream);
     reader.inputStreamOptions = Windows.Storage.Streams.InputStreamOptions.Partial;
 };
 

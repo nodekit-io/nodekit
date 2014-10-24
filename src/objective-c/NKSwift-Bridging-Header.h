@@ -19,3 +19,4 @@
 #import <JavaScriptCore/JavaScriptCore.h>
 #import "NKURLFileDecode.h"
 #import "NKJavascriptBridge.h"
+#import "GCDAsyncSocket.h"

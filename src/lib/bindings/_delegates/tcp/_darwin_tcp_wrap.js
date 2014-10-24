@@ -19,83 +19,90 @@
 var util = require('util');
 var Stream = require('stream');
 
-function TCP() {
-    Stream.call(this);
-    this._clientSocket = null;
+function TCP(tcp) {
+    if (tcp != null)
+    {
+        this._tcp = tcp;
+    } else {
+        this._tcp = io.nodekit.tcp.createSocket();
+    }
+    
+    // Server
+    this._tcp.on( "connection", TCP.prototype._onConnection.bind(this) );
+    
+    //Client
+    this._tcp.on( "afterConnect",    TCP.prototype._onAfterConnect.bind(this) );
+    
+    Stream.call( this, this._tcp );
+    
 }
 
 util.inherits(TCP, Stream);
 
 Object.defineProperty( TCP.prototype, '_fd', {
-  get: function() {
-    return this._tcp.fd;
-  }
+                      get: function() {
+                      return this._tcp.fd;
+                      }
 })
 
-TCP.prototype.close = function (callback) {
-    if (this._clientSocket)
-        this._clientSocket.close();
-
-    TCP.super_.prototype.close.call(this, callback);
-};
 
 // ----------------------------------------
 // Server
 // ----------------------------------------
 TCP.prototype._onConnection = function(result) {
-    return new Error("Not Implemented");
+    var err;
+    var clientHandle = new TCP( result.result );
+    this.onconnection(err, clientHandle);
+}
+
+// ----------------------------------------
+// Client
+// ----------------------------------------
+
+TCP.prototype._onAfterConnect = function(result) {
+    var status = 0;
+    var handle = this;
+    var readable = true;
+    var writable = true;;
+    
+    if ( this._req ) {
+        var oncomplete = this._req.oncomplete;
+        delete this._req.oncomplete;
+        oncomplete( status, handle, this._req, readable, writable );
+    }
 }
 
 // ----------------------------------------
 
 TCP.prototype.getpeername = function(out) {
-    return new Error("Not Implemented");
+    var remote = this._tcp.remoteAddress;
+    out.address = remote.address.hostAddress;
+    out.port    = remote.port;
+    out.family  = 'IPv4';
 }
 
 TCP.prototype.getsockname = function(out) {
-    return new Error("Not Implemented");
+    var local = this._tcp.localAddress;
+    out.address = local.address.hostAddress;
+    out.port    = local.port;
+    out.family  ='IPv4';
 }
 
 TCP.prototype.bind6 = function(addr,port) {
-  return new Error( "ipv6 not supported" );
+    return new Error( "ipv6 not supported" );
 }
 
 TCP.prototype.bind = function(addr, port) {
-    return new Error("Not Implemented");
+    this._tcp.bind( addr, port);
 }
 
 TCP.prototype.listen = function(backlog) {
-    return new Error("Not Implemented");
+    this._tcp.listen(backlog);
 }
 
-TCP.prototype.connect = function (req, addr, port) {
-    var self = this;
+TCP.prototype.connect = function(req, addr, port) {
     this._req = req;
-    this._clientSocket = new Windows.Networking.Sockets.StreamSocket();
-    clientSocket.connectAsync(new Windows.Networking.HostName(addr), port).then(function () {
-        var status = 0;
-        var handle = self;
-        var readable = true;
-        var writable = true;
-
-        self.setStreams(self._clientSocket.inputStream, self._clientSocket.outputStream);
-
-        var oncomplete = self._req.oncomplete;
-        delete this._req.oncomplete;
-        oncomplete(status, handle, self._req, readable, writable);
-    });
+    this._tcp.connect(addr,port);
 }
-
-TCP.prototype.setNoDelay = function (enable) {
-    this._clientSocket.control.noDelay = enable;
-};
-
-TCP.prototype.setKeepAlive = function (enable, delay) {
-    this._clientSocket.control.keepAlive = enable;
-};
-
-TCP.prototype.shutdown = function (req) {
-    req.oncomplete(0, this, req);
-};
 
 module.exports.TCP = TCP;
