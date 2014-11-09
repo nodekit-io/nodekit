@@ -23,6 +23,7 @@ typedef void (^nodeCallBack)(id error, id value);
 typedef void (^closure)();
 typedef void (^stringViewer)(NSString *msg, NSString *title);
 typedef void (^urlNavigator)(NSString *uri, NSString *title);
+typedef void (^nodeEventEmit)(NSString *event, NSArray *args);
 
 @interface NKJavascriptBridge: NSObject
 + (void)attachToContext:(JSContext *)context;
@@ -37,4 +38,5 @@ typedef void (^urlNavigator)(NSString *uri, NSString *title);
 + (void) setJavascriptClosure:(JSValue *)httpContext key:(NSString *)key  callBack:(closure)callBack;
 + (void) setWorkingDirectory:(NSString *)directory;
 + (void) setNodePaths:(NSString *)directory;
++ (JSValue*)createNativeStream;
 @end

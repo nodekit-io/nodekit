@@ -21,6 +21,7 @@ var util = require('util');
 var path = require('path');
 util.isBuffer = Buffer.isBuffer;
 global.process.sources = [];
+var EventEmitter = require('events').EventEmitter;
 
 console.warn = console.log;
 

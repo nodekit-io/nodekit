@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-function Handle() {
+function Handle(handle) {
+    this._handle = handle;
 }
 
 Handle.prototype.ref = function() {};
@@ -22,9 +23,10 @@ Handle.prototype.ref = function() {};
 Handle.prototype.unref = function() {};
 
 Handle.prototype.close = function(callback) {
-  if ( callback ) {
-    callback.call( this );
-  }
+    this._handle.close();
+    if ( callback ) {
+        callback.call( this );
+    }
 };
 
 module.exports.Handle = Handle;
