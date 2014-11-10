@@ -24,13 +24,14 @@ function Timer() {
 util.inherits( Timer, Handle );
 
 Timer.prototype.start = function(msec, repeat) {
-    this._timer._timeoutID  = setTimeout(this[0], msec);
+    
+    this._timer._timeoutID  = io.nodekit.console.setTimeout(this[0], msec);
 }
 
 Timer.prototype.stop = function() {
-    clearTimeout(this._timer._timeoutID);
+    io.nodekit.console.clearTimeout(this._timer._timeoutID);
 }
 
-Timer.now = new Date().getTime();
+Timer.now = function() { return new Date().getTime(); }
 
 module.exports.Timer = Timer;

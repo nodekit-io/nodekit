@@ -25,7 +25,23 @@ var EventEmitter = require('events').EventEmitter;
 
 console.warn = console.log;
 
+
 process.versions = { http_parser: '1.0', node: '0.10.4', v8: '3.14.5.8', ares: '1.9.0-DEV', uv: '0.10.3', zlib: '1.2.3', modules: '11', openssl: '1.0.1e' };
+
+DTRACE_NET_SERVER_CONNECTION = function(){};
+DTRACE_NET_STREAM_END= function(){};
+DTRACE_NET_SOCKET_READ  = function(){};
+DTRACE_NET_SOCKET_WRITE = function(){};
+DTRACE_HTTP_SERVER_REQUEST = function(){};
+DTRACE_HTTP_SERVER_RESPONSE = function(){};
+DTRACE_HTTP_CLIENT_REQUEST = function(){};
+DTRACE_HTTP_CLIENT_RESPONSE = function(){};
+COUNTER_NET_SERVER_CONNECTION = function(){};
+COUNTER_NET_SERVER_CONNECTION_CLOSE = function(){};
+COUNTER_HTTP_SERVER_REQUEST = function(){};
+COUNTER_HTTP_SERVER_RESPONSE = function(){};
+COUNTER_HTTP_CLIENT_REQUEST = function(){};
+COUNTER_HTTP_CLIENT_RESPONSE = function(){};
 
 /**
  * Register javascript Module loader to add sourceURL to end of every file

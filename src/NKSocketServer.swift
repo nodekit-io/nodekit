@@ -54,12 +54,12 @@ public class NKSocketServer: NKSocketConnection {
     
     private func emitConnection(tcp: JSValue!)
     {
-        self._tcp.objectForKeyedSubscript("emit").callWithArguments(["connection", tcp])
+        self._tcp.invokeMethod("emit", withArguments:["connection", tcp])
     }
     
     private func emitAfterConnect()
     {
-        self._tcp.objectForKeyedSubscript("emit").callWithArguments(["afterConnect", self._tcp])
+         self._tcp.invokeMethod("emit", withArguments:["afterConnect", self._tcp])
     }
     
     private var _addr: String!;
@@ -120,7 +120,7 @@ public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
         
         super.init()
         
-        tcp.setObject(unsafeBitCast(self.block_writeBytes, AnyObject.self), forKeyedSubscript:"writeBytes")
+        tcp.setObject(unsafeBitCast(self.block_writeString, AnyObject.self), forKeyedSubscript:"writeString")
         tcp.setObject(unsafeBitCast(self.block_fd, AnyObject.self), forKeyedSubscript:"fd")
         tcp.setObject(unsafeBitCast(self.block_remoteAddress, AnyObject.self), forKeyedSubscript:"remoteAddress")
         tcp.setObject(unsafeBitCast(self.block_localAddress, AnyObject.self), forKeyedSubscript:"localAddress")
@@ -134,12 +134,15 @@ public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
     
     private func emitData(data: NSData!)
     {
-        self._tcp.objectForKeyedSubscript("emit").callWithArguments(["data", data])
+        var str : NSString! = NSString(data: data, encoding: NSUTF8StringEncoding)!
+        self._tcp.invokeMethod( "emit", withArguments:["data", str])
     }
     
     private func emitEnd()
     {
-        self._tcp.objectForKeyedSubscript("emit").callWithArguments(["end"])
+        self._tcp.invokeMethod( "emit", withArguments:["end", ""])
+        
+       
     }
     
     lazy var block_fd : @objc_block () -> NSNumber = {
@@ -165,14 +168,14 @@ public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
         return result
     }
     
-    lazy var block_writeBytes : @objc_block (NSData!) -> Void = {
-        [unowned self] (data : NSData!) -> Void in
-        
+    lazy var block_writeString : @objc_block (NSString!) -> Void = {
+         [unowned self]  (str : NSString!) -> Void in
+        var data : NSData = str.dataUsingEncoding(NSUTF8StringEncoding)!
         self._socket.writeData(data, withTimeout: 10, tag: 1)
     }
     
     lazy var block_close : @objc_block () -> Void = {
-        [unowned self] () -> Void in
+        () -> Void in
         self._socket.disconnect()
     }
     
@@ -183,7 +186,7 @@ public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
     
     public func socketDidDisconnect(socket: GCDAsyncSocket, withError err: NSError){
         self.emitEnd()
-        self._tcp.setObject(nil, forKeyedSubscript:"writeBytes")
+        self._tcp.setObject(nil, forKeyedSubscript:"writeString")
         self._tcp.setObject(nil, forKeyedSubscript:"fd")
         self._tcp.setObject(nil, forKeyedSubscript:"remoteAddress")
         self._tcp.setObject(nil, forKeyedSubscript:"localAddress")

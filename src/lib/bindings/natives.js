@@ -96,11 +96,13 @@ var source = {};
 
 /* CUSTOM NODE.JS API REPLACEMENTS*/
 [
- 'crypto',
- 'native-dns'
+/* 'crypto',*/
+ /*'native-dns'*/
  ].forEach(function (name) {
-       //    source[name] = require('lib/builtin-replacements/' + name + '/index');
+           source[name] = require('lib/builtin-replacements/' + name + '/index');
            });
+
+// source['dns'] = source['native-dns'];
 
 source.config = "{}";
 

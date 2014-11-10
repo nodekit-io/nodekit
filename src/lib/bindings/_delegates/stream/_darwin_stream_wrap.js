@@ -21,7 +21,7 @@
 var util = require('util');
 var Handle = process.binding('handle_wrap').Handle;
 
-var Buffer = require('buffer');
+var Buffer = require('buffer').Buffer;
 
 function Stream(stream) {
     this._stream = stream;
@@ -36,7 +36,7 @@ util.inherits(Stream, Handle);
 
 Stream.prototype._onData = function(chunk) {
     var nread = chunk.length;
-    var b = new Buffer( chunk);
+    var b = new Buffer( chunk, 'utf8');
     this.onread( nread, b );
 };
 
@@ -56,16 +56,16 @@ Stream.prototype.readStop = function() {
     this._stream.pause();
 };
 
-Stream.prototype.writeUtf8String = function(req,data) {
+Stream.prototype.writeUtf8String = function(req, data) {
     this._stream.write(data, 'utf8');
 };
 
-Stream.prototype.writeAsciiString = function(req,data) {
+Stream.prototype.writeAsciiString = function(req, data) {
     this._stream.write(data, 'ascii');
 };
 
-Stream.prototype.writeBuffer = function(req,data) {
-    this._stream.write(data );
+Stream.prototype.writeBuffer = function(req, data) {
+    this._stream.write(data.toString('utf8'), 'utf8');
     req.oncomplete(0, this, req );
 };
 

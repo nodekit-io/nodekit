@@ -52,6 +52,7 @@ static urlNavigator _urlNavigator = nil;
         
         tcp[@"createSocket"] = (JSValue*)^(){
             NKSocketServer *server =[[NKSocketServer alloc] init];
+            
             return [server TCP];
         };
         

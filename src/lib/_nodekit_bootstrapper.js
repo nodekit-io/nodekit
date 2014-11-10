@@ -21,7 +21,7 @@ var Startup = function Startup() {
     BootstrapModule.bootstrap('lib/_nodekit_process.js');
     
     process.binding = function(id) {
-          return BootstrapModule._load('lib/bindings/' + id);
+           return BootstrapModule._load('lib/bindings/' + id);
     };
     
     BootstrapModule.loadNodeSource(process.binding('natives'));
@@ -167,7 +167,7 @@ BootstrapModule.runInThisContext = function(code, options) {
     var displayErrors = options.displayErrors || false;
     
     try {
-        return eval(code);
+        return io.nodekit.fs.eval(code, filename);
     } catch (e) {
         io.nodekit.console.log(e.message + " - " + filename + " - " + e.stack);
         

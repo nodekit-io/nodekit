@@ -39,19 +39,17 @@ function ContextifyScript(script, options) {
 }
 
 ContextifyScript.prototype.runInThisContext = function() {
-    io.nodekit.console.log(this._filename);
-
-    return io.nodekit.fs.eval(this._script, this._filename);
+       return io.nodekit.fs.eval(this._script, this._filename);
    }
 
 ContextifyScript.prototype.runInContext = function(context) {
-    return eval(this._script);
+    return io.nodekit.fs.eval(this._script, this._filename);
 
     // document.head.appendChild(this._script);
 }
 
 ContextifyScript.prototype.runInNewContext = function() {
-   return eval(this._script);
+    return io.nodekit.fs.eval(this._script, this._filename);
     //  document.head.appendChild(this._script);
 }
 
