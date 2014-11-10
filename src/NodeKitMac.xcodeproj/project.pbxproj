@@ -7,12 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		E4700BD219F883D70020621C /* NKSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4700BD119F883D70020621C /* NKSocketServer.swift */; };
+		E4269F1B1A10491600B3478F /* owinserver.js in Resources */ = {isa = PBXBuildFile; fileRef = E4269F1A1A10491600B3478F /* owinserver.js */; };
+		E4269F1D1A10492B00B3478F /* NKSocketServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4269F1C1A10492B00B3478F /* NKSocketServer.swift */; };
 		E4700BD519F889A30020621C /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E4700BD419F889A30020621C /* GCDAsyncSocket.m */; };
 		E4908EB219C7CC850007E874 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E4908EB119C7CC850007E874 /* lib */; };
 		E4908EC719C7CCC20007E874 /* cancellation.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC119C7CCC20007E874 /* cancellation.js */; };
 		E4908ECB19C7CCC20007E874 /* owinjs-browser.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC519C7CCC20007E874 /* owinjs-browser.js */; };
-		E4908ECC19C7CCC20007E874 /* owinserver.js in Resources */ = {isa = PBXBuildFile; fileRef = E4908EC619C7CCC20007E874 /* owinserver.js */; };
 		E4B74A4519C7B39300F07883 /* NKWKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */; };
 		E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3C19C7B39300F07883 /* NKUrlProtocolLocalFile.swift */; };
 		E4B74A4719C7B39300F07883 /* NKNodekit.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3D19C7B39300F07883 /* NKNodekit.swift */; };
@@ -30,14 +30,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E4700BD119F883D70020621C /* NKSocketServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKSocketServer.swift; sourceTree = SOURCE_ROOT; };
+		E4269F1A1A10491600B3478F /* owinserver.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = owinserver.js; sourceTree = "<group>"; };
+		E4269F1C1A10492B00B3478F /* NKSocketServer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKSocketServer.swift; path = swift/NKSocketServer.swift; sourceTree = SOURCE_ROOT; };
 		E4700BD319F889A30020621C /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = "objective-c/GCDAsyncSocket.h"; sourceTree = SOURCE_ROOT; };
 		E4700BD419F889A30020621C /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = "objective-c/GCDAsyncSocket.m"; sourceTree = SOURCE_ROOT; };
 		E4908EB119C7CC850007E874 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
 		E4908EC119C7CCC20007E874 /* cancellation.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = cancellation.js; sourceTree = "<group>"; };
 		E4908EC319C7CCC20007E874 /* nodeBinding.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = nodeBinding.js; sourceTree = "<group>"; };
 		E4908EC519C7CCC20007E874 /* owinjs-browser.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = "owinjs-browser.js"; sourceTree = "<group>"; };
-		E4908EC619C7CCC20007E874 /* owinserver.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = owinserver.js; sourceTree = "<group>"; };
 		E4B749E919C7B11B00F07883 /* NodeKitMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NodeKitMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B74A3A19C7B39300F07883 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = swift/Info.plist; sourceTree = SOURCE_ROOT; };
 		E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKWKWebView.swift; path = swift/NKWKWebView.swift; sourceTree = SOURCE_ROOT; };
@@ -74,20 +74,12 @@
 		E4908EC019C7CCC20007E874 /* javascript */ = {
 			isa = PBXGroup;
 			children = (
-				E4908ECD19C7CCE90007E874 /* helpers */,
-			);
-			path = javascript;
-			sourceTree = "<group>";
-		};
-		E4908ECD19C7CCE90007E874 /* helpers */ = {
-			isa = PBXGroup;
-			children = (
+				E4269F1A1A10491600B3478F /* owinserver.js */,
 				E4908EC519C7CCC20007E874 /* owinjs-browser.js */,
-				E4908EC619C7CCC20007E874 /* owinserver.js */,
 				E4908EC119C7CCC20007E874 /* cancellation.js */,
 				E4908EC319C7CCC20007E874 /* nodeBinding.js */,
 			);
-			name = helpers;
+			path = javascript;
 			sourceTree = "<group>";
 		};
 		E4B749E019C7B11B00F07883 = {
@@ -157,8 +149,8 @@
 		E4F7A4D319CCE41A002D9F01 /* bindings */ = {
 			isa = PBXGroup;
 			children = (
+				E4269F1C1A10492B00B3478F /* NKSocketServer.swift */,
 				E4F7A4D419CCE445002D9F01 /* NKFileSystem.swift */,
-				E4700BD119F883D70020621C /* NKSocketServer.swift */,
 			);
 			name = bindings;
 			sourceTree = "<group>";
@@ -227,11 +219,11 @@
 			files = (
 				E4B74A6819C7B3CD00F07883 /* app in Resources */,
 				E4B74A6C19C7B5D700F07883 /* NodeKitIcons.icns in Resources */,
-				E4908ECC19C7CCC20007E874 /* owinserver.js in Resources */,
 				E4908ECB19C7CCC20007E874 /* owinjs-browser.js in Resources */,
 				E4908EC719C7CCC20007E874 /* cancellation.js in Resources */,
 				E4908EB219C7CC850007E874 /* lib in Resources */,
 				E4B74A6E19C7B7BC00F07883 /* app-shared in Resources */,
+				E4269F1B1A10491600B3478F /* owinserver.js in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,8 +239,8 @@
 				E4B74A5C19C7B3AA00F07883 /* NKJavascriptBridge.m in Sources */,
 				E4B74A4A19C7B39300F07883 /* main.swift in Sources */,
 				E4B74A4819C7B39300F07883 /* NKUIWebView.swift in Sources */,
+				E4269F1D1A10492B00B3478F /* NKSocketServer.swift in Sources */,
 				E4B74A4719C7B39300F07883 /* NKNodekit.swift in Sources */,
-				E4700BD219F883D70020621C /* NKSocketServer.swift in Sources */,
 				E4B74A5B19C7B3AA00F07883 /* NKURLFileDecode.m in Sources */,
 				E4F7A4D519CCE445002D9F01 /* NKFileSystem.swift in Sources */,
 				E4B74A4919C7B39300F07883 /* NKJSContextFactory.swift in Sources */,
