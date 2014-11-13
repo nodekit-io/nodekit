@@ -25,8 +25,11 @@ var Buffer = require('buffer').Buffer;
 
 function Stream(stream) {
     this._stream = stream;
-    this._stream.on( 'data', Stream.prototype._onData.bind(this) );
-    this._stream.on( 'end', Stream.prototype._onEof.bind(this) );
+    this._onStreamData = Stream.prototype._onData.bind(this);
+    this._onStreamEnd = Stream.prototype._onEnd.bind(this);
+    
+    this._stream.on( 'data', this._onStreamData );
+    this._stream.on( 'end', this._onStreamEnd );
     Handle.call( this, this._stream );
 }
 
@@ -40,10 +43,18 @@ Stream.prototype._onData = function(chunk) {
     this.onread( nread, b );
 };
 
-Stream.prototype._onEof = function() {
+Stream.prototype._onEnd = function() {
+    this._stream.removeListener( 'data', this._onStreamData );
+    this._stream.removeListener( 'end', this._onStreamEnd );
+
     if ( this.onread ) {
         this.onread( -1 );
+        this.onread = null;
     }
+    
+    this._onStreamData = null;
+    this._onStreamEnd = null;
+    this._stream = null;
 };
 
 // ----------------------------------------
@@ -70,8 +81,7 @@ Stream.prototype.writeBuffer = function(req, data) {
 };
 
 Stream.prototype.shutdown = function(req) {
-    this._stream.push(null);
-    this._stream.end();
+ //   this._stream.close();
     req.oncomplete( 0, this, req );
 };
 

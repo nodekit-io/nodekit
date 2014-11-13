@@ -45,21 +45,21 @@ public class NKSocketServer: NKSocketConnection {
         
         super.init(socket: socket, server: nil)
         
-        self._tcp.setObject(unsafeBitCast(self.block_bind, AnyObject.self), forKeyedSubscript:"bind")
-        self._tcp.setObject(unsafeBitCast(self.block_listen, AnyObject.self), forKeyedSubscript:"listen")
-        self._tcp.setObject(unsafeBitCast(self.block_connect, AnyObject.self), forKeyedSubscript:"connect")
+        self._tcp!.setObject(unsafeBitCast(self.block_bind, AnyObject.self), forKeyedSubscript:"bind")
+        self._tcp!.setObject(unsafeBitCast(self.block_listen, AnyObject.self), forKeyedSubscript:"listen")
+        self._tcp!.setObject(unsafeBitCast(self.block_connect, AnyObject.self), forKeyedSubscript:"connect")
         
         socket.setDelegate(self, delegateQueue: dispatch_get_main_queue())
     }
     
     private func emitConnection(tcp: JSValue!)
     {
-        self._tcp.invokeMethod("emit", withArguments:["connection", tcp])
+        self._tcp!.invokeMethod("emit", withArguments:["connection", tcp])
     }
     
     private func emitAfterConnect()
     {
-         self._tcp.invokeMethod("emit", withArguments:["afterConnect", self._tcp])
+         self._tcp!.invokeMethod("emit", withArguments:["afterConnect", self._tcp!])
     }
     
     private var _addr: String!;
@@ -69,22 +69,22 @@ public class NKSocketServer: NKSocketConnection {
         [unowned self] (address: NSString!, port: NSNumber) -> Void in
         
         self._addr = address;
-        self._port = port.unsignedShortValue;
+        self._port = port.unsignedShortValue
     }
     
     lazy var block_listen : @objc_block (NSNumber) -> Void = {
         [unowned self] (backlog: NSNumber) -> Void in
         var err: NSError?
-        var success = self._socket.acceptOnInterface(self._addr, port: self._port, error: &err)
+        var success = self._socket!.acceptOnInterface(self._addr, port: self._port, error: &err)
     }
     
     lazy var block_connect : @objc_block (NSString!, NSNumber) -> Void = {
         [unowned self] (address: NSString!, port: NSNumber) -> Void in
-        var _addr : String! = address;
-        var _port : UInt16 = port.unsignedShortValue;
+        var _addr : String! = address
+        var _port : UInt16 = port.unsignedShortValue
         var err: NSError?
         
-        var success = self._socket.connectToHost(_addr, onPort: _port, error: &err)
+        var success = self._socket!.connectToHost(_addr, onPort: _port, error: &err)
     }
     
     public func socket(socket: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket){
@@ -107,8 +107,8 @@ public class NKSocketServer: NKSocketConnection {
 
 public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
   
-    private var _tcp : JSValue!
-    private var _socket: GCDAsyncSocket
+    private var _tcp : JSValue?
+    private var _socket: GCDAsyncSocket?
     private var _server: NKSocketServer?
     
     public init(socket: GCDAsyncSocket, server: NKSocketServer?)
@@ -124,59 +124,61 @@ public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
         tcp.setObject(unsafeBitCast(self.block_fd, AnyObject.self), forKeyedSubscript:"fd")
         tcp.setObject(unsafeBitCast(self.block_remoteAddress, AnyObject.self), forKeyedSubscript:"remoteAddress")
         tcp.setObject(unsafeBitCast(self.block_localAddress, AnyObject.self), forKeyedSubscript:"localAddress")
-        tcp.setObject(unsafeBitCast(self.block_close, AnyObject.self), forKeyedSubscript:"close")
+        tcp.setObject(unsafeBitCast(self.block_disconnect, AnyObject.self), forKeyedSubscript:"disconnect")
     }
     
     public func TCP() -> JSValue!
     {
-        return self._tcp
+        return self._tcp!
     }
     
     private func emitData(data: NSData!)
     {
         var str : NSString! = NSString(data: data, encoding: NSUTF8StringEncoding)!
-        self._tcp.invokeMethod( "emit", withArguments:["data", str])
+        self._tcp!.invokeMethod( "emit", withArguments:["data", str])
     }
     
     private func emitEnd()
     {
-        self._tcp.invokeMethod( "emit", withArguments:["end", ""])
-        
+        self._tcp!.invokeMethod( "emit", withArguments:["end", ""])
        
     }
     
     lazy var block_fd : @objc_block () -> NSNumber = {
         [unowned self]  () -> NSNumber in
-        return self._socket.hash
+        return self._socket!.hash
     }
     
     lazy var block_remoteAddress : @objc_block () -> JSValue = {
         [unowned self] () -> JSValue in
-        var address: NSString! = self._socket.connectedHost
-        var port : NSNumber = NSNumber(unsignedShort: self._socket.connectedPort)
+        var address: NSString! = self._socket!.connectedHost
+        var port : NSNumber = NSNumber(unsignedShort: self._socket!.connectedPort)
         var resultDictionary : NSDictionary = ["address": address, "port": port]
-        var result = JSValue(object: resultDictionary, inContext: self._tcp.context)
+        var result = JSValue(object: resultDictionary, inContext: self._tcp!.context)
         return result
     }
     
     lazy var block_localAddress : @objc_block () -> JSValue = {
         [unowned self] () -> JSValue in
-        var address: NSString! = self._socket.localHost
-        var port : NSNumber = NSNumber(unsignedShort: self._socket.localPort)
+        var address: NSString! = self._socket!.localHost
+        var port : NSNumber = NSNumber(unsignedShort: self._socket!.localPort)
         var resultDictionary : NSDictionary = ["address": address, "port": port]
-        var result = JSValue(object: resultDictionary, inContext: self._tcp.context)
+        var result = JSValue(object: resultDictionary, inContext: self._tcp!.context)
         return result
     }
     
     lazy var block_writeString : @objc_block (NSString!) -> Void = {
          [unowned self]  (str : NSString!) -> Void in
         var data : NSData = str.dataUsingEncoding(NSUTF8StringEncoding)!
-        self._socket.writeData(data, withTimeout: 10, tag: 1)
+        self._socket!.writeData(data, withTimeout: 10, tag: 1)
     }
     
-    lazy var block_close : @objc_block () -> Void = {
+    lazy var block_disconnect : @objc_block () -> Void = {
         () -> Void in
-        self._socket.disconnect()
+        if (self._socket !== nil)
+        {
+          self._socket!.disconnect()
+        }
     }
     
     public func socket(socket: GCDAsyncSocket, didReadData data: NSData, withTag tag: Double){
@@ -185,22 +187,24 @@ public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
     }
     
     public func socketDidDisconnect(socket: GCDAsyncSocket, withError err: NSError){
+        self._socket = nil;
         self.emitEnd()
-        self._tcp.setObject(nil, forKeyedSubscript:"writeString")
-        self._tcp.setObject(nil, forKeyedSubscript:"fd")
-        self._tcp.setObject(nil, forKeyedSubscript:"remoteAddress")
-        self._tcp.setObject(nil, forKeyedSubscript:"localAddress")
-        self._tcp.setObject(nil, forKeyedSubscript:"close")
+        self._tcp!.setObject(nil, forKeyedSubscript:"writeString")
+        self._tcp!.setObject(nil, forKeyedSubscript:"fd")
+        self._tcp!.setObject(nil, forKeyedSubscript:"remoteAddress")
+        self._tcp!.setObject(nil, forKeyedSubscript:"localAddress")
+        self._tcp!.setObject(nil, forKeyedSubscript:"close")
         
-        if (self._server != nil) {
+        if (self._server? != nil) {
             self._server!.connectionDidClose(self)
         } else
         {
-            self._tcp.setObject(nil, forKeyedSubscript:"bind")
-            self._tcp.setObject(nil, forKeyedSubscript:"listen")
-            self._tcp.setObject(nil, forKeyedSubscript:"connect")
+            self._tcp!.setObject(nil, forKeyedSubscript:"bind")
+            self._tcp!.setObject(nil, forKeyedSubscript:"listen")
+            self._tcp!.setObject(nil, forKeyedSubscript:"connect")
         }
         
         self._tcp = nil;
+        self._server = nil;
     }
 }

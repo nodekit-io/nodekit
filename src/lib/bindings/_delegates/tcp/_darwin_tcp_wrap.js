@@ -51,12 +51,18 @@ function TCP(tcp) {
     } else
     {
         this._tcp = io.nodekit.tcp.createSocket();
+        this._onConnection = TCP.prototype._onConnection.bind(this);
+        this._onAfterConnect = TCP.prototype._onAfterConnect.bind(this);
+        this._onEnd = TCP.prototype._onEnd.bind(this);
+        
+        this._tcp.on( "end", this._onEnd);
         
         // Server
-        this._tcp.on( "connection", TCP.prototype._onConnection.bind(this));
+        this._tcp.on( "connection", this._onConnection);
         
         // Client
-        this._tcp.on( "afterConnect", TCP.prototype._onAfterConnect.bind(this) );
+        this._tcp.on( "afterConnect", this._onAfterConnect);
+        
         
         this._stream = this._tcp.stream;
         
@@ -72,6 +78,17 @@ Object.defineProperty(TCP.prototype, '_fd', {
                       return this._tcp.fd;
                       }
                       });
+
+TCP.prototype._onEnd = function() {
+    this._tcp.removeListener( "end", this._onEnd);
+    this._tcp.removeListener( "connection", this._onConnection);
+    this._tcp.removeListener( "afterConnect", this._onAfterConnect);
+    this._onEnd = null;
+    this._onConnection = null;
+    this._onAfterConnect = null;
+    this._tcp = null;
+    this._stream = null;
+};
 
 
 // ----------------------------------------
@@ -156,25 +173,38 @@ function NativeStream(source) {
     Duplex.call( this, { encoding: 'utf8'});
     
     this._source = source;
-    var self = this;
+    this._onEnd =NativeStream.prototype.onSourceEnd.bind(this);
+    this._onData = NativeStream.prototype.onSourceData.bind(this);
     
-    source.on('end', function() {
-              self.push(null);
-              });
-    
-    source.on('data', function(chunk) {
-              self.push(chunk, 'utf8')
-              });
+    source.on('end', this._onEnd);
+    source.on('data', this._onData);
 };
 
 util.inherits(NativeStream, Duplex);
+
+NativeStream.prototype.onSourceEnd = function() {
+    this._source.removeListener('end', this._onEnd);
+    this._source.removeListener('data', this._onData);
+    
+    this.push(null);
+    this.end();
+    this._onEnd = null;
+    this._onData = null;
+    this._source = null;
+}
+
+NativeStream.prototype.onSourceData  = function(chunk) {
+    this.push(chunk, 'utf8')
+}
 
 NativeStream.prototype._read = function NativeStreamRead(size) {
 }
 
 NativeStream.prototype.close = function NativeStreamClose() {
     if (typeof(this._source) != 'undefined')
-        this._source.close();
+    {
+        this._source.disconnect();
+    }
 };
 
 NativeStream.prototype._write = function NativeStreamWrite(chunk, enc, cb) {
@@ -195,4 +225,3 @@ NativeStream.prototype._write = function NativeStreamWrite(chunk, enc, cb) {
     
     cb();
 };
-

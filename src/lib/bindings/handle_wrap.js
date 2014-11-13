@@ -18,12 +18,15 @@ function Handle(handle) {
     this._handle = handle;
 }
 
-Handle.prototype.ref = function() {};
+Handle.prototype.ref = function() {
+};
 
-Handle.prototype.unref = function() {};
+Handle.prototype.unref = function() {
+};
 
 Handle.prototype.close = function(callback) {
     this._handle.close();
+    this._handle = null;
     if ( callback ) {
         callback.call( this );
     }
