@@ -1,4 +1,4 @@
-/*
+ /*
 * nodekit.io
 *
 * Copyright (c) 2014 Domabo. All Rights Reserved.
@@ -134,7 +134,7 @@ public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
     
     private func emitData(data: NSData!)
     {
-        var str : NSString! = NSString(data: data, encoding: NSUTF8StringEncoding)!
+        var str : NSString! = data.base64EncodedStringWithOptions(.allZeros)
         self._tcp!.invokeMethod( "emit", withArguments:["data", str])
     }
     
@@ -169,7 +169,7 @@ public class NKSocketConnection: NSObject, GCDAsyncSocketDelegate {
     
     lazy var block_writeString : @objc_block (NSString!) -> Void = {
          [unowned self]  (str : NSString!) -> Void in
-        var data : NSData = str.dataUsingEncoding(NSUTF8StringEncoding)!
+         var data = NSData(base64EncodedString: str, options: .allZeros)
         self._socket!.writeData(data, withTimeout: 10, tag: 1)
     }
     

@@ -25,8 +25,10 @@ Handle.prototype.unref = function() {
 };
 
 Handle.prototype.close = function(callback) {
+    if (this._handle) {
     this._handle.close();
     this._handle = null;
+    }
     if ( callback ) {
         callback.call( this );
     }

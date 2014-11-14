@@ -21,7 +21,7 @@ var util = require('util');
 var StreamWrap = process.binding('stream_wrap').Stream;
 var Duplex = require('stream').Duplex;
 var EventEmitter = require('events').EventEmitter;
-var Buffer = require('buffer');
+var Buffer = require('buffer').Buffer;
 
 /* TCP Binding
  * Behaves like a stream and inherits stream_wrap
@@ -170,7 +170,7 @@ io.nodekit.createNativeStream = function() {
 };
 
 function NativeStream(source) {
-    Duplex.call( this, { encoding: 'utf8'});
+    Duplex.call( this, { encoding: 'base64'});
     
     this._source = source;
     this._onEnd =NativeStream.prototype.onSourceEnd.bind(this);
@@ -194,14 +194,14 @@ NativeStream.prototype.onSourceEnd = function() {
 }
 
 NativeStream.prototype.onSourceData  = function(chunk) {
-    this.push(chunk, 'utf8')
+    this.push(chunk, 'base64')
 }
 
 NativeStream.prototype._read = function NativeStreamRead(size) {
 }
 
 NativeStream.prototype.close = function NativeStreamClose() {
-    if (typeof(this._source) != 'undefined')
+    if (this._source)
     {
         this._source.disconnect();
     }
@@ -209,18 +209,20 @@ NativeStream.prototype.close = function NativeStreamClose() {
 
 NativeStream.prototype._write = function NativeStreamWrite(chunk, enc, cb) {
     
+    
     if (util.isBuffer(chunk))
     {
-        this._source.writeString(data.toString('utf8'));
+        this._source.writeString(data.toString('base64'));
     }
-    else if ((enc == 'utf8') || (enc == 'utf-8'))
+    else if (enc == 'base64')
     {
-         this._source.writeString(chunk);
+        // TO DO: FIGURE OUT WHY chunk is coming in UTF8 not base64 format; for now just reconvert
+         this._source.writeString(chunk.toString('base64'));
     }
     else
     {
         var buf = new Buffer(chunk, enc);
-        this._source.writeString(data.toString('utf8'));
+        this._source.writeString(buf.toString('base64'));
     }
     
     cb();

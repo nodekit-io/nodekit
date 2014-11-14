@@ -39,22 +39,26 @@ util.inherits(Stream, Handle);
 
 Stream.prototype._onData = function(chunk) {
     var nread = chunk.length;
-    var b = new Buffer( chunk, 'utf8');
+    var b = new Buffer( chunk, 'base64');
     this.onread( nread, b );
 };
 
 Stream.prototype._onEnd = function() {
+    if (this._stream)
+    {
     this._stream.removeListener( 'data', this._onStreamData );
     this._stream.removeListener( 'end', this._onStreamEnd );
+        
+        this._onStreamData = null;
+        this._onStreamEnd = null;
+        this._stream = null;
+    }
 
     if ( this.onread ) {
         this.onread( -1 );
         this.onread = null;
     }
-    
-    this._onStreamData = null;
-    this._onStreamEnd = null;
-    this._stream = null;
+  
 };
 
 // ----------------------------------------
@@ -68,6 +72,7 @@ Stream.prototype.readStop = function() {
 };
 
 Stream.prototype.writeUtf8String = function(req, data) {
+    io.nodekit.console.log(data);
     this._stream.write(data, 'utf8');
 };
 
@@ -76,7 +81,7 @@ Stream.prototype.writeAsciiString = function(req, data) {
 };
 
 Stream.prototype.writeBuffer = function(req, data) {
-    this._stream.write(data.toString('utf8'), 'utf8');
+    this._stream.write(data.toString('base64'), 'base64');
     req.oncomplete(0, this, req );
 };
 

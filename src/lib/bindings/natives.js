@@ -78,7 +78,7 @@ var source = {};
 
 /* CUSTOM NODE.JS API REPLACEMENTS*/
 [
-	'buffer',
+	'buffer', 'dns'
  ].forEach(function (name) {
            source[name] = getSource('lib/builtin-replacements/' + name );
            });
@@ -93,16 +93,6 @@ var source = {};
 
 /* CUSTOM NODE.JS API ADDITIONS*/
   source["_third_party_main"] = getSource('lib/_nodekit_third_party_main.js');
-
-/* CUSTOM NODE.JS API REPLACEMENTS*/
-[
-/* 'crypto',*/
- /*'native-dns'*/
- ].forEach(function (name) {
-           source[name] = require('lib/builtin-replacements/' + name + '/index');
-           });
-
-// source['dns'] = source['native-dns'];
 
 source.config = "{}";
 
