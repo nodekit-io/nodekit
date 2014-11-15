@@ -59,7 +59,7 @@ class NKUrlProtocolLocalFile: NSURLProtocol {
         }
         println(request.URL.absoluteString!)
    
-        let urlDecode = NKURLFileDecode(request: request)
+        let urlDecode = NKUrlFileDecode(request: request)
         
         if (urlDecode.exists())
         {
