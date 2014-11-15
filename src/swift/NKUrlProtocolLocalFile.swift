@@ -59,11 +59,11 @@ class NKUrlProtocolLocalFile: NSURLProtocol {
         }
         println(request.URL.absoluteString!)
    
-        let urlDecode = NKURLFileDecode(URLRequest: request)
+        let urlDecode = NKURLFileDecode(request: request)
         
         if (urlDecode.exists())
         {
-            let data: NSData! = NSData(contentsOfFile: urlDecode.resourcePath)
+            let data: NSData! = NSData(contentsOfFile: urlDecode.resourcePath!)
             
             let response: NSURLResponse = NSURLResponse(URL: request.URL, MIMEType: urlDecode.mimeType, expectedContentLength: data.length, textEncodingName: urlDecode.textEncoding)
             

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26B3A0651A17D90B00C0E63C /* NKURLFileDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3A0641A17D90B00C0E63C /* NKURLFileDecode.swift */; };
 		26CBF11B1A178C2B0018A442 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11A1A178C2B0018A442 /* GCDAsyncUdpSocket.m */; };
 		26CBF1211A1790090018A442 /* NKFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11E1A1790090018A442 /* NKFileSystem.swift */; };
 		26CBF1221A1790090018A442 /* NKSocketTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11F1A1790090018A442 /* NKSocketTCP.swift */; };
@@ -24,7 +25,6 @@
 		E4B74A4A19C7B39300F07883 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4019C7B39300F07883 /* main.swift */; };
 		E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4119C7B39300F07883 /* NKMenu.swift */; };
 		E4B74A4C19C7B39300F07883 /* NKUrlProtocolCustom.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */; };
-		E4B74A5B19C7B3AA00F07883 /* NKURLFileDecode.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */; };
 		E4B74A5C19C7B3AA00F07883 /* NKJavascriptBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A5519C7B3AA00F07883 /* NKJavascriptBridge.m */; };
 		E4B74A6819C7B3CD00F07883 /* app in Resources */ = {isa = PBXBuildFile; fileRef = E4B74A6719C7B3CD00F07883 /* app */; };
 		E4B74A6C19C7B5D700F07883 /* NodeKitIcons.icns in Resources */ = {isa = PBXBuildFile; fileRef = E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */; };
@@ -32,6 +32,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		26B3A0641A17D90B00C0E63C /* NKURLFileDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKURLFileDecode.swift; sourceTree = SOURCE_ROOT; };
 		26CBF1191A178C2B0018A442 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncUdpSocket.h; path = "objective-c/GCDAsyncUdpSocket.h"; sourceTree = SOURCE_ROOT; };
 		26CBF11A1A178C2B0018A442 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncUdpSocket.m; path = "objective-c/GCDAsyncUdpSocket.m"; sourceTree = SOURCE_ROOT; };
 		26CBF11E1A1790090018A442 /* NKFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKFileSystem.swift; path = swift/bindings/NKFileSystem.swift; sourceTree = SOURCE_ROOT; };
@@ -54,8 +55,6 @@
 		E4B74A4019C7B39300F07883 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = swift/main.swift; sourceTree = SOURCE_ROOT; };
 		E4B74A4119C7B39300F07883 /* NKMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMenu.swift; path = swift/NKMenu.swift; sourceTree = SOURCE_ROOT; };
 		E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUrlProtocolCustom.swift; path = swift/NKUrlProtocolCustom.swift; sourceTree = SOURCE_ROOT; };
-		E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKURLFileDecode.m; path = "objective-c/NKURLFileDecode.m"; sourceTree = SOURCE_ROOT; };
-		E4B74A5219C7B3AA00F07883 /* NKURLFileDecode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NKURLFileDecode.h; path = "objective-c/NKURLFileDecode.h"; sourceTree = SOURCE_ROOT; };
 		E4B74A5319C7B3AA00F07883 /* NKSwift-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NKSwift-Bridging-Header.h"; path = "objective-c/NKSwift-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		E4B74A5419C7B3AA00F07883 /* NKJavascriptBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NKJavascriptBridge.h; path = "objective-c/NKJavascriptBridge.h"; sourceTree = SOURCE_ROOT; };
 		E4B74A5519C7B3AA00F07883 /* NKJavascriptBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NKJavascriptBridge.m; path = "objective-c/NKJavascriptBridge.m"; sourceTree = SOURCE_ROOT; };
@@ -118,6 +117,7 @@
 				E4B74A3F19C7B39300F07883 /* NKJSContextFactory.swift */,
 				E4B74A3D19C7B39300F07883 /* NKNodekit.swift */,
 				E4B74A3E19C7B39300F07883 /* NKUIWebView.swift */,
+				26B3A0641A17D90B00C0E63C /* NKURLFileDecode.swift */,
 				E4B74A3C19C7B39300F07883 /* NKUrlProtocolLocalFile.swift */,
 				E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */,
 				E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */,
@@ -144,8 +144,6 @@
 				E4700BD319F889A30020621C /* GCDAsyncSocket.h */,
 				E4700BD419F889A30020621C /* GCDAsyncSocket.m */,
 				E4B74A5319C7B3AA00F07883 /* NKSwift-Bridging-Header.h */,
-				E4B74A5219C7B3AA00F07883 /* NKURLFileDecode.h */,
-				E4B74A5119C7B3AA00F07883 /* NKURLFileDecode.m */,
 				E4B74A5419C7B3AA00F07883 /* NKJavascriptBridge.h */,
 				E4B74A5519C7B3AA00F07883 /* NKJavascriptBridge.m */,
 			);
@@ -242,6 +240,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26B3A0651A17D90B00C0E63C /* NKURLFileDecode.swift in Sources */,
 				E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */,
 				E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */,
 				26CBF1211A1790090018A442 /* NKFileSystem.swift in Sources */,
@@ -252,7 +251,6 @@
 				26CBF11B1A178C2B0018A442 /* GCDAsyncUdpSocket.m in Sources */,
 				E4B74A4819C7B39300F07883 /* NKUIWebView.swift in Sources */,
 				E4B74A4719C7B39300F07883 /* NKNodekit.swift in Sources */,
-				E4B74A5B19C7B3AA00F07883 /* NKURLFileDecode.m in Sources */,
 				E4B74A4919C7B39300F07883 /* NKJSContextFactory.swift in Sources */,
 				E4B74A4C19C7B39300F07883 /* NKUrlProtocolCustom.swift in Sources */,
 				E4700BD519F889A30020621C /* GCDAsyncSocket.m in Sources */,
