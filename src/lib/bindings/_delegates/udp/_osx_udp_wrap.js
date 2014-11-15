@@ -15,25 +15,30 @@
  */
 
 
-var Handle = process.binding('handle_wrap').Handle,
-    util   = require('util');
+var Handle = process.binding('handle_wrap').Handle;
+var util   = require('util');
+var EventEmitter = require('events').EventEmitter;
+var Buffer = require('buffer').Buffer;
 
 /* UDP Binding
  * Behaves like a EventEmitter and inherits handle_wrap
  *
  * Dependencies:
  * io.nodekit.socket.createUdp() that returns _udp EventEmitter
- * _udp.bind(ip, port, flags, Family.IPv4)
- * _udp.bind(ip, port, flags, Family.IPv6)
+ * _udp.bind(ip, port, flags)
  * _udp.recvStart()
- * _udp.send(buffer, offset, length, port, address, Family.IPv4)
+ * _udp.send(buffer, offset, length, port, address)
  * _udp.recvStop()
- * _udp.localAddress returns {String addr, int port}
+ * _udp.localAddress returns {String address, int port}
+ * _udp.remoteAddress  returns {String address, int port}
  * _udp.addMembership(mcastAddr, ifaceAddr)
+ * _udp.dropMembership(mcastAddr, ifaceAddr)
  * _udp.setMulticastTTL(ttl)
  * _udp.setMulticastLoopback(flag);
  * _udp.setBroadcast(flag);
  * _udp.setTTL(ttl);
+ *
+ * emits 'recv'  (base64 chunk)
  *
  */
 
@@ -42,20 +47,38 @@ var UDP = function() {
     this._udp = io.nodekit.socket.createUdp();
     
     Handle.call(this, this._udp);
-    this._handle.on('recv', onRecv.bind(this));
+    this._handle.on('recv', UDP.prototype._onRecv.bind(this));
 };
 
 util.inherits(UDP, Handle);
 module.exports.UDP = UDP;
 
+UDP.prototype._onRecv(chunk) {
+    if (typeof this.onmessage === 'function') {
+        if (result.error) {
+            throw Error(result.error);
+        }
+        
+        var buf = new Buffer( chunk, 'base64');
+        remote = this._udp.remoteAddress,
+        rinfo = {};
+        if (remote) {
+            rinfo.address = remote.address;
+            rinfo.port = remote.port;
+        }
+        
+        this.onmessage(buf.length, this, buf, rinfo);
+
+    }
+}
+
 UDP.prototype.bind = function(ip, port, flags) {
-    var e = this._udp.bind(ip, port, flags, Family.IPv4);
-    if (e) return new Error(e.message);
+    var e = this._udp.bind(ip, port, flags);
+    if (e !== "OK" ) return new Error(e);
 };
 
 UDP.prototype.bind6 = function(ip, port, flags) {
-    var e = this._udp.bind(ip, port, flags, Family.IPv6);
-    if (e) return new Error(e.message);
+    return new Error( "ipv6 not supported" );
 };
 
 UDP.prototype.recvStart = function() {
@@ -110,5 +133,12 @@ UDP.prototype.setTTL = function(ttl) {
     this._udp.setTTL(ttl);
 };
 
-
+/* CONVERT native _tcp to node Stream
+ *
+ * Dependencies:
+ * source.writeString(data)
+ * source.on('end')
+ * source.on('data', function(chunk))
+ *
+ */
 

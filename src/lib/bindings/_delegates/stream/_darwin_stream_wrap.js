@@ -38,9 +38,8 @@ util.inherits(Stream, Handle);
 // ----------------------------------------
 
 Stream.prototype._onData = function(chunk) {
-    var nread = chunk.length;
     var b = new Buffer( chunk, 'base64');
-    this.onread( nread, b );
+    this.onread( b.length, b );
 };
 
 Stream.prototype._onEnd = function() {

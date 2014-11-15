@@ -153,6 +153,9 @@ TCP.prototype.connect = function(req, addr, port) {
 
 module.exports.TCP = TCP;
 
+io.nodekit.createNativeSocket = function() {
+    return new EventEmitter();
+};
 
 /* CONVERT native _tcp to node Stream
  *
@@ -164,7 +167,7 @@ module.exports.TCP = TCP;
  */
 
 io.nodekit.createNativeStream = function() {
-    var source = new EventEmitter();
+    var source = io.nodekit.createNativeSocket();
     source.stream =  new NativeStream(source);
     return source;
 };

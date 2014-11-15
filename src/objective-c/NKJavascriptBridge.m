@@ -183,6 +183,12 @@ static urlNavigator _urlNavigator = nil;
     return tcp;
 }
 
++ (JSValue*)createNativeSocket
+{
+    JSValue *socket = [_context[@"io"][@"nodekit"][@"createNativeSocket"] callWithArguments:@[]];
+    return socket;
+}
+
 + (void)registerStringViewer:(stringViewer)callBack
 {
     _stringViewer = callBack;
