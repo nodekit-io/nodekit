@@ -119,14 +119,14 @@ TCP.prototype._onAfterConnect = function() {
 // ----------------------------------------
 
 TCP.prototype.getpeername = function(out) {
-    var remote = this._tcp.remoteAddress;
+    var remote = this._tcp.remoteAddress();
     out.address = remote.address;
     out.port    = remote.port;
     out.family  = 'IPv4';
 };
 
 TCP.prototype.getsockname = function(out) {
-    var local = this._tcp.localAddress;
+    var local = this._tcp.localAddress();
     out.address = local.address;
     out.port    = local.port;
     out.family  ='IPv4';
@@ -137,8 +137,6 @@ TCP.prototype.bind6 = function(addr,port) {
 };
 
 TCP.prototype.bind = function(addr, port) {
-    if (addr == "0.0.0.0")
-        addr = "127.0.0.1";
     this._tcp.bind( addr, port);
 };
 

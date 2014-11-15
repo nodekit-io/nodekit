@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var http = require('http');
+var util = require('util');
 
 var server = http.createServer(function (request, response) {
                                io.nodekit.console.log(request.headers.host + request.url);
@@ -24,6 +25,6 @@ var server = http.createServer(function (request, response) {
                                
                                    });
 
-server.listen(8000);
+server.listen(8000, "localhost");
 
 console.log("Server running at http://127.0.0.1:8000/");

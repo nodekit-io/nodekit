@@ -50,6 +50,7 @@ public class NKSocketTCP: NKSocketTCPConnection {
         self._tcp!.setObject(unsafeBitCast(self.block_connect, AnyObject.self), forKeyedSubscript:"connect")
         
         socket.setDelegate(self, delegateQueue: dispatch_get_main_queue())
+    
     }
     
     private func emitConnection(tcp: JSValue!)
@@ -75,7 +76,15 @@ public class NKSocketTCP: NKSocketTCPConnection {
     lazy var block_listen : @objc_block (NSNumber) -> Void = {
         [unowned self] (backlog: NSNumber) -> Void in
         var err: NSError?
-        var success = self._socket!.acceptOnInterface(self._addr, port: self._port, error: &err)
+        
+        if (self._addr != "0.0.0.0")
+        {
+             var success = self._socket!.acceptOnInterface(self._addr, port: self._port, error: &err)
+        } else
+        {
+          var success = self._socket!.acceptOnPort( self._port, error: &err)
+        }
+              
     }
     
     lazy var block_connect : @objc_block (NSString!, NSNumber) -> Void = {

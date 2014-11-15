@@ -43,8 +43,11 @@ var Buffer = require('buffer').Buffer;
  */
 
 var UDP = function() {
-    if (!(this instanceof UDP)) return new UDP();
-    this._udp = io.nodekit.socket.createUdp();
+    if (!(this instanceof UDP))
+    {
+        return new UDP();
+    }
+     this._udp = io.nodekit.socket.createUdp();
     
     Handle.call(this, this._udp);
     this._handle.on('recv', UDP.prototype._onRecv.bind(this));
@@ -53,27 +56,23 @@ var UDP = function() {
 util.inherits(UDP, Handle);
 module.exports.UDP = UDP;
 
-UDP.prototype._onRecv(chunk) {
+UDP.prototype._onRecv =function UDP_onReceive(chunk, host, port) {
+    
     if (typeof this.onmessage === 'function') {
-        if (result.error) {
-            throw Error(result.error);
-        }
+        
         
         var buf = new Buffer( chunk, 'base64');
-        remote = this._udp.remoteAddress,
         rinfo = {};
-        if (remote) {
-            rinfo.address = remote.address;
-            rinfo.port = remote.port;
-        }
+            rinfo.address = host;
+            rinfo.port = port;
         
         this.onmessage(buf.length, this, buf, rinfo);
 
     }
-}
+};
 
-UDP.prototype.bind = function(ip, port, flags) {
-    var e = this._udp.bind(ip, port, flags);
+UDP.prototype.bind = function(addr, port, flags) {
+     var e = this._udp.bind(addr, port, flags);
     if (e !== "OK" ) return new Error(e);
 };
 
@@ -86,7 +85,9 @@ UDP.prototype.recvStart = function() {
 };
 
 UDP.prototype.send = function(req, buffer, offset, length, port, address) {
-    this._udp.send(buffer, offset, length, port, address);
+    var str = buffer.toString('base64', offset, length);
+    this._udp.send(str, address, port);
+    
     if (req.oncomplete) {
         req.oncomplete();
     }
@@ -102,12 +103,11 @@ UDP.prototype.recvStop = function() {
 
 
 UDP.prototype.getsockname = function(out) {
-    var local = this._udp.localAddress;
+     var local = this._udp.localAddress();
     out.address = local.address;
     out.port    = local.port;
     out.family  ='IPv4';
 };
-
 
 UDP.prototype.addMembership = function(mcastAddr, ifaceAddr) {
     this._udp.addMembership(mcastAddr, ifaceAddr);
@@ -133,7 +133,7 @@ UDP.prototype.setTTL = function(ttl) {
     this._udp.setTTL(ttl);
 };
 
-/* CONVERT native _tcp to node Stream
+/* CONVERT native _udp to node Stream
  *
  * Dependencies:
  * source.writeString(data)

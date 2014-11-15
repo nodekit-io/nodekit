@@ -55,15 +55,16 @@
         
         self._udp!.setObject(unsafeBitCast(self.block_bind, AnyObject.self), forKeyedSubscript:"bind")
         self._udp!.setObject(unsafeBitCast(self.block_recvStart, AnyObject.self), forKeyedSubscript:"recvStart")
+        self._udp!.setObject(unsafeBitCast(self.block_recvStop, AnyObject.self), forKeyedSubscript:"recvStop")
         self._udp!.setObject(unsafeBitCast(self.block_send, AnyObject.self), forKeyedSubscript:"send")
         self._udp!.setObject(unsafeBitCast(self.block_localAddress, AnyObject.self), forKeyedSubscript:"localAddress")
-        self._udp!.setObject(unsafeBitCast(self.block_remoteAddress, AnyObject.self), forKeyedSubscript:"remoteAddress")
         self._udp!.setObject(unsafeBitCast(self.block_addMembership, AnyObject.self), forKeyedSubscript:"addMembership")
         self._udp!.setObject(unsafeBitCast(self.block_dropMembership, AnyObject.self), forKeyedSubscript:"dropMembership")
         self._udp!.setObject(unsafeBitCast(self.block_setMulticastTTL, AnyObject.self), forKeyedSubscript:"setMulticastTTL")
         self._udp!.setObject(unsafeBitCast(self.block_setMulticastLoopback, AnyObject.self), forKeyedSubscript:"setMulticastLoopback")
         self._udp!.setObject(unsafeBitCast(self.block_setBroadcast, AnyObject.self), forKeyedSubscript:"setBroadcast")
         self._udp!.setObject(unsafeBitCast(self.block_setTTL, AnyObject.self), forKeyedSubscript:"setTTL")
+        self._udp!.setObject(unsafeBitCast(self.block_close, AnyObject.self), forKeyedSubscript:"close")
         
         self._socket?.setDelegate(self, delegateQueue: dispatch_get_main_queue())
     }
@@ -72,36 +73,64 @@
     public func UDP() -> JSValue!
     {
         return self._udp!
-    }
+     }
     
-    private func emitRecv(data: NSData!)
+    private func emitRecv(data: NSData!, host: NSString!, port: NSNumber!)
     {
         var str : NSString! = data.base64EncodedStringWithOptions(.allZeros)
-        self._udp!.invokeMethod( "emit", withArguments:["recv", str])
+        self._udp!.invokeMethod( "emit", withArguments:["recv", str, host, port ])
     }
     
     lazy var block_bind : @objc_block (NSString!, NSNumber, NSNumber) -> NSString! = {
-        [unowned self] (address: NSString!, port: NSNumber, flags: NSNumber) -> NSString! in
+        (address: NSString!, port: NSNumber, flags: NSNumber) -> NSString! in
         
         self._addr = address;
         self._port = port.unsignedShortValue
         var err: NSError? = nil
         //TODO Use Flags = reuse address
         
-        self._socket?.bindToPort(self._port, interface: self._addr, error: &err)
+        if (self._addr != "0.0.0.0")
+        {
+            self._socket?.bindToPort(self._port, interface: self._addr, error: &err)
+        } else
+        {
+            self._socket?.bindToPort(self._port, error: &err)
+            
+        }
         
         if ((err) != nil)
         {
             return err!.description
         }
+        
         return "OK"
     }
     
     lazy var block_recvStart : @objc_block () -> Void = {
         [unowned self] () -> Void in
         
-        var err: NSError?
+        var err: NSError? = nil
         self._socket?.beginReceiving(&err)
+        
+        if ((err) != nil)
+        {
+            println(err!.description)
+        }
+    }
+    
+    lazy var block_recvStop : @objc_block () -> Void = {
+        [unowned self] () -> Void  in
+        self._socket?.pauseReceiving()
+        return
+    }
+    
+    lazy var block_close : @objc_block () -> Void = {
+        () -> Void in
+        if (self._socket !== nil)
+        {
+            self._socket!.close()
+            self._socket = nil;
+        }
     }
     
     public func setSocketIPOptions(option: Int32, setting: Int32) -> Void
@@ -131,7 +160,7 @@
         var _port : UInt16 = port.unsignedShortValue
         
         var data = NSData(base64EncodedString: str, options: .allZeros)
-        self._socket!.sendData(data, toHost: _addr, port: _port, withTimeout: 10, tag: 1)
+        self._socket!.sendData(data, toHost: _addr, port: _port, withTimeout: -1, tag: 0)
     }
     
     
@@ -175,15 +204,6 @@
         self._socket?.enableBroadcast(flag.boolValue, error: &err)
     }
     
-    lazy var block_remoteAddress : @objc_block () -> JSValue = {
-        [unowned self] () -> JSValue in
-        var address: NSString! = self._socket!.connectedHost()
-        var port : NSNumber = NSNumber(unsignedShort: self._socket!.connectedPort())
-        var resultDictionary : NSDictionary = ["address": address, "port": port]
-        var result = JSValue(object: resultDictionary, inContext: self._udp!.context)
-        return result
-    }
-    
     lazy var block_localAddress : @objc_block () -> JSValue = {
         [unowned self] () -> JSValue in
         var address: NSString! = self._socket!.localHost()
@@ -195,8 +215,12 @@
     
     // GCDAsyncUdpSocket Delegate Methods
     
-    func udp(socket: GCDAsyncUdpSocket, didReceiveData:NSData, fromAddress : NSData,  withFilterContext : id_t) {
-        println(didReceiveData)
+    public func udpSocket(sock: GCDAsyncUdpSocket!, didReceiveData data: NSData!, fromAddress address: NSData!,      withFilterContext filterContext: AnyObject!) {
+        
+        var host:NSString?
+        var port:UInt16 = 0
+        GCDAsyncUdpSocket.getHost(&host, port: &port, fromAddress: address)
+       self.emitRecv(data, host: host!, port: NSNumber(unsignedShort: port))
     }
     
-   }
+}
