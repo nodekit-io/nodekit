@@ -48,13 +48,20 @@ static urlNavigator _urlNavigator = nil;
         
         JSValue *console = [JSValue valueWithObject:@{  @"platform": @"darwin"                                                         } inContext:context];
         
-        JSValue *tcp = [JSValue valueWithObject:@{  @"platform": @"darwin"                                                         } inContext:context];
+        JSValue *socket = [JSValue valueWithObject:@{  @"platform": @"darwin"                                                         } inContext:context];
         
-        tcp[@"createSocket"] = (JSValue*)^(){
-            NKSocketServer *server =[[NKSocketServer alloc] init];
+        socket[@"createTcp"] = (JSValue*)^(){
+            NKSocketTCP *server =[[NKSocketTCP alloc] init];
             
             return [server TCP];
         };
+        
+        socket[@"createUdp"] = (JSValue*)^(){
+            NKSocketUDP *socket =[[NKSocketUDP alloc] init];
+            
+            return [socket UDP];
+        };
+        
         
         fs[@"stat"] = (NSDictionary*)^(NSString* path){
             return [NKFileSystem stat:path];
@@ -160,7 +167,7 @@ static urlNavigator _urlNavigator = nil;
         JSValue *io_nodekit = [JSValue valueWithObject:@{
                                                          @"fs": fs,
                                                          @"console": console,
-                                                         @"tcp": tcp,
+                                                         @"socket": socket,
                                                          } inContext:context];
         
         
