@@ -1,7 +1,7 @@
 {
     "name": "nodeappkit",
     "main": "index.js",
-    "node-main": "default.html",
+    "node-main": "",
     "node-baseurl": "http://localhost:8000/",
     "node-splashtime": 2000,
     "description": "Default app -- delete me",

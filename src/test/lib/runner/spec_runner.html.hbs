@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Jasmine suite</title>
+
+    <link rel="shortcut icon" type="image/png" href="runner/jasmine_favicon.png">
+
+    <link rel="stylesheet" href="jasmine/jasmine-core/jasmine.css" type="text/css" media="screen"/>
+
+    {{#each css}}
+        <link rel="stylesheet" href="app/{{{this}}}" type="text/css" media="screen"/>
+    {{/each}}
+
+    <script src="runner/bind_polyfill.js" type="text/javascript"></script>
+    <script src="jasmine/jasmine-core/jasmine.js" type="text/javascript"></script>
+    <script src="jasmine/jasmine-core/jasmine-html.js" type="text/javascript"></script>
+    <script src="jasmine/jasmine-core/boot.js" type="text/javascript"></script>
+    <script src="jasmine/console/console.js" type="text/javascript"></script>
+
+    {{#each specHelper}}
+        <script src="app/{{{this}}}" type="text/javascript"></script>
+    {{/each}}
+
+    {{#each js}}
+        <script src="app/{{{this}}}" type="text/javascript"></script>
+    {{/each}}
+
+    {{#each spec}}
+        <script src="app/{{{this}}}" type="text/javascript"></script>
+    {{/each}}
+
+    {{#each other}}
+        <script src="app/{{{this}}}" type="text/javascript"></script>
+    {{/each}}
+
+    <script type="text/javascript">
+        (function() {
+            if (window._phantom) {
+                var ConsoleReporter = jasmineRequire.ConsoleReporter();
+                var reporter = new ConsoleReporter({
+                    timer: new jasmine.Timer,
+                    print: {{{phantomPrintFunction}}},
+                    showColors: {{{showColors}}},
+                    onComplete: function (success) {
+                        window._phantom.jasminePassed = success;
+                        window.close();
+                    }
+                });
+                jasmine.getEnv().addReporter(reporter);
+            }
+        })();
+    </script>
+
+</head>
+<!-- TODO: turbolinks breaks spec filter links -->
+<body data-no-turbolink>
+<div id="jasmine_content"></div>
+</body>
+</html>

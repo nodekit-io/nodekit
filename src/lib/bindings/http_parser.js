@@ -137,7 +137,7 @@ HTTPParser.prototype.REQUEST_LINE = function () {
         return;
     }
     var match = requestExp.exec(line);
-    this.info.method = match[1];
+    this.info.method = HTTPParser.methods.indexOf(match[1]);
     this.info.url = match[2];
     this.info.versionMajor = match[3];
     this.info.versionMinor = match[4];

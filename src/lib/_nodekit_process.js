@@ -17,6 +17,7 @@
 (function(process) {
     
   process.nextTick = (function () {
+                      io.nodekit.console.log("NEXT TICK");
                      
                      var canSetTimeOut = typeof window !== 'undefined'
                      && window.setTimeout;
@@ -81,7 +82,22 @@
  
  
  if (Error.captureStackTrace === undefined) {
-     Error.captureStackTrace = function captureStackTrace(error, constructor) { return error; };
+ Error.captureStackTrace = function (obj) {
+ if (Error.prepareStackTrace) {
+ var frame = {
+ isEval: function () { return false; },
+ getFileName: function () { return "filename"; },
+ getLineNumber: function () { return 1; },
+ getColumnNumber: function () { return 1; },
+ getFunctionName: function () { return "functionName" }
+ };
+ 
+ obj.stack = Error.prepareStackTrace(obj, [frame, frame, frame]);
+ } else {
+ obj.stack = obj.stack || obj.name || "Error";
+ }
+ };
+
  }
  
  
