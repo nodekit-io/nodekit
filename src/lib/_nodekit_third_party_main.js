@@ -83,5 +83,17 @@ io.nodekit.console.setTimeout(1, function(){
                               });
 
 
+var dns = require('dns');
+dns.platform.name_servers = [
+                             {
+                             address: '8.8.8.8',
+                             port: 53
+                             },
+                             {
+                             address: '8.8.4.4',
+                             port: 53
+                             }
+                             ];
+
 // # sourceURL=nodekit_third_party_main.js
 

@@ -356,7 +356,7 @@ Resolve.prototype._fillServers = function() {
   var tries = 0, s, t, u, slist;
 
   slist = platform.name_servers;
-
+                                                                                    
   while (this._server_list.length < platform.attempts) {
     s = slist[tries % slist.length];
 

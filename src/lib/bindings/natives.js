@@ -78,7 +78,7 @@ var source = {};
 
 /* CUSTOM NODE.JS API REPLACEMENTS*/
 [
-	'buffer', 'dns'
+	'buffer', 'dns', 'crypto'
  ].forEach(function (name) {
            source[name] = getSource('lib/builtin-replacements/' + name );
            });
