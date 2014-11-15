@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		26B3A0651A17D90B00C0E63C /* NKUrlFileDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3A0641A17D90B00C0E63C /* NKUrlFileDecode.swift */; };
+		26B3A0651A17D90B00C0E63C /* NKUrlFileDecode2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3A0641A17D90B00C0E63C /* NKUrlFileDecode2.swift */; };
 		26CBF11B1A178C2B0018A442 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11A1A178C2B0018A442 /* GCDAsyncUdpSocket.m */; };
 		26CBF1211A1790090018A442 /* NKFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11E1A1790090018A442 /* NKFileSystem.swift */; };
 		26CBF1221A1790090018A442 /* NKSocketTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11F1A1790090018A442 /* NKSocketTCP.swift */; };
@@ -29,7 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		26B3A0641A17D90B00C0E63C /* NKUrlFileDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKUrlFileDecode.swift; sourceTree = SOURCE_ROOT; };
+		26B3A0641A17D90B00C0E63C /* NKUrlFileDecode2.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKUrlFileDecode2.swift; sourceTree = SOURCE_ROOT; };
 		26CBF1191A178C2B0018A442 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncUdpSocket.h; path = "objective-c/GCDAsyncUdpSocket.h"; sourceTree = SOURCE_ROOT; };
 		26CBF11A1A178C2B0018A442 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncUdpSocket.m; path = "objective-c/GCDAsyncUdpSocket.m"; sourceTree = SOURCE_ROOT; };
 		26CBF11E1A1790090018A442 /* NKFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKFileSystem.swift; path = swift/bindings/NKFileSystem.swift; sourceTree = SOURCE_ROOT; };
@@ -98,7 +98,7 @@
 				E4B74A3F19C7B39300F07883 /* NKJSContextFactory.swift */,
 				E4B74A3D19C7B39300F07883 /* NKNodekit.swift */,
 				E4B74A3E19C7B39300F07883 /* NKUIWebView.swift */,
-				26B3A0641A17D90B00C0E63C /* NKUrlFileDecode.swift */,
+				26B3A0641A17D90B00C0E63C /* NKUrlFileDecode2.swift */,
 				E4B74A3C19C7B39300F07883 /* NKUrlProtocolLocalFile.swift */,
 				E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */,
 				E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */,
@@ -218,7 +218,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26B3A0651A17D90B00C0E63C /* NKUrlFileDecode.swift in Sources */,
+				26B3A0651A17D90B00C0E63C /* NKUrlFileDecode2.swift in Sources */,
 				E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */,
 				E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */,
 				26CBF1211A1790090018A442 /* NKFileSystem.swift in Sources */,
