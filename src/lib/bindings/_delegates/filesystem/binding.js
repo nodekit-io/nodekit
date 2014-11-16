@@ -178,24 +178,6 @@ function Binding(system) {
 }
 
 /**
- * Call the provided function and either return the result or call the callback
- * with it (depending on if a callback is provided).
- * @param {function()} callback Optional callback.
- * @param {Object} thisArg This argument for the following function.
- * @param {function()} func Function to call.
- * @return {*} Return (if callback is not provided).
- */
-Binding.prototype.maybeCallbackPromise = function(callback, thisArg, func) {
-    if (callback) {
-        func.call(thisArg).then(function (val) {
-            callback(null, val);
-        }, function (e) { callback(e); });
-    } else {
-        return this._system.toSync(func.call(thisArg));
-    }
-}
-
-/**
  * Get the file system underlying this binding.
  * @return {FileSystem} The underlying file system.
  */
@@ -468,9 +450,10 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
  * @return {Array.<string>} Array of items in directory (if sync).
  */
 Binding.prototype.readdir = function (dirpath, callback) {
-    return this.maybeCallbackPromise(callback, this, function () {
-        return this._system.getDirList(filepath);
-    });
+    maybeCallback(callback, this, function() {
+                  return this._system.getDirList(dirpath);
+                  });
+
 };
 
 // ************************************************************************

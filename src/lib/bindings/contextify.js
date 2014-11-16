@@ -23,7 +23,9 @@ function ContextifyScript(script, options) {
     options = options || {};
     
     if (options.filename)
-         this._filename = path.basename(options.filename)
+        this._filename = options.filename.replace(process.execPath, "");
+    
+ //        this._filename = path.basename(options.filename)
      else
      {
          var i = script.indexOf("//# sourceURL=");

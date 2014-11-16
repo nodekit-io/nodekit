@@ -33,9 +33,9 @@ static urlNavigator _urlNavigator = nil;
                                         @"platform": @"darwin",
                                         
                                         @"argv":     @[@"nodekit"],
-                                        
+                                    
                                         @"env":      NSProcessInfo.processInfo.environment,
-                                                  @"execPath": NSBundle.mainBundle.executablePath
+                                                  @"execPath": NSBundle.mainBundle.resourcePath
                                                   } inContext:context];
         
    /*     context.exceptionHandler = ^(JSContext *ctx, JSValue *e) {

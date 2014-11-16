@@ -55,12 +55,20 @@ public class NKSocketTCP: NKSocketTCPConnection {
     
     private func emitConnection(tcp: JSValue!)
     {
+      dispatch_sync(NKeventQueue, {
         self._tcp!.invokeMethod("emit", withArguments:["connection", tcp])
-    }
+        return
+        
+        });
+     }
     
     private func emitAfterConnect()
     {
-         self._tcp!.invokeMethod("emit", withArguments:["afterConnect", self._tcp!])
+        dispatch_sync(NKeventQueue, {
+            self._tcp!.invokeMethod("emit", withArguments:["afterConnect", self._tcp!])
+            return
+            
+        });
     }
     
     private var _addr: String!;
@@ -143,14 +151,21 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     
     private func emitData(data: NSData!)
     {
-        var str : NSString! = data.base64EncodedStringWithOptions(.allZeros)
-        self._tcp!.invokeMethod( "emit", withArguments:["data", str])
+        
+         dispatch_sync(NKeventQueue, {
+            var str : NSString! = data.base64EncodedStringWithOptions(.allZeros)
+            self._tcp!.invokeMethod( "emit", withArguments:["data", str])
+        });
+        
     }
     
     private func emitEnd()
     {
-        self._tcp!.invokeMethod( "emit", withArguments:["end", ""])
-       
+        var tcp = self._tcp!;
+         dispatch_sync(NKeventQueue, {
+            tcp.invokeMethod( "emit", withArguments:["end", ""])
+            return
+        });
     }
     
     lazy var block_fd : @objc_block () -> NSNumber = {
@@ -196,7 +211,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     }
     
     public func socketDidDisconnect(socket: GCDAsyncSocket, withError err: NSError){
-        self._socket = nil;
+        self._socket = nil
         self.emitEnd()
         self._tcp!.setObject(nil, forKeyedSubscript:"writeString")
         self._tcp!.setObject(nil, forKeyedSubscript:"fd")

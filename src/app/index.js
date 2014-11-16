@@ -1,20 +1,19 @@
 
-var jasmine = require('test/index.js');
+ var jasmine = require('test/index.js');
 
 jasmine.run({
             files: {
-            js: 'test/lib/util.js',
-            spec: 'test/spec/*_spec.js',
+            spec: 'spec/*_spec.js',
+            js: 'lib/util.js',
             specHelper: [
-                         'test/node_modules/underscore/underscore.js',
-                         'test/spec/spec_helper.js'
+                         'node_modules/underscore/underscore.js',
+                         'spec/spec_helper.js'
                          ]
             }
             });
 
 
-
-/* var http = require('http');
+/*var http = require('http');
 
 var express = require('express')
 var app = express()
@@ -47,8 +46,9 @@ var server = http.createServer(function (request, response) {
                                
                                fs.readFile(file, function read(err, content) {
                                            if (err) {
-                                           response.writeHead(500);
-                                           response.end();
+                                           console.log(err);
+                                           response.writeHead(500, { 'Content-Type': 'text/html' });
+                                           response.end('<html><body>An internal server error occurred</body>', 'utf-8');
                                            }
                                            else {
                                            
@@ -57,11 +57,11 @@ var server = http.createServer(function (request, response) {
                                            }
                                            });
                                
-                        //       response.writeHead(200, { 'Content-Type': 'text/html' });
-                        //       response.end('<html><body>Hello World</body>', 'utf-8');
+                         //     response.writeHead(200, { 'Content-Type': 'text/html' });
+                         //     response.end('<html><body>Hello World</body>', 'utf-8');
                                
                                    });
 
 server.listen(8000, "localhost");
 
-console.log("Server running at http://127.0.0.1:8000/");*/
+console.log("Server running at http://127.0.0.1:8000/"); */

@@ -25,11 +25,9 @@ internal class NKFileSystem: NSObject {
     }
     
     class func getDirectoryAsync(module: String, completionHandler: nodeCallBack) {
-        let defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        
-        dispatch_async(defaultQueue) {
+        dispatch_async(NKeventQueue,{
             completionHandler(NSNull(), self.getDirectory(module))
-        }
+        });
     }
     
     class func getDirectory(module: String) -> NSArray {
@@ -56,13 +54,11 @@ internal class NKFileSystem: NSObject {
     class func stat(module: String) -> Dictionary<String, NSObject>? {
         
         var path=module; //self.getPath(module)
-        
         var storageItem  = Dictionary<String, NSObject>()
         
         var readError: NSError?
         
         let attr = NSFileManager.defaultManager().attributesOfItemAtPath(path, error: &readError) as NSDictionary!
-        
         if let error = readError {
             return nil;
         }
@@ -97,11 +93,9 @@ internal class NKFileSystem: NSObject {
     }
     
     class func getContentAsync(storageItem: NSDictionary! , completionHandler: nodeCallBack) {
-        let defaultQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
-        dispatch_async(defaultQueue) {
-
+        dispatch_async(NKeventQueue, {
             completionHandler(NSNull(), self.getContent(storageItem))
-        }
+        });
     }
     
     class func getContent(storageItem: NSDictionary!) -> NSString {

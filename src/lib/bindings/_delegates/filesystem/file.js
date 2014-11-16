@@ -114,13 +114,14 @@ File.prototype.setSize = function(size) {
  */
 File.prototype.setContent = function (content) {
   this._isloaded = true;
-    this._size = content.length;
   if (typeof content === 'string') {
     content = new Buffer(content);
   } else if (!Buffer.isBuffer(content)) {
     throw new Error('File content must be a string or buffer');
   }
   this._content = content;
+    this._size = content.length;
+    
   var now = Date.now();
   this.setCTime(new Date(now));
   this.setMTime(new Date(now));
