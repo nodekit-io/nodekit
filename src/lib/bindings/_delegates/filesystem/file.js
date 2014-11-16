@@ -23,12 +23,10 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-
-var util = require('util');
-
 var Item = require('./item');
 var Buffer = require('buffer').Buffer;
 var EMPTY =  Buffer(0);
+var util = require('util');
 
 var constants = process.binding('constants');
 
@@ -39,7 +37,7 @@ var constants = process.binding('constants');
  */
 function File() {
   Item.call(this);
-
+  
   /**
    * File content.
    * @type {Buffer}
@@ -117,6 +115,8 @@ File.prototype.setContent = function (content) {
   if (typeof content === 'string') {
     content = new Buffer(content);
   } else if (!Buffer.isBuffer(content)) {
+      
+      
     throw new Error('File content must be a string or buffer');
   }
   this._content = content;

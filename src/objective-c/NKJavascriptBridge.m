@@ -97,8 +97,8 @@ static urlNavigator _urlNavigator = nil;
          * @param {Function(err, value)} callBack the callback handler where value
          * @return {[string]} The array of item names (or error if not found or not a directory).
          */
-        fs[@"getDirectory"] = (NSArray*)^(NSString* path, nodeCallBack callBack){
-            [NKFileSystem getDirectory:path ];
+        fs[@"getDirectory"] = (NSArray*)^(NSString* path){
+            return [NKFileSystem getDirectory:path ];
         };
         
         

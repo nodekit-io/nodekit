@@ -76,7 +76,6 @@ function Stats(config) {
   }
 }
 
-
 /**
  * Check if mode indicates property.
  * @param {number} property Property to check.
@@ -231,7 +230,6 @@ Binding.prototype._untrackDescriptorById = function(fd) {
   delete this._openFiles[fd];
 };
 
-
 /**
  * Stat an item.
  * @param {string} filepath Path.
@@ -244,8 +242,11 @@ Binding.prototype.stat = function (filepath, callback) {
         this._system.getItemAsync(filepath)
         .then(
               function(item) {
+              
               if (!item) throw new FSError('ENOENT', filepath);
-              callback(null, item);
+              var stats = new Stats(item.getStats());
+              
+               callback(null,  stats );
               },
               function (e) {
               callback(e);
@@ -346,7 +347,7 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
  * @param {function(Error)} callback Callback (optional).
  */
 Binding.prototype.close = function(fd, callback) {
-  maybeCallback(callback, this, function() {
+  return maybeCallback(callback, this, function() {
     this._untrackDescriptorById(fd);
   });
 };
@@ -441,7 +442,6 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
     }
 };
 
-
 /**
  * Read a directory.
  * @param {string} dirpath Path to directory.
@@ -450,7 +450,7 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
  * @return {Array.<string>} Array of items in directory (if sync).
  */
 Binding.prototype.readdir = function (dirpath, callback) {
-    maybeCallback(callback, this, function() {
+   return maybeCallback(callback, this, function() {
                   return this._system.getDirList(dirpath);
                   });
 

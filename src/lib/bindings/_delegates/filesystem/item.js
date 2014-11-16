@@ -1,4 +1,27 @@
-
+/*
+ * Copyright 2014 Domabo; Portions Copyright 2014 Tim Schaub
+ *
+ * Licensed under the the MIT license (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the “Software”), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR
+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+ * OTHER DEALINGS IN THE SOFTWARE.
+ */
 var counter = 0;
 
 
@@ -41,7 +64,6 @@ function Item() {
    * @type {Date}
    */
   this._atime = new Date(now);
-
   /**
    * Change time.
    * @type {Date}
@@ -146,30 +168,7 @@ Item.prototype.canExecute = function() {
   }
   return can;
 };
-/*
- * Copyright 2014 Domabo; Portions Copyright 2014 Tim Schaub
- *
- * Licensed under the the MIT license (the "License");
- * you may not use this file except in compliance with the License.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy 
- * of this software and associated documentation files (the “Software”), to deal 
- * in the Software without restriction, including without limitation the rights 
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
- * copies of the Software, and to permit persons to whom the Software is 
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in 
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR 
- * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, 
- * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR 
- * OTHER DEALINGS IN THE SOFTWARE.
- */
+
 
 /**
  * Get access time.
@@ -185,7 +184,7 @@ Item.prototype.getATime = function() {
  * @param {Date} atime Access time.
  */
 Item.prototype.setATime = function(atime) {
-  this._atime = atime;
+   this._atime = atime;
 };
 
 
@@ -287,6 +286,7 @@ Item.prototype.setGid = function(gid) {
  * @return {Object} Stats properties.
  */
 Item.prototype.getStats = function() {
+    
   return {
     dev: 8675309,
     nlink: this.links,

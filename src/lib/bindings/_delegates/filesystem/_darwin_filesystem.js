@@ -28,6 +28,8 @@ var File = require('./file');
 var FSError = require('./error');
 var SymbolicLink = require('./symlink');
 var Promise = require('promise');
+var Buffer = require('buffer').Buffer;
+
 
 /**
  * Create a new file system for OSX bridge
@@ -66,13 +68,12 @@ FileSystem.prototype.getItemSync = function (filepath) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.storageItemtoItemWithStat = function (storageItem) {
-    
     var stat = {};
     
     if (storageItem) {
         stat.path = storageItem.path;
         stat.birthtime = storageItem.birthtime;
-        stat.mtime = storageItem.DateModified;
+        stat.mtime = storageItem.mtime;
         stat.atime = stat.mtime;
         stat.ctime = stat.mtime;
         stat.uid = 0;
@@ -118,7 +119,8 @@ FileSystem.storageItemtoItemWithStat = function (storageItem) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.loadContentSync = function (file) {
-    var content = io.nodekit.fs.getContent(file._storageItem);
+    var contentBase64 = io.nodekit.fs.getContent(file._storageItem);
+    var content = new Buffer( contentBase64, 'base64');
     file.setContent(content);
     return file;
 };
@@ -144,10 +146,10 @@ FileSystem.prototype.loadContentAsync = function (file) {
  * @return {Promise<[]>} The array of item names (or error if not found or not a directory).
  */
 FileSystem.prototype.getDirList = function (filepath) {
-    
-    var fs_getDirectory = Promise.denodeify(function(id, callback){io.nodekit.fs.getDirectory(id, callback);});
-    
-    return fs_getDirectory(filepath);
+    io.nodekit.console.log("getDir" + filepath);
+    var result =io.nodekit.fs.getDirectory(filepath);
+    io.nodekit.console.log("got" + result);
+    return result;
 };
 
 /**
@@ -183,6 +185,7 @@ FileSystem.file = function (config) {
           file.setSize(config.size);
       }
     if (config.hasOwnProperty('atime')) {
+     
       file.setATime(config.atime);
     }
     if (config.hasOwnProperty('ctime')) {
@@ -191,6 +194,7 @@ FileSystem.file = function (config) {
     if (config.hasOwnProperty('mtime')) {
       file.setMTime(config.mtime);
     }
+
     return file;
   };
 };

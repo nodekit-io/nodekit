@@ -31,10 +31,9 @@ internal class NKFileSystem: NSObject {
     }
     
     class func getDirectory(module: String) -> NSArray {
-            var path=self.getPath(module)
-            
+           var path=module; //self.getPath(module)
+        
             let dirContents = NSFileManager.defaultManager().contentsOfDirectoryAtPath(path, error: nil) as NSArray!
-            
             return dirContents
     }
     
@@ -105,9 +104,11 @@ internal class NKFileSystem: NSObject {
         var originalEncoding: UnsafeMutablePointer<UInt> = nil
         var readError: NSError?
         
-        var content = NSString(contentsOfFile: path, usedEncoding: originalEncoding, error: &readError)
+        var data = NSData(contentsOfFile: path, options: nil, error: &readError)
         
-        return content!
+        var content : NSString! = data!.base64EncodedStringWithOptions(.allZeros)
+        
+        return content
     }
 
 
