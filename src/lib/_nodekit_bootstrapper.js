@@ -64,7 +64,7 @@ function BootstrapModule(id) {
 
 BootstrapModule.getSource = function(id) {
     
-    var append = "\r\n //" + "# source" + "URL=" + id;
+    var append = "\r\n //" + "# source" + "URL=" + id + "\r\n";
     
     if (id.indexOf("/") > -1)
         return io.nodekit.fs.getSource(id) + append;

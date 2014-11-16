@@ -1,4 +1,20 @@
-var http = require('http');
+
+var jasmine = require('test/index.js');
+
+jasmine.run({
+            files: {
+            js: 'test/lib/util.js',
+            spec: 'test/spec/*_spec.js',
+            specHelper: [
+                         'test/node_modules/underscore/underscore.js',
+                         'test/spec/spec_helper.js'
+                         ]
+            }
+            });
+
+
+
+/* var http = require('http');
 
 var express = require('express')
 var app = express()
@@ -14,7 +30,7 @@ var server = http.createServer(app);
 
 server.listen(8000, "localhost");
 
-console.log("Server running at http://127.0.0.1:8000/");
+console.log("Server running at http://127.0.0.1:8000/"); */
 
 
       //               server.listen();

@@ -29,7 +29,7 @@ module.exports = {
       .use('/app', serveStatic(clientRoot));
 
     this.server = http.createServer(app);
-    this.server.listen(options.port || 8888, 'localhost');
+    this.server.listen(options.port || 8000, 'localhost');
   },
 
   stop: function() {

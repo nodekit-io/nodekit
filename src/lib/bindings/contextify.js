@@ -18,14 +18,31 @@
 var path = require('path');
 
 function ContextifyScript(script, options) {
-    this._script = script;
-    this._filename = path.basename(options.filename) || '<eval>';
     
-     /*
-  options = options || {};
-
-  var filename = options.filename || '<eval>';
-  var displayErrors = options.displayErrors || false;
+    this._script = script;
+    options = options || {};
+    
+    if (options.filename)
+         this._filename = path.basename(options.filename)
+     else
+     {
+         var i = script.indexOf("//# sourceURL=");
+         if ( i>= 0)
+         {
+             i = i + 14;
+             var i1 = script.indexOf("\n", i);
+             if (i1 == -1)
+                 i1 = script.length;
+             this._filename = script.substr(i, i1-i);
+              this._filename = path.basename(this._filename.replace("});",""));
+         }
+         else
+            this._filename = "<eval>";
+     }
+    
+ /*
+  
+   var displayErrors = options.displayErrors || false;
 
     try {
         this._script = document.createElement('script');

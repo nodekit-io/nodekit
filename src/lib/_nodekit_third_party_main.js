@@ -51,7 +51,10 @@ COUNTER_HTTP_CLIENT_RESPONSE = function(){};
 
 module._extensions['.js'] = function nodeappkit_module_jsread(module, filename) {
     var file = path.basename(filename);
-    var content = require('fs').readFileSync(filename, 'utf8') + '\r\n//# sourceURL=' + file;
+    
+    var append = "\r\n //" + "# source" + "URL=" + file + "\r\n";
+    
+    var content = require('fs').readFileSync(filename, 'utf8') + append;
     global.process.sources[file] = content;
     module._compile(stripBOM(content), filename);
 };

@@ -71,7 +71,6 @@ Stream.prototype.readStop = function() {
 };
 
 Stream.prototype.writeUtf8String = function(req, data) {
-    io.nodekit.console.log(data);
     this._stream.write(data, 'utf8');
 };
 
