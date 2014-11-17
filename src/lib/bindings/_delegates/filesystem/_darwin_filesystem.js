@@ -146,9 +146,7 @@ FileSystem.prototype.loadContentAsync = function (file) {
  * @return {Promise<[]>} The array of item names (or error if not found or not a directory).
  */
 FileSystem.prototype.getDirList = function (filepath) {
-    io.nodekit.console.log("getDir" + filepath);
     var result =io.nodekit.fs.getDirectory(filepath);
-    io.nodekit.console.log("got" + result);
     return result;
 };
 

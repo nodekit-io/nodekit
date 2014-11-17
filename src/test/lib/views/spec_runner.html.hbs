@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html;charset=UTF-8" http-equiv="Content-Type"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Jasmine suite</title>
+
+    <link rel="shortcut icon" type="image/png" href="runner/jasmine_favicon.png">
+
+    <link rel="stylesheet" href="jasmine/jasmine-core/jasmine.css" type="text/css" media="screen"/>
+
+    {{#each css}}
+        <link rel="stylesheet" href="app/{{{this}}}" type="text/css" media="screen"/>
+    {{/each}}
+</head>
+
+
+
+<!-- TODO: turbolinks breaks spec filter links -->
+<body data-no-turbolink>
+<div id="jasmine_content">
+{{#suites}}
+<tr>
+<td>{{description}}</td>
+<td>{{durationSec}}</td>
+<td><a href="https://twitter.com/{{twitter}}">@{{passed}}</a></td>
+</tr>
+
+{{#suites}}
+<tr>
+<td>{{description}}</td>
+<td>{{durationSec}}</td>
+<td><a href="https://twitter.com/{{twitter}}">@{{passed}}</a></td>
+</tr>
+{{#specs}}
+<tr>
+<td>{{description}}</td>
+<td>{{durationSec}}</td>
+<td><a href="https://twitter.com/{{twitter}}">@{{passed}}</a></td>
+</tr>
+{{/specs}}
+{{/suites}}
+{{/suites}}
+
+</div>
+</body>
+</html>

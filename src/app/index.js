@@ -1,16 +1,25 @@
 
- var jasmine = require('test/index.js');
+var jasmine = require('test/server.js');
 
-jasmine.run({
-            files: {
-            spec: 'spec/*_spec.js',
-            js: 'lib/util.js',
-            specHelper: [
-                         'node_modules/underscore/underscore.js',
-                         'spec/spec_helper.js'
-                         ]
-            }
-            });
+jasmine.run(
+              {
+              "spec_dir": "spec",
+              "spec_files": [
+                             "*[sS]pec.js"
+                             ],
+              "helpers": [
+                          "helpers/*.js"
+                          ]
+              }
+);
+
+/*jasmine.configureDefaultReporter({print: console.log,
+                                 onComplete: function(passed) {
+                                 console.log("JASMINE RESULT: " + passed);
+                                 }
+                                 });*/
+
+
 
 
 /*var http = require('http');
