@@ -55,6 +55,18 @@ Jasmine.prototype.addMatchers = function(matchers) {
 
 Jasmine.prototype.loadSpecs = function() {
     this.specFiles.forEach(function(file) {
+                           
+                           // DELETE CACHED VERSION FROM NODE CACHE TO FORCE JASMINE TO (RE)LOAD SPECS
+                            var files = require.cache[file];
+                           
+                           if (typeof files !== 'undefined') {
+                           for (var i in files.children) {
+                           delete require.cache[files.children[i].id];
+                           }
+                           delete require.cache[file];
+                           }
+                           
+                           
                            require(file);
                            });
 };
