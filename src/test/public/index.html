@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  width: 100%;
+  position: absolute;
+}
+
+.graph {
+    position: relative;
+    display: block;
+    width: 480px;
+    margin: auto;
+}
+
+form {
+  position: absolute;
+  display: block;
+  right: 20px;
+  bottom: 10px;
+  z-index: 5;
+}
+
+path {
+  stroke: #fff;
+  fill-rule: evenodd;
+}
+
+.tooltip {
+    font-size: 14px;
+    background:white;
+    color:black;
+    padding:5px;
+    box-shadow:0 0 10px 0 rgba(0, 0, 0, 1);
+    border-radius:10px;
+    opacity:0;
+}
+
+
+.overall {
+    font-size: 14px;
+}
+
+</style>
+<body>
+    <h1>Jasmine Test Results</h1>
+    <form display="block">
+  <label><input type="radio" name="mode" value="size"> Expectations</label>
+  <label><input type="radio" name="mode" value="count" checked> Specs</label>
+</form>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script>
+
+var width = 480,
+    height = 350,
+    radius = Math.min(width, height) / 2;
+
+var x = d3.scale.linear()
+    .range([0, 2 * Math.PI]);
+
+var y = d3.scale.sqrt()
+    .range([0, radius]);
+
+//var color = d3.scale.category20c();
+
+var color = d3.scale.ordinal().domain([false,true]).range(["DD2222","22AA22"]);
+
+var svg = d3.select("body")
+    .append("svg")
+    .attr("class", "graph")
+    .attr("width", width)
+    .attr("height", height + 50)
+    .append("g")
+    .attr("transform", "translate(" + width / 2 + "," + (height / 2 + 10 ) + ")");
+
+var partition = d3.layout.partition()
+    .sort(null)
+    .value(function(d) { return 1; });
+
+var arc = d3.svg.arc()
+    .startAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x))); })
+    .endAngle(function(d) { return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx))); })
+    .innerRadius(function(d) { return Math.max(0, y(d.y)); })
+    .outerRadius(function(d) { return Math.max(0, y(d.y + d.dy)); });
+  
+var tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("opacity", 0);
+    
+    
+var tooltipHtml = function(d) {
+    
+    var html = "<b>" + d.type + ": " + d.description + "</b>";
+   
+   if (d.passed)
+   {
+      html += "<br>" + "Passed";
+      if (d.type != "it")
+      {
+          html += " (" + d.passedCount + "/" + d.totalCount + " specs)";
+      } else
+       html += " (" + d.passedCount + "/" + d.totalCount + " expectations)";
+   }
+   else
+   {
+      html += "<br>" + "Failed";
+      if (d.type != "it")
+      {
+          html += " (" + d.failedCount + "/" + d.totalCount + " specs)";
+      } else
+       html += " (" + d.failedCount + "/" + d.totalCount + " expectations)";
+   }
+   
+   
+  /*  if (d.failedCount > 0)
+        {
+        d.failures.forEach(function(failure){
+                           html += + "<br>" + failure.message;
+                           });
+        }*/
+        
+        return html;
+};
+    
+
+// Keep track of the node that is currently being displayed as the root.
+var node = null;
+
+//d3.json("/test/execute/all?fmt=json", function(error, root) {
+
+d3.json("/test/execute?fmt=json", function(error, root) {
+    node = root;
+        
+  var slices = svg.datum(root).selectAll("path")
+      .data(partition.nodes)
+        .enter().append("g");
+        
+    var path = slices.append("path")
+      .attr("d", arc)
+      .style("fill", function(d) { return d.depth ? color(d.passed) : "EFEFEF" })
+            .style("fill-rule", "evenodd")
+      .on("click", click)
+        .on("mouseover", function(d) {
+            tooltip
+            .style("display", "block")
+            .html(function() {
+                         return tooltipHtml(d);
+                         });
+            return tooltip.transition()
+            .duration(50)
+            .style("opacity", 0.7);
+            })
+        .on("mousemove", function(d) {
+            return tooltip
+            .style("top", (d3.event.pageY-10)+"px")
+            .style("left", (d3.event.pageX+10)+"px");
+            })
+        
+        .on("mouseout", function(){
+            return tooltip
+            .style("opacity", 0)
+            .style("display", "none");
+            })
+      .each(stash);
+       // .attr("display", function(d) { return d.depth ? "none" : null; }) // only inner ring
+        
+        var text = slices.append("text")
+         .attr("display", function(d) { if ((d.depth === 0)) return null; else return "none"; })
+        .attr("text-anchor", "middle")
+        .text(function(d) {
+              return d.passed ? "Passed" + " " + d.durationSec + " s" : "Failed" + " " + d.durationSec + " s"
+              });
+        
+       
+  d3.selectAll("input").on("change", function change() {
+    var value = this.value === "count"
+        ? function() { return 1; }
+        : function(d) { return d.totalCount; };
+
+    path
+        .data(partition.value(value).nodes)
+        .transition()
+        .duration(1000)
+        .attrTween("d", arcTweenData);
+  });
+
+  function click(d) {
+    node = d;
+    path.transition()
+      .duration(1000)
+      .attrTween("d", arcTweenZoom(d));
+        
+     }
+});
+
+d3.select(self.frameElement).style("height", height + "px");
+
+// Setup for switching data: stash the old values for transition.
+function stash(d) {
+  d.x0 = d.x;
+  d.dx0 = d.dx;
+}
+
+// When switching data: interpolate the arcs in data space.
+function arcTweenData(a, i) {
+  var oi = d3.interpolate({x: a.x0, dx: a.dx0}, a);
+  function tween(t) {
+    var b = oi(t);
+    a.x0 = b.x;
+    a.dx0 = b.dx;
+    return arc(b);
+  }
+  if (i == 0) {
+   // If we are on the first arc, adjust the x domain to match the root node
+   // at the current zoom level. (We only need to do this once.)
+    var xd = d3.interpolate(x.domain(), [node.x, node.x + node.dx]);
+    return function(t) {
+      x.domain(xd(t));
+      return tween(t);
+    };
+  } else {
+    return tween;
+  }
+}
+
+// When zooming: interpolate the scales.
+function arcTweenZoom(d) {
+  var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+      yd = d3.interpolate(y.domain(), [d.y, 1]),
+      yr = d3.interpolate(y.range(), [d.y ? 20 : 0, radius]);
+  return function(d, i) {
+    return i
+        ? function(t) { return arc(d); }
+        : function(t) { x.domain(xd(t)); y.domain(yd(t)).range(yr(t)); return arc(d); };
+  };
+}
+
+</script>

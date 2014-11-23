@@ -35,6 +35,56 @@ function JsonReporter(container, options) {
         }
     };
     
+    this.getD3ReportAsString = function() {
+        
+        if (this.container.jsReport) {
+          //  reportJSON = {name: "d3",  children: [this.container.jsReport] };
+            reportJSON = _clone(this.container.jsReport);
+            reportJSON.type = "Test";
+            reportJSON.description = "Overall";
+        } else
+            return "{}";
+        
+        JSONScrubber(reportJSON);
+        
+        return JSON.stringify(reportJSON);
+    };
+    
+    var JSONScrubber = function (parent) {
+        
+        for (var childkey in parent) {
+                   
+            childvalue = parent[childkey];
+            
+            if (childvalue === null) {
+                delete parent[childkey]
+            } else if (Object.prototype.toString.call( childvalue ) === '[object Array]') {
+              if (childvalue.length == 0) {  delete parent[childkey] }
+              else  if (childkey == "specs" || childkey == "suites") {
+                  parent.children = childvalue;
+                  delete parent[childkey];
+              }
+            }
+            
+            if (typeof(childvalue) === "object"){
+                 if (Object.prototype.toString.call( childvalue ) === '[object Array]')
+                 {
+                     childvalue.forEach(function(arraychild)
+                                        {
+                                        if (childkey == "specs")
+                                          arraychild.type = "it"
+                                        else if (childkey == "suites")
+                                          arraychild.type = "Suite";
+                                        JSONScrubber(arraychild);
+                                        });
+                 }
+                 else {
+                     JSONScrubber(childvalue);
+                 }
+            }
+        }
+    };
+    
     var onComplete = options.onComplete || function() {},
     specCount,
     failureCount,
@@ -50,6 +100,7 @@ function JsonReporter(container, options) {
     // export methods under container namespace
     container.getJSReport = this.getJSReport.bind(this);
     container.getJSReportAsString = this.getJSReportAsString.bind(this);
+    container.getD3ReportAsString = this.getD3ReportAsString.bind(this);
     
     this.container = container;
     
@@ -72,6 +123,9 @@ function JsonReporter(container, options) {
             this.rootSuites.push(suite.id);
         }
         this.suiteStack.push(suite.id);
+        suite.totalCount = 0;
+        suite.passedCount = 0;
+        suite.failedCount = 0;
         suite.timer = new Timer().start();
     };
     
@@ -105,9 +159,9 @@ function JsonReporter(container, options) {
                                passed: false,
                                message: fail.message,
                                matcherName: fail.matcherName,
-                               trace: {
-                               stack: fail.stack
-                               }
+                         //      trace: {
+                          //     stack: fail.stack
+                          //     }
                                });
         }
         
@@ -117,6 +171,12 @@ function JsonReporter(container, options) {
             parent.failingSpecs.push(spec);
         }
         parent.passed = parent.passed && spec.passed;
+        parent.totalCount = parent.totalCount + 1;
+        
+        if (spec.passed)
+            parent.passedCount = parent.passedCount + 1
+        else
+            parent.failedCount = parent.failedCount + 1;
         
         // keep report representation clean
         delete spec.timer;
@@ -140,6 +200,12 @@ function JsonReporter(container, options) {
         var parent = this.suites[suite.parentId];
         if (parent) {
             parent.passed = parent.passed && suite.passed;
+            
+            parent.totalCount = parent.totalCount + suite.totalCount;
+            
+                parent.passedCount = parent.passedCount + suite.passedCount;
+                 parent.failedCount = parent.failedCount + suite.failedCount;
+            
         }
         
         // keep report representation clean
@@ -154,7 +220,6 @@ function JsonReporter(container, options) {
         this._buildReport();
         onComplete();
     };
-    
  
     
     /*
@@ -211,15 +276,26 @@ function JsonReporter(container, options) {
         var overallPassed = true;
         var overallSuites = [];
         
+        var overallTotalCount = 0;
+        var overallPassedCount = 0;
+        var overallFailedCount = 0;
+        
+        
         for (var i = 0, j = this.rootSuites.length; i < j; i++) {
             var suite = this.suites[this.rootSuites[i]];
             overallDuration += suite.duration;
+            overallTotalCount += suite.totalCount;
+            overallPassedCount += suite.passedCount;
+            overallFailedCount += suite.failedCount;
             overallPassed = overallPassed && suite.passed;
             overallSuites.push(suite);
         }
         
         this.container.jsReport = {
         passed: overallPassed,
+        totalCount: overallTotalCount,
+        passedCount: overallPassedCount,
+        failedCount: overallFailedCount,
         durationSec: overallDuration / 1000,
         suites: overallSuites
         };

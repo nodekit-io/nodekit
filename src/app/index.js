@@ -13,14 +13,6 @@ jasmine.run(
               }
 );
 
-/*jasmine.configureDefaultReporter({print: console.log,
-                                 onComplete: function(passed) {
-                                 console.log("JASMINE RESULT: " + passed);
-                                 }
-                                 });*/
-
-
-
 
 /*var http = require('http');
 

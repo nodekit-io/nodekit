@@ -33,6 +33,7 @@ describe('The path module', function() {
       expect( path.relative('/data/orandea/test/aaa', '/data/orandea/impl/bbb') ).toBe("..\\..\\impl\\bbb");
     } else {
       expect( path.relative('/data/orandea/test/aaa', '/data/orandea/impl/bbb') ).toBe("../../impl/bbb");
+    //  expect( path.relative('/data/orandea/test/aaa', '/data/orandea/impl/bbb') ).toBe("../../impl/bbdb");
     }
   });
 
