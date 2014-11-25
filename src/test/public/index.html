@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+<html>
+    <head>
 <meta charset="utf-8">
 <style>
 
+html {   font-family: 'HelveticaNeue-UltraLight', 'Helvetica Neue UltraLight', 'Helvetica Neue', Arial, Helvetica, sans-serif;}
+
 body {
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   width: 100%;
   position: absolute;
 }
@@ -43,13 +46,28 @@ path {
     font-size: 14px;
 }
 
+body {
+    background-color: #fcfcfc;
+}
+
+.header {
+    color: #ee6e73;
+    font-weight: 300;
+}
 </style>
+</head>
+
 <body>
-    <h1>Jasmine Test Results</h1>
+    <h1 class="header">Jasmine Test Results</h2>
+    
     <form display="block">
-  <label><input type="radio" name="mode" value="size"> Expectations</label>
-  <label><input type="radio" name="mode" value="count" checked> Specs</label>
-</form>
+        <p>
+        <input name="mode" type="radio" id="expectations" value="size"/>
+        <label for="expectations">Expectations&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+        <input name="mode" type="radio" id="specs" value="count" checked />
+        <label for="specs">Specs</label>
+        </p>
+    </form>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
@@ -240,3 +258,6 @@ function arcTweenZoom(d) {
 }
 
 </script>
+</body>
+</html>
+
