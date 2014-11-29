@@ -2,8 +2,9 @@ var connect = require('connect');
 var serveStatic = require('serve-static');
 var http = require('http');
 var path = require('path');
-var Jasmine = require('./lib/jasmine.js');
+var JasmineRunner = require('./lib/jasmineRunner.js');
 var fs = require('fs');
+var errorhandler = require('errorhandler');
 
 var util = require('util');
 
@@ -21,18 +22,27 @@ start: function(options) {
          })
     .use('/test/execute', function(request, response, next) {
          response.writeHead(200, {"Context-Type": "application/json"});
-         var jasmine = new Jasmine(request);
-         jasmine.loadConfig(options);
+         var jasmineRunner = new JasmineRunner(request);
+         jasmineRunner.loadConfig(options);
          
-         jasmine.configureDefaultReporter({onComplete: function(passed) {
+         jasmineRunner.configureDefaultReporter({onComplete: function(passed) {
                                           response.end( request.getD3ReportAsString());
                                           console.log(request.getD3ReportAsString());
                                           } });
-         jasmine.execute();
+         
+         console.error = console.log;
+         try {
+         jasmineRunner.execute();
+         }
+         catch (ex) {
+         console.log(ex);
+         }
          
            })
     .use('/test/jasmine', serveStatic(jasmineRoot))
-    .use('/test', serveStatic(publicRoot));
+    .use('/test', serveStatic(publicRoot))
+    .use(errorhandler({log: errorNotification}));
+ 
     this.server = http.createServer(app);
     this.server.listen(options.port || 8000, 'localhost');
 },
@@ -45,4 +55,10 @@ run: function(options) {
     this.start(options);
 }
 };
+
+function errorNotification(err, str, req) {
+    var title = 'Error in ' + req.method + ' ' + req.url;
+    
+    console.log(title);
+}
 

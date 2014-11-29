@@ -16,22 +16,55 @@
 
 var util = require('util');
 var Handle = process.binding('handle_wrap').Handle;
+var kOnTimeout = 0;
+
+function invokeTimeoutHandler() {
+    return this[kOnTimeout].apply(this, arguments);
+}
 
 function Timer() {
-    this._timer = {};
-  Handle.call( this, this._timer );
+    this._nativeTimer = io.nodekit.console.timer();
+    this._nativeTimer.onTimeout = invokeTimeoutHandler.bind(this);
+
+    Handle.call( this, this._nativeTimer );
 }
+
 util.inherits( Timer, Handle );
 
-Timer.prototype.start = function(msec, repeat) {
-    
-    this._timer._timeoutID  = io.nodekit.console.setTimeout(this[0], msec);
-}
-
-Timer.prototype.stop = function() {
-    io.nodekit.console.clearTimeout(this._timer._timeoutID);
-}
+Timer.kOnTimeout = kOnTimeout;
 
 Timer.now = function() { return new Date().getTime(); }
+
+
+Timer.prototype.start = function(delay, period) {
+     this._nativeTimer.start(delay, period);
+     return 0;
+ };
+ 
+ Timer.prototype.stop = function() {
+     this._nativeTimer.stop();
+     return 0;
+ };
+ 
+ Timer.prototype.setRepeat = function(period) {
+      this._nativeTimer.repeatPeriod = period;
+ };
+ 
+ Timer.prototype.getRepeat = function() {
+    return this._nativeTimer.repeatPeriod;
+ };
+ 
+ Timer.prototype.again = function() {
+     if (!this[kOnTimeout]) {
+         return -22;
+     }
+         
+     var repeatPeriod = this.getRepeat();
+     if (repeatPeriod) {
+         this.stop();
+         this.start(repeatPeriod, repeatPeriod);
+     }
+     return 0;
+ };
 
 module.exports.Timer = Timer;

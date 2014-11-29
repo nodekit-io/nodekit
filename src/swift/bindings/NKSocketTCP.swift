@@ -55,7 +55,7 @@ public class NKSocketTCP: NKSocketTCPConnection {
     
     private func emitConnection(tcp: JSValue!)
     {
-      dispatch_sync(NKeventQueue, {
+      dispatch_sync(NKGlobals.NKeventQueue, {
         self._tcp!.invokeMethod("emit", withArguments:["connection", tcp])
         return
         
@@ -64,7 +64,7 @@ public class NKSocketTCP: NKSocketTCPConnection {
     
     private func emitAfterConnect()
     {
-        dispatch_sync(NKeventQueue, {
+        dispatch_sync(NKGlobals.NKeventQueue, {
             self._tcp!.invokeMethod("emit", withArguments:["afterConnect", self._tcp!])
             return
             
@@ -152,7 +152,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     private func emitData(data: NSData!)
     {
         
-         dispatch_sync(NKeventQueue, {
+         dispatch_sync(NKGlobals.NKeventQueue, {
             var str : NSString! = data.base64EncodedStringWithOptions(.allZeros)
             self._tcp!.invokeMethod( "emit", withArguments:["data", str])
         });
@@ -162,7 +162,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     private func emitEnd()
     {
         var tcp = self._tcp!;
-         dispatch_sync(NKeventQueue, {
+         dispatch_sync(NKGlobals.NKeventQueue, {
             tcp.invokeMethod( "emit", withArguments:["end", ""])
             return
         });

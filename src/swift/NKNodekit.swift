@@ -18,7 +18,9 @@
 
 import Cocoa
 
-let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
+struct NKGlobals {
+    static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
+}
 
 class NKNodekit {
     

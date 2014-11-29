@@ -3,7 +3,7 @@ util = require('util'),
 glob = require('glob');
 
 module.exports = Jasmine;
-module.exports.JsonReporter = require('./json_reporter');
+module.exports.JsonReporter = require('./jsonReporter');
 
 function Jasmine(container, options) {
     options = options || {};
@@ -66,7 +66,7 @@ Jasmine.prototype.loadSpecs = function() {
                            delete require.cache[file];
                            }
                            
-                           
+                           console.log(file);
                            require(file);
                            });
 };
@@ -98,6 +98,7 @@ Jasmine.prototype.addSpecFiles = function(files) {
     files.forEach(function(specFile) {
                   var filePaths = glob.sync(path.join(jasmineRunner.projectBaseDir, jasmineRunner.specDir, specFile));
                   filePaths.forEach(function(filePath) {
+                                    
                                     if(jasmineRunner.specFiles.indexOf(filePath) === -1) {
                                     jasmineRunner.specFiles.push(filePath);
                                     }

@@ -25,7 +25,7 @@ internal class NKFileSystem: NSObject {
     }
     
     class func getDirectoryAsync(module: String, completionHandler: nodeCallBack) {
-        dispatch_async(NKeventQueue,{
+        dispatch_async(NKGlobals.NKeventQueue,{
             completionHandler(NSNull(), self.getDirectory(module))
         });
     }
@@ -92,7 +92,7 @@ internal class NKFileSystem: NSObject {
     }
     
     class func getContentAsync(storageItem: NSDictionary! , completionHandler: nodeCallBack) {
-        dispatch_async(NKeventQueue, {
+        dispatch_async(NKGlobals.NKeventQueue, {
             completionHandler(NSNull(), self.getContent(storageItem))
         });
     }

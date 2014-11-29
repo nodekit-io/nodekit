@@ -3,9 +3,13 @@ var jasmine = require('test/server.js');
 
 jasmine.run(
               {
-              "spec_dir": "spec",
+              "spec_dir": "spec-node",
               "spec_files": [
-                             "*[sS]pec.js"
+                              "dgramSpec.js",
+                             "console.js",
+                             "assertSpec.js"
+                       
+                          /*   "*[sS]pec.js" */
                              ],
               "helpers": [
                           "helpers/*.js"

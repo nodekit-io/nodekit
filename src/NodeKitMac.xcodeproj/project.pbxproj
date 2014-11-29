@@ -27,6 +27,7 @@
 		E4B74A6819C7B3CD00F07883 /* app in Resources */ = {isa = PBXBuildFile; fileRef = E4B74A6719C7B3CD00F07883 /* app */; };
 		E4B74A6C19C7B5D700F07883 /* NodeKitIcons.icns in Resources */ = {isa = PBXBuildFile; fileRef = E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */; };
 		E4B74A6E19C7B7BC00F07883 /* app-shared in Resources */ = {isa = PBXBuildFile; fileRef = E4B74A6D19C7B7BC00F07883 /* app-shared */; };
+		E4CD82101A292AB0005AB24E /* NKTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4F3AD291A29235300BCEB94 /* NKTimer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -57,6 +58,7 @@
 		E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = NodeKitIcons.icns; path = swift/NodeKitIcons.icns; sourceTree = SOURCE_ROOT; };
 		E4B74A6D19C7B7BC00F07883 /* app-shared */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "app-shared"; sourceTree = "<group>"; };
 		E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NodeKitMac.entitlements; sourceTree = "<group>"; };
+		E4F3AD291A29235300BCEB94 /* NKTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKTimer.swift; path = swift/bindings/NKTimer.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -141,6 +143,7 @@
 				26CBF11E1A1790090018A442 /* NKFileSystem.swift */,
 				26CBF11F1A1790090018A442 /* NKSocketTCP.swift */,
 				26CBF1201A1790090018A442 /* NKSocketUDP.swift */,
+				E4F3AD291A29235300BCEB94 /* NKTimer.swift */,
 			);
 			name = bindings;
 			sourceTree = "<group>";
@@ -224,6 +227,7 @@
 			files = (
 				26B3A0651A17D90B00C0E63C /* NKUrlFileDecode.swift in Sources */,
 				E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */,
+				E4CD82101A292AB0005AB24E /* NKTimer.swift in Sources */,
 				E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */,
 				26CBF1211A1790090018A442 /* NKFileSystem.swift in Sources */,
 				E4B74A5C19C7B3AA00F07883 /* NKJavascriptBridge.m in Sources */,

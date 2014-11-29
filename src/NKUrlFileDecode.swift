@@ -41,8 +41,8 @@ class NKUrlFileDecode: NSObject {
         
         urlPath = request.URL.path!.stringByDeletingLastPathComponent
         
-        fileExtension = request.URL.pathExtension!.lowercaseString
-        fileName = request.URL.lastPathComponent!
+        fileExtension = request.URL.pathExtension.lowercaseString
+        fileName = request.URL.lastPathComponent
         if (fileExtension.length == 0)
         {
             fileBase = fileName

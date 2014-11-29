@@ -40,4 +40,5 @@ typedef void (^nodeEventEmit)(NSString *event, NSArray *args);
 + (void) setNodePaths:(NSString *)directory;
 + (JSValue*)createNativeStream;
 + (JSValue*)createNativeSocket;
++ (JSValue*)createTimer;
 @end

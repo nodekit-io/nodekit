@@ -144,12 +144,19 @@ static urlNavigator _urlNavigator = nil;
                     });
         };
         
+        console[@"timer"] = ^(){
+            
+            NKTimer *timer =[[NKTimer alloc] init];
+            
+            return [timer Timer];
+        };
+        
         console[@"setTimeout"] = ^(long delayInSeconds, JSValue *callBack){
             
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
                 [callBack callWithArguments:@[]];
             });
-        
+            
         };
         
         console[@"loadString"] = ^(NSString* html, NSString* title){
@@ -187,6 +194,12 @@ static urlNavigator _urlNavigator = nil;
 {
     JSValue *socket = [_context[@"io"][@"nodekit"][@"createNativeSocket"] callWithArguments:@[]];
     return socket;
+}
+
++ (JSValue*)createTimer
+{
+       JSValue *timer = [JSValue valueWithObject:@{  @"platform": @"darwin"                                                         }  inContext:_context];
+    return timer;
 }
 
 + (void)registerStringViewer:(stringViewer)callBack

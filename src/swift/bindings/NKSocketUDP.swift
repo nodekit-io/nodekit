@@ -78,7 +78,7 @@
     private func emitRecv(data: NSData!, host: NSString!, port: NSNumber!)
     {
         var str : NSString! = data.base64EncodedStringWithOptions(.allZeros)
-        dispatch_sync(NKeventQueue, {
+        dispatch_sync(NKGlobals.NKeventQueue, {
             
         self._udp!.invokeMethod( "emit", withArguments:["recv", str, host, port ])
             return
