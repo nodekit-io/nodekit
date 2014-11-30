@@ -5,8 +5,9 @@ jasmine.run(
               {
               "spec_dir": "spec-node",
             "spec_files": [
+                           "fsSpec.js"
                        
-                           "*[sS]pec.js" 
+                        /*  "*[sS]pec.js"*/
                            ],
               "spec_files2": [
                               "assertSpec.js",

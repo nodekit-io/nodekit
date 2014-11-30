@@ -2,7 +2,7 @@
 var helper = require('./specHelper');
 var vm     = require('vm');
 
-describe('vm functions', function() {
+describe('VM functions', function() {
   it('should allow creation of new contexts', function() {
     try {
       var context = vm.createContext();
@@ -77,7 +77,7 @@ describe('vm functions', function() {
 
 });
 
-describe('Script objects', function() {
+describe('VM Script objects', function() {
   it('should allow creating a Script and running in multiple new contexts', function() {
     var script = vm.createScript( '2+foo' );
 

@@ -6,29 +6,29 @@ describe("fs module", function() {
 
   var tmpFile,
       basedir,
-      data = 'now is the winter of our discontent made glorious summer',
-      tempDir = java.lang.System.getProperty('java.io.tmpdir');
-
+      data = 'now is the winter of our discontent made glorious summer';
+         
   beforeEach(function() {
-    tmpFile = java.io.File.createTempFile("pork-recipes", ".txt");
-    basedir = tmpFile.getParent();
+    tmpFile = helper.writeFixtureSync();
+    basedir = io.nodekit.fs.getTempDirectory();
     helper.testComplete(false);
   });
 
   afterEach(function() {
-    tmpFile.delete();
+            fs.unlinkSync(tmpFile);
   });
 
   it("should have a mkdirSync() function", function(){
-    var newDirectory = new java.io.File(basedir + "/waffle-recipes");
-    expect(newDirectory.exists()).toBe(false);
+     
+    var newDirectory = basedir + "/waffle-recipes";
+    expect(fs.existsSync(newDirectory)).toBe(false);
     expect(typeof fs.mkdirSync).toBe('function');
     fs.mkdirSync(basedir + "/waffle-recipes", 0755);
-    expect(newDirectory.exists()).toBe(true);
-    newDirectory.delete();
+    expect(fs.existsSync(newDirectory)).toBe(true);
+     fs.rmdirSync(newDirectory);
   });
 
-  it("should have a mkdir() function", function() {
+ /* it("should have a mkdir() function", function() {
     var newDirectory = new java.io.File(basedir + "/waffle-recipes");
     newDirectory.delete();
     expect(typeof fs.mkdir).toBe('function');
@@ -586,6 +586,6 @@ describe("fs module", function() {
 
     });
 
-  });
+  });*/
 
 });

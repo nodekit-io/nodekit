@@ -106,7 +106,8 @@ FileSystem.storageItemtoItemWithStat = function (storageItem) {
     }
     else
     {
-        throw new FSError('ENOENT');
+        return;
+   //     throw new FSError('ENOENT');
     }
     
 
@@ -119,6 +120,9 @@ FileSystem.storageItemtoItemWithStat = function (storageItem) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.loadContentSync = function (file) {
+    if (typeof(file) == 'undefined')
+        return null;
+    
     var contentBase64 = io.nodekit.fs.getContent(file._storageItem);
     var content = new Buffer( contentBase64, 'base64');
     file.setContent(content);

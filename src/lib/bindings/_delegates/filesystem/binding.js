@@ -533,6 +533,7 @@ Binding.prototype.rename = function(oldPath, newPath, callback) {
  */
 Binding.prototype.mkdir = function(pathname, mode, callback) {
      maybeCallback(callback, this, function () {
+                   
         return notImplemented();
     });
 };

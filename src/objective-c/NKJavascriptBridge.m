@@ -62,6 +62,12 @@ static urlNavigator _urlNavigator = nil;
             return [socket UDP];
         };
         
+        fs[@"getTempDirectory"] = (NSString*)^(){
+            
+            NSURL *fileURL = [NSURL fileURLWithPath:NSTemporaryDirectory()];
+            return [fileURL path];
+        };
+        
         
         fs[@"stat"] = (NSDictionary*)^(NSString* path){
             return [NKFileSystem stat:path];
