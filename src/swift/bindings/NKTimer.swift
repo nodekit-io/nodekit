@@ -65,7 +65,6 @@
     
     lazy var block_setOnTimeout : @objc_block (JSValue!) -> Void = {
         (handler: JSValue!) -> Void in
-        
         self._handler = handler
     
     }
@@ -75,11 +74,26 @@
         
         self._nsTimer!.invalidate();
         self._nsTimer = nil;
+        
+    }
+    
+    lazy var block_close : @objc_block () -> Void = {
+        () -> Void in
+        self._nsTimer!.invalidate();
+        self._nsTimer = nil;
         self._handler = nil;
+        
+        self._timer!.setObject(nil, forKeyedSubscript:"onTimout")
+        self._timer!.setObject(nil, forKeyedSubscript:"setOnTimeout")
+        self._timer!.setObject(nil, forKeyedSubscript:"close")
+        self._timer!.setObject(nil, forKeyedSubscript:"start")
+        self._timer!.setObject(nil, forKeyedSubscript:"stop")
+        
         self._timer = nil;
         
     }
     
+
     lazy var block_start : @objc_block (NSNumber!, NSNumber!) -> Void = {
         (delay: NSNumber!, repeat: NSNumber!) -> Void in
         
@@ -103,10 +117,8 @@
     }
     
     @objc func timeOutHandler() {
-      
         dispatch_sync(NKGlobals.NKeventQueue, {
-            
-            self._handler?.invokeDefaultMethodWithArguments([])
+            self._handler?.callWithArguments([])
             var seconds: NSTimeInterval = self._repeatPeriod.doubleValue / 1000
             if (seconds>0) {
                 self.scheduleTimeout(seconds)

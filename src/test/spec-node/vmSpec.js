@@ -10,7 +10,6 @@ describe('vm functions', function() {
       expect(typeof context).toBe("object");
       expect(context.dynjs.runtime).not.toBe( undefined );
     } catch(e) {
-      e.printStackTrace();
       this.fail('Exception caught ' + e);
     }
   });

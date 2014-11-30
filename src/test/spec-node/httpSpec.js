@@ -15,9 +15,10 @@ describe('http', function(){
     };
   });
 
-  it('createServer should return a Server', function(done) {
-    expect(http.createServer() instanceof http.Server).toBeTruthy();
-    helper.testComplete(true);
+ it('createServer should return a Server', function() {
+    expect(http.createServer(function() {
+                             helper.testComplete(true);}
+                             ) instanceof http.Server).toBeTruthy();
   });
 
   it('should fire a listening event', function() {

@@ -13,6 +13,38 @@ body {
   
 }
 
+li.passed{
+    margin-bottom:0.5em;
+    text-indent:0.4em;
+    font-weight:bold;
+    list-style-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAjhJREFUOBGlU0toU0EUvTMvffk0JDG1ilioJrHgQmlDIrYILroSpCBVrAgBF1o/G124UFuJP0Q0rQtdCi4UxZi40434wxJRqsHYtILFxE8pNGnzeenLy3ye7wUiNRSx9cKZuTP3nDNzGQbgPyIYda/Cy9UHI54WjIRRtByDYKTNhTG8YUxtNCzVYCC6YSNG8EoTr+SU71tSC+cfejpEDK+NInWoHB5d6Ju8/88Ggw88nRzBs6YVxFkq4awC7IB++2oLF+94t2rFmMFZ6Dq940usvq2zYVc3RjzSspbZv6dxgSh075VAKq/zcE0c6N0PmBqfXnrS1r3QIBh27eSMR1pbmX02g0oVArcvB1Ivaxysn7zZT2Fk4gb0bN9lITKPBMPuLp0wGHb3Ecrv+rw2e0VBamYGpo2i5WRNrM/o6M1mq6nBMtHhF5wCZuZmhxtejHzNGQVTtEzl3Vv8NptUkiDxnhUoUTtDh78l/zDQF8eH1zkEK//Y7hNXCwIVLSYbJOIENrU3gFwuwudxLhXycG7oUPraQrGeV1/h+olUDjj1xt+RLOcinS8XYGBPEublPGRmBCYVYWzoYDpUL/5toCeh/qkMJsj74a0yW1ZM/F5iPXDVDOlJUmSE9QIC9a8GevHqsdS0Sgy+sbg8V6lY1fFPssRA7R8+8uPnYmJ9T6gvxB7PNcoSHzU7hZ5Usnzm1qmphMZZo6FJg1WDSYOkoRqL/QUcf15MEIVvQxwpGiuroaIhV1XUDb8AL5vuvMxUGucAAAAASUVORK5CYII=);
+}
+
+li.failed{
+    margin-bottom:0.5em;
+    text-indent:0.4em;
+    font-weight:bold;
+    list-style-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAkJJREFUOBGVUV1Ik1EYfs453/n8pnNLnRqFulpJEWheKBljYkTgIIsu6qKLIIguAsPriHYREf1Q5EVGERSmNylpuyssJjGoKKEig0zBukln+3Fbc9/29gk5v41JdG7O+z4/7885eFRdvf3r2Z6JxI1rMy8at13AP849oHLcWd8/5T3wzW+1XuStJ44/dR3sclvqNzo9XfvOjddU9q9XYwDY09rcFNjp6TgZjyUz4WRyUtFUzYbwAhD9CV4hZKfHdfrDs7jneSS1txcIrxTzAdxttT5ua9l9OCREIjj65MyRSOxurtFYbW1vqMuzQEfbidodRFssNFUm5u8AjkHA/VmToYSzjl5VVb02iqk5Y2EwbpG3ohXqMlVIonKFPkkWm+VMX1QljUr+oFBfNB8C6iYkn4yonOKc0TwDDXJ+pajYAJVCIgqEUjrJDAgZAiycwcGpE9lCZZH8vtH9LWMLcYB+MEZ+wfxzJSxNdkFDUvQVsaxBN4Hadwy/lgxz2Bh9WHJjG6Bf4FDCIXVqULNXgaY1hynyGd8UYGwuZuz7WzIKqGzGRKNPiGPk0uijXc3Dc5oRjsEIB+klnGY1nr4ONObIv8GwqlymzZaVVU7lccZYNdN2a5rKJKVtnAZUfilPYErelKtfpm1y0QSB15Vq3Vv3dyjYsQmsVCEhsrfNAnMcjC17kUHpiPEuqzhfWta/o6UZ6PaCGmqy0SSSq2Th3QNMv09l+hoY35XHvXS3BdPne/Sxqg0P84h1Ep/x6OtQ/w//AUOEyPblPXBKAAAAAElFTkSuQmCC);
+}
+
+li.failure{
+    margin-bottom:0.5em;
+    text-indent:0em;
+    font-weight:normal;
+    list-style-type: none;
+    list-style-image:none;
+    margin-right:20px;
+}
+
+
+li.blank{
+    margin-bottom:0.5em;
+    text-indent:0.4em;
+    font-weight:bold;
+    list-style-type: none;
+    list-style-image:none;
+}
+
 .graph {
     position: relative;
     display: block;
@@ -24,7 +56,7 @@ form {
   position: absolute;
   display: block;
   right: 20px;
-  bottom: 10px;
+  top: 10px;
   z-index: 5;
 }
 
@@ -57,6 +89,8 @@ body {
     color: #ee6e73;
     font-weight: 300;
 }
+
+
 </style>
 </head>
 
@@ -113,6 +147,9 @@ var tooltip = d3.select("body").append("div")
     .style("opacity", 0);
     
     
+var toplist = d3.select("body").append("ul");
+
+    
 var tooltipHtml = function(d) {
     
     var html = "<b>" + d.type + ": " + d.description + "</b>";
@@ -146,6 +183,50 @@ var tooltipHtml = function(d) {
         
         return html;
 };
+
+function makeMenu(jsonObj, container) {
+    container = container || document.body;
+    
+    var ul = document.createElement('ul');
+    var li = document.createElement('li');
+    
+    if (jsonObj.type == "it")
+      li.innerHTML = "it " + jsonObj.description
+    else
+      li.innerHTML = jsonObj.description + " " + jsonObj.type.toLowerCase();
+
+
+    if (jsonObj.passed)
+    {
+       li.className = "passed"
+    }
+    else
+    {
+       li.className = "failed";
+       
+       if (jsonObj.failures) {
+           var ul2 = document.createElement('ul');
+            for(var i=0; i<jsonObj.failures.length; i++) {
+                  var li2 = document.createElement('li');
+                  li2.className = "failure";
+                  li2.innerHTML = jsonObj.failures[i].message;
+                  ul2.appendChild(li2);
+            }
+            li.appendChild(ul2);
+       }
+    }
+    ul.appendChild(li);
+    container.appendChild(ul);
+    
+    if(jsonObj.children) {
+        for(var i=0; i<jsonObj.children.length; i++) {
+            li = document.createElement('li');
+            li.className = "blank";
+            makeMenu(jsonObj.children[i], li);
+            ul.appendChild(li);
+        }
+    }
+}
     
 
 // Keep track of the node that is currently being displayed as the root.
@@ -155,6 +236,9 @@ var node = null;
 
 d3.json("/test/execute?fmt=json", function(error, root) {
     node = root;
+        
+      
+        makeMenu(root);
         
   var slices = svg.datum(root).selectAll("path")
       .data(partition.nodes)
@@ -190,13 +274,14 @@ d3.json("/test/execute?fmt=json", function(error, root) {
        // .attr("display", function(d) { return d.depth ? "none" : null; }) // only inner ring
         
         var text = slices.append("text")
-         .attr("display", function(d) { if ((d.depth === 0)) return null; else return "none"; })
+        .attr("display", function(d) { if ((d.depth === 0)) return null; else return "none"; })
         .attr("text-anchor", "middle")
         .text(function(d) {
-              return d.passed ? "Passed" + " " + d.durationSec + " s" : "Failed" + " " + d.durationSec + " s"
+              return d.passedCount + "/" + d.totalCount + " in " + d.durationSec + " s";
               });
         
-       
+        
+        
   d3.selectAll("input").on("change", function change() {
     var value = this.value === "count"
         ? function() { return 1; }

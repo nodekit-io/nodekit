@@ -17,9 +17,9 @@ describe('The path module', function() {
     if(isWindows) {
       expect(path.join('/foo', 'bar', 'baz/asdf', 'quux', '..')).toBe("\\foo\\bar\\baz\\asdf");
     } else {
-      expect( path.join('/foo', 'bar', 'baz/asdf', 'quux', '..') ).toBe("/foo/bar/baz/asdf");
-    }
-  });
+      expect(path.join('/foo', 'bar', 'baz/asdf2', 'quux', '..')).toBe("/foo/bar/baz/asdf2");
+     }
+     });
 
   it('should pass testResolve', function() {
     if(isWindows) {

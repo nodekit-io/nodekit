@@ -55,11 +55,14 @@ public class NKSocketTCP: NKSocketTCPConnection {
     
     private func emitConnection(tcp: JSValue!)
     {
+    if (self._tcp != nil)
+    {
       dispatch_sync(NKGlobals.NKeventQueue, {
         self._tcp!.invokeMethod("emit", withArguments:["connection", tcp])
         return
         
         });
+        }
      }
     
     private func emitAfterConnect()
@@ -161,11 +164,14 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     
     private func emitEnd()
     {
+        if (self._tcp != nil)
+        {
         var tcp = self._tcp!;
          dispatch_sync(NKGlobals.NKeventQueue, {
             tcp.invokeMethod( "emit", withArguments:["end", ""])
             return
         });
+        }
     }
     
     lazy var block_fd : @objc_block () -> NSNumber = {
@@ -186,7 +192,15 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
         [unowned self] () -> JSValue in
         var address: NSString! = self._socket!.localHost
         var port : NSNumber = NSNumber(unsignedShort: self._socket!.localPort)
-        var resultDictionary : NSDictionary = ["address": address, "port": port]
+        var resultDictionary : NSDictionary
+        if (address != nil)
+        {
+           resultDictionary = ["address": address, "port": port]
+        }
+        else
+        {
+            resultDictionary =  ["address": "", "port": 0]
+       }
         var result = JSValue(object: resultDictionary, inContext: self._tcp!.context)
         return result
     }
@@ -213,19 +227,25 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     public func socketDidDisconnect(socket: GCDAsyncSocket, withError err: NSError){
         self._socket = nil
         self.emitEnd()
+        if (self._tcp != nil )
+        {
         self._tcp!.setObject(nil, forKeyedSubscript:"writeString")
         self._tcp!.setObject(nil, forKeyedSubscript:"fd")
         self._tcp!.setObject(nil, forKeyedSubscript:"remoteAddress")
         self._tcp!.setObject(nil, forKeyedSubscript:"localAddress")
         self._tcp!.setObject(nil, forKeyedSubscript:"close")
+        }
         
         if (self._server? != nil) {
             self._server!.connectionDidClose(self)
         } else
         {
+            if (self._tcp != nil )
+            {
             self._tcp!.setObject(nil, forKeyedSubscript:"bind")
             self._tcp!.setObject(nil, forKeyedSubscript:"listen")
             self._tcp!.setObject(nil, forKeyedSubscript:"connect")
+            }
         }
         
         self._tcp = nil;

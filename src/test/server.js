@@ -4,8 +4,6 @@ var http = require('http');
 var path = require('path');
 var JasmineRunner = require('./lib/jasmineRunner.js');
 var fs = require('fs');
-var errorhandler = require('errorhandler');
-
 var util = require('util');
 
 module.exports = {
@@ -27,22 +25,14 @@ start: function(options) {
          
          jasmineRunner.configureDefaultReporter({onComplete: function(passed) {
                                           response.end( request.getD3ReportAsString());
-                                          console.log(request.getD3ReportAsString());
-                                          } });
+                                                                              } });
          
-         console.error = console.log;
-         try {
+      //   console.error = console.log;
          jasmineRunner.execute();
-         }
-         catch (ex) {
-         console.log(ex);
-         }
-         
-           })
+            })
     .use('/test/jasmine', serveStatic(jasmineRoot))
-    .use('/test', serveStatic(publicRoot))
-    .use(errorhandler({log: errorNotification}));
- 
+    .use('/test', serveStatic(publicRoot));
+  
     this.server = http.createServer(app);
     this.server.listen(options.port || 8000, 'localhost');
 },

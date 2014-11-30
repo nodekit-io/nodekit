@@ -24,8 +24,7 @@ function invokeTimeoutHandler() {
 
 function Timer() {
     this._nativeTimer = io.nodekit.console.timer();
-    this._nativeTimer.onTimeout = invokeTimeoutHandler.bind(this);
-
+    this._nativeTimer.setOnTimeout(invokeTimeoutHandler.bind(this));
     Handle.call( this, this._nativeTimer );
 }
 
@@ -34,7 +33,6 @@ util.inherits( Timer, Handle );
 Timer.kOnTimeout = kOnTimeout;
 
 Timer.now = function() { return new Date().getTime(); }
-
 
 Timer.prototype.start = function(delay, period) {
      this._nativeTimer.start(delay, period);

@@ -52,20 +52,38 @@ function JsonReporter(container, options) {
     
     var JSONScrubber = function (parent) {
         
-        for (var childkey in parent) {
+         for (var childkey in parent) {
                    
             childvalue = parent[childkey];
-            
+          
+             if (childkey === "suites")
+             {
+                 if (typeof(childvalue) === "object"){
+                     if (Object.prototype.toString.call( childvalue ) === '[object Array]')
+                         if (childvalue.length>0)
+                         {
+                             if (childvalue[0].description == "Jasmine__TopLevel__Suite")
+                             {
+                                 parent.suites = childvalue[0].suites;
+                                 childvalue = childvalue[0].suites;
+                             }
+                         }
+                 }
+             };
+             
             if (childvalue === null) {
                 delete parent[childkey]
             } else if (Object.prototype.toString.call( childvalue ) === '[object Array]') {
               if (childvalue.length == 0) {  delete parent[childkey] }
               else  if (childkey == "specs" || childkey == "suites") {
-                  parent.children = childvalue;
+                  if (childvalue.description == "Jasmine__TopLevel__Suite")
+                      parent.children = childvalue.suites
+                  else
+                      parent.children = childvalue;
                   delete parent[childkey];
               }
             }
-            
+             
             if (typeof(childvalue) === "object"){
                  if (Object.prototype.toString.call( childvalue ) === '[object Array]')
                  {
@@ -75,7 +93,9 @@ function JsonReporter(container, options) {
                                           arraychild.type = "it"
                                         else if (childkey == "suites")
                                           arraychild.type = "Suite";
-                                        JSONScrubber(arraychild);
+                                        
+                                        if (childkey != "failures")
+                                          JSONScrubber(arraychild);
                                         });
                  }
                  else {

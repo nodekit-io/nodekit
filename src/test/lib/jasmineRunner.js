@@ -66,7 +66,7 @@ Jasmine.prototype.loadSpecs = function() {
                            delete require.cache[file];
                            }
                            
-                           console.log(file);
+                        //   console.log(file);
                            require(file);
                            });
 };
