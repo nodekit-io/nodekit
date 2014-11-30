@@ -110,6 +110,21 @@ internal class NKFileSystem: NSObject {
         
         return content
     }
+    
+    
+    class func writeContent(storageItem: NSDictionary!, str: NSString!) -> Bool {
+        
+        var path = storageItem["path"] as NSString!
+        var data = NSData(base64EncodedString: str, options: .allZeros)
+        
+        return data!.writeToFile(path, atomically: false)
+        }
+    
+    class func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: nodeCallBack)  {
+        dispatch_async(NKGlobals.NKeventQueue, {
+            completionHandler(NSNull(), self.writeContent(storageItem, str: str))
+        });
+    }
 
 
     class func getSource(module: String) -> NSString! {
@@ -129,11 +144,40 @@ internal class NKFileSystem: NSObject {
         return content!
     }
     
-    class func write (path: String, content: String, encoding: NSStringEncoding = NSUTF8StringEncoding) -> Bool {
-        return content.writeToFile(path, atomically: true, encoding: encoding, error: nil)
+    class func mkdir (path: String) -> Bool {
+        
+        var err: NSError?
+        
+        return NSFileManager.defaultManager().createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil, error: &err)
+
     }
     
-    class func getPath(module: String) -> String {
+    class func rmdir (path: String) -> Bool {
+        
+        var err: NSError?
+        
+        return NSFileManager.defaultManager().removeItemAtPath(path, error: &err)
+            
+        
+    }
+
+    class func move (path: String, path2: String) -> Bool {
+        
+        var err: NSError?
+        
+        return NSFileManager.defaultManager().moveItemAtPath(path, toPath: path2, error: &err)
+    }
+    
+    class func unlink (path: String) -> Bool {
+        
+        var err: NSError?
+        
+        return NSFileManager.defaultManager().removeItemAtPath(path, error: &err)
+        
+        
+    }
+    
+   class func getPath(module: String) -> String {
         
         var directory = module.stringByDeletingLastPathComponent
         var fileName = module.lastPathComponent

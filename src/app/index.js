@@ -5,7 +5,7 @@ jasmine.run(
               {
               "spec_dir": "spec-node",
             "spec_files": [
-                           "fsSpec.js"
+                          "fsSpec.js"
                        
                         /*  "*[sS]pec.js"*/
                            ],

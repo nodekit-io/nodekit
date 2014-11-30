@@ -14,6 +14,7 @@ function Jasmine(container, options) {
     this.env = this.jasmine.getEnv();
     this.reportersCount = 0;
     this.container = container;
+    this.jasmine.DEFAULT_TIMEOUT_INTERVAL = 400;
 }
 
 Jasmine.prototype.addSpecFile = function(filePath) {

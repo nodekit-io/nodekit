@@ -73,6 +73,23 @@ static urlNavigator _urlNavigator = nil;
             return [NKFileSystem stat:path];
         };
         
+        fs[@"mkdir"] = (NSNumber*)^(NSString* path){
+            return [NKFileSystem mkdir:path];
+        };
+        
+        
+        fs[@"rmdir"] = (NSNumber*)^(NSString* path){
+            return [NKFileSystem rmdir:path];
+        };
+        
+        fs[@"move"] = (NSNumber*)^(NSString* path, NSString* path2){
+            return [NKFileSystem move:path path2:path2];
+        };
+        
+        fs[@"unlink"] = (NSNumber*)^(NSString* path){
+            return [NKFileSystem unlink:path];
+        };
+        
         fs[@"statAsync"] = ^(NSString* path, JSValue *callBack){
             [NKFileSystem statAsync:path completionHandler:^(id error, id value){[callBack callWithArguments:@[error, value]];}];
         };
@@ -126,7 +143,8 @@ static urlNavigator _urlNavigator = nil;
            return [NKFileSystem getContent: storageItem];
         };
         
-        /**
+        
+          /**
          * Get file content asynchronously
          * @param {string} path Path to directory.
          * @param {Function(err, value)} callBack the callback handler where value
@@ -135,6 +153,30 @@ static urlNavigator _urlNavigator = nil;
         fs[@"getContentAsync"] = ^(NSDictionary* storageItem, nodeCallBack callBack){
             [NKFileSystem getContentAsync: storageItem completionHandler:callBack];
         };
+        
+        
+        /**
+         * Get file content synchronously
+         * @param {string} path Path to directory.
+         * @param {string} content Content to write in base64
+         * @return {bool} success
+         */
+        fs[@"writeContent"] = (NSNumber*)^(NSDictionary* storageItem, NSString* content){
+            return [NKFileSystem writeContent:storageItem str:content];
+        };
+        
+        
+        /**
+         * Get file content synchronously
+         * @param {string} path Path to directory.
+         * @param {string} content Content to write in base64
+         * @param {Function(err, value)} callBack the callback handler where value
+         * @return {bool} success
+         */
+        fs[@"writeContentAsync"] = (NSNumber*)^(NSDictionary* storageItem, NSString* content,  nodeCallBack callBack){
+            [NKFileSystem writeContentAsync:storageItem str:content completionHandler:callBack];
+        };
+        
         
         fs[@"eval"] = (JSValue*)^(NSString* script, NSString* filename){
             return [[JSContext currentContext] evaluateScript:script withSourceURL:[NSURL URLWithString:[@"file://" stringByAppendingString:filename]]];

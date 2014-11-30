@@ -113,6 +113,41 @@ FileSystem.storageItemtoItemWithStat = function (storageItem) {
 
 };
 
+/**
+ * Get a file system item.
+ * @param {string} filepath Path to item.
+ * @return {Promise<Item>} The item (or null if not found).
+ */
+FileSystem.prototype.addStorageItem = function (item) {
+    storageItem={};
+    var stat = item.getStats();
+    
+    if (stat) {
+        storageItem.path = item.getPath();
+        storageItem.birthtime = stat.birthtime;
+        storageItem.mtime = stat.mtime;
+        storageItem.atime = stat.atime;
+        storageItem.ctime = stat.ctime;
+        
+        if (stat._isFolder)
+        {
+            storageItem.filetype = "Directory"
+        }
+        else
+        {
+            storageItem.filetype = "File"
+           };
+        item._storageItem = storageItem;
+        return storageItem;
+    }
+    else
+    {
+        throw new FSError('ENOENT');
+    }
+    
+};
+
+
 
 /**
  * Load Content
@@ -120,13 +155,18 @@ FileSystem.storageItemtoItemWithStat = function (storageItem) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.loadContentSync = function (file) {
+    
     if (typeof(file) == 'undefined')
         return null;
     
+    try {
     var contentBase64 = io.nodekit.fs.getContent(file._storageItem);
     var content = new Buffer( contentBase64, 'base64');
     file.setContent(content);
     return file;
+    }
+    catch (ex)
+    {console.log(ex);}
 };
 
 /**
@@ -145,12 +185,125 @@ FileSystem.prototype.loadContentAsync = function (file) {
 };
 
 /**
+ * Write Content
+ * @param {file} file
+ * @return {bool} Success.
+ */
+FileSystem.prototype.writeContentSync = function (file) {
+    if (typeof(file) == 'undefined')
+        return null;
+    
+    if (typeof(file._storageItem) == 'undefined')
+        return null;
+    
+    var contentBase64 = file.getContent().toString('base64');
+    return io.nodekit.fs.writeContent(file._storageItem, contentBase64);
+};
+
+
+/**
+ * Write Content ASYNC
+ * @param {file} file
+ * @return {Promise<bool>} Success */
+FileSystem.prototype.writeContentAsync = function (file) {
+    
+    if (typeof(file) == 'undefined')
+        return null;
+    
+    var fs_writeContent = Promise.denodeify(function(id, str, callback){
+                                            io.nodekit.fs.writeContentAsync(id, str, callback);
+                                            });
+    
+    
+    var contentBase64 = file.getContent().toString('base64');
+    
+    return fs_writeContent(file._storageItem, contentBase64);
+};
+
+/**
+ * Write Content
+ * @param {file} file
+ * @return {Promise<Item>} The item (or null if not found).
+ */
+FileSystem.prototype.writeBufferSync = function (file, buffer) {
+    if (typeof(file) == 'undefined')
+        return null;
+    
+    var contentBase64 = buffer.toString('base64');
+    return io.nodekit.fs.writeContentSync(file._storageItem, contentBase64);
+  };
+
+
+/**
+ * Write Content ASYNC
+ * @param {file} file
+ * @return {Promise<Item>} The item (or null if not found).
+ */
+FileSystem.prototype.writeBufferAsync = function (file, buffer) {
+    
+    if (typeof(file) == 'undefined')
+        return null;
+    
+    var fs_writeContent = Promise.denodeify(function(id, buf, callback){
+                                            var contentBase64 = buf.toString('base64');
+             io.nodekit.fs.writeContentAsync(id, contentBase64, callback);
+                                            });
+    
+   
+    return fs_writeContent(file._storageItem, buffer);
+
+
+};
+
+
+/**
  * Get directory listing
  * @param {string} filepath Path to directory.
  * @return {Promise<[]>} The array of item names (or error if not found or not a directory).
  */
 FileSystem.prototype.getDirList = function (filepath) {
     var result =io.nodekit.fs.getDirectory(filepath);
+    return result;
+};
+
+/**
+ * Create directory
+ * @param {string} filepath Path to directory.
+ * @return bool
+ */
+FileSystem.prototype.mkdir = function (filepath) {
+    var result =io.nodekit.fs.mkdir(filepath);
+    return result;
+};
+
+/**
+ * Create directory
+ * @param {string} filepath Path to directory.
+ * @return bool
+ */
+FileSystem.prototype.rmdir = function (filepath) {
+    var result =io.nodekit.fs.rmdir(filepath);
+    return result;
+};
+
+/**
+ * Move or Rename File
+ * @param {string} filepath Path to source file.
+ * @param {string} filepath2 Path to target file.
+ * @return bool
+ */
+FileSystem.prototype.move = function (filepath, filepath2) {
+    var result =io.nodekit.fs.move(filepath, filepath2);
+    return result;
+};
+
+/**
+ * Delete File
+ * @param {string} filepath Path to directory.
+ * @return bool
+ */
+FileSystem.prototype.unlink = function (filepath) {
+    var result =io.nodekit.fs.unlink(filepath);
     return result;
 };
 

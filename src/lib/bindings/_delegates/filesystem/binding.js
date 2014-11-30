@@ -28,6 +28,8 @@ var FileDescriptor = require('./descriptor');
 var Directory = require('./directory');
 var SymbolicLink = require('./symlink');
 var FSError = require('./error');
+var Buffer = require('buffer').Buffer;
+var path = require('path');
 
 var constants = process.binding('constants');
 
@@ -48,9 +50,9 @@ function maybeCallback(callback, thisArg, func) {
       val = func.call(thisArg);
     } catch (e) {
       err = e;
-    }
+     }
     process.nextTick(function() {
-      if (val === undefined) {
+       if (val === undefined) {
         callback(err);
       } else {
         callback(err, val);
@@ -292,25 +294,61 @@ Binding.prototype.fstat = function (fd, callback) {
  * @return {string} File descriptor (if sync).
  */
 Binding.prototype.open = function (filepath, flags, mode, callback) {
-    
     var descriptor = new FileDescriptor(flags);
     var self=this;
     
     if (callback) {
+        
         this._system.getItemAsync(filepath).then(function(item) {
+                                                 self._system.loadContentSync(item);
+                                                 
+                                                 if (descriptor.isExclusive() && item) {
+                                                    throw new FSError('EEXIST', filepath);
+                                                 }
+                                                 
+                                                 if (descriptor.isCreate() && !item) {
+                                                 var parent = self._system.getItem(path.dirname(filepath));
+                                                 if (!parent) {
+                                                    throw new FSError('ENOENT', filepath);
+                                                 }
+                                                 if (!(parent instanceof Directory)) {
+                                                 throw new FSError('ENOTDIR', filepath);
+                                                 }
+                                                 item = new File();
+                                                 item.setPath(filepath);
+                                                 self._system.addStorageItem(item);
+                                                 
+                                                 
+                                                 if (mode) {
+                                                 item.setMode(mode);
+                                                 }
+                                                 parent.addItem(path.basename(filepath), item);
+                                                 }
                                                  
                                                  if (descriptor.isRead()) {
-                                                 
                                                  if (!item) {
-                                                    throw new FSError('ENOENT', pathname);
+                                                 throw new FSError('ENOENT', filepath);
+                                                 }
+                                                 if (!item.canRead()) {
+                                                 throw new FSError('EACCES', filepath);
+                                                 }
                                                  }
                                                  
-                                                 if (!item.canRead()) {
-                                                    throw new FSError('EACCES', pathname);
+                                                 if (descriptor.isWrite() && !item.canWrite()) {
+                                                 throw new FSError('EACCES', filepath);
                                                  }
+                                                 
+                                                 if (descriptor.isTruncate()) {
+                                                 item.setContent('');
                                                  }
+                                                 
+                                                 if (descriptor.isTruncate() || descriptor.isAppend()) {
+                                                 descriptor.setPosition(item.getContent().length);
+                                                 }
+                                                 
                                                  
                                                  descriptor.setItem(item);
+                                                 
                                                  try
                                                  {
                                                     callback(null, self._trackDescriptor(descriptor));
@@ -325,17 +363,56 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
                                                  callback(e);});
     } else
     {
-         var item = this._system.getItemSync(filepath);
-        this._system.loadContentSync(item);
+        var item = this._system.getItemSync(filepath);
+       
+        if (item)
+           this._system.loadContentSync(item);
+        
+        if (descriptor.isExclusive() && item) {
+            throw new FSError('EEXIST', pathname);
+        }
+        
+        if (descriptor.isCreate() && !item) {
+            var parent = this._system.getItemSync(path.dirname(filepath));
+            if (!parent) {
+                throw new FSError('ENOENT', filepath);
+            }
+            if (!(parent instanceof Directory)) {
+                throw new FSError('ENOTDIR', filepath);
+            }
+            item = new File();
+            item.setPath(filepath);
+            this._system.addStorageItem(item);
+            
+            if (mode) {
+                item.setMode(mode);
+            }
+            parent.addItem(path.basename(filepath), item);
+        }
+        
         if (descriptor.isRead()) {
             if (!item) {
-                throw new FSError('ENOENT', pathname);
+                throw new FSError('ENOENT', filepath);
             }
             if (!item.canRead()) {
-                throw new FSError('EACCES', pathname);
+                throw new FSError('EACCES', filepath);
             }
         }
+        
+        if (descriptor.isWrite() && !item.canWrite()) {
+            throw new FSError('EACCES', filepath);
+        }
+        
+        if (descriptor.isTruncate()) {
+            item.setContent('');
+        }
+        
+        if (descriptor.isTruncate() || descriptor.isAppend()) {
+            descriptor.setPosition(item.getContent().length);
+        }
+        
         descriptor.setItem(item);
+        
         return this._trackDescriptor(descriptor);
     }
 }
@@ -351,8 +428,6 @@ Binding.prototype.close = function(fd, callback) {
     this._untrackDescriptorById(fd);
   });
 };
-
-
 
 /**
  * Read from a file descriptor.
@@ -401,6 +476,7 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
             read = end-start;
         
         descriptor.setPosition(position + read);
+        
         callback(null, read);
     
     }
@@ -472,9 +548,97 @@ Binding.prototype.readdir = function (dirpath, callback) {
  */
 Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
     callback) {
-  return maybeCallback(callback, this, function() {
-      return notImplemented();
-  });
+    
+    if (callback) {
+        
+        var descriptor = this._getDescriptorById(fd);
+        
+        if (!descriptor.isWrite()) {
+            throw new FSError('EBADF');
+        }
+        
+        var file = descriptor.getItem();
+        if (!(file instanceof File)) {
+            // not a regular file
+            throw new FSError('EBADF');
+        }
+        
+        if (typeof position !== 'number' || position < 0) {
+            position = descriptor.getPosition();
+        }
+        
+        
+        if (!(file.getIsLoaded()))
+            this._system.loadContentSync(file);
+        
+        var content = file.getContent();
+        var newLength = position + length;
+        if (content.length < newLength) {
+            var newContent = new Buffer(newLength);
+            content.copy(newContent);
+            content = newContent;
+        }
+        var sourceEnd = Math.min(offset + length, buffer.length);
+        
+        var written = buffer.copy(content, position, offset, sourceEnd);
+        file.setContent(content);
+        
+        this._system.writeContentAsync(file)
+        .then(
+              function(item) {
+              
+              if (!item) throw new FSError('ENOENT', filepath);
+              
+              descriptor.setPosition(newLength);
+              callback(null,  written );
+              },
+              function (e) {
+              callback(e);
+              });
+    } else
+    {
+     
+        
+        var descriptor = this._getDescriptorById(fd);
+        
+        if (!descriptor.isWrite()) {
+            throw new FSError('EBADF');
+        }
+        
+        var file = descriptor.getItem();
+        if (!(file instanceof File)) {
+            // not a regular file
+            throw new FSError('EBADF');
+        }
+        
+        if (typeof position !== 'number' || position < 0) {
+            position = descriptor.getPosition();
+        }
+        
+        if (!(file.getIsLoaded()))
+            this._system.loadContentSync(file);
+        
+        var content = file.getContent();
+        var newLength = position + length;
+        if (content.length < newLength) {
+            var newContent = new Buffer(newLength);
+            content.copy(newContent);
+            content = newContent;
+        }
+        var sourceEnd = Math.min(offset + length, buffer.length);
+        
+        var written = buffer.copy(content, position, offset, sourceEnd);
+        file.setContent(content);
+        
+        var item = this._system.writeContentSync(file);
+      
+        if (!item) throw new FSError('ENOENT', filepath);
+              
+         descriptor.setPosition(newLength);
+        return written;
+    
+    
+    }
 };
 
 /**
@@ -520,7 +684,13 @@ Binding.prototype.writeString = function(fd, string, position, encoding,
  */
 Binding.prototype.rename = function(oldPath, newPath, callback) {
     return maybeCallback(callback, this, function () {
-        return notImplemented();
+                         
+                         var result =  this._system.move(oldPath, newPath);
+                         
+                         if (result)
+                           return result
+                         else
+                           throw new FSError('ENOENT', oldPath);
     });
 };
 
@@ -533,8 +703,7 @@ Binding.prototype.rename = function(oldPath, newPath, callback) {
  */
 Binding.prototype.mkdir = function(pathname, mode, callback) {
      maybeCallback(callback, this, function () {
-                   
-        return notImplemented();
+         return this._system.mkdir(pathname);
     });
 };
 
@@ -546,10 +715,9 @@ Binding.prototype.mkdir = function(pathname, mode, callback) {
  */
 Binding.prototype.rmdir = function(pathname, callback) {
      maybeCallback(callback, this, function () {
-        return notImplemented();
+         return this._system.rmdir(pathname);
     });
 };
-
 
 /**
  * Truncate a file.
@@ -634,7 +802,7 @@ Binding.prototype.fchmod = function(fd, mode, callback) {
  */
 Binding.prototype.unlink = function(pathname, callback) {
      maybeCallback(callback, this, function () {
-        return notImplemented();
+          return this._system.unlink(pathname);
     });
 };
 
