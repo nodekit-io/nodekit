@@ -65,6 +65,22 @@ FileSystem.prototype.getItemSync = function (filepath) {
 /**
  * Get a file system item.
  * @param {string} filepath Path to item.
+ * @return callback<err, Item>} The item (or null if not found).
+ */
+FileSystem.prototype.getItemCallBack = function (filepath, callback) {
+    var fs_StatAsync = Promise.denodeify(function(id, callback){io.nodekit.fs.statAsync(id, callback);});
+    
+    io.nodekit.fs.statAsync(filepath, function(err, item) {
+                             if (item)
+                            {
+                            callback(null, FileSystem.storageItemtoItemWithStat(item));
+                            }
+                            });
+}
+
+/**
+ * Get a file system item.
+ * @param {string} filepath Path to item.
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.storageItemtoItemWithStat = function (storageItem) {
@@ -205,13 +221,14 @@ FileSystem.prototype.writeContentSync = function (file) {
  * Write Content ASYNC
  * @param {file} file
  * @return {Promise<bool>} Success */
-FileSystem.prototype.writeContentAsync = function (file) {
+FileSystem.prototype.writeContentAsync = function (file, callback) {
     
     if (typeof(file) == 'undefined')
         return null;
+      var contentBase64 = file.getContent().toString('base64');
     
-    var fs_writeContent = Promise.denodeify(function(id, str, callback){
-                                            io.nodekit.fs.writeContentAsync(id, str, callback);
+      var fs_writeContent = Promise.denodeify(function(id, str, callback){
+                                            return io.nodekit.fs.writeContentAsync(id, str, callback);
                                             });
     
     

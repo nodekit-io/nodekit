@@ -241,25 +241,26 @@ Binding.prototype._untrackDescriptorById = function(fd) {
 Binding.prototype.stat = function (filepath, callback) {
     if (callback) {
         
-        this._system.getItemAsync(filepath)
-        .then(
-              function(item) {
-              
-              if (!item) throw new FSError('ENOENT', filepath);
-              var stats = new Stats(item.getStats());
-              
-               callback(null,  stats );
-              },
-              function (e) {
-              callback(e);
-              });
-    } else
-    {
+        this._system.getItemCallBack(filepath, function(err,item){
+                                     
+                                     callback(new FSError('ENOENT', filepath));
+                                     
+                                     var stats = new Stats(item.getStats());
+                                     
+                                     callback(null,  stats );
+                                     
+                                     
+                                     
+                                     
+                                     
+                                     });
+    } else {
         var item = this._system.getItemSync(filepath);
         if (!item)  throw new FSError('ENOENT', filepath);
         return new Stats(item.getStats());
     }
 };
+
 
 /**
  * Stat an item.
@@ -294,79 +295,83 @@ Binding.prototype.fstat = function (fd, callback) {
  * @return {string} File descriptor (if sync).
  */
 Binding.prototype.open = function (filepath, flags, mode, callback) {
+    
+    
     var descriptor = new FileDescriptor(flags);
     var self=this;
     
-    if (callback) {
-        
-        this._system.getItemAsync(filepath).then(function(item) {
-                                                 self._system.loadContentSync(item);
-                                                 
-                                                 if (descriptor.isExclusive() && item) {
-                                                    throw new FSError('EEXIST', filepath);
-                                                 }
-                                                 
-                                                 if (descriptor.isCreate() && !item) {
-                                                 var parent = self._system.getItem(path.dirname(filepath));
-                                                 if (!parent) {
-                                                    throw new FSError('ENOENT', filepath);
-                                                 }
-                                                 if (!(parent instanceof Directory)) {
-                                                 throw new FSError('ENOTDIR', filepath);
-                                                 }
-                                                 item = new File();
-                                                 item.setPath(filepath);
-                                                 self._system.addStorageItem(item);
-                                                 
-                                                 
-                                                 if (mode) {
-                                                 item.setMode(mode);
-                                                 }
-                                                 parent.addItem(path.basename(filepath), item);
-                                                 }
-                                                 
-                                                 if (descriptor.isRead()) {
-                                                 if (!item) {
-                                                 throw new FSError('ENOENT', filepath);
-                                                 }
-                                                 if (!item.canRead()) {
-                                                 throw new FSError('EACCES', filepath);
-                                                 }
-                                                 }
-                                                 
-                                                 if (descriptor.isWrite() && !item.canWrite()) {
-                                                 throw new FSError('EACCES', filepath);
-                                                 }
-                                                 
-                                                 if (descriptor.isTruncate()) {
-                                                 item.setContent('');
-                                                 }
-                                                 
-                                                 if (descriptor.isTruncate() || descriptor.isAppend()) {
-                                                 descriptor.setPosition(item.getContent().length);
-                                                 }
-                                                 
-                                                 
-                                                 descriptor.setItem(item);
-                                                 
-                                                 try
-                                                 {
-                                                    callback(null, self._trackDescriptor(descriptor));
-                                                 }
-                                                 catch (ex)
-                                                 {
-                                                 io.nodekit.console.log(ex);
-                                                 
-                                                 }
-                                                 
-                                                 },  function (e) {
-                                                 callback(e);});
+    if (callback)
+    {
+        this._system.getItemCallBack(filepath, function(err,item){
+                                     
+                                     if (item)
+                                     {
+                                     self._system.loadContentSync(item);
+                                     }
+                                     
+                                     if (descriptor.isExclusive() && item) {
+                                     throw new FSError('EEXIST', filepath);
+                                     }
+                                     
+                                     if (descriptor.isCreate() && !item) {
+                                     var parent = self._system.getItemSync(path.dirname(filepath));
+                                     if (!parent) {
+                                     throw new FSError('ENOENT', filepath);
+                                     }
+                                     if (!(parent instanceof Directory)) {
+                                     throw new FSError('ENOTDIR', filepath);
+                                     }
+                                     
+                                     item = new File();
+                                     item.setPath(filepath);
+                                     self._system.addStorageItem(item);
+                                     
+                                     
+                                     if (mode) {
+                                     item.setMode(mode);
+                                     }
+                                     parent.addItem(path.basename(filepath), item);
+                                     }
+                                     
+                                     if (descriptor.isRead()) {
+                                     if (!item) {
+                                     throw new FSError('ENOENT', filepath);
+                                     }
+                                     if (!item.canRead()) {
+                                     throw new FSError('EACCES', filepath);
+                                     }
+                                     }
+                                     
+                                     if (descriptor.isWrite() && !item.canWrite()) {
+                                     throw new FSError('EACCES', filepath);
+                                     }
+                                     
+                                     if (descriptor.isTruncate()) {
+                                     item.setContent('');
+                                     }
+                                     
+                                     if (descriptor.isTruncate() || descriptor.isAppend()) {
+                                     descriptor.setPosition(item.getContent().length);
+                                     }
+                                     
+                                     
+                                     descriptor.setItem(item);
+                                     
+                                     try
+                                     {
+                                     callback(null, self._trackDescriptor(descriptor));
+                                     }
+                                     catch (ex)
+                                     {
+                                     io.nodekit.console.log(ex);
+                                     }
+                                     });
     } else
     {
         var item = this._system.getItemSync(filepath);
-       
+        
         if (item)
-           this._system.loadContentSync(item);
+            this._system.loadContentSync(item);
         
         if (descriptor.isExclusive() && item) {
             throw new FSError('EEXIST', pathname);
@@ -418,6 +423,7 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
 }
 
 
+
 /**
  * Close a file descriptor.
  * @param {number} fd File descriptor.
@@ -439,7 +445,7 @@ Binding.prototype.close = function(fd, callback) {
  *     data will be read from the current file position.
  * @param {function(Error, number, Buffer)} callback Callback (optional) called
  *     with any error, number of bytes read, and the buffer.
- * @return {number} Number of bytes read 
+ * @return {number} Number of bytes read
  */
 Binding.prototype.read = function(fd, buffer, offset, length, position, callback) {
     if (callback)
@@ -478,7 +484,7 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
         descriptor.setPosition(position + read);
         
         callback(null, read);
-    
+        
     }
     else
     {
@@ -489,6 +495,7 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
         }
         
         var file = descriptor.getItem();
+        
         
         if (!(file instanceof File)) {
             // deleted or not a regular file
@@ -514,6 +521,7 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
             read = end-start;
         
         descriptor.setPosition(position + read);
+        
         return read;
     }
 };
@@ -532,8 +540,8 @@ Binding.prototype.readdir = function (dirpath, callback) {
 
 };
 
-// ************************************************************************
 
+// ************************************************************************
 /**
  * Write to a file descriptor given a buffer.
  * @param {string} fd File descriptor.
@@ -547,7 +555,7 @@ Binding.prototype.readdir = function (dirpath, callback) {
  * @return {number} Number of bytes written (if sync).
  */
 Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
-    callback) {
+                                         callback) {
     
     if (callback) {
         
@@ -558,6 +566,9 @@ Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
         }
         
         var file = descriptor.getItem();
+        
+        console.log("WRITING " + file._storageItem.path);
+        
         if (!(file instanceof File)) {
             // not a regular file
             throw new FSError('EBADF');
@@ -580,14 +591,18 @@ Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
         }
         var sourceEnd = Math.min(offset + length, buffer.length);
         
-        var written = buffer.copy(content, position, offset, sourceEnd);
+        buffer.copy(content, position, offset, sourceEnd);
+        var written = sourceEnd - offset;
+        
         file.setContent(content);
         
         this._system.writeContentAsync(file)
         .then(
               function(item) {
+              console.log("WRITTEN " + file._storageItem.path);
               
-              if (!item) throw new FSError('ENOENT', filepath);
+              if (!item)
+                 callback( new FSError('ENOENT', filepath));
               
               descriptor.setPosition(newLength);
               callback(null,  written );
@@ -597,7 +612,7 @@ Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
               });
     } else
     {
-     
+        
         
         var descriptor = this._getDescriptorById(fd);
         
@@ -627,17 +642,18 @@ Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
         }
         var sourceEnd = Math.min(offset + length, buffer.length);
         
-        var written = buffer.copy(content, position, offset, sourceEnd);
+        buffer.copy(content, position, offset, sourceEnd);
+        var written = sourceEnd - offset;
         file.setContent(content);
         
         var item = this._system.writeContentSync(file);
-      
+        
         if (!item) throw new FSError('ENOENT', filepath);
-              
-         descriptor.setPosition(newLength);
+        
+        descriptor.setPosition(newLength);
         return written;
-    
-    
+        
+        
     }
 };
 
@@ -668,10 +684,9 @@ Binding.prototype.write = Binding.prototype.writeBuffer;
  * @return {number} Number of bytes written (if sync).
  */
 Binding.prototype.writeString = function(fd, string, position, encoding,
-    callback) {
-    return maybeCallback(callback, this, function () {
-        return notImplemented();
-    });
+                                         callback) {
+    var buf = new Buffer(string, encoding);
+    return this.writeBuffer(fd, buf, 0, buf.length, position, callback);
 };
 
 
@@ -900,6 +915,7 @@ Binding.prototype.readlink = function(pathname, callback) {
 
 
 var notImplemented = function() {
+    io.nodekit.console.log("NOT IMPLEMENTED");
    }
 
 /**

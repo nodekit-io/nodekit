@@ -150,8 +150,8 @@ static urlNavigator _urlNavigator = nil;
          * @param {Function(err, value)} callBack the callback handler where value
          * @return {string} The file content
          */
-        fs[@"getContentAsync"] = ^(NSDictionary* storageItem, nodeCallBack callBack){
-            [NKFileSystem getContentAsync: storageItem completionHandler:callBack];
+        fs[@"getContentAsync"] = ^(NSDictionary* storageItem, JSValue* callBack){
+            [NKFileSystem getContentAsync: storageItem  completionHandler:^(id error, id value){[callBack callWithArguments:@[error, value]];}];
         };
         
         
@@ -173,8 +173,8 @@ static urlNavigator _urlNavigator = nil;
          * @param {Function(err, value)} callBack the callback handler where value
          * @return {bool} success
          */
-        fs[@"writeContentAsync"] = (NSNumber*)^(NSDictionary* storageItem, NSString* content,  nodeCallBack callBack){
-            [NKFileSystem writeContentAsync:storageItem str:content completionHandler:callBack];
+        fs[@"writeContentAsync"] = ^(NSDictionary* storageItem, NSString* content,  JSValue* callBack){
+            [NKFileSystem writeContentAsync:storageItem str:content completionHandler:^(id error, id value){[callBack callWithArguments:@[error, value]];}];
         };
         
         

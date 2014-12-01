@@ -95,29 +95,30 @@ describe("fs module", function() {
                       expect(new helper.File(basedir + "/granola.txt").exists()).toBe(false);
                       expect(e !== null).toBe(true);
                       done();
+                
                       });
             });
          
-         /*
          
-         it("should be able to write to a file", function() {
-            waitsFor(helper.testComplete, "the writeFile operation to complete", 5000);
-            helper.writeFixture(function(sut) {
-                                fs.open(sut.getAbsolutePath(), 'w', function(err, fd) {
-                                        var data = "My bologna has a first name";
-                                        expect(err).toBeFalsy();
-                                        expect(util.isNumber(fd)).toBe(true);
-                                        // This is non-documented, but currently available functionality
-                                        fs.write(fd, data, function(err, written, buffer) {
-                                                 expect(err).toBeFalsy();
-                                                 expect(written).toBe(data.length);
-                                                 expect(buffer.toString()).toBe(data);
-                                                 helper.testComplete(true);
-                                                 });
-                                        });
-                                });
+         
+        it("should be able to write to a file", function(done) {
+            var tmpFile =  helper.createTempFile();
+            
+             fs.open(tmpFile.getAbsolutePath(), 'w', function(err, fd) {
+                    var data = "My bologna has a first name";
+                    expect(err).toBeFalsy();
+                    expect(util.isNumber(fd)).toBe(true);
+                    fs.write(fd, data, function(err, written, buffer) {
+                             expect(err).toBeFalsy();
+                             expect(written).toBe(data.length);
+                             expect(buffer.toString()).toBe(data);
+                             done();
+                             });
+                    });
             });
          
+         
+         /*
          it("should be able to symlink files", function() {
             waitsFor(helper.testComplete, "the symlink operation to complete", 5000);
             helper.writeFixture(function(sut) {
@@ -146,22 +147,22 @@ describe("fs module", function() {
                                         helper.testComplete(true);
                                         });
                                 });
-            });
+            });*/
          
-         it("should have a writeFile function", function() {
-            waitsFor(helper.testComplete, "the writeFile operation to complete", 5000);
+         it("should have a writeFile function", function(done) {
+            console.log(tmpFile.getAbsolutePath());
             fs.writeFile(tmpFile.getAbsolutePath(),
                          'Now is the winter of our discontent made glorious summer by this son of York',
                          function (err) {
                          if (err) throw err;
                          fs.exists(tmpFile.getAbsolutePath(), function(exists) {
                                    expect(exists).toBe(true);
-                                   helper.testComplete(true);
+                                   done();
                                    });
                          });
             });
          
-         it("should have an exists function", function() {
+       /*  it("should have an exists function", function() {
             waitsFor(helper.testComplete, "the exists() operation to complete", 5000);
             expect(fs.exists(tmpFile.getAbsolutePath(), function(exists) {
                              expect(exists).toBe(true);
