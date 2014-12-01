@@ -54,6 +54,13 @@ module.exports.StatWatcher = fs_delegate.StatWatcher;
  * @return {Stats|undefined} Stats or undefined (if sync).
  */
 module.exports.stat = function (path, callback) {
+    
+    if (callback)
+        process.nextTick(function(){
+                         
+        callback(null, fs_delegate.stat(path));
+                         });
+    
     return fs_delegate.stat(path, callback);
 };
 
@@ -86,7 +93,13 @@ module.exports.fstat = function (fd, callback) {
  * @return {string} File descriptor (if sync).
  */
 module.exports.open = function (path, flags, mode, callback) {
-    return fs_delegate.open(path, flags, mode, callback);
+ 
+    if (callback)
+        process.nextTick(function(){
+        callback(null, fs_delegate.open(path, flags, mode));
+                         });
+    else
+     return fs_delegate.open(path, flags, mode, callback);
 };
 
 /**
@@ -95,7 +108,16 @@ module.exports.open = function (path, flags, mode, callback) {
  * @param {function(Error)} callback Callback (optional).
  */
 module.exports.close = function (fd, callback) {
-     fs_delegate.close(fd, callback)
+    if (callback)
+    {
+        process.nextTick(function(){
+                         fs_delegate.close(fd)
+                         callback(null,  fs_delegate.close(fd) );
+
+                         });
+    }
+    else
+      fs_delegate.close(fd, callback)
 };
 
 /**
@@ -193,7 +215,15 @@ module.exports.readdir = function (path, callback) {
  * @return {number} Number of bytes read 
  */
 module.exports.read = function (fd, buffer, offset, length, position, callback) {
-    return fs_delegate.read(fd, buffer, offset, length, position, callback)
+    if (callback)
+    {
+        process.nextTick(function(){
+                         
+        callback(null, fs_delegate.read(fd, buffer, offset, length, position));
+                         });
+    }
+    else
+      return fs_delegate.read(fd, buffer, offset, length, position, callback);
 };
 
 /**

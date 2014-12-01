@@ -123,7 +123,7 @@ FileSystem.storageItemtoItemWithStat = function (storageItem) {
     else
     {
         return;
-   //     throw new FSError('ENOENT');
+      //  throw new FSError('ENOENT');
     }
     
 

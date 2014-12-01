@@ -39,7 +39,7 @@ var Startup = function Startup() {
     
     console.log = io.nodekit.console.log;
     console.warn = console.log;
-    console.error = BootstrapModule.error;
+    io.nodekit.console.error = BootstrapModule.error;
    try
     {
        process._tickCallback();

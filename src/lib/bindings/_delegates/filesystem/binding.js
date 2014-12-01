@@ -227,7 +227,8 @@ Binding.prototype._trackDescriptor = function(descriptor) {
  */
 Binding.prototype._untrackDescriptorById = function(fd) {
   if (!this._openFiles.hasOwnProperty(fd)) {
-    throw new FSError('EBADF');
+    //  throw new FSError('EBADF');
+      console.log("DUPLICATE CLOSE");
   }
   delete this._openFiles[fd];
 };
@@ -417,8 +418,10 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
         }
         
         descriptor.setItem(item);
-        
-        return this._trackDescriptor(descriptor);
+             var fd = this._trackDescriptor(descriptor);
+        console.log("OPENED" + filepath + " "  + fd);
+
+        return fd;
     }
 }
 
@@ -430,6 +433,8 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
  * @param {function(Error)} callback Callback (optional).
  */
 Binding.prototype.close = function(fd, callback) {
+    console.log("close" + fd);
+
   return maybeCallback(callback, this, function() {
     this._untrackDescriptorById(fd);
   });
@@ -448,11 +453,14 @@ Binding.prototype.close = function(fd, callback) {
  * @return {number} Number of bytes read
  */
 Binding.prototype.read = function(fd, buffer, offset, length, position, callback) {
-    if (callback)
+       if (callback)
     {
+        console.log("READ ASYNC" + fd);
+        
         var descriptor = this._getDescriptorById(fd);
         
         if (!descriptor.isRead()) {
+            
             throw new FSError('EBADF');
         }
         
@@ -488,6 +496,8 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
     }
     else
     {
+        console.log("READ" + fd);
+        
         var descriptor = this._getDescriptorById(fd);
         
         if (!descriptor.isRead()) {
