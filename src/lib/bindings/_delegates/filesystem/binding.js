@@ -242,7 +242,7 @@ Binding.prototype.stat = function (filepath, callback) {
     if (callback) {
         
         this._system.getItemCallBack(filepath, function(err,item){
-                                     
+                                     if (!item)
                                      callback(new FSError('ENOENT', filepath));
                                      
                                      var stats = new Stats(item.getStats());
@@ -363,7 +363,7 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
                                      }
                                      catch (ex)
                                      {
-                                     io.nodekit.console.log(ex);
+                                     console.log(ex);
                                      }
                                      });
     } else
@@ -567,7 +567,6 @@ Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
         
         var file = descriptor.getItem();
         
-        console.log("WRITING " + file._storageItem.path);
         
         if (!(file instanceof File)) {
             // not a regular file
@@ -599,7 +598,6 @@ Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
         this._system.writeContentAsync(file)
         .then(
               function(item) {
-              console.log("WRITTEN " + file._storageItem.path);
               
               if (!item)
                  callback( new FSError('ENOENT', filepath));
@@ -915,7 +913,7 @@ Binding.prototype.readlink = function(pathname, callback) {
 
 
 var notImplemented = function() {
-    io.nodekit.console.log("NOT IMPLEMENTED");
+    console.log("NOT IMPLEMENTED");
    }
 
 /**

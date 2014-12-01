@@ -1,18 +1,18 @@
 /*
-* Copyright 2014 Domabo; Portions Copyright 2014 Red Hat
-*
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*/
+ * Copyright 2014 Domabo; Portions Copyright 2014 Red Hat
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 
 "use strict";
@@ -47,7 +47,7 @@ function TCP(tcp) {
     
     if ((tcp !== null)  && (typeof(tcp) !== 'undefined'))
     {
-         this._stream = tcp.stream;
+        this._stream = tcp.stream;
     } else
     {
         this._tcp = io.nodekit.socket.createTcp();
@@ -184,6 +184,7 @@ function NativeStream(source) {
 util.inherits(NativeStream, Duplex);
 
 NativeStream.prototype.onSourceEnd = function() {
+    
     this._source.removeListener('end', this._onEnd);
     this._source.removeListener('data', this._onData);
     
@@ -205,20 +206,19 @@ NativeStream.prototype.close = function NativeStreamClose() {
     if (this._source)
     {
         this._source.disconnect();
-    }
-};
+    };
+}
 
 NativeStream.prototype._write = function NativeStreamWrite(chunk, enc, cb) {
     
-    
     if (util.isBuffer(chunk))
     {
-        this._source.writeString(data.toString('base64'));
+        this._source.writeString(chunk.toString('base64'));
     }
     else if (enc == 'base64')
     {
         // TO DO: FIGURE OUT WHY chunk is coming in UTF8 not base64 format; for now just reconvert
-         this._source.writeString(chunk.toString('base64'));
+        this._source.writeString(chunk.toString('base64'));
     }
     else
     {

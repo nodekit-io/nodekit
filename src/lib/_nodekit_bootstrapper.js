@@ -36,9 +36,10 @@ var Startup = function Startup() {
     
     // restore nextTick
     process.nextTick = _nextTick;
+    
     console.log = io.nodekit.console.log;
     console.warn = console.log;
-    io.nodekit.console.error = BootstrapModule.error;
+    console.error = BootstrapModule.error;
    try
     {
        process._tickCallback();

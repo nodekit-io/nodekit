@@ -199,6 +199,8 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
         }
         else
         {
+            
+            
             resultDictionary =  ["address": "", "port": 0]
        }
         var result = JSValue(object: resultDictionary, inContext: self._tcp!.context)
@@ -233,8 +235,8 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
         self._tcp!.setObject(nil, forKeyedSubscript:"fd")
         self._tcp!.setObject(nil, forKeyedSubscript:"remoteAddress")
         self._tcp!.setObject(nil, forKeyedSubscript:"localAddress")
-        self._tcp!.setObject(nil, forKeyedSubscript:"close")
-        }
+        self._tcp!.setObject(nil, forKeyedSubscript:"disconnect")
+        } 
         
         if (self._server? != nil) {
             self._server!.connectionDidClose(self)

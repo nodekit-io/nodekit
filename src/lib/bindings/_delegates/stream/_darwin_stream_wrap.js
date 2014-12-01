@@ -51,7 +51,7 @@ Stream.prototype._onEnd = function() {
         this._onStreamData = null;
         this._onStreamEnd = null;
         this._stream = null;
-    }
+    };
 
     if ( this.onread ) {
         this.onread( -1 );
