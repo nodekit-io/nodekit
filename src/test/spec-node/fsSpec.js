@@ -118,38 +118,7 @@ describe("fs module", function() {
             });
          
          
-         /*
-         it("should be able to symlink files", function() {
-            waitsFor(helper.testComplete, "the symlink operation to complete", 5000);
-            helper.writeFixture(function(sut) {
-                                var srcPath = sut.getAbsolutePath();
-                                var dstPath = sut.getAbsolutePath() + '.link';
-                                fs.symlink(srcPath, dstPath, function(err) {
-                                           expect(err === undefined).toBeTruthy();
-                                           expect(fs.readlinkSync(dstPath)).toBe(srcPath);
-                                           fs.unlink(srcPath);
-                                           fs.unlink(dstPath);
-                                           helper.testComplete(true);
-                                           });
-                                });
-            });
-         
-         it("should be able to link files", function() {
-            waitsFor(helper.testComplete, "the link operation to complete", 5000);
-            helper.writeFixture(function(sut) {
-                                var srcPath = sut.getAbsolutePath();
-                                var dstPath = sut.getAbsolutePath() + '.link';
-                                fs.link(srcPath, dstPath, function(err) {
-                                        expect(err === undefined).toBeTruthy();
-                                        expect(fs.existsSync(dstPath)).toBeTruthy();
-                                        fs.unlink(srcPath);
-                                        fs.unlink(dstPath);
-                                        helper.testComplete(true);
-                                        });
-                                });
-            });*/
-         
-         it("should have a writeFile function", function(done) {
+          it("should have a writeFile function", function(done) {
             console.log(tmpFile.getAbsolutePath());
             fs.writeFile(tmpFile.getAbsolutePath(),
                          'Now is the winter of our discontent made glorious summer by this son of York',
@@ -160,6 +129,33 @@ describe("fs module", function() {
                                    done();
                                    });
                          });
+            });
+         
+         it("should provide a read function", function(done) {
+            var data = "One shouldn't let intellectuals play with matches";
+            var tmpFile =  helper.createTempFile(data);
+       
+            fs.open(tmpFile.getAbsolutePath(), 'r', function(e,f) {
+                    var b = new Buffer(data.length);
+                    fs.read(f, b, 0, data.length, 0, function(er, bytesRead, buffer) {
+                            expect(b.toString()).toBe(data);
+                            tmpFile.delete();
+                            done();
+                            });
+                    });
+            });
+         
+         it("should provide a read sync function", function() {
+            var data = "One shouldn't let intellectuals play with matches";
+            var tmpFile =  helper.createTempFile(data);
+            
+           var f= fs.openSync(tmpFile.getAbsolutePath(), 'r');
+                    var b = new Buffer(data.length);
+           var bytesRead = fs.readSync(f, b, 0, data.length, 0);
+            console.log(bytesRead);
+                            expect(b.toString()).toBe(data);
+                            tmpFile.delete();
+            
             });
          
        /*  it("should have an exists function", function() {
@@ -330,21 +326,7 @@ describe("fs module", function() {
             expect((typeof r.forEach)).toBe('function');
             });
          
-         it('should provide a read function', function() {
-            var data = "One shouldn't let intellectuals play with matches";
-            waitsFor(helper.testComplete, "the read test to complete", 5000);
-            helper.writeFixture(function(sut) {
-                                fs.open(sut.getAbsolutePath(), 'r', function(e,f) {
-                                        var b = new Buffer(data.length);
-                                        fs.read(f, b, 0, data.length, 0, function(er, bytesRead, buffer) {
-                                                expect(buffer.toString()).toBe(data);
-                                                sut.delete();
-                                                helper.testComplete(true);
-                                                });
-                                        });
-                                }, data);
-            });
-         
+        
          it('should provide fs.fchmodSync', function() {
             waitsFor(helper.testComplete, '', 5000);
             helper.writeFixture(function(sut) {
@@ -579,7 +561,40 @@ describe("fs module", function() {
                                                   helper.testComplete(true);
                                                   }, contents);
                               });
-                           
+        
+        
+        it("should be able to symlink files", function() {
+        waitsFor(helper.testComplete, "the symlink operation to complete", 5000);
+        helper.writeFixture(function(sut) {
+        var srcPath = sut.getAbsolutePath();
+        var dstPath = sut.getAbsolutePath() + '.link';
+        fs.symlink(srcPath, dstPath, function(err) {
+        expect(err === undefined).toBeTruthy();
+        expect(fs.readlinkSync(dstPath)).toBe(srcPath);
+        fs.unlink(srcPath);
+        fs.unlink(dstPath);
+        helper.testComplete(true);
+        });
+        });
+        });
+        
+        it("should be able to link files", function() {
+        waitsFor(helper.testComplete, "the link operation to complete", 5000);
+        helper.writeFixture(function(sut) {
+        var srcPath = sut.getAbsolutePath();
+        var dstPath = sut.getAbsolutePath() + '.link';
+        fs.link(srcPath, dstPath, function(err) {
+        expect(err === undefined).toBeTruthy();
+        expect(fs.existsSync(dstPath)).toBeTruthy();
+        fs.unlink(srcPath);
+        fs.unlink(dstPath);
+        helper.testComplete(true);
+        });
+        });
+        });
+         
+         
+         
                            it("should be able to read a file with encoding", function() {
                               waitsFor(helper.testComplete, "the read to complete", 5000);
                               var contents = "American Cheese";

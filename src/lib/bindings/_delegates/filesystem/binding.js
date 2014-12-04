@@ -240,25 +240,27 @@ Binding.prototype._untrackDescriptorById = function(fd) {
  */
 Binding.prototype.stat = function (filepath, callback) {
     if (callback) {
-        
-        this._system.getItemCallBack(filepath, function(err,item){
-                                     
-                                     if (!item)
-                                     callback(new FSError('ENOENT', filepath));
-                                     
-                                     var stats = new Stats(item.getStats());
-                                     callback(null,  stats );
-                                     
-                                     });
+        this._system.getItemAsync(filepath)
+        .then(
+              function(item)
+              {
+              if (!item)
+              callback(new FSError('ENOENT', filepath));
+              
+              var stats = new Stats(item.getStats());
+              callback(null,  stats );
+              
+              }
+              , function(err)
+              {
+              calback(err);
+              });
     } else {
-        
-        
         var item = this._system.getItemSync(filepath);
         if (!item)  throw new FSError('ENOENT', filepath);
         return new Stats(item.getStats());
     }
 };
-
 
 /**
  * Stat an item.
@@ -299,70 +301,20 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
     
     if (callback)
     {
-        this._system.getItemCallBack(filepath, function(err,item){
-                                     
-                                     if (item)
-                                     {
-                                     self._system.loadContentSync(item);
-                                     }
-                                     
-                                     if (descriptor.isExclusive() && item) {
-                                     throw new FSError('EEXIST', filepath);
-                                     }
-                                     
-                                     if (descriptor.isCreate() && !item) {
-                                     var parent = self._system.getItemSync(path.dirname(filepath));
-                                     if (!parent) {
-                                     throw new FSError('ENOENT', filepath);
-                                     }
-                                     if (!(parent instanceof Directory)) {
-                                     throw new FSError('ENOTDIR', filepath);
-                                     }
-                                     
-                                     item = new File();
-                                     item.setPath(filepath);
-                                     self._system.addStorageItem(item);
-                                     
-                                     
-                                     if (mode) {
-                                     item.setMode(mode);
-                                     }
-                                     parent.addItem(path.basename(filepath), item);
-                                     }
-                                     
-                                     if (descriptor.isRead()) {
-                                     if (!item) {
-                                     throw new FSError('ENOENT', filepath);
-                                     }
-                                     if (!item.canRead()) {
-                                     throw new FSError('EACCES', filepath);
-                                     }
-                                     }
-                                     
-                                     if (descriptor.isWrite() && !item.canWrite()) {
-                                     throw new FSError('EACCES', filepath);
-                                     }
-                                     
-                                     if (descriptor.isTruncate()) {
-                                     item.setContent('');
-                                     }
-                                     
-                                     if (descriptor.isTruncate() || descriptor.isAppend()) {
-                                     descriptor.setPosition(item.getContent().length);
-                                     }
-                                     
-                                     
-                                     descriptor.setItem(item);
-                                     
-                                     try
-                                     {
-                                     callback(null, self._trackDescriptor(descriptor));
-                                     }
-                                     catch (ex)
-                                     {
-                                     console.log(ex);
-                                     }
-                                     });
+        this._system.getItemAsync(filepath)
+        .then(function(item){
+              if (item)
+              {
+              self._system.loadContentSync(item);
+              }
+              
+              callback(null, processOpen.call(self, descriptor, item, filepath, flags, mode));
+             
+              }, function(err)
+              {
+                callback(null, processOpen.call(self, descriptor, null, filepath, flags, mode));
+              }
+              );
     } else
     {
         var item = this._system.getItemSync(filepath);
@@ -370,53 +322,58 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
         if (item)
             this._system.loadContentSync(item);
         
-        if (descriptor.isExclusive() && item) {
-            throw new FSError('EEXIST', pathname);
+        return processOpen.call(this, descriptor, item, filepath, flags, mode);
+    }
+}
+
+
+var processOpen = function processOpen(descriptor, item, filepath, flags, mode)
+{
+    if (descriptor.isExclusive() && item) {
+        throw new FSError('EEXIST', pathname);
+    }
+    
+    if (descriptor.isCreate() && !item) {
+        var parent = this._system.getItemSync(path.dirname(filepath));
+        if (!parent) {
+            throw new FSError('ENOENT', filepath);
         }
-        
-        if (descriptor.isCreate() && !item) {
-            var parent = this._system.getItemSync(path.dirname(filepath));
-            if (!parent) {
-                throw new FSError('ENOENT', filepath);
-            }
-            if (!(parent instanceof Directory)) {
-                throw new FSError('ENOTDIR', filepath);
-            }
-            item = new File();
-            item.setPath(filepath);
-            this._system.addStorageItem(item);
-            
-            if (mode) {
-                item.setMode(mode);
-            }
-            parent.addItem(path.basename(filepath), item);
+        if (!(parent instanceof Directory)) {
+            throw new FSError('ENOTDIR', filepath);
         }
+        item = new File();
+        item.setPath(filepath);
+        this._system.addStorageItem(item);
         
-        if (descriptor.isRead()) {
-            if (!item) {
-                throw new FSError('ENOENT', filepath);
-            }
-            if (!item.canRead()) {
-                throw new FSError('EACCES', filepath);
-            }
+        if (mode) {
+            item.setMode(mode);
         }
-        
-        if (descriptor.isWrite() && !item.canWrite()) {
+        parent.addItem(path.basename(filepath), item);
+    }
+    
+    if (descriptor.isRead()) {
+        if (!item) {
+            throw new FSError('ENOENT', filepath);
+        }
+        if (!item.canRead()) {
             throw new FSError('EACCES', filepath);
         }
-        
-        if (descriptor.isTruncate()) {
-            item.setContent('');
-        }
-        
-        if (descriptor.isTruncate() || descriptor.isAppend()) {
-            descriptor.setPosition(item.getContent().length);
-        }
-        
-        descriptor.setItem(item);
-             var fd = this._trackDescriptor(descriptor);
-             return fd;
     }
+    
+    if (descriptor.isWrite() && !item.canWrite()) {
+        throw new FSError('EACCES', filepath);
+    }
+    
+    if (descriptor.isTruncate()) {
+        item.setContent('');
+    }
+    
+    if (descriptor.isTruncate() || descriptor.isAppend()) {
+        descriptor.setPosition(item.getContent().length);
+    }
+    
+    descriptor.setItem(item);
+    return this._trackDescriptor(descriptor);
 }
 
 

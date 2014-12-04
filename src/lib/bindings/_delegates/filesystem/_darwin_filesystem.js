@@ -48,7 +48,9 @@ FileSystem.prototype.getItemAsync = function (filepath) {
     
     return fs_StatAsync(filepath)
     .then(function(storageItem){
-         return FileSystem.storageItemtoItemWithStat(storageItem);
+             return FileSystem.storageItemtoItemWithStat(storageItem);
+          }, function(err){
+             return null;
           });
 }
 
@@ -62,21 +64,6 @@ FileSystem.prototype.getItemSync = function (filepath) {
     return FileSystem.storageItemtoItemWithStat(storageItem);
 };
 
-/**
- * Get a file system item.
- * @param {string} filepath Path to item.
- * @return callback<err, Item>} The item (or null if not found).
- */
-FileSystem.prototype.getItemCallBack = function (filepath, callback) {
-    var fs_StatAsync = Promise.denodeify(function(id, callback){io.nodekit.fs.statAsync(id, callback);});
-    
-    io.nodekit.fs.statAsync(filepath, function(err, item) {
-                             if (item)
-                            {
-                            callback(null, FileSystem.storageItemtoItemWithStat(item));
-                            }
-                            });
-}
 
 /**
  * Get a file system item.
