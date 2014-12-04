@@ -30,7 +30,7 @@ var SymbolicLink = require('./symlink');
 var FSError = require('./error');
 var Buffer = require('buffer').Buffer;
 var path = require('path');
-
+var util =require('util');
 var constants = process.binding('constants');
 
 
@@ -228,7 +228,6 @@ Binding.prototype._trackDescriptor = function(descriptor) {
 Binding.prototype._untrackDescriptorById = function(fd) {
   if (!this._openFiles.hasOwnProperty(fd)) {
     //  throw new FSError('EBADF');
-      console.log("DUPLICATE CLOSE");
   }
   delete this._openFiles[fd];
 };
@@ -243,19 +242,17 @@ Binding.prototype.stat = function (filepath, callback) {
     if (callback) {
         
         this._system.getItemCallBack(filepath, function(err,item){
+                                     
                                      if (!item)
                                      callback(new FSError('ENOENT', filepath));
                                      
                                      var stats = new Stats(item.getStats());
-                                     
                                      callback(null,  stats );
-                                     
-                                     
-                                     
-                                     
                                      
                                      });
     } else {
+        
+        
         var item = this._system.getItemSync(filepath);
         if (!item)  throw new FSError('ENOENT', filepath);
         return new Stats(item.getStats());
@@ -296,7 +293,6 @@ Binding.prototype.fstat = function (fd, callback) {
  * @return {string} File descriptor (if sync).
  */
 Binding.prototype.open = function (filepath, flags, mode, callback) {
-    
     
     var descriptor = new FileDescriptor(flags);
     var self=this;
@@ -419,9 +415,7 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
         
         descriptor.setItem(item);
              var fd = this._trackDescriptor(descriptor);
-        console.log("OPENED" + filepath + " "  + fd);
-
-        return fd;
+             return fd;
     }
 }
 
@@ -433,9 +427,7 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
  * @param {function(Error)} callback Callback (optional).
  */
 Binding.prototype.close = function(fd, callback) {
-    console.log("close" + fd);
-
-  return maybeCallback(callback, this, function() {
+    return maybeCallback(callback, this, function() {
     this._untrackDescriptorById(fd);
   });
 };
@@ -455,7 +447,6 @@ Binding.prototype.close = function(fd, callback) {
 Binding.prototype.read = function(fd, buffer, offset, length, position, callback) {
        if (callback)
     {
-        console.log("READ ASYNC" + fd);
         
         var descriptor = this._getDescriptorById(fd);
         
@@ -496,7 +487,6 @@ Binding.prototype.read = function(fd, buffer, offset, length, position, callback
     }
     else
     {
-        console.log("READ" + fd);
         
         var descriptor = this._getDescriptorById(fd);
         

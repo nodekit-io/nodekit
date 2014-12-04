@@ -62,11 +62,6 @@ internal class NKFileSystem: NSObject {
             return nil;
         }
         
-        if (attr == nil)
-        {
-            return nil;
-        }
-        
         storageItem["birthtime"] = attr[NSFileCreationDate] as NSDate!
         storageItem["size"] = attr[NSFileSize] as NSNumber!
         storageItem["mtime"] = attr[NSFileModificationDate] as NSDate!
@@ -99,16 +94,20 @@ internal class NKFileSystem: NSObject {
     
     class func getContent(storageItem: NSDictionary!) -> NSString {
         
-        var path = storageItem["path"] as NSString!;
         
+        var path = storageItem["path"] as NSString!;
         var originalEncoding: UnsafeMutablePointer<UInt> = nil
         var readError: NSError?
         
         var data = NSData(contentsOfFile: path, options: nil, error: &readError)
         
+        if let error = readError {
+            return ""
+        }
+        
         var content : NSString! = data!.base64EncodedStringWithOptions(.allZeros)
         
-        return content
+         return content
     }
     
     

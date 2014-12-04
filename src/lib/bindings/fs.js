@@ -61,7 +61,9 @@ module.exports.stat = function (path, callback) {
         callback(null, fs_delegate.stat(path));
                          });
     
-    return fs_delegate.stat(path, callback);
+    else
+    
+    return fs_delegate.stat(path);
 };
 
 /**
