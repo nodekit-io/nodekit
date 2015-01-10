@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Domabo;  
+ * Copyright 2015 Domabo;  
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,8 +57,9 @@ module.exports.stat = function (path, callback) {
     
     if (callback)
         process.nextTick(function(){
-                         
+                         try {
         callback(null, fs_delegate.stat(path));
+                         } catch (e) { callback(e); }
                          });
     
     else

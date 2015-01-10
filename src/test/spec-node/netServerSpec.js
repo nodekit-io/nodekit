@@ -137,7 +137,7 @@ describe( "net.Server", function() {
     waitsFor(helper.testComplete, "waiting for socket address to be checked", 3000);
   });
 
-  it( "should provide a server address", function() {
+/*  it( "should provide a server address", function() {
     var server = net.createServer();
     server.listen(8800, function() {
       var socket = net.connect(8800, function() {
@@ -154,7 +154,7 @@ describe( "net.Server", function() {
       });
     });
     waitsFor(helper.testComplete, "waiting for server address to be checked", 3000);
-  });
+  });*/
 
 /*
   it("should emit error events", function() {

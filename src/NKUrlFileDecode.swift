@@ -1,7 +1,7 @@
 /*
 * nodekit.io
 *
-* Copyright (c) 2014 Domabo. All Rights Reserved.
+* Copyright (c) 2015 Domabo. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -41,8 +41,8 @@ class NKUrlFileDecode: NSObject {
         
         urlPath = request.URL.path!.stringByDeletingLastPathComponent
         
-        fileExtension = request.URL.pathExtension.lowercaseString
-        fileName = request.URL.lastPathComponent
+        fileExtension = request.URL.pathExtension!.lowercaseString
+        fileName = request.URL.lastPathComponent!
         if (fileExtension.length == 0)
         {
             fileBase = fileName

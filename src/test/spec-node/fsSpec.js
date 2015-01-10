@@ -36,7 +36,6 @@ describe("fs module", function() {
             fs.mkdir(basedir + "/waffle-recipes", 0755, function() {
                      expect(newDirectory.exists()).toBe(true);
                      newDirectory.delete();
-                     helper.testComplete(true);
                      done();
                      });
             });
@@ -158,23 +157,28 @@ describe("fs module", function() {
             
             });
          
-       /*  it("should have an exists function", function() {
-            waitsFor(helper.testComplete, "the exists() operation to complete", 5000);
+         it("should have an exists function", function(done) {
+            var tmpFile =  helper.createTempFile();
             expect(fs.exists(tmpFile.getAbsolutePath(), function(exists) {
                              expect(exists).toBe(true);
+                         //    done();
+                             
                              expect(fs.exists('/some/invalid/path', function(exists) {
                                               expect(exists).toBe(false);
-                                              helper.testComplete(true);
+                                              tmpFile.delete();
+                                              done();
                                               }));
                              }));
             });
          
          it("should have an existsSync function", function() {
+            var tmpFile =  helper.createTempFile();
             expect(fs.existsSync(tmpFile.getAbsolutePath())).toBe(true);
             expect(fs.existsSync('/some/invalid/path')).toBe(false);
+            tmpFile.delete();
             });
          
-         it("should have a truncate function", function() {
+    /*     it("should have a truncate function", function() {
             waitsFor(helper.testComplete, "the truncate test to complete", 5000);
             helper.writeFixture(function(sut) {
                                 fs.exists(sut.getAbsolutePath(), function(exists) {
@@ -251,26 +255,9 @@ describe("fs module", function() {
                                                  });
                                         });
                                 }, data);
-            });
+            });*/
          
-         it("should provide a mkdir function", function() {
-            waitsFor(helper.testComplete, "the mkdir test to complete", 5000);
-            var newDirectory = new java.io.File(tempDir + "/waffle-recipes");
-            fs.mkdir(newDirectory.getAbsolutePath(), 0755, function(e) {
-                     expect(newDirectory.exists()).toBe(true);
-                     newDirectory.delete();
-                     helper.testComplete(true);
-                     });
-            });
-         
-         it("should provide a synchronous mkdir function", function() {
-            var newDirectory = new java.io.File(tempDir + "/waffle-recipes");
-            fs.mkdirSync(newDirectory.getAbsolutePath(), 0755);
-            expect(newDirectory.exists()).toBe(true);
-            newDirectory.delete();
-            });
-         
-         it("should provide a readdir function", function() {
+      /*      it("should provide a readdir function", function() {
             waitsFor(helper.testComplete, "the readdir test to complete", 5000);
             fs.readdir(tempDir, function(e,r) {
                        expect(r.length).toBeGreaterThan(0);
@@ -291,6 +278,8 @@ describe("fs module", function() {
                        helper.testComplete(true);
                        });
             });
+         
+         
          
          it('should throw ENOENT for readdir if no-such-directory', function() {
             var caught;

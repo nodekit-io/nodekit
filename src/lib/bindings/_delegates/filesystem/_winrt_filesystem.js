@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Domabo; Portions Copyright 2014 Tim Schaub
+ * Copyright 2015 Domabo; Portions Copyright 2014 Tim Schaub
  *
  * Licensed under the the MIT license (the "License");
  * you may not use this file except in compliance with the License.

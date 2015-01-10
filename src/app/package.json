@@ -1,13 +1,13 @@
 {
-    "name": "nodeappkit",
+    "name": "nodekit",
     "main": "index.js",
     "node-main": "",
     "node-baseurl": "http://localhost:8000/test/",
     "node-splashtime": 2000,
     "description": "Default app -- delete me",
-    "author": "OwinJS",
+    "author": "Domabo",
     "version": "1.0.0",
-    "repository": "https://github.com/OwinJS/nodeAppKit",
+    "repository": "https://github.com/nodekit-io/nodekit",
     "dependencies": {   }  ,
      "window": {
         "title": "Default Application",
