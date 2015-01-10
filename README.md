@@ -1,4 +1,4 @@
-![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/images/NodeKit512256InverseRed.png)
+![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/NodeKit512256InverseRed.png)
 
 NodeKit.io is a cross-platform, cross-javascript-engine runtime solution for Node.js.  
 

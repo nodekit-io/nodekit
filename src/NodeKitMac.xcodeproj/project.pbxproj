@@ -42,6 +42,7 @@
 		E435CD191A617C0900949C18 /* NodeKitMac.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = NodeKitMac.entitlements; path = swift/NodeKitMac.entitlements; sourceTree = SOURCE_ROOT; };
 		E435CD1B1A617DF400949C18 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		E435CD1C1A617E1000949C18 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		E435CD1D1A617F6C00949C18 /* doc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = doc; path = ../doc; sourceTree = "<group>"; };
 		E4700BD319F889A30020621C /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = "objective-c/GCDAsyncSocket.h"; sourceTree = SOURCE_ROOT; };
 		E4700BD419F889A30020621C /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = "objective-c/GCDAsyncSocket.m"; sourceTree = SOURCE_ROOT; };
 		E4908EB119C7CC850007E874 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
@@ -78,6 +79,7 @@
 		E4B749E019C7B11B00F07883 = {
 			isa = PBXGroup;
 			children = (
+				E435CD1D1A617F6C00949C18 /* doc */,
 				E435CD1C1A617E1000949C18 /* LICENSE */,
 				E435CD1B1A617DF400949C18 /* README.md */,
 				E4B74A6719C7B3CD00F07883 /* app */,
