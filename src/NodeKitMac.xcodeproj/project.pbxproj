@@ -8,11 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		260A5C6D1A1924AF00B7777B /* test in Resources */ = {isa = PBXBuildFile; fileRef = 260A5C6C1A1924AF00B7777B /* test */; };
-		26B3A0651A17D90B00C0E63C /* NKUrlFileDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26B3A0641A17D90B00C0E63C /* NKUrlFileDecode.swift */; };
 		26CBF11B1A178C2B0018A442 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11A1A178C2B0018A442 /* GCDAsyncUdpSocket.m */; };
 		26CBF1211A1790090018A442 /* NKFileSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11E1A1790090018A442 /* NKFileSystem.swift */; };
 		26CBF1221A1790090018A442 /* NKSocketTCP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF11F1A1790090018A442 /* NKSocketTCP.swift */; };
 		26CBF1231A1790090018A442 /* NKSocketUDP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26CBF1201A1790090018A442 /* NKSocketUDP.swift */; };
+		E435CD181A617BF700949C18 /* NKUrlFileDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E435CD171A617BF700949C18 /* NKUrlFileDecode.swift */; };
+		E435CD1A1A617C0900949C18 /* NodeKitMac.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = E435CD191A617C0900949C18 /* NodeKitMac.entitlements */; };
 		E4700BD519F889A30020621C /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E4700BD419F889A30020621C /* GCDAsyncSocket.m */; };
 		E4908EB219C7CC850007E874 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E4908EB119C7CC850007E874 /* lib */; };
 		E4B74A4519C7B39300F07883 /* NKWKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */; };
@@ -32,12 +33,13 @@
 
 /* Begin PBXFileReference section */
 		260A5C6C1A1924AF00B7777B /* test */ = {isa = PBXFileReference; lastKnownFileType = folder; path = test; sourceTree = "<group>"; };
-		26B3A0641A17D90B00C0E63C /* NKUrlFileDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKUrlFileDecode.swift; sourceTree = SOURCE_ROOT; };
 		26CBF1191A178C2B0018A442 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncUdpSocket.h; path = "objective-c/GCDAsyncUdpSocket.h"; sourceTree = SOURCE_ROOT; };
 		26CBF11A1A178C2B0018A442 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncUdpSocket.m; path = "objective-c/GCDAsyncUdpSocket.m"; sourceTree = SOURCE_ROOT; };
 		26CBF11E1A1790090018A442 /* NKFileSystem.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKFileSystem.swift; path = swift/bindings/NKFileSystem.swift; sourceTree = SOURCE_ROOT; };
 		26CBF11F1A1790090018A442 /* NKSocketTCP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKSocketTCP.swift; path = swift/bindings/NKSocketTCP.swift; sourceTree = SOURCE_ROOT; };
 		26CBF1201A1790090018A442 /* NKSocketUDP.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKSocketUDP.swift; path = swift/bindings/NKSocketUDP.swift; sourceTree = SOURCE_ROOT; };
+		E435CD171A617BF700949C18 /* NKUrlFileDecode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUrlFileDecode.swift; path = swift/NKUrlFileDecode.swift; sourceTree = SOURCE_ROOT; };
+		E435CD191A617C0900949C18 /* NodeKitMac.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = NodeKitMac.entitlements; path = swift/NodeKitMac.entitlements; sourceTree = SOURCE_ROOT; };
 		E4700BD319F889A30020621C /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = "objective-c/GCDAsyncSocket.h"; sourceTree = SOURCE_ROOT; };
 		E4700BD419F889A30020621C /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = "objective-c/GCDAsyncSocket.m"; sourceTree = SOURCE_ROOT; };
 		E4908EB119C7CC850007E874 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
@@ -57,7 +59,6 @@
 		E4B74A6719C7B3CD00F07883 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; path = app; sourceTree = "<group>"; };
 		E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = NodeKitIcons.icns; path = swift/NodeKitIcons.icns; sourceTree = SOURCE_ROOT; };
 		E4B74A6D19C7B7BC00F07883 /* app-shared */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "app-shared"; sourceTree = "<group>"; };
-		E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NodeKitMac.entitlements; sourceTree = SOURCE_ROOT; };
 		E4F3AD291A29235300BCEB94 /* NKTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKTimer.swift; path = swift/bindings/NKTimer.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -102,7 +103,7 @@
 				E4B74A3F19C7B39300F07883 /* NKJSContextFactory.swift */,
 				E4B74A3D19C7B39300F07883 /* NKNodekit.swift */,
 				E4B74A3E19C7B39300F07883 /* NKUIWebView.swift */,
-				26B3A0641A17D90B00C0E63C /* NKUrlFileDecode.swift */,
+				E435CD171A617BF700949C18 /* NKUrlFileDecode.swift */,
 				E4B74A3C19C7B39300F07883 /* NKUrlProtocolLocalFile.swift */,
 				E4B74A4219C7B39300F07883 /* NKUrlProtocolCustom.swift */,
 				E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */,
@@ -115,7 +116,7 @@
 		E4B749EC19C7B11B00F07883 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */,
+				E435CD191A617C0900949C18 /* NodeKitMac.entitlements */,
 				E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */,
 				E4B74A3A19C7B39300F07883 /* Info.plist */,
 			);
@@ -210,6 +211,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E435CD1A1A617C0900949C18 /* NodeKitMac.entitlements in Resources */,
 				E4B74A6819C7B3CD00F07883 /* app in Resources */,
 				260A5C6D1A1924AF00B7777B /* test in Resources */,
 				E4B74A6C19C7B5D700F07883 /* NodeKitIcons.icns in Resources */,
@@ -225,7 +227,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				26B3A0651A17D90B00C0E63C /* NKUrlFileDecode.swift in Sources */,
+				E435CD181A617BF700949C18 /* NKUrlFileDecode.swift in Sources */,
 				E4B74A4619C7B39300F07883 /* NKUrlProtocolLocalFile.swift in Sources */,
 				E4CD82101A292AB0005AB24E /* NKTimer.swift in Sources */,
 				E4B74A4B19C7B39300F07883 /* NKMenu.swift in Sources */,
@@ -327,8 +329,7 @@
 		E4B74A0419C7B11B00F07883 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = NodeKitMac.entitlements;
-				"CODE_SIGN_ENTITLEMENTS[sdk=*]" = NodeKitMac.entitlements;
+				CODE_SIGN_ENTITLEMENTS = swift/NodeKitMac.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/swift/Info.plist";
@@ -341,7 +342,7 @@
 		E4B74A0519C7B11B00F07883 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_ENTITLEMENTS = NodeKitMac.entitlements;
+				CODE_SIGN_ENTITLEMENTS = swift/NodeKitMac.entitlements;
 				COMBINE_HIDPI_IMAGES = YES;
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/swift/Info.plist";
