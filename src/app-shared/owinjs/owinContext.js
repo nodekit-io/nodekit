@@ -22,7 +22,7 @@ var constants = require('./owinConstants.js');
  owinContextHelpers.refreshPrototype(_temp_context, "owin.Response", OwinResponse.prototype)
  owinContextHelpers.refreshPrototype(_temp_context, "owin.", OwinOwin.prototype)
  owinContextHelpers.refreshPrototype(_temp_context, "server.", OwinServer.prototype)
- owinContextHelpers.refreshPrototype(_temp_context, "owinjs.", OwinNodeAppKit.prototype)
+ owinContextHelpers.refreshPrototype(_temp_context, "owinjs.", OwinNodeKit.prototype)
  
  owinContextHelpers.cloneBodyPrototypeAlias(OwinResponse.prototype,EventEmitter.prototype, "owin.ResponseBody");
  owinContextHelpers.cloneBodyPrototypeAlias(OwinResponse.prototype,Stream.prototype, "owin.ResponseBody");
@@ -63,7 +63,7 @@ function expandContext(context, addReqRes) {
     context.response = new OwinResponse(context);
     context.owin = new OwinOwin(context);
     context.server = new OwinServer(context);
-    context.nodeAppKit = new OwinNodeAppKit(context);
+    context.nodeKit = new OwinNodeKit(context);
     
     if (context[constants.owinjs.id] != const_Instance)
     {
@@ -127,12 +127,12 @@ function OwinOwin(owin){ this.context = owin;  };
 function OwinServer(owin){ this.context = owin;  };
 
 /**
- * Represents an OWIN/JS nodeAppKit Object
+ * Represents an OWIN/JS nodeKit Object
  *
- * @class OwinNodeAppKit
+ * @class OwinNodeKit
  * @constructor
  */
-function OwinNodeAppKit(owin){ this.context = owin;  };
+function OwinNodeKit(owin){ this.context = owin;  };
 
 
 /**
@@ -306,7 +306,7 @@ exports.shrinkContext = function(context) {
     delete context.response.context;
     delete context.owin.context ;
     delete context.server.context ;
-    delete context.nodeAppKit.context ;
+    delete context.nodeKit.context ;
     delete context.req.context;
     delete context.res.context;
     
@@ -314,7 +314,7 @@ exports.shrinkContext = function(context) {
     delete context.response;
     delete context.owin ;
     delete context.server ;
-    delete context.nodeAppKit ;
+    delete context.nodeKit ;
     delete context.req;
     delete context.res;
     }

@@ -93,9 +93,8 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
             return
         })
         
-        var url = NSURL(string:"http://bing.com") // NSURL(string: urlAddress)
+        var url = NSURL(string: urlAddress)
         var requestObj: NSURLRequest = NSURLRequest(URL: url!)
-        
         webview.loadRequest(requestObj)
 
     }

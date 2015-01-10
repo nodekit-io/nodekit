@@ -25,8 +25,6 @@ class NKUIWebView: NSObject {
     
     init(urlAddress: NSString, title:NSString, width:CGFloat, height:CGFloat )
     {
-        
-        
         var windowRect : NSRect = (NSScreen.mainScreen()!).frame
         var frameRect : NSRect = NSMakeRect(
             (NSWidth(windowRect) - width)/2,
@@ -60,7 +58,7 @@ class NKUIWebView: NSObject {
    
         webview.autoresizingMask = NSAutoresizingMaskOptions.ViewWidthSizable | NSAutoresizingMaskOptions.ViewHeightSizable
         
-        webview.applicationNameForUserAgent = "nodeAppKit"
+        webview.applicationNameForUserAgent = "nodeKit"
         webview.drawsBackground = false
         webview.preferences = webPrefs
         
@@ -75,7 +73,6 @@ class NKUIWebView: NSObject {
           webview.mainFrame.loadHTMLString(msg, baseURL: NSURL(string: "about:blank"))
             return
         });
-        
         
         NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
             var requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)

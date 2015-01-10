@@ -57,7 +57,7 @@
 		E4B74A6719C7B3CD00F07883 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; path = app; sourceTree = "<group>"; };
 		E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = NodeKitIcons.icns; path = swift/NodeKitIcons.icns; sourceTree = SOURCE_ROOT; };
 		E4B74A6D19C7B7BC00F07883 /* app-shared */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "app-shared"; sourceTree = "<group>"; };
-		E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NodeKitMac.entitlements; sourceTree = "<group>"; };
+		E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = NodeKitMac.entitlements; sourceTree = SOURCE_ROOT; };
 		E4F3AD291A29235300BCEB94 /* NKTimer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKTimer.swift; path = swift/bindings/NKTimer.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -75,7 +75,6 @@
 		E4B749E019C7B11B00F07883 = {
 			isa = PBXGroup;
 			children = (
-				E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */,
 				E4B74A6719C7B3CD00F07883 /* app */,
 				E4B74A6D19C7B7BC00F07883 /* app-shared */,
 				E4908EB119C7CC850007E874 /* lib */,
@@ -116,6 +115,7 @@
 		E4B749EC19C7B11B00F07883 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				E4D8B50419D0FB39005376BD /* NodeKitMac.entitlements */,
 				E4B74A6B19C7B5D700F07883 /* NodeKitIcons.icns */,
 				E4B74A3A19C7B39300F07883 /* Info.plist */,
 			);

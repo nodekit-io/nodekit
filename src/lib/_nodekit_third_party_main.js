@@ -49,7 +49,7 @@ COUNTER_HTTP_CLIENT_RESPONSE = function(){};
  *
  */
 
-module._extensions['.js'] = function nodeappkit_module_jsread(module, filename) {
+module._extensions['.js'] = function nodekit_module_jsread(module, filename) {
     var file = filename.replace(process.execPath, "");
     
     var append = "\r\n //" + "# source" + "URL=" + file + "\r\n";
