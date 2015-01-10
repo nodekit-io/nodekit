@@ -38,7 +38,7 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
         
         var viewRect : NSRect = NSMakeRect(0,0,width, height);
         
-        var mainWindow = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, defer: false, screen: NSScreen.mainScreen())
+        mainWindow = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, defer: false, screen: NSScreen.mainScreen())
         
         
         if (mainWindows == nil) {
@@ -89,6 +89,7 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
         
         NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
             var requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
+            self.mainWindow.title = title
             webview.loadRequest(requestObj)
             return
         })

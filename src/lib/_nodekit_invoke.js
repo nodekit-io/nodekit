@@ -3,6 +3,7 @@
 var events = require('events');
 var util = require('util');
 var stream = require('stream');
+var http = require('http');
 var EventEmitter = require('events').EventEmitter;
 
 //OBJECTIVE-C PUBLIC METHODS
@@ -15,14 +16,24 @@ var EventEmitter = require('events').EventEmitter;
  * @constructor
  * @public
  */
-function BrowserServer(){};
-
-exports.createServer = function(requestListener) {
-    var server = new BrowserServer();
-    private_BrowserEventHost.addListener('request', requestListener);
-    return server;
+function BrowserServer(requestListener){
+    this.requestListener = requestListener;
 };
 
+BrowserServer.prototype.listen = function(port, host) {
+    private_BrowserEventHost.addListener('request', this.requestListener);
+    if (!!port)
+    {
+        var httpServer = http.createServer(this.requestListener);
+        httpServer.listen(port, host);
+        
+    }
+};
+
+exports.createServer = function(requestListener) {
+    var server = new BrowserServer(requestListener);
+    return server;
+};
 
 /**
  * The shared Event Host used for communication between Swift/Objective-C and all Server Applications on this Server
@@ -104,7 +115,6 @@ exports.cancelContext = function(httpContext) {
 exports.invokeContext = function invokeContext(httpContext, callBack) {
     
     try{
-   
         httpContext.res.on('finish', function() {
                                   var data = httpContext.res.getBody();
                                   httpContext["_chunk"] = data;
