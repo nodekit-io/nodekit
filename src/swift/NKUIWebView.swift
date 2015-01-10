@@ -81,9 +81,25 @@ class NKUIWebView: NSObject {
             return
         });
         
+        NKJavascriptBridge.registerResizer ({ (width: NSNumber?, height: NSNumber?) -> () in
+            var widthCG = CGFloat(width!)
+            var heightCG = CGFloat(height!)
+            
+            var windowRect : NSRect = (NSScreen.mainScreen()!).frame
+            var frameRect : NSRect = NSMakeRect(
+                (NSWidth(windowRect) - widthCG)/2,
+                (NSHeight(windowRect) - heightCG)/2,
+                widthCG, heightCG)
+            
+            self.mainWindow.setFrame(frameRect, display: true,animate: true)
+                 return
+        });
+        
+          
         var url = NSURL(string: urlAddress)
         var requestObj: NSURLRequest = NSURLRequest(URL: url!)
         webview.mainFrame.loadRequest(requestObj)
     }
+    
     
 }

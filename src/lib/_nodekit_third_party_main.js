@@ -82,7 +82,8 @@ process.package =  module._load('app/package.json', null, false);
 module._load(process.package['main'], null, true);
 
 io.nodekit.console.setTimeout(1, function(){
-             io.nodekit.console.navigateTo(process.package["node-baseurl"] + process.package["node-main"], process.package.window.title)
+                              io.nodekit.console.navigateTo(process.package["node-baseurl"] + process.package["node-main"], process.package.window.title);
+                              io.nodekit.console.resize(process.package.window.width, process.package.window.height);
                               });
 
 

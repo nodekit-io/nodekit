@@ -1,0 +1,42 @@
+{
+    "name": "nodekit-demo",
+    "main": "index.js",
+    "node-main": "",
+    "node-baseurl": "node://localhost/",
+    "node-splashtime": 1000,
+    "description": "Demonstration app for the cross platform nodekit.io native web framework.  It runs under both node.js and as a native application on OS/X with no changes.",
+    "author": "Domabo",
+    "version": "0.1.5",
+    "repository" :
+    { "type" : "git"
+    , "url" : "https://github.com/nodekit-io/nodekit-demo.git"
+    },
+    "dependencies": {
+          "bootflat": "*",
+        "owinjs-razor": "*",
+        "owinjs-static": "*",
+        "owinjs-router": "*",
+        "owinjs": "*",
+        "promise": "*"
+    },
+    "keywords": [
+    "nodekit",
+    "middleware",
+    "app",
+    "demo",
+    "mac",
+    "osx",
+    "promise",
+    "async",
+    "framework",
+    "owin"
+  ],
+    "engines": {
+        "node": ">= 0.10.0"
+    },
+    "window": {
+        "title": "Demo for nodekit.io",
+        "width": 1024,
+        "height": 600
+    }
+}

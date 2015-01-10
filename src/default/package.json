@@ -2,7 +2,7 @@
     "name": "nodekit",
     "main": "index.js",
     "node-main": "",
-    "node-baseurl": "http://localhost:8000/",
+    "node-baseurl": "http://node/",
     "node-splashtime": 2000,
     "description": "Default application",
     "author": "Domabo",
@@ -11,7 +11,7 @@
     "dependencies": {   }  ,
      "window": {
         "title": "Default Application",
-        "width": 1024,
+        "width": 800,
         "height": 600
     }
 }

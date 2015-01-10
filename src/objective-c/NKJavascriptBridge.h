@@ -23,6 +23,7 @@ typedef void (^nodeCallBack)(id error, id value);
 typedef void (^closure)();
 typedef void (^stringViewer)(NSString *msg, NSString *title);
 typedef void (^urlNavigator)(NSString *uri, NSString *title);
+typedef void (^resizer)(NSNumber* width, NSNumber* height);
 typedef void (^nodeEventEmit)(NSString *event, NSArray *args);
 
 @interface NKJavascriptBridge: NSObject
@@ -33,6 +34,7 @@ typedef void (^nodeEventEmit)(NSString *event, NSArray *args);
 + (void) cancelHttpContext:(JSValue *)httpContext;
 + (void)registerStringViewer:(stringViewer)callBack;
 + (void)registerNavigator:(urlNavigator)callBack;
++ (void)registerResizer:(resizer)callBack;
 + (void)showString:(NSString *)message  Title:(NSString *)title;
 + (void)navigateTo:(NSString *)uri Title:(NSString *)title;
 + (void) setJavascriptClosure:(JSValue *)httpContext key:(NSString *)key  callBack:(closure)callBack;

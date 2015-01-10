@@ -22,6 +22,7 @@
 static JSContext *_context = nil;
 static stringViewer  _stringViewer = nil;
 static urlNavigator _urlNavigator = nil;
+static resizer _resizer = nil;
 
 @implementation NKJavascriptBridge
 
@@ -219,6 +220,13 @@ static urlNavigator _urlNavigator = nil;
             });
         };
         
+        console[@"resize"] = ^(NSNumber* width, NSNumber* height){
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [NKJavascriptBridge resize: width Height: height];
+            });
+        };
+        
+        
         JSValue *io_nodekit = [JSValue valueWithObject:@{
                                                          @"fs": fs,
                                                          @"console": console,
@@ -260,6 +268,11 @@ static urlNavigator _urlNavigator = nil;
     _urlNavigator = callBack;
 }
 
++ (void)registerResizer:(resizer)callBack
+{
+    _resizer = callBack;
+}
+
 + (void)showString:(NSString *)message  Title:(NSString *)title
 {
     _stringViewer(message, title);
@@ -268,6 +281,11 @@ static urlNavigator _urlNavigator = nil;
 + (void)navigateTo:(NSString *)uri Title:(NSString *)title
 {
     _urlNavigator(uri, title);
+}
+
++ (void)resize:(NSNumber *)width Height:(NSNumber *)height
+{
+    _resizer(width, height);
 }
 
 + (JSValue*) createHttpContext
