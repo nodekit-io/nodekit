@@ -50,7 +50,7 @@ var private_BrowserEventHost = new BrowserEventHost();
  *
  * @function createEmptyContext
  *
- * @param context - the base owin context dictionary
+ * @param context - the base http context dictionary
  * @returns (httpContext) - the Http Context object
  * @public
  */

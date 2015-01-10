@@ -68,7 +68,7 @@ function stripBOM(content) {
 
 /**
  * NODEKIT INITIALIZATION
- * Load Application package.json file, register owin/js server, and load debug application
+ * Load Application package.json file, register request/response server, and load debug application
  */
 
 var invoke = module._load('lib/_nodekit_invoke.js');
@@ -78,7 +78,6 @@ io.nodekit.cancelContext = invoke.cancelContext;
 io.nodekit.createServer = invoke.createServer;
 
 process.package =  module._load('app/package.json', null, false);
-// global.Browser = require('owinjs-browser.js');
 
 module._load(process.package['main'], null, true);
 

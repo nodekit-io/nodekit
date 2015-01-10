@@ -6,7 +6,7 @@
     "node-splashtime": 2000,
     "description": "Default app -- delete me",
     "author": "Domabo",
-    "version": "1.0.0",
+    "version": "0.5.0",
     "repository": "https://github.com/nodekit-io/nodekit",
     "dependencies": {   }  ,
      "window": {

@@ -76,6 +76,7 @@ class NKUIWebView: NSObject {
         
         NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
             var requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
+            self.mainWindow.title = title
             webview.mainFrame.loadRequest(requestObj)
             return
         });
