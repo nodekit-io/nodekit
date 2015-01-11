@@ -58,8 +58,6 @@ class NKUrlProtocolCustom: NSURLProtocol {
         let hostRequest: NSURLRequest = self.request
         let client: NSURLProtocolClient = self.client!
         
-        println(hostRequest.URL.absoluteString!)
-        
         httpContext = NKJavascriptBridge.createHttpContext()
         
         let req: JSValue = httpContext!.valueForProperty("req");
@@ -104,7 +102,7 @@ class NKUrlProtocolCustom: NSURLProtocol {
         NKJavascriptBridge.setJavascriptClosure(res, key: "_writeString",  callBack: { () -> Void in
             
             var str : NSString = this.httpContext!.valueForProperty("_chunk").toString();
-            var data : NSData? = str.dataUsingEncoding(NSUTF8StringEncoding)
+            var data : NSData? =  NSData(base64EncodedString: str, options: NSDataBase64DecodingOptions.IgnoreUnknownCharacters)
             
             if (!this.headersWritten)
             {
@@ -134,7 +132,7 @@ class NKUrlProtocolCustom: NSURLProtocol {
         if (self.isCancelled)  {return};
         
         var str : NSString = self.httpContext!.valueForProperty("_chunk").toString();
-        var data : NSData! = str.dataUsingEncoding(NSUTF8StringEncoding)
+        var data : NSData =  NSData(base64EncodedString: str, options: NSDataBase64DecodingOptions.IgnoreUnknownCharacters)!
         
         if (!self.headersWritten)
         {
@@ -163,7 +161,7 @@ class NKUrlProtocolCustom: NSURLProtocol {
             
             var url : NSURL = NSURL(string: location)!
             
-             NSLog("Redirection location to %@", url)
+             println("Redirection location to %@", url.absoluteString)
             
             var response = NSHTTPURLResponse(URL: url, statusCode: statusCode, HTTPVersion: version, headerFields: headers)!
       

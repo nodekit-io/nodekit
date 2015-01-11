@@ -20,3 +20,5 @@
 #import "NKJavascriptBridge.h"
 #import "GCDAsyncSocket.h"
 #import "GCDAsyncUdpSocket.h"
+
+#define NSLog(FORMAT, ...) printf("%s\n", [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);

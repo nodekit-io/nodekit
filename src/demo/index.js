@@ -24,6 +24,6 @@ route.get('/', function routeGetDefault(){
 });
 
 var server = io.nodekit.createServer(app.buildHttp());
-server.listen(8000, "localhost");
+server.listen(8000,"localhost");
 
 console.log('Server started');

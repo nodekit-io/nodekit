@@ -118,7 +118,7 @@ exports.invokeContext = function invokeContext(httpContext, callBack) {
         httpContext.res.on('finish', function() {
                                   var data = httpContext.res.getBody();
                                   httpContext["_chunk"] = data;
-                                  httpContext.res.headers["Access-Control-Allow-Origin"] = "*";
+                                  httpContext.res.headers["access-control-allow-origin"] = "*";
                                   callBack();
                                   
                                   for (var _key in httpContext) {
@@ -220,7 +220,7 @@ ResponseStream.prototype._write = function responseStreamWrite(chunk, enc, next)
  * @constructor
  */
 function ResponseStreamString() {
-    Writable.call(this, {decodeStrings: false});
+    Writable.call(this, {decodeStrings: true});
     this.bodyChunks = [];
   }
 
@@ -233,7 +233,7 @@ ResponseStreamString.prototype._write = function ResponseStreamStringWrite(chunk
 };
 
 ResponseStreamString.prototype.getBody = function ResponseStreamGetBody() {
-    return this.bodyChunks.join('');
+    return Buffer.concat(this.bodyChunks).toString('base64');
 };
 
 /**

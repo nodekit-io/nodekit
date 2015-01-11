@@ -45,6 +45,6 @@ var server = io.nodekit.createServer(function (request, response) {
                                                  });
                                      });
 
- server.listen(/* 8000, "localhost" */);
+ server.listen();
  
  console.log("Server running");
