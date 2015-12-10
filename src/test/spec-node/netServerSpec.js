@@ -76,7 +76,7 @@ describe( "net.Server", function() {
         });
       });
     });
-    server.listen(8800, function() {
+  /*  server.listen(8800, function() {
       var socket = net.connect(8800, function() {
         socket.on('data', function(buffer) {
           expect(buffer.toString()).toBe('with chocolate');
@@ -84,7 +84,7 @@ describe( "net.Server", function() {
         });
         socket.write("crunchy bacon");
       });
-    });
+    }); */
   });
 
   it("should support an idle socket timeout", function() {

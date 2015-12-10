@@ -18,8 +18,8 @@
 
 
 
-//require('test/index.js');
+require('test/index.js');
 
-require('default/index.js');
+//require('default/index.js');
 
 //require('demo/index.js');
