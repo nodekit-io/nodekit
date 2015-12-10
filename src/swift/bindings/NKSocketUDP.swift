@@ -77,7 +77,7 @@
     
     private func emitRecv(data: NSData!, host: NSString!, port: NSNumber!)
     {
-        var str : NSString! = data.base64EncodedStringWithOptions(.allZeros)
+        let str : NSString! = data.base64EncodedStringWithOptions([])
         dispatch_sync(NKGlobals.NKeventQueue, {
             
         self._udp!.invokeMethod( "emit", withArguments:["recv", str, host, port ])
@@ -86,20 +86,32 @@
         });
     }
     
-    lazy var block_bind : @objc_block (NSString!, NSNumber, NSNumber) -> NSString! = {
+    lazy var block_bind : @convention(block) (NSString!, NSNumber, NSNumber) -> NSString! = {
         (address: NSString!, port: NSNumber, flags: NSNumber) -> NSString! in
         
-        self._addr = address;
+        self._addr = address as String;
         self._port = port.unsignedShortValue
         var err: NSError? = nil
         //TODO Use Flags = reuse address
         
         if (self._addr != "0.0.0.0")
         {
-            self._socket?.bindToPort(self._port, interface: self._addr, error: &err)
+            do {
+                try self._socket?.bindToPort(self._port, interface: self._addr)
+            } catch var error as NSError {
+                err = error
+            } catch {
+                fatalError()
+            }
         } else
         {
-            self._socket?.bindToPort(self._port, error: &err)
+            do {
+                try self._socket?.bindToPort(self._port)
+            } catch var error as NSError {
+                err = error
+            } catch {
+                fatalError()
+            }
             
         }
         
@@ -111,25 +123,31 @@
         return "OK"
     }
     
-    lazy var block_recvStart : @objc_block () -> Void = {
+    lazy var block_recvStart : @convention(block) () -> Void = {
         [unowned self] () -> Void in
         
         var err: NSError? = nil
-        self._socket?.beginReceiving(&err)
+        do {
+            try self._socket?.beginReceiving()
+        } catch var error as NSError {
+            err = error
+        } catch {
+            fatalError()
+        }
         
         if ((err) != nil)
         {
-            println(err!.description)
+            print(err!.description)
         }
     }
     
-    lazy var block_recvStop : @objc_block () -> Void = {
+    lazy var block_recvStop : @convention(block) () -> Void = {
         [unowned self] () -> Void  in
         self._socket?.pauseReceiving()
         return
     }
     
-    lazy var block_close : @objc_block () -> Void = {
+    lazy var block_close : @convention(block) () -> Void = {
         () -> Void in
         if (self._socket !== nil)
         {
@@ -140,7 +158,7 @@
     
     public func setSocketIPOptions(option: Int32, setting: Int32) -> Void
     {
-        var socket : GCDAsyncUdpSocket = self._socket!
+        let socket : GCDAsyncUdpSocket = self._socket!
         var value : Int32 = setting
         
         socket.performBlock({
@@ -158,58 +176,74 @@
     }
     
     
-    lazy var block_send : @objc_block (NSString!, NSString!, NSNumber) -> Void = {
+    lazy var block_send : @convention(block) (NSString!, NSString!, NSNumber) -> Void = {
         [unowned self] (str: NSString!,  address: NSString!, port: NSNumber) -> Void in
         
-        var _addr : String! = address
+        var _addr : String! = address as String
         var _port : UInt16 = port.unsignedShortValue
         
-        var data = NSData(base64EncodedString: str, options: .allZeros)
+        var data = NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions(rawValue: 0))
         self._socket!.sendData(data, toHost: _addr, port: _port, withTimeout: -1, tag: 0)
     }
     
     
-    lazy var block_addMembership : @objc_block (NSString!, NSString!) -> Void = {
+    lazy var block_addMembership : @convention(block) (NSString!, NSString!) -> Void = {
         [unowned self] (mcastAddr: NSString!, ifaceAddr: NSString!) -> Void in
         var err: NSError? = nil
-        self._socket?.joinMulticastGroup(mcastAddr, onInterface: ifaceAddr, error: &err)
+        do
+            {
+        try self._socket?.joinMulticastGroup(mcastAddr as String!, onInterface: ifaceAddr as String!)
+        } catch _ {
+            
+        }
         // self._socket?.beginReceiving(&err)
     }
     
-    lazy var block_dropMembership : @objc_block (NSString!, NSString!) -> Void = {
+    lazy var block_dropMembership : @convention(block) (NSString!, NSString!) -> Void = {
         [unowned self] (mcastAddr: NSString!, ifaceAddr: NSString!) -> Void in
         var err: NSError? = nil
-        self._socket?.leaveMulticastGroup(mcastAddr, onInterface: ifaceAddr, error: &err)
+        do
+        {
+        try self._socket?.leaveMulticastGroup(mcastAddr as String!, onInterface: ifaceAddr as String!)
+        }  catch _ {
+            
+        }
        // self._socket?.beginReceiving(&err)
     }
     
     
-    lazy var block_setMulticastTTL : @objc_block (NSNumber!) -> Void = {
+    lazy var block_setMulticastTTL : @convention(block) (NSNumber!) -> Void = {
         [unowned self] (ttl: NSNumber!) -> Void in
         
         self.setSocketIPOptions(IP_MULTICAST_TTL, setting: ttl.intValue )
         
     }
-    lazy var block_setMulticastLoopback : @objc_block (NSNumber!) -> Void = {
+    lazy var block_setMulticastLoopback : @convention(block) (NSNumber!) -> Void = {
         [unowned self] (flag: NSNumber!) -> Void in
         
             self.setSocketIPOptions(IP_MULTICAST_LOOP, setting: (flag.boolValue) ? 1 : 0 )
          }
     
-    lazy var block_setTTL : @objc_block (NSNumber!) -> Void = {
+    lazy var block_setTTL : @convention(block) (NSNumber!) -> Void = {
         [unowned self] (ttl: NSNumber!) -> Void in
         
         self.setSocketIPOptions(IP_TTL, setting: ttl.intValue )
         
     }
-    lazy var block_setBroadcast : @objc_block (NSNumber!) -> Void = {
+    lazy var block_setBroadcast : @convention(block) (NSNumber!) -> Void = {
         [unowned self] (flag: NSNumber!) -> Void in
         var err: NSError? = nil
         
-        self._socket?.enableBroadcast(flag.boolValue, error: &err)
+        do {
+            try self._socket?.enableBroadcast(flag.boolValue)
+        } catch var error as NSError {
+            err = error
+        } catch {
+            fatalError()
+        }
     }
     
-    lazy var block_localAddress : @objc_block () -> JSValue = {
+    lazy var block_localAddress : @convention(block) () -> JSValue = {
         [unowned self] () -> JSValue in
         var address: NSString! = self._socket!.localHost()
         var port : NSNumber = NSNumber(unsignedShort: self._socket!.localPort())

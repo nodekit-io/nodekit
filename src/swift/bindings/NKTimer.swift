@@ -56,20 +56,20 @@
     }
     
     
-    lazy var block_onTimout : @objc_block () -> JSValue! = {
+    lazy var block_onTimout : @convention(block) () -> JSValue! = {
         () -> JSValue! in
         
         return self._handler!
     
     }
     
-    lazy var block_setOnTimeout : @objc_block (JSValue!) -> Void = {
+    lazy var block_setOnTimeout : @convention(block) (JSValue!) -> Void = {
         (handler: JSValue!) -> Void in
         self._handler = handler
     
     }
     
-    lazy var block_stop : @objc_block () -> Void = {
+    lazy var block_stop : @convention(block) () -> Void = {
         () -> Void in
         
         self._nsTimer!.invalidate();
@@ -77,7 +77,7 @@
         
     }
     
-    lazy var block_close : @objc_block () -> Void = {
+    lazy var block_close : @convention(block) () -> Void = {
         () -> Void in
         self._nsTimer!.invalidate();
         self._nsTimer = nil;
@@ -94,15 +94,15 @@
     }
     
 
-    lazy var block_start : @objc_block (NSNumber!, NSNumber!) -> Void = {
-        (delay: NSNumber!, repeat: NSNumber!) -> Void in
+    lazy var block_start : @convention(block) (NSNumber!, NSNumber!) -> Void = {
+        (delay: NSNumber!, `repeat`: NSNumber!) -> Void in
         
         if (self._nsTimer != nil)
         {
         self.block_stop()
         }
         
-        self._repeatPeriod = repeat
+        self._repeatPeriod = `repeat`
         
         var secondsToDelay : NSTimeInterval = delay.doubleValue / 1000
         self.scheduleTimeout(secondsToDelay)
@@ -119,7 +119,7 @@
     @objc func timeOutHandler() {
         dispatch_sync(NKGlobals.NKeventQueue, {
             self._handler?.callWithArguments([])
-            var seconds: NSTimeInterval = self._repeatPeriod.doubleValue / 1000
+            let seconds: NSTimeInterval = self._repeatPeriod.doubleValue / 1000
             if (seconds>0) {
                 self.scheduleTimeout(seconds)
             }

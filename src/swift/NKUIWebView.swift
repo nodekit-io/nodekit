@@ -25,26 +25,26 @@ class NKUIWebView: NSObject {
     
     init(urlAddress: NSString, title:NSString, width:CGFloat, height:CGFloat )
     {
-        var windowRect : NSRect = (NSScreen.mainScreen()!).frame
-        var frameRect : NSRect = NSMakeRect(
+        let windowRect : NSRect = (NSScreen.mainScreen()!).frame
+        let frameRect : NSRect = NSMakeRect(
             (NSWidth(windowRect) - width)/2,
             (NSHeight(windowRect) - height)/2,
             width, height)
         
-        var viewRect : NSRect = NSMakeRect(0,0,width, height);
+        let viewRect : NSRect = NSMakeRect(0,0,width, height);
      
-        mainWindow = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, defer: false, screen: NSScreen.mainScreen())
+        mainWindow = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, `defer`: false, screen: NSScreen.mainScreen())
         
         if (mainWindows == nil) {
             mainWindows = NSMutableArray()
         }
         
         mainWindows?.addObject(mainWindow)
-        var webview:WebView = WebView(frame: viewRect)
+        let webview:WebView = WebView(frame: viewRect)
         
         super.init()
         
-        var webPrefs : WebPreferences = WebPreferences.standardPreferences()
+        let webPrefs : WebPreferences = WebPreferences.standardPreferences()
         
         webPrefs.javaEnabled = false
         webPrefs.plugInsEnabled = false
@@ -56,7 +56,7 @@ class NKUIWebView: NSObject {
         webPrefs.shouldPrintBackgrounds = true
         webPrefs.userStyleSheetEnabled = false
    
-        webview.autoresizingMask = NSAutoresizingMaskOptions.ViewWidthSizable | NSAutoresizingMaskOptions.ViewHeightSizable
+        webview.autoresizingMask = [NSAutoresizingMaskOptions.ViewWidthSizable, NSAutoresizingMaskOptions.ViewHeightSizable]
         
         webview.applicationNameForUserAgent = "nodeKit"
         webview.drawsBackground = false
@@ -64,7 +64,7 @@ class NKUIWebView: NSObject {
         
         mainWindow.makeKeyAndOrderFront(nil)
         mainWindow.contentView = webview
-        mainWindow.title = title
+        mainWindow.title = title as String
         
         NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
         NSURLProtocol.registerClass(NKUrlProtocolCustom)
@@ -75,18 +75,18 @@ class NKUIWebView: NSObject {
         });
         
         NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
-            var requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
-            self.mainWindow.title = title
+            let requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
+            self.mainWindow.title = title!
             webview.mainFrame.loadRequest(requestObj)
             return
         });
         
         NKJavascriptBridge.registerResizer ({ (width: NSNumber?, height: NSNumber?) -> () in
-            var widthCG = CGFloat(width!)
-            var heightCG = CGFloat(height!)
+            let widthCG = CGFloat(width!)
+            let heightCG = CGFloat(height!)
             
-            var windowRect : NSRect = (NSScreen.mainScreen()!).frame
-            var frameRect : NSRect = NSMakeRect(
+            let windowRect : NSRect = (NSScreen.mainScreen()!).frame
+            let frameRect : NSRect = NSMakeRect(
                 (NSWidth(windowRect) - widthCG)/2,
                 (NSHeight(windowRect) - heightCG)/2,
                 widthCG, heightCG)
@@ -96,8 +96,8 @@ class NKUIWebView: NSObject {
         });
         
           
-        var url = NSURL(string: urlAddress)
-        var requestObj: NSURLRequest = NSURLRequest(URL: url!)
+        let url = NSURL(string: urlAddress as String)
+        let requestObj: NSURLRequest = NSURLRequest(URL: url!)
         webview.mainFrame.loadRequest(requestObj)
     }
     

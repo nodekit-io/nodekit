@@ -5,3 +5,5 @@ NodeKit.io is a cross-platform, cross-javascript-engine runtime solution for Nod
 It allows applications developed for node.js to run in the browser, in a desktop client on OS X, or even as a Windows 8.1 Store application.
 
 This is an early preview of the technology and is not intended for production use.
+
+(December 2015) Updated for Swift 2.0

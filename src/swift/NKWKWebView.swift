@@ -29,16 +29,16 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
     init(urlAddress: NSString, title:NSString, width:CGFloat, height:CGFloat )
     {
 
-        var windowRect : NSRect = (NSScreen.mainScreen()!).frame
+        let windowRect : NSRect = (NSScreen.mainScreen()!).frame
         
-        var frameRect : NSRect = NSMakeRect(
+        let frameRect : NSRect = NSMakeRect(
             (NSWidth(windowRect) - width)/2,
             (NSHeight(windowRect) - height)/2,
             width, height)
         
-        var viewRect : NSRect = NSMakeRect(0,0,width, height);
+        let viewRect : NSRect = NSMakeRect(0,0,width, height);
         
-        mainWindow = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, defer: false, screen: NSScreen.mainScreen())
+        mainWindow = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, `defer`: false, screen: NSScreen.mainScreen())
         
         
         if (mainWindows == nil) {
@@ -47,8 +47,8 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
         
         mainWindows?.addObject(mainWindow)
         
-        var config = WKWebViewConfiguration()
-        var webPrefs = WKPreferences()
+        let config = WKWebViewConfiguration()
+        let webPrefs = WKPreferences()
         
         webPrefs.javaEnabled = false
         webPrefs.plugInsEnabled = false
@@ -74,8 +74,8 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
         
         mainWindow.makeKeyAndOrderFront(nil)
         mainWindow.contentView = webview
-        mainWindow.title = title
-        webview.autoresizingMask = NSAutoresizingMaskOptions.ViewWidthSizable | NSAutoresizingMaskOptions.ViewHeightSizable
+        mainWindow.title = title as String
+        webview.autoresizingMask = [NSAutoresizingMaskOptions.ViewWidthSizable, NSAutoresizingMaskOptions.ViewHeightSizable]
         
          NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
          NSURLProtocol.registerClass(NKUrlProtocolCustom)
@@ -88,14 +88,14 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
         
         
         NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
-            var requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
-            self.mainWindow.title = title
+            let requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
+            self.mainWindow.title = title!
             webview.loadRequest(requestObj)
             return
         })
         
-        var url = NSURL(string: urlAddress)
-        var requestObj: NSURLRequest = NSURLRequest(URL: url!)
+        let url = NSURL(string: urlAddress as String)
+        let requestObj: NSURLRequest = NSURLRequest(URL: url!)
         webview.loadRequest(requestObj)
 
     }
@@ -103,7 +103,7 @@ class NKWKWebView: NSObject, WKScriptMessageHandler {
     
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage)
     {
-        println(message.description)
+        print(message.description)
     }
     
     func close()

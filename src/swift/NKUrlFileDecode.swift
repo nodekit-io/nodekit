@@ -32,17 +32,17 @@ class NKUrlFileDecode: NSObject {
     {
         resourcePath = nil;
         
-        var _mainBundle: NSBundle = NSBundle.mainBundle()
-        var _appPath : NSString = _mainBundle.bundlePath.stringByDeletingLastPathComponent
-        var _fileManager : NSFileManager = NSFileManager.defaultManager()
+        let _mainBundle: NSBundle = NSBundle.mainBundle()
+        let _appPath : NSString = (_mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
+        let _fileManager : NSFileManager = NSFileManager.defaultManager()
         var _fileTypes: [NSString : NSString] = ["html": "text/html" ,
             "js" : "application/javascript" ,
             "css": "text/css" ]
         
-        urlPath = request.URL.path!.stringByDeletingLastPathComponent
+        urlPath = (request.URL!.path! as NSString).stringByDeletingLastPathComponent
         
-        fileExtension = request.URL.pathExtension!.lowercaseString
-        fileName = request.URL.lastPathComponent!
+        fileExtension = request.URL!.pathExtension!.lowercaseString
+        fileName = request.URL!.lastPathComponent!
         if (fileExtension.length == 0)
         {
             fileBase = fileName
@@ -62,31 +62,31 @@ class NKUrlFileDecode: NSObject {
         
         if (fileName.length > 0) {
             
-            resourcePath = _appPath.stringByAppendingPathComponent(urlPath).stringByAppendingPathComponent(fileName)
+            resourcePath = _appPath.stringByAppendingPathComponent(urlPath.stringByAppendingPathComponent(fileName as String))
             
-            if (!_fileManager.fileExistsAtPath(resourcePath!))
+            if (!_fileManager.fileExistsAtPath(resourcePath! as String))
             {
                 resourcePath = nil;
             }
             
             if ((resourcePath == nil) && (fileExtension.length > 0))
             {
-                resourcePath = _mainBundle.pathForResource(fileBase, ofType:fileExtension, inDirectory: "app".stringByAppendingPathComponent(urlPath))
+                resourcePath = _mainBundle.pathForResource(fileBase as String, ofType:fileExtension as String, inDirectory: ("app" as NSString).stringByAppendingPathComponent(urlPath as String))
             }
             
             if ((resourcePath == nil) && (fileExtension.length > 0))
             {
-                resourcePath = _mainBundle.pathForResource(fileBase, ofType:fileExtension, inDirectory: "app-shared".stringByAppendingPathComponent(urlPath))
+                resourcePath = _mainBundle.pathForResource(fileBase as String, ofType:fileExtension as String, inDirectory: ("app-shared" as NSString).stringByAppendingPathComponent(urlPath as String))
             }
             
             if ((resourcePath == nil) && (fileExtension.length == 0))
             {
-                resourcePath = _mainBundle.pathForResource(fileBase, ofType:"html", inDirectory: "app".stringByAppendingPathComponent(urlPath))
+                resourcePath = _mainBundle.pathForResource(fileBase as String, ofType:"html", inDirectory: ("app" as NSString).stringByAppendingPathComponent(urlPath as String))
             }
             
             if ((resourcePath == nil) && (fileExtension.length == 0))
             {
-                resourcePath = _mainBundle.pathForResource("index", ofType:"html", inDirectory: "app".stringByAppendingPathComponent(urlPath))
+                resourcePath = _mainBundle.pathForResource("index", ofType:"html", inDirectory: ("app" as NSString).stringByAppendingPathComponent(urlPath as String))
             }
             
             
@@ -103,6 +103,6 @@ class NKUrlFileDecode: NSObject {
     
     func exists() -> Bool
     {
-        return (resourcePath? != nil);
+        return (resourcePath != nil);
     }
 }

@@ -15,7 +15,6 @@
 		E435CD181A617BF700949C18 /* NKUrlFileDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E435CD171A617BF700949C18 /* NKUrlFileDecode.swift */; };
 		E435CD1A1A617C0900949C18 /* NodeKitMac.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = E435CD191A617C0900949C18 /* NodeKitMac.entitlements */; };
 		E435CD221A61B5A500949C18 /* default in Resources */ = {isa = PBXBuildFile; fileRef = E435CD211A61B5A500949C18 /* default */; };
-		E435CD241A61BBDC00949C18 /* demo in Resources */ = {isa = PBXBuildFile; fileRef = E435CD231A61BBDC00949C18 /* demo */; };
 		E4700BD519F889A30020621C /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E4700BD419F889A30020621C /* GCDAsyncSocket.m */; };
 		E4908EB219C7CC850007E874 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E4908EB119C7CC850007E874 /* lib */; };
 		E4B74A4519C7B39300F07883 /* NKWKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B74A3B19C7B39300F07883 /* NKWKWebView.swift */; };
@@ -46,7 +45,6 @@
 		E435CD1C1A617E1000949C18 /* LICENSE */ = {isa = PBXFileReference; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		E435CD1D1A617F6C00949C18 /* doc */ = {isa = PBXFileReference; lastKnownFileType = folder; name = doc; path = ../doc; sourceTree = "<group>"; };
 		E435CD211A61B5A500949C18 /* default */ = {isa = PBXFileReference; lastKnownFileType = folder; path = default; sourceTree = "<group>"; };
-		E435CD231A61BBDC00949C18 /* demo */ = {isa = PBXFileReference; lastKnownFileType = folder; path = demo; sourceTree = "<group>"; };
 		E4700BD319F889A30020621C /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = "objective-c/GCDAsyncSocket.h"; sourceTree = SOURCE_ROOT; };
 		E4700BD419F889A30020621C /* GCDAsyncSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncSocket.m; path = "objective-c/GCDAsyncSocket.m"; sourceTree = SOURCE_ROOT; };
 		E4908EB119C7CC850007E874 /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; path = lib; sourceTree = "<group>"; };
@@ -86,7 +84,6 @@
 				E4B74A6719C7B3CD00F07883 /* app */,
 				E4B74A6D19C7B7BC00F07883 /* app-shared */,
 				E435CD211A61B5A500949C18 /* default */,
-				E435CD231A61BBDC00949C18 /* demo */,
 				E435CD1D1A617F6C00949C18 /* doc */,
 				E4908EB119C7CC850007E874 /* lib */,
 				260A5C6C1A1924AF00B7777B /* test */,
@@ -187,7 +184,9 @@
 		E4B749E119C7B11B00F07883 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastSwiftMigration = 0720;
+				LastSwiftUpdateCheck = 0720;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = nodekit.io;
 				TargetAttributes = {
 					E4B749E819C7B11B00F07883 = {
@@ -224,7 +223,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E435CD1A1A617C0900949C18 /* NodeKitMac.entitlements in Resources */,
-				E435CD241A61BBDC00949C18 /* demo in Resources */,
 				E4B74A6819C7B3CD00F07883 /* app in Resources */,
 				260A5C6D1A1924AF00B7777B /* test in Resources */,
 				E435CD221A61B5A500949C18 /* default in Resources */,
@@ -283,6 +281,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -348,6 +347,7 @@
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/swift/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.nodekit.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "objective-c/NKSwift-Bridging-Header.h";
 			};
@@ -361,6 +361,7 @@
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/swift/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "io.nodekit.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "objective-c/NKSwift-Bridging-Header.h";
 			};

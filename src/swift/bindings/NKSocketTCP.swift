@@ -41,7 +41,7 @@ public class NKSocketTCP: NKSocketTCPConnection {
     {
         self._port = 0
         self._addr = nil
-        var socket = GCDAsyncSocket()
+        let socket = GCDAsyncSocket()
         
         super.init(socket: socket, server: nil)
         
@@ -77,38 +77,65 @@ public class NKSocketTCP: NKSocketTCPConnection {
     private var _addr: String!;
     private var _port: UInt16;
     
-    lazy var block_bind : @objc_block (NSString!, NSNumber) -> Void = {
+    lazy var block_bind : @convention(block) (NSString!, NSNumber) -> Void = {
         [unowned self] (address: NSString!, port: NSNumber) -> Void in
         
-        self._addr = address;
+        self._addr = address as String!;
         self._port = port.unsignedShortValue
     }
     
-    lazy var block_listen : @objc_block (NSNumber) -> Void = {
+    lazy var block_listen : @convention(block) (NSNumber) -> Void = {
         [unowned self] (backlog: NSNumber) -> Void in
         var err: NSError?
         
         if (self._addr != "0.0.0.0")
         {
-             var success = self._socket!.acceptOnInterface(self._addr, port: self._port, error: &err)
+            var success: Bool
+            do {
+                try self._socket!.acceptOnInterface(self._addr, port: self._port)
+                success = true
+            } catch var error as NSError {
+                err = error
+                success = false
+            } catch {
+                fatalError()
+            }
         } else
         {
-          var success = self._socket!.acceptOnPort( self._port, error: &err)
+            var success: Bool
+            do {
+                try self._socket!.acceptOnPort( self._port)
+                success = true
+            } catch var error as NSError {
+                err = error
+                success = false
+            } catch {
+                fatalError()
+            }
         }
               
     }
     
-    lazy var block_connect : @objc_block (NSString!, NSNumber) -> Void = {
+    lazy var block_connect : @convention(block) (NSString!, NSNumber) -> Void = {
         [unowned self] (address: NSString!, port: NSNumber) -> Void in
-        var _addr : String! = address
+        var _addr : String! = address as String!
         var _port : UInt16 = port.unsignedShortValue
         var err: NSError?
         
-        var success = self._socket!.connectToHost(_addr, onPort: _port, error: &err)
+        var success: Bool
+        do {
+            try self._socket!.connectToHost(_addr, onPort: _port)
+            success = true
+        } catch var error as NSError {
+            err = error
+            success = false
+        } catch {
+            fatalError()
+        }
     }
     
     public func socket(socket: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket){
-        var socketConnection = NKSocketTCPConnection(socket: newSocket, server: self)
+        let socketConnection = NKSocketTCPConnection(socket: newSocket, server: self)
         connections.addObject(socketConnection)
         newSocket.setDelegate(socketConnection, delegateQueue: dispatch_get_main_queue())
         self.emitConnection(socketConnection.TCP())
@@ -135,7 +162,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     {
         self._socket = socket
         self._server = server
-        var tcp = NKJavascriptBridge.createNativeStream()
+        let tcp = NKJavascriptBridge.createNativeStream()
         self._tcp = tcp
         
         super.init()
@@ -156,7 +183,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     {
         
          dispatch_sync(NKGlobals.NKeventQueue, {
-            var str : NSString! = data.base64EncodedStringWithOptions(.allZeros)
+            let str : NSString! = data.base64EncodedStringWithOptions([])
             self._tcp!.invokeMethod( "emit", withArguments:["data", str])
         });
         
@@ -166,7 +193,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
     {
         if (self._tcp != nil)
         {
-        var tcp = self._tcp!;
+        let tcp = self._tcp!;
          dispatch_sync(NKGlobals.NKeventQueue, {
             tcp.invokeMethod( "emit", withArguments:["end", ""])
             return
@@ -174,12 +201,12 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
         }
     }
     
-    lazy var block_fd : @objc_block () -> NSNumber = {
+    lazy var block_fd : @convention(block) () -> NSNumber = {
         [unowned self]  () -> NSNumber in
         return self._socket!.hash
     }
     
-    lazy var block_remoteAddress : @objc_block () -> JSValue = {
+    lazy var block_remoteAddress : @convention(block) () -> JSValue = {
         [unowned self] () -> JSValue in
         var address: NSString! = self._socket!.connectedHost
         var port : NSNumber = NSNumber(unsignedShort: self._socket!.connectedPort)
@@ -188,7 +215,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
         return result
     }
     
-    lazy var block_localAddress : @objc_block () -> JSValue = {
+    lazy var block_localAddress : @convention(block) () -> JSValue = {
         [unowned self] () -> JSValue in
         var address: NSString! = self._socket!.localHost
         var port : NSNumber = NSNumber(unsignedShort: self._socket!.localPort)
@@ -207,13 +234,13 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
         return result
     }
     
-    lazy var block_writeString : @objc_block (NSString!) -> Void = {
+    lazy var block_writeString : @convention(block) (NSString!) -> Void = {
          [unowned self]  (str : NSString!) -> Void in
-         var data = NSData(base64EncodedString: str, options: .allZeros)
+         var data = NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions(rawValue: 0))
         self._socket!.writeData(data, withTimeout: 10, tag: 1)
     }
     
-    lazy var block_disconnect : @objc_block () -> Void = {
+    lazy var block_disconnect : @convention(block) () -> Void = {
         () -> Void in
         if (self._socket !== nil)
         {
@@ -221,7 +248,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
         }
     }
     
-    public func socket(socket: GCDAsyncSocket, didReadData data: NSData, withTag tag: Double){
+    public func socket(socket: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int){
         self.emitData(data)
         socket.readDataWithTimeout(30, tag: 0)
     }
@@ -238,7 +265,7 @@ public class NKSocketTCPConnection: NSObject, GCDAsyncSocketDelegate {
         self._tcp!.setObject(nil, forKeyedSubscript:"disconnect")
         } 
         
-        if (self._server? != nil) {
+        if (self._server != nil) {
             self._server!.connectionDidClose(self)
         } else
         {

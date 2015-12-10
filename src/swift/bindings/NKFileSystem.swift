@@ -31,9 +31,9 @@ internal class NKFileSystem: NSObject {
     }
     
     class func getDirectory(module: String) -> NSArray {
-           var path=module; //self.getPath(module)
+           let path=module; //self.getPath(module)
         
-            let dirContents = NSFileManager.defaultManager().contentsOfDirectoryAtPath(path, error: nil) as NSArray!
+            let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) as NSArray!
             return dirContents
     }
     
@@ -52,22 +52,25 @@ internal class NKFileSystem: NSObject {
     
     class func stat(module: String) -> Dictionary<String, NSObject>? {
         
-        var path=module; //self.getPath(module)
+        let path=module; //self.getPath(module)
         var storageItem  = Dictionary<String, NSObject>()
         
-        var readError: NSError?
-        
-        let attr = NSFileManager.defaultManager().attributesOfItemAtPath(path, error: &readError) as NSDictionary!
-        if let error = readError {
-            return nil;
+        let attr: NSDictionary!
+        do
+        {
+             attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
+            
+        } catch _
+        {
+            return nil
         }
         
-        storageItem["birthtime"] = attr[NSFileCreationDate] as NSDate!
-        storageItem["size"] = attr[NSFileSize] as NSNumber!
-        storageItem["mtime"] = attr[NSFileModificationDate] as NSDate!
+        storageItem["birthtime"] = attr[NSFileCreationDate] as! NSDate!
+        storageItem["size"] = attr[NSFileSize] as! NSNumber!
+        storageItem["mtime"] = attr[NSFileModificationDate] as! NSDate!
         storageItem["path"] = path as NSString!
         
-        switch attr[NSFileType] as NSString!
+        switch attr[NSFileType] as! NSString!
         {
         case NSFileTypeDirectory:
             storageItem["filetype"] = "Directory"
@@ -95,28 +98,28 @@ internal class NKFileSystem: NSObject {
     class func getContent(storageItem: NSDictionary!) -> NSString {
         
         
-        var path = storageItem["path"] as NSString!;
-        var originalEncoding: UnsafeMutablePointer<UInt> = nil
-        var readError: NSError?
-        
-        var data = NSData(contentsOfFile: path, options: nil, error: &readError)
-        
-        if let error = readError {
+        let path = storageItem["path"] as! NSString!;
+        var data: NSData?
+        do {
+          data = try NSData(contentsOfFile: path as String, options: NSDataReadingOptions(rawValue: 0))
+        }
+        catch _ {
             return ""
         }
         
-        var content : NSString! = data!.base64EncodedStringWithOptions(.allZeros)
+        var content: NSString!
+         content =  (data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)))
         
-         return content
+         return content!
     }
     
     
     class func writeContent(storageItem: NSDictionary!, str: NSString!) -> Bool {
         
-        var path = storageItem["path"] as NSString!
-        var data = NSData(base64EncodedString: str, options: .allZeros)
+        let path = storageItem["path"] as! NSString!
+        let data = NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions(rawValue:0))
         
-        return data!.writeToFile(path, atomically: false)
+        return data!.writeToFile(path as String, atomically: false)
         }
     
     class func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: nodeCallBack)  {
@@ -128,69 +131,88 @@ internal class NKFileSystem: NSObject {
 
     class func getSource(module: String) -> NSString! {
         
-        var path=getPath(module);
+        let path=getPath(module);
         
         if (path=="")
         {
           return ""
         }
         
-        var originalEncoding: UnsafeMutablePointer<UInt> = nil
-        var readError: NSError?
+        let originalEncoding: UnsafeMutablePointer<UInt> = nil
         
-        var content = NSString(contentsOfFile: path, usedEncoding: originalEncoding, error: &readError)
+        var content: NSString?
+        do {
+            content = try NSString(contentsOfFile: path, usedEncoding: originalEncoding)
+        } catch _ {
+            content = nil
+        }
         
         return content!
     }
     
     class func mkdir (path: String) -> Bool {
         
-        var err: NSError?
         
-        return NSFileManager.defaultManager().createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil, error: &err)
+        do {
+            try NSFileManager.defaultManager().createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
+            return true
+        } catch _ {
+            return false
+        }
 
     }
     
     class func rmdir (path: String) -> Bool {
         
-        var err: NSError?
         
-        return NSFileManager.defaultManager().removeItemAtPath(path, error: &err)
+        do {
+            try NSFileManager.defaultManager().removeItemAtPath(path)
+            return true
+        } catch _ {
+            return false
+        }
             
         
     }
 
     class func move (path: String, path2: String) -> Bool {
         
-        var err: NSError?
         
-        return NSFileManager.defaultManager().moveItemAtPath(path, toPath: path2, error: &err)
+        do {
+            try NSFileManager.defaultManager().moveItemAtPath(path, toPath: path2)
+            return true
+        } catch _ {
+            return false
+        }
     }
     
     class func unlink (path: String) -> Bool {
         
-        var err: NSError?
-        
-        return NSFileManager.defaultManager().removeItemAtPath(path, error: &err)
+         do {
+            try NSFileManager.defaultManager().removeItemAtPath(path)
+            return true
+        } catch _ {
+            return false
+        }
         
         
     }
     
    class func getPath(module: String) -> String {
         
-        var directory = module.stringByDeletingLastPathComponent
-        var fileName = module.lastPathComponent
-        var fileExtension = fileName.pathExtension
-        fileName = fileName.stringByDeletingPathExtension
+        let directory = (module as NSString).stringByDeletingLastPathComponent
+        var fileName = (module as NSString).lastPathComponent
+        var fileExtension = (fileName as NSString).pathExtension
+        fileName = (fileName as NSString).stringByDeletingPathExtension
         
         if (fileExtension=="") {
             fileExtension = "js"
         }
         
-        var mainBundle : NSBundle = NSBundle.mainBundle()
-        var resourcePath:String! = mainBundle.resourcePath
+        let mainBundle : NSBundle = NSBundle.mainBundle()
+   //     var resourcePath:String! = mainBundle.resourcePath
         
-        var path = mainBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
+        let path = mainBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
         
         if (path == nil)
         {
@@ -206,9 +228,9 @@ internal class NKFileSystem: NSObject {
         
         if (parentModule != "")
         {
-            var parentPath = parentModule.stringByDeletingLastPathComponent
+            let parentPath = (parentModule as NSString).stringByDeletingLastPathComponent
             
-            var id = parentPath + module
+            let id = parentPath + module
             return id
         }
         else

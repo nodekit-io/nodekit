@@ -23,12 +23,12 @@ class NKUrlProtocolLocalFile: NSURLProtocol {
     
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         
-        if (request.URL.host == nil)
+        if (request.URL!.host == nil)
         { return false;}
         
         
-        if ((request.URL.scheme?.caseInsensitiveCompare("internal") == NSComparisonResult.OrderedSame)
-        || (request.URL.host?.caseInsensitiveCompare("internal") == NSComparisonResult.OrderedSame))
+        if ((request.URL!.scheme.caseInsensitiveCompare("internal") == NSComparisonResult.OrderedSame)
+        || (request.URL!.host?.caseInsensitiveCompare("internal") == NSComparisonResult.OrderedSame))
         {
             return true
         }
@@ -52,20 +52,20 @@ class NKUrlProtocolLocalFile: NSURLProtocol {
         let client: NSURLProtocolClient! = self.client;
         
         
-        if (request.URL.absoluteString == "internal://close") || (request.URL.absoluteString == "http://internal/close")
+        if (request.URL!.absoluteString == "internal://close") || (request.URL!.absoluteString == "http://internal/close")
         {
             NSApplication.sharedApplication().terminate(nil)
             return
         }
-        println(request.URL.absoluteString!)
+        print(request.URL!.absoluteString)
    
         let urlDecode = NKUrlFileDecode(request: request)
         
         if (urlDecode.exists())
         {
-            let data: NSData! = NSData(contentsOfFile: urlDecode.resourcePath!)
+            let data: NSData! = NSData(contentsOfFile: urlDecode.resourcePath! as String)
             
-            let response: NSURLResponse = NSURLResponse(URL: request.URL, MIMEType: urlDecode.mimeType, expectedContentLength: data.length, textEncodingName: urlDecode.textEncoding)
+            let response: NSURLResponse = NSURLResponse(URL: request.URL!, MIMEType: urlDecode.mimeType as String?, expectedContentLength: data.length, textEncodingName: urlDecode.textEncoding as String?)
             
             client.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: NSURLCacheStoragePolicy.AllowedInMemoryOnly)
             
@@ -74,7 +74,7 @@ class NKUrlProtocolLocalFile: NSURLProtocol {
             
         }
         else {
-            NSLog("Missing File %@", request.URL);
+            NSLog("Missing File %@", request.URL!);
             client.URLProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorFileDoesNotExist, userInfo:  nil))
         }
     }

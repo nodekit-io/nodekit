@@ -30,11 +30,11 @@ class NKUrlProtocolCustom: NSURLProtocol {
     
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         
-        if (request.URL.host == nil)
+        if (request.URL!.host == nil)
         { return false;}
         
-        if ((request.URL.scheme?.caseInsensitiveCompare("node") == NSComparisonResult.OrderedSame)
-            || (request.URL.host?.caseInsensitiveCompare("node") == NSComparisonResult.OrderedSame)
+        if ((request.URL!.scheme.caseInsensitiveCompare("node") == NSComparisonResult.OrderedSame)
+            || (request.URL!.host!.caseInsensitiveCompare("node") == NSComparisonResult.OrderedSame)
             )
         {
             return true
@@ -56,15 +56,15 @@ class NKUrlProtocolCustom: NSURLProtocol {
     override func startLoading() {
         
         let hostRequest: NSURLRequest = self.request
-        let client: NSURLProtocolClient = self.client!
+      //  let client: NSURLProtocolClient = self.client!
         
         httpContext = NKJavascriptBridge.createHttpContext()
         
         let req: JSValue = httpContext!.valueForProperty("req");
         let res: JSValue = httpContext!.valueForProperty("res");
         
-        var path = request.URL.relativePath
-        var query = request.URL.query
+        var path = request.URL!.relativePath
+        var query = request.URL!.query
         
         if (path == "")
         {
@@ -101,8 +101,8 @@ class NKUrlProtocolCustom: NSURLProtocol {
         
         NKJavascriptBridge.setJavascriptClosure(res, key: "_writeString",  callBack: { () -> Void in
             
-            var str : NSString = this.httpContext!.valueForProperty("_chunk").toString();
-            var data : NSData? =  NSData(base64EncodedString: str, options: NSDataBase64DecodingOptions.IgnoreUnknownCharacters)
+            let str : NSString = this.httpContext!.valueForProperty("_chunk").toString();
+            var data : NSData? =  NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions.IgnoreUnknownCharacters)
             
             if (!this.headersWritten)
             {
@@ -131,8 +131,8 @@ class NKUrlProtocolCustom: NSURLProtocol {
         
         if (self.isCancelled)  {return};
         
-        var str : NSString = self.httpContext!.valueForProperty("_chunk").toString();
-        var data : NSData =  NSData(base64EncodedString: str, options: NSDataBase64DecodingOptions.IgnoreUnknownCharacters)!
+        let str : NSString = self.httpContext!.valueForProperty("_chunk").toString();
+        let data : NSData =  NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions.IgnoreUnknownCharacters)!
         
         if (!self.headersWritten)
         {
@@ -151,19 +151,19 @@ class NKUrlProtocolCustom: NSURLProtocol {
         let res: JSValue = self.httpContext!.valueForProperty("res");
         
         self.headersWritten = true;
-        var headers : NSDictionary? = res.valueForProperty("headers").toDictionary()
-        var version : String = "HTTP/1.1"
-        var statusCode : Int = (res.valueForProperty("statusCode").toString() as NSString).integerValue
+        let headers : NSDictionary? = res.valueForProperty("headers").toDictionary() as NSDictionary?
+        let version : String = "HTTP/1.1"
+        let statusCode : Int = (res.valueForProperty("statusCode").toString() as NSString).integerValue
       
         if (statusCode == 302)
         {
-            var location = headers!.valueForKey("location") as NSString
+            let location = headers!.valueForKey("location") as! NSString
             
-            var url : NSURL = NSURL(string: location)!
+            let url : NSURL = NSURL(string: location as String)!
             
-             println("Redirection location to %@", url.absoluteString)
+             print("Redirection location to %@", url.absoluteString)
             
-            var response = NSHTTPURLResponse(URL: url, statusCode: statusCode, HTTPVersion: version, headerFields: headers)!
+            let response = NSHTTPURLResponse(URL: url, statusCode: statusCode, HTTPVersion: version, headerFields: headers! as? Dictionary<String, String>)!
       
             self.client?.URLProtocol(self, wasRedirectedToRequest: NSURLRequest(URL: url), redirectResponse: response)
             self.isLoading = false
@@ -173,7 +173,7 @@ class NKUrlProtocolCustom: NSURLProtocol {
         else
         {
             
-            var response = NSHTTPURLResponse(URL: self.request.URL, statusCode: statusCode, HTTPVersion: version, headerFields: headers)!
+            let response = NSHTTPURLResponse(URL: self.request.URL!, statusCode: statusCode, HTTPVersion: version, headerFields: headers! as? Dictionary<String, String>)!
             self.client?.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: NSURLCacheStoragePolicy.NotAllowed)
             
         }

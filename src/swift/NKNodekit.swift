@@ -38,23 +38,23 @@ class NKNodekit {
             NKJavascriptBridge.attachToContext(context)
             self.context = context;
             
-            var fileManager = NSFileManager.defaultManager()
-            var mainBundle : NSBundle = NSBundle.mainBundle()
+            let fileManager = NSFileManager.defaultManager()
+            let mainBundle : NSBundle = NSBundle.mainBundle()
             
-            var appPath = mainBundle.bundlePath.stringByDeletingLastPathComponent
+            let appPath = (mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
             
-            var resourcePath:String! = mainBundle.resourcePath
-            var webPath = resourcePath.stringByAppendingPathComponent("/app")
+            let resourcePath:String! = mainBundle.resourcePath
+            let webPath = (resourcePath as NSString).stringByAppendingPathComponent("/app")
             
-            var nodeModulePath = resourcePath.stringByAppendingPathComponent("/app/node_modules")
+        //    let nodeModulePath = (resourcePath as NSString).stringByAppendingPathComponent("/app/node_modules")
             
-            var nodeModulePathWeb = resourcePath.stringByAppendingPathComponent("/app-shared")
-            var nodeModulePathWeb2 = resourcePath.stringByAppendingPathComponent("/app-shared/node_modules")
+            let nodeModulePathWeb = (resourcePath as NSString).stringByAppendingPathComponent("/app-shared")
+            let nodeModulePathWeb2 = (resourcePath as NSString).stringByAppendingPathComponent("/app-shared/node_modules")
             
-            var appModulePath = appPath.stringByAppendingPathComponent("/node_modules")
+            let appModulePath = (appPath as NSString).stringByAppendingPathComponent("/node_modules")
             
-            var externalPackage = appPath.stringByAppendingPathComponent("/package.json")
-            var embeddedPackage = webPath.stringByAppendingPathComponent("/package.json")
+            let externalPackage = (appPath as NSString).stringByAppendingPathComponent("/package.json")
+            let embeddedPackage = (webPath as NSString).stringByAppendingPathComponent("/package.json")
             
             var resPaths : NSString
             
@@ -68,7 +68,7 @@ class NKNodekit {
             {
                 if (!fileManager.fileExistsAtPath(embeddedPackage))
                 {
-                    println("Missing package.json in main bundle /Resources/app");
+                    print("Missing package.json in main bundle /Resources/app");
                     return;
                 }
                 NKJavascriptBridge.setWorkingDirectory(webPath)
@@ -77,14 +77,14 @@ class NKNodekit {
                 
             }
         
-            NKJavascriptBridge.setNodePaths(resPaths)
+            NKJavascriptBridge.setNodePaths(resPaths as String)
       
-            var url = mainBundle.pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
+            let url = mainBundle.pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
             
-            var bootstrapper = NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding, error: nil);
+            let bootstrapper = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding);
         
-            var nsurl: NSURL = NSURL(fileURLWithPath: url!)!
-            context.evaluateScript(bootstrapper, withSourceURL: nsurl)
+            let nsurl: NSURL = NSURL(fileURLWithPath: url!)
+            context.evaluateScript(bootstrapper! as String, withSourceURL: nsurl)
     })
     }
 }

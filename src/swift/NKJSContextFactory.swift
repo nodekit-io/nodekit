@@ -25,9 +25,9 @@ struct NKJSContextFactory {
     
     static func createRegularContext(callback: (JSContext!)-> () )
     {
-        println("Starting javascriptcore native engine")
-        var vm = JSVirtualMachine()
-        var context = JSContext(virtualMachine: vm)
+        print("Starting javascriptcore native engine")
+        let vm = JSVirtualMachine()
+        let context = JSContext(virtualMachine: vm)
         callback(context)
     }
 }

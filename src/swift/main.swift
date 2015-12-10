@@ -31,15 +31,15 @@ class NKAppDelegate: NSObject, NSApplicationDelegate {
         _nodekit = NKNodekit();
     }
     
-    func applicationDidFinishLaunching(aNotification: NSNotification?) {
+    func applicationDidFinishLaunching(aNotification: NSNotification) {
         _nodekit.run()
     }
     
-    func applicationWillTerminate(aNotification: NSNotification?) {
-        println("EXIT")
+    func applicationWillTerminate(aNotification: NSNotification) {
+        print("EXIT")
     }
     
-    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication!) -> Bool {
+    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true
     }
     
