@@ -78,13 +78,25 @@ Stream.prototype.writeAsciiString = function(req, data) {
     this._stream.write(data, 'ascii');
 };
 
+Stream.prototype.writeBinaryString = function(req, data) {
+    this._stream.write(data, 'binary');
+};
+
+Stream.prototype.writeUcs2String = function(req, data) {
+    this._stream.write(data, 'ucs2');
+};
+
 Stream.prototype.writeBuffer = function(req, data) {
     this._stream.write(data.toString('base64'), 'base64');
-    req.oncomplete(0, this, req );
+    
+    //function afterWrite(status, handle, req, err)
+    req.oncomplete(0, this, req , null);
 };
 
 Stream.prototype.shutdown = function(req) {
- //   this._stream.close();
+    this._stream.close();
+    
+    //afterShutdown(status, handle, req)
     req.oncomplete( 0, this, req );
 };
 

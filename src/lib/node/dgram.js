@@ -23,8 +23,10 @@ var assert = require('assert');
 var util = require('util');
 var events = require('events');
 var constants = require('constants');
+var Buffer = require('buffer').Buffer;
 
 var UDP = process.binding('udp_wrap').UDP;
+var SendWrap = process.binding('udp_wrap').SendWrap;
 
 var BIND_STATE_UNBOUND = 0;
 var BIND_STATE_BINDING = 1;
@@ -150,7 +152,7 @@ function replaceHandle(self, newHandle) {
   self._handle = newHandle;
 }
 
-Socket.prototype.bind = function(/*port, address, callback*/) {
+Socket.prototype.bind = function(port /*, address, callback*/) {
   var self = this;
 
   self._healthCheck();
@@ -164,15 +166,23 @@ Socket.prototype.bind = function(/*port, address, callback*/) {
     self.once('listening', arguments[arguments.length - 1]);
 
   var UDP = process.binding('udp_wrap').UDP;
-  if (arguments[0] instanceof UDP) {
-    replaceHandle(self, arguments[0]);
+  if (port instanceof UDP) {
+    replaceHandle(self, port);
     startListening(self);
     return;
   }
 
-  var port = arguments[0];
-  var address = arguments[1];
-  if (util.isFunction(address)) address = '';  // a.k.a. "any address"
+  var address;
+  var exclusive;
+
+  if (util.isObject(port)) {
+    address = port.address || '';
+    exclusive = !!port.exclusive;
+    port = port.port;
+  } else {
+    address = util.isFunction(arguments[1]) ? '' : arguments[1];
+    exclusive = false;
+  }
 
   // resolve address first
   self._handle.lookup(address, function(err, ip) {
@@ -185,7 +195,7 @@ Socket.prototype.bind = function(/*port, address, callback*/) {
     if (!cluster)
       cluster = require('cluster');
 
-    if (cluster.isWorker) {
+    if (cluster.isWorker && !exclusive) {
       cluster._getServer(self, ip, port, self.type, -1, function(err, handle) {
         if (err) {
           self.emit('error', errnoException(err, 'bind'));
@@ -309,7 +319,9 @@ Socket.prototype.send = function(buffer,
       self.emit('error', ex);
     }
     else if (self._handle) {
-      var req = { buffer: buffer, length: length };  // Keep reference alive.
+      var req = new SendWrap();
+      req.buffer = buffer;  // Keep reference alive.
+      req.length = length;
       if (callback) {
         req.callback = callback;
         req.oncomplete = afterSend;
@@ -415,7 +427,7 @@ Socket.prototype.addMembership = function(multicastAddress,
 
   var err = this._handle.addMembership(multicastAddress, interfaceAddress);
   if (err) {
-    throw new errnoException(err, 'addMembership');
+    throw errnoException(err, 'addMembership');
   }
 };
 
@@ -430,7 +442,7 @@ Socket.prototype.dropMembership = function(multicastAddress,
 
   var err = this._handle.dropMembership(multicastAddress, interfaceAddress);
   if (err) {
-    throw new errnoException(err, 'dropMembership');
+    throw errnoException(err, 'dropMembership');
   }
 };
 

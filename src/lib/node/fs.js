@@ -31,8 +31,10 @@ var pathModule = require('path');
 var binding = process.binding('fs');
 var constants = process.binding('constants');
 var fs = exports;
+var Buffer = require('buffer').Buffer;
 var Stream = require('stream').Stream;
 var EventEmitter = require('events').EventEmitter;
+var FSReqWrap = binding.FSReqWrap;
 
 var Readable = Stream.Readable;
 var Writable = Stream.Writable;
@@ -180,9 +182,46 @@ fs.Stats.prototype.isSocket = function() {
   return this._checkModeProperty(constants.S_IFSOCK);
 };
 
+// don't allow fs.mode to accidentally be overwritten.
+['F_OK', 'R_OK', 'W_OK', 'X_OK'].forEach(function(key) {
+  Object.defineProperty(fs, key, {
+    enumerable: true, value: constants[key] || 0, writable: false
+  });
+});
+
+fs.access = function(path, mode, callback) {
+  if (!nullCheck(path, callback))
+    return;
+
+  if (typeof mode === 'function') {
+    callback = mode;
+    mode = fs.F_OK;
+  } else if (typeof callback !== 'function') {
+    throw new TypeError('callback must be a function');
+  }
+
+  mode = mode | 0;
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.access(pathModule._makeLong(path), mode, req);
+};
+
+fs.accessSync = function(path, mode) {
+  nullCheck(path);
+
+  if (mode === undefined)
+    mode = fs.F_OK;
+  else
+    mode = mode | 0;
+
+  binding.access(pathModule._makeLong(path), mode);
+};
+
 fs.exists = function(path, callback) {
   if (!nullCheck(path, cb)) return;
-  binding.stat(pathModule._makeLong(path), cb);
+  var req = new FSReqWrap();
+  req.oncomplete = cb;
+  binding.stat(pathModule._makeLong(path), req);
   function cb(err, stats) {
     if (callback) callback(err ? false : true);
   }
@@ -332,7 +371,7 @@ fs.readFileSync = function(path, options) {
     try {
       buffer = new Buffer(size);
       threw = false;
-     } finally {
+    } finally {
       if (threw) fs.closeSync(fd);
     }
   }
@@ -421,7 +460,9 @@ Object.defineProperty(exports, '_stringToFlags', {
 // list to make the arguments clear.
 
 fs.close = function(fd, callback) {
-  binding.close(fd, makeCallback(callback));
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.close(fd, req);
 };
 
 fs.closeSync = function(fd) {
@@ -443,10 +484,14 @@ fs.open = function(path, flags, mode, callback) {
   mode = modeNum(mode, 438 /*=0666*/);
 
   if (!nullCheck(path, callback)) return;
+
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+
   binding.open(pathModule._makeLong(path),
                stringToFlags(flags),
                mode,
-               callback);
+               req);
 };
 
 fs.openSync = function(path, flags, mode) {
@@ -456,7 +501,7 @@ fs.openSync = function(path, flags, mode) {
 };
 
 fs.read = function(fd, buffer, offset, length, position, callback) {
-      if (!util.isBuffer(buffer)) {
+  if (!util.isBuffer(buffer)) {
     // legacy string interface (fd, length, position, encoding, callback)
     var cb = arguments[4],
         encoding = arguments[3];
@@ -482,12 +527,14 @@ fs.read = function(fd, buffer, offset, length, position, callback) {
     callback && callback(err, bytesRead || 0, buffer);
   }
 
-  binding.read(fd, buffer, offset, length, position, wrapper);
+  var req = new FSReqWrap();
+  req.oncomplete = wrapper;
+
+  binding.read(fd, buffer, offset, length, position, req);
 };
 
 fs.readSync = function(fd, buffer, offset, length, position) {
-    
-   var legacy = false;
+  var legacy = false;
   if (!util.isBuffer(buffer)) {
     // legacy string interface (fd, length, position, encoding, callback)
     legacy = true;
@@ -516,6 +563,16 @@ fs.readSync = function(fd, buffer, offset, length, position) {
 // OR
 //  fs.write(fd, string[, position[, encoding]], callback);
 fs.write = function(fd, buffer, offset, length, position, callback) {
+  function strWrapper(err, written) {
+    // Retain a reference to buffer so that it can't be GC'ed too soon.
+    callback(err, written || 0, buffer);
+  }
+
+  function bufWrapper(err, written) {
+    // retain reference to string in case it's external
+    callback(err, written || 0, buffer);
+  }
+
   if (util.isBuffer(buffer)) {
     // if no position is passed then assume null
     if (util.isFunction(position)) {
@@ -523,11 +580,9 @@ fs.write = function(fd, buffer, offset, length, position, callback) {
       position = null;
     }
     callback = maybeCallback(callback);
-    var wrapper = function(err, written) {
-      // Retain a reference to buffer so that it can't be GC'ed too soon.
-      callback(err, written || 0, buffer);
-    };
-    return binding.writeBuffer(fd, buffer, offset, length, position, wrapper);
+    var req = new FSReqWrap();
+    req.oncomplete = strWrapper;
+    return binding.writeBuffer(fd, buffer, offset, length, position, req);
   }
 
   if (util.isString(buffer))
@@ -542,11 +597,9 @@ fs.write = function(fd, buffer, offset, length, position, callback) {
     length = 'utf8';
   }
   callback = maybeCallback(position);
-  position = function(err, written) {
-    // retain reference to string in case it's external
-    callback(err, written || 0, buffer);
-  };
-  return binding.writeString(fd, buffer, offset, length, position);
+  var req = new FSReqWrap();
+  req.oncomplete = bufWrapper;
+  return binding.writeString(fd, buffer, offset, length, req);
 };
 
 // usage:
@@ -570,9 +623,11 @@ fs.rename = function(oldPath, newPath, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(oldPath, callback)) return;
   if (!nullCheck(newPath, callback)) return;
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
   binding.rename(pathModule._makeLong(oldPath),
                  pathModule._makeLong(newPath),
-                 callback);
+                 req);
 };
 
 fs.renameSync = function(oldPath, newPath) {
@@ -584,7 +639,6 @@ fs.renameSync = function(oldPath, newPath) {
 
 fs.truncate = function(path, len, callback) {
   if (util.isNumber(path)) {
-    // legacy
     return fs.ftruncate(path, len, callback);
   }
   if (util.isFunction(len)) {
@@ -593,14 +647,17 @@ fs.truncate = function(path, len, callback) {
   } else if (util.isUndefined(len)) {
     len = 0;
   }
+
   callback = maybeCallback(callback);
   fs.open(path, 'r+', function(er, fd) {
     if (er) return callback(er);
-    binding.ftruncate(fd, len, function(er) {
+    var req = new FSReqWrap();
+    req.oncomplete = function ftruncateCb(er) {
       fs.close(fd, function(er2) {
         callback(er || er2);
       });
-    });
+    };
+    binding.ftruncate(fd, len, req);
   });
 };
 
@@ -629,7 +686,9 @@ fs.ftruncate = function(fd, len, callback) {
   } else if (util.isUndefined(len)) {
     len = 0;
   }
-  binding.ftruncate(fd, len, makeCallback(callback));
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.ftruncate(fd, len, req);
 };
 
 fs.ftruncateSync = function(fd, len) {
@@ -640,9 +699,11 @@ fs.ftruncateSync = function(fd, len) {
 };
 
 fs.rmdir = function(path, callback) {
-  callback = makeCallback(callback);
+  callback = maybeCallback(callback);
   if (!nullCheck(path, callback)) return;
-  binding.rmdir(pathModule._makeLong(path), callback);
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+  binding.rmdir(pathModule._makeLong(path), req);
 };
 
 fs.rmdirSync = function(path) {
@@ -651,7 +712,9 @@ fs.rmdirSync = function(path) {
 };
 
 fs.fdatasync = function(fd, callback) {
-  binding.fdatasync(fd, makeCallback(callback));
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.fdatasync(fd, req);
 };
 
 fs.fdatasyncSync = function(fd) {
@@ -659,7 +722,9 @@ fs.fdatasyncSync = function(fd) {
 };
 
 fs.fsync = function(fd, callback) {
-  binding.fsync(fd, makeCallback(callback));
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.fsync(fd, req);
 };
 
 fs.fsyncSync = function(fd) {
@@ -670,9 +735,11 @@ fs.mkdir = function(path, mode, callback) {
   if (util.isFunction(mode)) callback = mode;
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
   binding.mkdir(pathModule._makeLong(path),
                 modeNum(mode, 511 /*=0777*/),
-                callback);
+                req);
 };
 
 fs.mkdirSync = function(path, mode) {
@@ -684,7 +751,9 @@ fs.mkdirSync = function(path, mode) {
 fs.readdir = function(path, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
-  binding.readdir(pathModule._makeLong(path), callback);
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+  binding.readdir(pathModule._makeLong(path), req);
 };
 
 fs.readdirSync = function(path) {
@@ -693,19 +762,25 @@ fs.readdirSync = function(path) {
 };
 
 fs.fstat = function(fd, callback) {
-  binding.fstat(fd, makeCallback(callback));
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.fstat(fd, req);
 };
 
 fs.lstat = function(path, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
-  binding.lstat(pathModule._makeLong(path), callback);
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+  binding.lstat(pathModule._makeLong(path), req);
 };
 
 fs.stat = function(path, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
-  binding.stat(pathModule._makeLong(path), callback);
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+  binding.stat(pathModule._makeLong(path), req);
 };
 
 fs.fstatSync = function(fd) {
@@ -725,7 +800,9 @@ fs.statSync = function(path) {
 fs.readlink = function(path, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
-  binding.readlink(pathModule._makeLong(path), callback);
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+  binding.readlink(pathModule._makeLong(path), req);
 };
 
 fs.readlinkSync = function(path) {
@@ -753,10 +830,13 @@ fs.symlink = function(destination, path, type_, callback) {
   if (!nullCheck(destination, callback)) return;
   if (!nullCheck(path, callback)) return;
 
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+
   binding.symlink(preprocessSymlinkDestination(destination, type),
                   pathModule._makeLong(path),
                   type,
-                  callback);
+                  req);
 };
 
 fs.symlinkSync = function(destination, path, type) {
@@ -775,9 +855,12 @@ fs.link = function(srcpath, dstpath, callback) {
   if (!nullCheck(srcpath, callback)) return;
   if (!nullCheck(dstpath, callback)) return;
 
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+
   binding.link(pathModule._makeLong(srcpath),
                pathModule._makeLong(dstpath),
-               callback);
+               req);
 };
 
 fs.linkSync = function(srcpath, dstpath) {
@@ -790,7 +873,9 @@ fs.linkSync = function(srcpath, dstpath) {
 fs.unlink = function(path, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
-  binding.unlink(pathModule._makeLong(path), callback);
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+  binding.unlink(pathModule._makeLong(path), req);
 };
 
 fs.unlinkSync = function(path) {
@@ -799,7 +884,9 @@ fs.unlinkSync = function(path) {
 };
 
 fs.fchmod = function(fd, mode, callback) {
-  binding.fchmod(fd, modeNum(mode), makeCallback(callback));
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.fchmod(fd, modeNum(mode), req);
 };
 
 fs.fchmodSync = function(fd, mode) {
@@ -849,9 +936,11 @@ if (constants.hasOwnProperty('O_SYMLINK')) {
 fs.chmod = function(path, mode, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
   binding.chmod(pathModule._makeLong(path),
                 modeNum(mode),
-                callback);
+                req);
 };
 
 fs.chmodSync = function(path, mode) {
@@ -878,7 +967,9 @@ if (constants.hasOwnProperty('O_SYMLINK')) {
 }
 
 fs.fchown = function(fd, uid, gid, callback) {
-  binding.fchown(fd, uid, gid, makeCallback(callback));
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.fchown(fd, uid, gid, req);
 };
 
 fs.fchownSync = function(fd, uid, gid) {
@@ -888,7 +979,9 @@ fs.fchownSync = function(fd, uid, gid) {
 fs.chown = function(path, uid, gid, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
-  binding.chown(pathModule._makeLong(path), uid, gid, callback);
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
+  binding.chown(pathModule._makeLong(path), uid, gid, req);
 };
 
 fs.chownSync = function(path, uid, gid) {
@@ -914,10 +1007,12 @@ fs._toUnixTimestamp = toUnixTimestamp;
 fs.utimes = function(path, atime, mtime, callback) {
   callback = makeCallback(callback);
   if (!nullCheck(path, callback)) return;
+  var req = new FSReqWrap();
+  req.oncomplete = callback;
   binding.utimes(pathModule._makeLong(path),
                  toUnixTimestamp(atime),
                  toUnixTimestamp(mtime),
-                 callback);
+                 req);
 };
 
 fs.utimesSync = function(path, atime, mtime) {
@@ -930,7 +1025,9 @@ fs.utimesSync = function(path, atime, mtime) {
 fs.futimes = function(fd, atime, mtime, callback) {
   atime = toUnixTimestamp(atime);
   mtime = toUnixTimestamp(mtime);
-  binding.futimes(fd, atime, mtime, makeCallback(callback));
+  var req = new FSReqWrap();
+  req.oncomplete = makeCallback(callback);
+  binding.futimes(fd, atime, mtime, req);
 };
 
 fs.futimesSync = function(fd, atime, mtime) {

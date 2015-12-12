@@ -61,3 +61,5 @@ Pipe.prototype.writeUtf8String = function(req,data,handle) {
 };
 
 module.exports.Pipe = Pipe;
+
+module.exports.PipeConnectWrap = function PipeConnectWrap(){};

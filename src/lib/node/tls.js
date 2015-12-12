@@ -22,6 +22,7 @@
 var net = require('net');
 var url = require('url');
 var util = require('util');
+var Buffer = require('buffer').Buffer;
 
 // Allow {CLIENT_RENEG_LIMIT} client-initiated session renegotiations
 // every {CLIENT_RENEG_WINDOW} seconds. An error event is emitted if more
@@ -33,8 +34,10 @@ exports.CLIENT_RENEG_WINDOW = 600;
 exports.SLAB_BUFFER_SIZE = 10 * 1024 * 1024;
 
 exports.DEFAULT_CIPHERS =
-    'ECDHE-RSA-AES128-SHA256:AES128-GCM-SHA256:' + // TLS 1.2
-    'RC4:HIGH:!MD5:!aNULL:!EDH';                   // TLS 1.0
+    // TLS 1.2
+    'ECDHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA256:AES128-GCM-SHA256:' +
+    // TLS 1.0
+    'RC4:HIGH:!MD5:!aNULL';
 
 exports.DEFAULT_ECDH_CURVE = 'prime256v1';
 
@@ -244,8 +247,4 @@ exports.TLSSocket = require('_tls_wrap').TLSSocket;
 exports.Server = require('_tls_wrap').Server;
 exports.createServer = require('_tls_wrap').createServer;
 exports.connect = require('_tls_wrap').connect;
-
-// Legacy API
-exports.__defineGetter__('createSecurePair', util.deprecate(function() {
-  return require('_tls_legacy').createSecurePair;
-}, 'createSecurePair() is deprecated, use TLSSocket instead'));
+exports.createSecurePair = require('_tls_legacy').createSecurePair;

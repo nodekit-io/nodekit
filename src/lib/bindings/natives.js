@@ -33,7 +33,7 @@ var source = {};
 	'_stream_passthrough',
 	'_stream_readable',
 	'_stream_transform',
-	'_stream_writable',
+    '_stream_writable',
     '_tls_common',
 	'_tls_legacy',
 	'_tls_wrap',
@@ -43,7 +43,7 @@ var source = {};
 	'cluster',
 	'console',
 	'constants',
-	/* 'crypto', ** SEE REPLACEMENT SECTION BELOW ** */
+  	/* 'crypto', ** SEE REPLACEMENT SECTION BELOW ** */
 	'dgram',
 	/* 'dns', ** SEE REPLACEMENT SECTION BELOW ** */
 	'domain',
@@ -56,23 +56,22 @@ var source = {};
 	'net',
 	'os',
 	'path',
-	'punycode',
+  	'punycode',
 	'querystring',
 	'readline',
 	'repl',
-	'smalloc',
+     'smalloc',
 	'stream',
 	'string_decoder',
 	'sys',
 	'timers',
 	'tls',
-    'tracing',
-	'tty',
+   'tty',
 	'url',
-	'util',
-	'vm',
-	'zlib'
-   ].forEach( function(name) {
+   'util',
+    'vm',
+	'zlib',
+     ].forEach( function(name) {
   source[name] = getSource('lib/node/' + name);
    });
 
@@ -94,7 +93,7 @@ var source = {};
 /* CUSTOM NODE.JS API ADDITIONS*/
   source["_third_party_main"] = getSource('lib/_nodekit_third_party_main.js');
 
-source.config = "{}";
+source.config = "\\gyp\n{}";
 
 
 module.exports = source;

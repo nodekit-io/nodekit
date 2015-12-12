@@ -31,3 +31,4 @@ switch(process.platform) {
 }
 
 exports.TCP = _delegate.TCP;
+exports.TCPConnectWrap = function TCPConnectWrap(){};

@@ -40,13 +40,15 @@ function Console(stdout, stderr) {
   Object.defineProperty(this, '_stdout', prop);
   prop.value = stderr;
   Object.defineProperty(this, '_stderr', prop);
-  prop.value = {};
+  prop.value = Object.create(null);
   Object.defineProperty(this, '_times', prop);
 
   // bind the prototype functions to this Console instance
-  Object.keys(Console.prototype).forEach(function(k) {
+  var keys = Object.keys(Console.prototype);
+  for (var v = 0; v < keys.length; v++) {
+    var k = keys[v];
     this[k] = this[k].bind(this);
-  }, this);
+  }
 }
 
 Console.prototype.log = function() {
@@ -87,13 +89,13 @@ Console.prototype.timeEnd = function(label) {
 };
 
 
-Console.prototype.trace = function() {
+Console.prototype.trace = function trace() {
   // TODO probably can to do this better with V8's debug object once that is
   // exposed.
   var err = new Error;
   err.name = 'Trace';
   err.message = util.format.apply(this, arguments);
-  Error.captureStackTrace(err, arguments.callee);
+  Error.captureStackTrace(err, trace);
   this.error(err.stack);
 };
 

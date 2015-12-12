@@ -1,7 +1,5 @@
 /*
- * nodekit.io
- *
- * Copyright (c) 2015 Domabo. All Rights Reserved.
+ * Copyright 2015 Domabo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +14,6 @@
  * limitations under the License.
  */
 
+var Buffer = require('buffer');
 
-
-require('test/index.js');
-
-//require('default/index.js');
-//require('default/http.js');
-
-//require('demo/index.js');
+exports.compare = Buffer.compare;

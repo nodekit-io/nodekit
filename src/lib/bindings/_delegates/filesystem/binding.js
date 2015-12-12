@@ -100,7 +100,7 @@ Stats.prototype.isDirectory = function() {
  * @return {Boolean} Is a regular file.
  */
 Stats.prototype.isFile = function() {
-  return this._checkModeProperty(constants.S_IFREG);
+   return this._checkModeProperty(constants.S_IFREG);
 };
 
 
@@ -217,7 +217,7 @@ Binding.prototype._getDescriptorById = function(fd) {
 Binding.prototype._trackDescriptor = function(descriptor) {
    var fd = ++this._counter;
   this._openFiles[fd] = descriptor;
-  return fd;
+   return fd;
 };
 
 
@@ -262,6 +262,39 @@ Binding.prototype.stat = function (filepath, callback) {
     }
 };
 
+
+/**
+ * Stat an item.
+ * @param {string} filepath Path.
+ * @param {function(Error, Stats)} callback Callback (optional).
+ * @return {Stats|undefined} Stats or undefined (if sync).
+ */
+Binding.prototype.internalModuleStat = function (filepath, callback) {
+    if (callback) {
+        this._system.getItemAsync(filepath)
+        .then(
+              function(item)
+              {
+              if (!item)
+                callback(-1);
+              
+              if (item.getSize)
+               callback(0)
+              else
+                callback (1)
+              
+              });
+    } else {
+        var item = this._system.getItemSync(filepath);
+        if (!item) return -1
+         
+            if (item.getSize)
+                return 0
+                else
+                    return 1;
+      }
+};
+
 /**
  * Stat an item.
  * @param {string} filepath Path.
@@ -280,6 +313,7 @@ Binding.prototype.fstat = function (fd, callback) {
     var descriptor = this._getDescriptorById(fd);
     var item = descriptor.getItem();
     var ret = new Stats(item.getStats());
+   
     if (callback)
         callback(null, ret);
     else
@@ -320,8 +354,8 @@ Binding.prototype.open = function (filepath, flags, mode, callback) {
         var item = this._system.getItemSync(filepath);
         
         if (item)
-            this._system.loadContentSync(item);
-        
+             this._system.loadContentSync(item);
+
         return processOpen.call(this, descriptor, item, filepath, flags, mode);
     }
 }

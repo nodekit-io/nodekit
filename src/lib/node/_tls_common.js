@@ -29,6 +29,32 @@ var crypto = null;
 var binding = process.binding('crypto');
 var NativeSecureContext = binding.SecureContext;
 
+var CONTEXT_DEFAULT_OPTIONS = undefined;
+
+function getSecureOptions(secureProtocol, secureOptions) {
+  if (CONTEXT_DEFAULT_OPTIONS === undefined) {
+    CONTEXT_DEFAULT_OPTIONS = 0;
+
+    if (!binding.SSL3_ENABLE)
+      CONTEXT_DEFAULT_OPTIONS |= constants.SSL_OP_NO_SSLv3;
+
+    if (!binding.SSL2_ENABLE)
+      CONTEXT_DEFAULT_OPTIONS |= constants.SSL_OP_NO_SSLv2;
+  }
+
+  if (secureOptions === undefined) {
+    if (secureProtocol === undefined ||
+        secureProtocol === 'SSLv23_method' ||
+        secureProtocol === 'SSLv23_server_method' ||
+        secureProtocol === 'SSLv23_client_method') {
+      secureOptions |= CONTEXT_DEFAULT_OPTIONS;
+    }
+  }
+
+  return secureOptions;
+}
+exports._getSecureOptions = getSecureOptions;
+
 function SecureContext(secureProtocol, flags, context) {
   if (!(this instanceof SecureContext)) {
     return new SecureContext(secureProtocol, flags, context);
@@ -46,7 +72,9 @@ function SecureContext(secureProtocol, flags, context) {
     }
   }
 
-  if (flags) this.context.setOptions(flags);
+  flags = getSecureOptions(secureProtocol, flags);
+
+  this.context.setOptions(flags);
 }
 
 exports.SecureContext = SecureContext;
@@ -64,10 +92,21 @@ exports.createSecureContext = function createSecureContext(options, context) {
   if (context) return c;
 
   if (options.key) {
-    if (options.passphrase) {
-      c.context.setKey(options.key, options.passphrase);
+    if (Array.isArray(options.key)) {
+      for (var i = 0; i < options.key.length; i++) {
+        var key = options.key[i];
+
+        if (key.passphrase)
+          c.context.setKey(key.pem, key.passphrase);
+        else
+          c.context.setKey(key);
+      }
     } else {
-      c.context.setKey(options.key);
+      if (options.passphrase) {
+        c.context.setKey(options.key, options.passphrase);
+      } else {
+        c.context.setKey(options.key);
+      }
     }
   }
 
@@ -85,7 +124,14 @@ exports.createSecureContext = function createSecureContext(options, context) {
     c.context.addRootCerts();
   }
 
-  if (options.cert) c.context.setCert(options.cert);
+  if (options.cert) {
+    if (Array.isArray(options.cert)) {
+      for (var i = 0; i < options.cert.length; i++)
+        c.context.setCert(options.cert[i]);
+    } else {
+      c.context.setCert(options.cert);
+    }
+  }
 
   if (options.ciphers)
     c.context.setCiphers(options.ciphers);
@@ -96,6 +142,8 @@ exports.createSecureContext = function createSecureContext(options, context) {
     c.context.setECDHCurve(tls.DEFAULT_ECDH_CURVE);
   else if (options.ecdhCurve)
     c.context.setECDHCurve(options.ecdhCurve);
+
+  if (options.dhparam) c.context.setDHParam(options.dhparam);
 
   if (options.crl) {
     if (util.isArray(options.crl)) {

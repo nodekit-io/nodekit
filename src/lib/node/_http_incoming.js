@@ -46,6 +46,8 @@ function IncomingMessage(socket) {
   this.socket = socket;
   this.connection = socket;
 
+  this.httpVersionMajor = null;
+  this.httpVersionMinor = null;
   this.httpVersion = null;
   this.complete = false;
   this.headers = {};
@@ -57,6 +59,7 @@ function IncomingMessage(socket) {
 
   this._pendings = [];
   this._pendingIndex = 0;
+  this.upgrade = null;
 
   // request (server) only
   this.url = '';
@@ -122,11 +125,12 @@ IncomingMessage.prototype._addHeaderLines = function(headers, n) {
       raw = this.rawHeaders;
       dest = this.headers;
     }
-    raw.push.apply(raw, headers);
 
     for (var i = 0; i < n; i += 2) {
       var k = headers[i];
       var v = headers[i + 1];
+      raw.push(k);
+      raw.push(v);
       this._addHeaderLine(k, v, dest);
     }
   }

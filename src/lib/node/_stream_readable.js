@@ -24,6 +24,7 @@ Readable.ReadableState = ReadableState;
 
 var EE = require('events').EventEmitter;
 var Stream = require('stream');
+var Buffer = require('buffer').Buffer;
 var util = require('util');
 var StringDecoder;
 var debug = util.debuglog('stream');
@@ -129,6 +130,10 @@ Readable.prototype.push = function(chunk, encoding) {
 Readable.prototype.unshift = function(chunk) {
   var state = this._readableState;
   return readableAddChunk(this, state, chunk, '', true);
+};
+
+Readable.prototype.isPaused = function() {
+  return this._readableState.flowing === false;
 };
 
 function readableAddChunk(stream, state, chunk, encoding, addToFront) {

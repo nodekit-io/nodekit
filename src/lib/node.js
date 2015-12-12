@@ -25,10 +25,11 @@
 // bootstrapping the node.js core. Special caution is given to the performance
 // of the startup process, so many dependencies are invoked lazily.
 (function(process) {
- 
   this.global = this;
 
   function startup() {
+ 
+ try {
     var EventEmitter = NativeModule.require('events').EventEmitter;
 
     process.__proto__ = Object.create(EventEmitter.prototype, {
@@ -40,9 +41,6 @@
 
     process.EventEmitter = EventEmitter; // process.EventEmitter is deprecated
 
-    // Setup the tracing module
-    NativeModule.require('tracing')._nodeInitialization(process);
- 
     // do this good and early, since it handles errors.
     startup.processFatal();
 
@@ -57,20 +55,23 @@
     startup.processKillAndExit();
     startup.processSignalHandlers();
 
-    startup.processChannel();
+    // Do not initialize channel in debugger agent, it deletes env variable
+    // and the main thread won't see it.
+    if (process.argv[1] !== '--debug-agent')
+      startup.processChannel();
 
     startup.processRawDebug();
 
     startup.resolveArgv0();
+ } catch (e) {io.nodekit.console.log(e.message + e.stack)};
 
     // There are various modes that Node can run in. The most common two
     // are running from a script and running the REPL - but there are a few
     // others like the debugger or running --eval arguments. Here we decide
     // which mode we run in.
-
     if (NativeModule.exists('_third_party_main')) {
  
-       // To allow people to extend Node in different ways, this hook allows
+      // To allow people to extend Node in different ways, this hook allows
       // one to drop a file lib/_third_party_main.js into the build
       // directory which will be executed instead of Node's normal loading.
       process.nextTick(function() {
@@ -80,6 +81,11 @@
     } else if (process.argv[1] == 'debug') {
       // Start the debugger agent
       var d = NativeModule.require('_debugger');
+      d.start();
+
+    } else if (process.argv[1] == '--debug-agent') {
+      // Start the debugger agent
+      var d = NativeModule.require('_debugger_agent');
       d.start();
 
     } else if (process._eval != null) {
@@ -98,7 +104,7 @@
 
         // Make sure it's not accidentally inherited by child processes.
         delete process.env.NODE_UNIQUE_ID;
-     }
+      }
 
       var Module = NativeModule.require('module');
 
@@ -178,7 +184,7 @@
     global.setTimeout = function() {
       var t = NativeModule.require('timers');
       return t.setTimeout.apply(this, arguments);
-    }; 
+    };
 
     global.setInterval = function() {
       var t = NativeModule.require('timers');
@@ -223,14 +229,8 @@
   };
 
   startup.processFatal = function() {
-    var tracing = NativeModule.require('tracing');
-    var _errorHandler = tracing._errorHandler;
-    // Cleanup
-    delete tracing._errorHandler;
-
     process._fatalException = function(er) {
-      // First run through error handlers from asyncListener.
-      var caught = _errorHandler(er);
+      var caught;
 
       if (process.domain && process.domain._errorHandler)
         caught = process.domain._errorHandler(er) || caught;
@@ -252,11 +252,7 @@
 
       // if we handled an error, then make sure any ticks get processed
       } else {
-        var t = setImmediate(process._tickCallback);
-        // Complete hack to make sure any errors thrown from async
-        // listeners don't cause an infinite loop.
-        if (t._asyncQueue)
-          t._asyncQueue = [];
+        NativeModule.require('timers').setImmediate(process._tickCallback);
       }
 
       return caught;
@@ -276,14 +272,13 @@
     delete NativeModule._source.config;
 
     // strip the gyp comment line at the beginning
-   /* config = config.split('\n')
+    config = config.split('\n')
                    .slice(1)
                    .join('\n')
                    .replace(/"/g, '\\"')
-                   .replace(/'/g, '"');*/
-                            
-      process.config = JSON.parse(config, function(key, value) {
-                       
+                   .replace(/'/g, '"');
+
+    process.config = JSON.parse(config, function(key, value) {
       if (value === 'true') return true;
       if (value === 'false') return false;
       return value;
@@ -291,12 +286,11 @@
   };
 
   startup.processNextTick = function() {
-    var tracing = NativeModule.require('tracing');
     var nextTickQueue = [];
-    var asyncFlags = tracing._asyncFlags;
-    var _runAsyncQueue = tracing._runAsyncQueue;
-    var _loadAsyncQueue = tracing._loadAsyncQueue;
-    var _unloadAsyncQueue = tracing._unloadAsyncQueue;
+    var microtasksScheduled = false;
+
+    // Used to run V8's micro task queue.
+    var _runMicrotasks = {};
 
     // This tickInfo thing is used so that the C++ code in src/node.cc
     // can have easy accesss to our nextTick state, and avoid unnecessary
@@ -306,16 +300,14 @@
     var kIndex = 0;
     var kLength = 1;
 
-    // For asyncFlags.
-    // *Must* match Environment::AsyncListeners::Fields in src/env.h
-    var kCount = 0;
-
     process.nextTick = nextTick;
     // Needs to be accessible from beyond this scope.
     process._tickCallback = _tickCallback;
     process._tickDomainCallback = _tickDomainCallback;
 
-    process._setupNextTick(tickInfo, _tickCallback);
+    process._setupNextTick(tickInfo, _tickCallback, _runMicrotasks);
+
+    _runMicrotasks = _runMicrotasks.runMicrotasks;
 
     function tickDone() {
       if (tickInfo[kLength] !== 0) {
@@ -330,18 +322,38 @@
       tickInfo[kIndex] = 0;
     }
 
+    function scheduleMicrotasks() {
+      if (microtasksScheduled)
+        return;
+
+      nextTickQueue.push({
+        callback: runMicrotasksCallback,
+        domain: null
+      });
+
+      tickInfo[kLength]++;
+      microtasksScheduled = true;
+    }
+
+    function runMicrotasksCallback() {
+      microtasksScheduled = false;
+      _runMicrotasks();
+
+      if (tickInfo[kIndex] < tickInfo[kLength])
+        scheduleMicrotasks();
+    }
+
     // Run callbacks that have no domain.
     // Using domains will cause this to be overridden.
     function _tickCallback() {
-      var callback, hasQueue, threw, tock;
+      var callback, threw, tock;
+
+      scheduleMicrotasks();
 
       while (tickInfo[kIndex] < tickInfo[kLength]) {
         tock = nextTickQueue[tickInfo[kIndex]++];
         callback = tock.callback;
         threw = true;
-        hasQueue = !!tock._asyncQueue;
-        if (hasQueue)
-          _loadAsyncQueue(tock);
         try {
           callback();
           threw = false;
@@ -349,8 +361,6 @@
           if (threw)
             tickDone();
         }
-        if (hasQueue)
-          _unloadAsyncQueue(tock);
         if (1e4 < tickInfo[kIndex])
           tickDone();
       }
@@ -359,15 +369,14 @@
     }
 
     function _tickDomainCallback() {
-      var callback, domain, hasQueue, threw, tock;
+      var callback, domain, threw, tock;
+
+      scheduleMicrotasks();
 
       while (tickInfo[kIndex] < tickInfo[kLength]) {
         tock = nextTickQueue[tickInfo[kIndex]++];
         callback = tock.callback;
         domain = tock.domain;
-        hasQueue = !!tock._asyncQueue;
-        if (hasQueue)
-          _loadAsyncQueue(tock);
         if (domain)
           domain.enter();
         threw = true;
@@ -378,8 +387,6 @@
           if (threw)
             tickDone();
         }
-        if (hasQueue)
-          _unloadAsyncQueue(tock);
         if (1e4 < tickInfo[kIndex])
           tickDone();
         if (domain)
@@ -396,12 +403,8 @@
 
       var obj = {
         callback: callback,
-        domain: process.domain || null,
-        _asyncQueue: undefined
+        domain: process.domain || null
       };
-
-      if (asyncFlags[kCount] > 0)
-        _runAsyncQueue(obj);
 
       nextTickQueue.push(obj);
       tickInfo[kLength]++;
@@ -590,7 +593,7 @@
   };
 
   startup.processKillAndExit = function() {
-    process.exitCode = 0;
+
     process.exit = function(code) {
       if (code || code === 0)
         process.exitCode = code;
@@ -605,8 +608,8 @@
     process.kill = function(pid, sig) {
       var err;
 
-      if (typeof pid !== 'number' || !isFinite(pid)) {
-        throw new TypeError('pid must be a number');
+      if (pid != (pid | 0)) {
+        throw new TypeError('invalid pid');
       }
 
       // preserve null signal
@@ -673,7 +676,7 @@
       if (isSignal(type)) {
         assert(signalWraps.hasOwnProperty(type));
 
-        if (this.listeners(type).length === 0) {
+        if (NativeModule.require('events').listenerCount(this, type) === 0) {
           signalWraps[type].close();
           delete signalWraps[type];
         }
@@ -798,9 +801,7 @@
   ];
 
   NativeModule.prototype.compile = function() {
- 
     var source = NativeModule.getSource(this.id);
-                            
     source = NativeModule.wrap(source);
 
     var fn = runInThisContext(source, { filename: this.filename });

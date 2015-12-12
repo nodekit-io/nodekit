@@ -72,8 +72,7 @@ exports.writer = util.inspect;
 exports._builtinLibs = ['assert', 'buffer', 'child_process', 'cluster',
   'crypto', 'dgram', 'dns', 'domain', 'events', 'fs', 'http', 'https', 'net',
   'os', 'path', 'punycode', 'querystring', 'readline', 'stream',
-  'string_decoder', 'tls', 'tty', 'url', 'util', 'vm', 'zlib', 'smalloc',
-  'tracing'];
+  'string_decoder', 'tls', 'tty', 'url', 'util', 'vm', 'zlib', 'smalloc'];
 
 
 function REPLServer(prompt, stream, eval_, useGlobal, ignoreUndefined) {
@@ -950,7 +949,7 @@ REPLServer.prototype.convertToContext = function(cmd) {
 function isRecoverableError(e) {
   return e &&
       e.name === 'SyntaxError' &&
-      /^(Unexpected end of input|Unexpected token :)/.test(e.message);
+      /^(Unexpected end of input|Unexpected token)/.test(e.message);
 }
 
 function Recoverable(err) {

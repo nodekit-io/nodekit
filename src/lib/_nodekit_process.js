@@ -16,7 +16,7 @@
 
 (function(process) {
     
-  process.nextTick = (function () {
+  process._nextTick = (function () {
                      var canSetTimeOut = typeof window !== 'undefined'
                      && window.setTimeout;
                     
@@ -66,20 +66,21 @@
         process._unloadAsyncQueue = unloadAsyncQueue;
     };
     
-    process._setupNextTick = function(tickInfo, tickCallback) {
-        process._tickInfo = tickInfo;
-        process._tickCallback = tickCallback;
-        tickCallback();
-    };
-    
+ process._setupNextTick = function(tickInfo, _tickCallback, _runMicrotasks) {
+    _runMicrotasks.runMicrotasks = function(){};
+    process._tickCallback = _tickCallback;
+    process.nextTick = process._nextTick;
+ //    _tickCallback();
+ };
+ 
     process._setupDomainUse = function() {};
     process.cwd = function cwd() { return  process.workingDirectory; };
     process.isatty = false;
  
-    process.versions = { http_parser: '1.0', node: '0.10.4', v8: '3.14.5.8', ares: '1.9.0-DEV', uv: '0.10.3', zlib: '1.2.3', modules: '11', openssl: '1.0.1e' };
+    process.versions = { http_parser: '1.0', node: '0.12.9', v8: '3.14.5.8', ares: '1.9.0-DEV', uv: '0.10.3', zlib: '1.2.3', modules: '11', openssl: '1.0.1e' };
  
-    process.version = 'v0.10.4';
- 
+    process.version = 'v0.12.9';
+    process.execArgv = ['--nodekit'];
  
  if (Error.captureStackTrace === undefined) {
  Error.captureStackTrace = function (obj) {

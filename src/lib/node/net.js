@@ -28,7 +28,13 @@ var cares = process.binding('cares_wrap');
 var uv = process.binding('uv');
 var Pipe = process.binding('pipe_wrap').Pipe;
 
+var TCPConnectWrap = process.binding('tcp_wrap').TCPConnectWrap;
+var PipeConnectWrap = process.binding('pipe_wrap').PipeConnectWrap;
+var ShutdownWrap = process.binding('stream_wrap').ShutdownWrap;
+var WriteWrap = process.binding('stream_wrap').WriteWrap;
 
+
+var Buffer = require('buffer').Buffer;
 var cluster;
 var errnoException = util._errnoException;
 
@@ -134,6 +140,7 @@ function Socket(options) {
   this._connecting = false;
   this._hadError = false;
   this._handle = null;
+  this._parent = null;
   this._host = null;
 
   if (util.isNumber(options))
@@ -148,9 +155,9 @@ function Socket(options) {
   } else if (!util.isUndefined(options.fd)) {
     this._handle = createHandle(options.fd);
     this._handle.open(options.fd);
-    if ((options.fd == 1 || options.fd == 2) &&
-        (this._handle instanceof Pipe) &&
-        process.platform === 'win32') {
+    // this._handle.open() puts the file descriptor in non-blocking
+    // mode but it must be synchronous for backwards compatibility.
+    if ((options.fd == 1 || options.fd == 2) && this._handle instanceof Pipe) {
       // Make stdout and stderr blocking on Windows
       var err = this._handle.setBlocking(true);
       if (err)
@@ -180,10 +187,25 @@ function Socket(options) {
 
   // if we have a handle, then start the flow of data into the
   // buffer.  if not, then this will happen when we connect
-  if (this._handle && options.readable !== false)
-    this.read(0);
+  if (this._handle && options.readable !== false) {
+    if (options.pauseOnCreate) {
+      // stop the handle from reading and pause the stream
+      this._handle.reading = false;
+      this._handle.readStop();
+      this._readableState.flowing = false;
+    } else {
+      this.read(0);
+    }
+  }
 }
 util.inherits(Socket, stream.Duplex);
+
+
+Socket.prototype._unrefTimer = function unrefTimer() {
+  for (var s = this; s !== null; s = s._parent)
+    timers._unrefActive(s);
+};
+
 
 // the user has called .end(), and all the bytes have been
 // sent out to the other side.
@@ -210,7 +232,8 @@ function onSocketFinish() {
   if (!this._handle || !this._handle.shutdown)
     return this.destroy();
 
-  var req = { oncomplete: afterShutdown };
+  var req = new ShutdownWrap();
+  req.oncomplete = afterShutdown;
   var err = this._handle.shutdown(req);
 
   if (err)
@@ -305,16 +328,16 @@ Socket.prototype.listen = function() {
 
 
 Socket.prototype.setTimeout = function(msecs, callback) {
-  if (msecs > 0 && isFinite(msecs)) {
+  if (msecs === 0) {
+    timers.unenroll(this);
+    if (callback) {
+      this.removeListener('timeout', callback);
+    }
+  } else {
     timers.enroll(this, msecs);
     timers._unrefActive(this);
     if (callback) {
       this.once('timeout', callback);
-    }
-  } else if (msecs === 0) {
-    timers.unenroll(this);
-    if (callback) {
-      this.removeListener('timeout', callback);
     }
   }
 };
@@ -445,11 +468,10 @@ Socket.prototype._destroy = function(exception, cb) {
     return;
   }
 
-  self._connecting = false;
-
-  this.readable = this.writable = false;
-
-  timers.unenroll(this);
+  for (var s = this; s !== null; s = s._parent) {
+    timers.unenroll(s);
+    s._connecting = s.readable = s.writable = false;
+  }
 
   debug('close');
   if (this._handle) {
@@ -458,16 +480,20 @@ Socket.prototype._destroy = function(exception, cb) {
     var isException = exception ? true : false;
     this._handle.close(function() {
       debug('emit close');
-      self.emit('close', isException);
+      for (var s = self; s !== null; s = s._parent)
+        s.emit('close', isException);
     });
     this._handle.onread = noop;
-    this._handle = null;
+    for (var s = this; s !== null; s = s._parent)
+      s._handle = null;
   }
 
   // we set destroyed to true before firing error callbacks in order
   // to make it re-entrance safe in case Socket.prototype.destroy()
   // is called within callbacks
-  this.destroyed = true;
+  for (var s = this; s !== null; s = s._parent)
+    s.destroyed = true;
+
   fireErrorCallbacks();
 
   if (this.server) {
@@ -494,7 +520,7 @@ function onread(nread, buffer) {
   var self = handle.owner;
   assert(handle === self._handle, 'handle != self._handle');
 
-  timers._unrefActive(self);
+  self._unrefTimer();
 
   debug('onread', nread);
 
@@ -604,6 +630,7 @@ Socket.prototype.__defineGetter__('localPort', function() {
 
 
 Socket.prototype.write = function(chunk, encoding, cb) {
+  'use strict';
   if (!util.isString(chunk) && !util.isBuffer(chunk))
     throw new TypeError('invalid data');
   return stream.Duplex.prototype.write.apply(this, arguments);
@@ -625,14 +652,16 @@ Socket.prototype._writeGeneric = function(writev, data, encoding, cb) {
   this._pendingData = null;
   this._pendingEncoding = '';
 
-  timers._unrefActive(this);
+  this._unrefTimer();
 
   if (!this._handle) {
     this._destroy(new Error('This socket is closed.'), cb);
     return false;
   }
 
-  var req = { oncomplete: afterWrite, async: false };
+  var req = new WriteWrap();
+  req.oncomplete = afterWrite;
+  req.async = false;
   var err;
 
   if (writev) {
@@ -684,6 +713,9 @@ Socket.prototype._write = function(data, encoding, cb) {
 
 function createWriteReq(req, handle, data, encoding) {
   switch (encoding) {
+    case 'binary':
+      return handle.writeBinaryString(req, data);
+
     case 'buffer':
       return handle.writeBuffer(req, data);
 
@@ -712,7 +744,7 @@ Socket.prototype.__defineGetter__('bytesWritten', function() {
       data = this._pendingData,
       encoding = this._pendingEncoding;
 
-  state.buffer.forEach(function(el) {
+  state.getBuffer().forEach(function(el) {
     if (util.isBuffer(el.chunk))
       bytes += el.chunk.length;
     else
@@ -748,7 +780,7 @@ function afterWrite(status, handle, req, err) {
     return;
   }
 
-  timers._unrefActive(self);
+  self._unrefTimer();
 
   if (self !== process.stderr && self !== process.stdout)
     debug('afterWrite call cb');
@@ -765,34 +797,18 @@ function connect(self, address, port, addressType, localAddress, localPort) {
   assert.ok(self._connecting);
 
   var err;
+
   if (localAddress || localPort) {
-    if (localAddress && !exports.isIP(localAddress))
-      err = new TypeError(
-          'localAddress should be a valid IP: ' + localAddress);
-
-    if (localPort && !util.isNumber(localPort))
-      err = new TypeError('localPort should be a number: ' + localPort);
-
     var bind;
 
-    switch (addressType) {
-      case 4:
-        if (!localAddress)
-          localAddress = '0.0.0.0';
-        bind = self._handle.bind;
-        break;
-      case 6:
-        if (!localAddress)
-          localAddress = '::';
-        bind = self._handle.bind6;
-        break;
-      default:
-        err = new TypeError('Invalid addressType: ' + addressType);
-        break;
-    }
-
-    if (err) {
-      self._destroy(err);
+    if (addressType === 4) {
+      localAddress = localAddress || '0.0.0.0';
+      bind = self._handle.bind;
+    } else if (addressType === 6) {
+      localAddress = localAddress || '::';
+      bind = self._handle.bind6;
+    } else {
+      self._destroy(new TypeError('Invalid addressType: ' + addressType));
       return;
     }
 
@@ -809,18 +825,18 @@ function connect(self, address, port, addressType, localAddress, localPort) {
     }
   }
 
-  var req = { oncomplete: afterConnect };
   if (addressType === 6 || addressType === 4) {
-    port = port | 0;
-    if (port <= 0 || port > 65535)
-      throw new RangeError('Port should be > 0 and < 65536');
+    var req = new TCPConnectWrap();
+    req.oncomplete = afterConnect;
 
-    if (addressType === 6) {
-      err = self._handle.connect6(req, address, port);
-    } else if (addressType === 4) {
+    if (addressType === 4)
       err = self._handle.connect(req, address, port);
-    }
+    else
+      err = self._handle.connect6(req, address, port);
+
   } else {
+    var req = new PipeConnectWrap();
+    req.oncomplete = afterConnect;
     err = self._handle.connect(req, address, afterConnect);
   }
 
@@ -867,7 +883,7 @@ Socket.prototype.connect = function(options, cb) {
     self.once('connect', cb);
   }
 
-  timers._unrefActive(this);
+  this._unrefTimer();
 
   self._connecting = true;
   self.writable = true;
@@ -875,21 +891,46 @@ Socket.prototype.connect = function(options, cb) {
   if (pipe) {
     connect(self, options.path);
 
-  } else if (!options.host) {
-    debug('connect: missing host');
-    self._host = '127.0.0.1';
-    connect(self, self._host, options.port, 4);
-
   } else {
     var dns = require('dns');
-    var host = options.host;
+    var host = options.host || 'localhost';
+    var port = 0;
+    var localAddress = options.localAddress;
+    var localPort = options.localPort;
     var dnsopts = {
       family: options.family,
       hints: 0
     };
 
-    if (dnsopts.family !== 4 && dnsopts.family !== 6)
-      dnsopts.hints = dns.ADDRCONFIG | dns.V4MAPPED;
+    if (localAddress && !exports.isIP(localAddress))
+      throw new TypeError('localAddress must be a valid IP: ' + localAddress);
+
+    if (localPort && !util.isNumber(localPort))
+      throw new TypeError('localPort should be a number: ' + localPort);
+
+    if (typeof options.port === 'number')
+      port = options.port;
+    else if (typeof options.port === 'string')
+      port = options.port.trim() === '' ? -1 : +options.port;
+    else if (options.port !== undefined)
+      throw new TypeError('port should be a number or string: ' + options.port);
+
+    if (port < 0 || port > 65535 || isNaN(port))
+      throw new RangeError('port should be >= 0 and < 65536: ' +
+                           options.port);
+
+    if (dnsopts.family !== 4 && dnsopts.family !== 6) {
+      dnsopts.hints = dns.ADDRCONFIG;
+      // The AI_V4MAPPED hint is not supported on FreeBSD, and getaddrinfo
+      // returns EAI_BADFLAGS. However, it seems to be supported on most other
+      // systems. See
+      // http://lists.freebsd.org/pipermail/freebsd-bugs/2008-February/028260.html
+      // and
+      // https://svnweb.freebsd.org/base/head/lib/libc/net/getaddrinfo.c?r1=172052&r2=175955
+      // for more information on the lack of support for FreeBSD.
+      if (process.platform !== 'freebsd')
+        dnsopts.hints |= dns.V4MAPPED;
+    }
 
     debug('connect: find host ' + host);
     debug('connect: dns options ' + dnsopts);
@@ -912,20 +953,13 @@ Socket.prototype.connect = function(options, cb) {
           self._destroy();
         });
       } else {
-        timers._unrefActive(self);
-
-        addressType = addressType || 4;
-
-        // node_net.cc handles null host names graciously but user land
-        // expects remoteAddress to have a meaningful value
-        ip = ip || (addressType === 4 ? '127.0.0.1' : '0:0:0:0:0:0:0:1');
-
+        self._unrefTimer();
         connect(self,
                 ip,
-                options.port,
+                port,
                 addressType,
-                options.localAddress,
-                options.localPort);
+                localAddress,
+                localPort);
       }
     });
   }
@@ -964,13 +998,13 @@ function afterConnect(status, handle, req, readable, writable) {
   if (status == 0) {
     self.readable = readable;
     self.writable = writable;
-    timers._unrefActive(self);
+    self._unrefTimer();
 
     self.emit('connect');
 
     // start the first read, or get an immediate EOF.
     // this doesn't actually consume any bytes, because len=0.
-    if (readable)
+    if (readable && !self.isPaused())
       self.read(0);
 
   } else {
@@ -1012,7 +1046,7 @@ function Server(/* [ options, ] listener */) {
     set: util.deprecate(function(val) {
       return (self._connections = val);
     }, 'connections property is deprecated. Use getConnections() method'),
-    configurable: true, enumerable: true
+    configurable: true, enumerable: false
   });
 
   this._handle = null;
@@ -1020,6 +1054,7 @@ function Server(/* [ options, ] listener */) {
   this._slaves = [];
 
   this.allowHalfOpen = options.allowHalfOpen || false;
+  this.pauseOnConnect = !!options.pauseOnConnect;
 }
 util.inherits(Server, events.EventEmitter);
 exports.Server = Server;
@@ -1140,10 +1175,12 @@ Server.prototype._listen2 = function(address, port, addressType, backlog, fd) {
 };
 
 
-function listen(self, address, port, addressType, backlog, fd) {
+function listen(self, address, port, addressType, backlog, fd, exclusive) {
+  exclusive = !!exclusive;
+
   if (!cluster) cluster = require('cluster');
 
-  if (cluster.isMaster) {
+  if (cluster.isMaster || exclusive) {
     self._listen2(address, port, addressType, backlog, fd);
     return;
   }
@@ -1191,24 +1228,34 @@ Server.prototype.listen = function() {
 
   var TCP = process.binding('tcp_wrap').TCP;
 
-  if (arguments.length == 0 || util.isFunction(arguments[0])) {
+  if (arguments.length === 0 || util.isFunction(arguments[0])) {
     // Bind to a random port.
     listen(self, null, 0, null, backlog);
-
-  } else if (arguments[0] && util.isObject(arguments[0])) {
+  } else if (util.isObject(arguments[0])) {
     var h = arguments[0];
-    if (h._handle) {
-      h = h._handle;
-    } else if (h.handle) {
-      h = h.handle;
-    }
+    h = h._handle || h.handle || h;
+
     if (h instanceof TCP) {
       self._handle = h;
       listen(self, null, -1, -1, backlog);
     } else if (util.isNumber(h.fd) && h.fd >= 0) {
       listen(self, null, null, null, backlog, h.fd);
     } else {
-      throw new Error('Invalid listen argument: ' + h);
+      // The first argument is a configuration object
+      if (h.backlog)
+        backlog = h.backlog;
+
+      if (util.isNumber(h.port)) {
+        if (h.host)
+          listenAfterLookup(h.port, h.host, backlog, h.exclusive);
+        else
+          listen(self, null, h.port, 4, backlog, undefined, h.exclusive);
+      } else if (h.path && isPipeName(h.path)) {
+        var pipeName = self._pipeName = h.path;
+        listen(self, pipeName, -1, -1, backlog, undefined, h.exclusive);
+      } else {
+        throw new Error('Invalid listen argument: ' + h);
+      }
     }
   } else if (isPipeName(arguments[0])) {
     // UNIX socket or Windows pipe.
@@ -1223,14 +1270,20 @@ Server.prototype.listen = function() {
 
   } else {
     // The first argument is the port, the second an IP.
-    require('dns').lookup(arguments[1], function(err, ip, addressType) {
+    listenAfterLookup(port, arguments[1], backlog);
+  }
+
+  function listenAfterLookup(port, address, backlog, exclusive) {
+    require('dns').lookup(address, function(err, ip, addressType) {
       if (err) {
         self.emit('error', err);
       } else {
-        listen(self, ip, port, ip ? addressType : 4, backlog);
+        addressType = ip ? addressType : 4;
+        listen(self, ip, port, addressType, backlog, undefined, exclusive);
       }
     });
   }
+
   return self;
 };
 
@@ -1265,7 +1318,8 @@ function onconnection(err, clientHandle) {
 
   var socket = new Socket({
     handle: clientHandle,
-    allowHalfOpen: self.allowHalfOpen
+    allowHalfOpen: self.allowHalfOpen,
+    pauseOnCreate: self.pauseOnConnect
   });
   socket.readable = socket.writable = true;
 

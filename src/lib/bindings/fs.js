@@ -34,6 +34,9 @@ var fs_delegate = new Binding(fsystem);
 
 var statsCtor;
 
+module.exports.FSReqWrap = function FSReqWrap() {
+}
+
 module.exports.FSInitialize = function (stats) {
   // fs.js uses this in "native" node.js to inform the C++ in
   // node_file.cc what JS function is used to construct an fs.Stat
@@ -54,11 +57,11 @@ module.exports.StatWatcher = fs_delegate.StatWatcher;
  * @return {Stats|undefined} Stats or undefined (if sync).
  */
 module.exports.stat = function (path, callback) {
-    
+   
     if (callback)
         process.nextTick(function(){
                          try {
-        callback(null, fs_delegate.stat(path));
+        callback.oncomplete.call(callback, null, fs_delegate.stat(path));
                          } catch (e) { callback(e); }
                          });
     
@@ -67,6 +70,29 @@ module.exports.stat = function (path, callback) {
     return fs_delegate.stat(path);
 };
 
+
+/**
+ * Stat an item.
+ * @param {string} filepath Path.
+ * @param {function(Error, Stats)} callback Callback (optional).
+ * @return -1 if not exists, 0 if file, 1 if directory
+ */
+module.exports.internalModuleStat = function (path, callback) {
+    
+    if (callback)
+        process.nextTick(function(){
+                         try {
+                         callback.call(callback, null, fs_delegate.internalModuleStat(path));
+                         } catch (e) { callback(e); }
+                         });
+    
+    else
+        
+        return fs_delegate.internalModuleStat(path);
+};
+
+
+
 /**
  * Stat an item.
  * @param {string} filepath Path.
@@ -74,7 +100,11 @@ module.exports.stat = function (path, callback) {
  * @return {Stats|undefined} Stats or undefined (if sync).
  */
 module.exports.lstat = function (path, callback) {
-    return fs_delegate.lstat(path, callback);
+    if (callback)
+     return fs_delegate.lstat(path, callback.oncomplete.bind(callback));
+    else
+        return fs_delegate.lstat(path);
+
 };
 
 /**
@@ -84,7 +114,10 @@ module.exports.lstat = function (path, callback) {
  * @return {Stats|undefined} Stats or undefined (if sync).
  */
 module.exports.fstat = function (fd, callback) {
-    return fs_delegate.fstat(fd, callback);
+    if (callback)
+        return fs_delegate.fstat(fd, callback.oncomplete.bind(callback));
+    else
+         return fs_delegate.fstat(fd);
 };
 
 /**
@@ -98,11 +131,14 @@ module.exports.fstat = function (fd, callback) {
 module.exports.open = function (path, flags, mode, callback) {
  
     if (callback)
+    {
         process.nextTick(function(){
-        callback(null, fs_delegate.open(path, flags, mode));
+                         var fileItem =fs_delegate.open(path, flags, mode);
+             callback.oncomplete.call(callback, null, fileItem);
                          });
+    }
     else
-     return fs_delegate.open(path, flags, mode, callback);
+     return fs_delegate.open(path, flags, mode);
 };
 
 /**
@@ -115,12 +151,12 @@ module.exports.close = function (fd, callback) {
     {
         process.nextTick(function(){
                          fs_delegate.close(fd)
-                         callback(null,  fs_delegate.close(fd) );
+                         callback.oncomplete.call(callback, null,  fs_delegate.close(fd) );
 
                          });
     }
     else
-      fs_delegate.close(fd, callback)
+      fs_delegate.close(fd)
 };
 
 /**
@@ -136,7 +172,11 @@ module.exports.close = function (fd, callback) {
  * @return {number} Number of bytes written (if sync).
  */
 module.exports.writeBuffer = function (fd, buffer, offset, length, position, callback) {
-    return fs_delegate.writeBuffer(fd, buffer, offset, length, position, callback)
+    if (callback)
+       return fs_delegate.writeBuffer(fd, buffer, offset, length, position, callback.oncomplete)
+    else
+            return fs_delegate.writeBuffer(fd, buffer, offset, length, position)
+
 };
 
 /**
@@ -151,7 +191,11 @@ module.exports.writeBuffer = function (fd, buffer, offset, length, position, cal
  * @return {number} Number of bytes written (if sync).
  */
 module.exports.writeString = function (fd, str, position, enc, callback) {
-    return fs_delegate.writeString(fd, str, position, enc, callback)
+    if (callback)
+       return fs_delegate.writeString(fd, str, position, enc, callback.oncomplete)
+    else
+        return fs_delegate.writeString(fd, str, position, enc)
+        
 };
 
 /**
@@ -161,7 +205,11 @@ module.exports.writeString = function (fd, str, position, enc, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.mkdir = function (path, mode, callback) {
-    fs_delegate.mkdir(path, mode, callback)
+    if (callback)
+       fs_delegate.mkdir(path, mode, callback.oncomplete)
+     else
+       fs_delegate.mkdir(path, mode, callback)
+            
 };
 
 /**
@@ -170,7 +218,11 @@ module.exports.mkdir = function (path, mode, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.rmdir = function (path, callback) {
-    fs_delegate.rmdir(path, callback)
+    if (callback)
+        fs_delegate.rmdir(path, callback.oncomplete)
+        else
+            fs_delegate.rmdir(path)
+
 };
 
 /**
@@ -181,7 +233,10 @@ module.exports.rmdir = function (path, callback) {
  * @return {undefined}
  */
 module.exports.rename = function (from, to, callback) {
-    return fs_delegate.rename(from, to, callback)
+    if (callback)
+ return fs_delegate.rename(from, to, callback.oncomplete)
+        else
+            return fs_delegate.rename(from, to);
 };
 
 /**
@@ -191,7 +246,10 @@ module.exports.rename = function (from, to, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.ftruncate = function (fd, len, callback) {
-    fs_delegate.ftruncate(fd, len, callback)
+    if (callback)
+  fs_delegate.ftruncate(fd, len, callback.oncomplete)
+        else
+            fs_delegate.ftruncate(fd, len);
 };
 
 /**
@@ -202,7 +260,10 @@ module.exports.ftruncate = function (fd, len, callback) {
  * @return {Array.<string>} Array of items in directory (if sync).
  */
 module.exports.readdir = function (path, callback) {
-    return fs_delegate.readdir(path, callback)
+    if (callback)
+        return fs_delegate.readdir(path, callback.oncomplete);
+    else
+        return fs_delegate.readdir(path);
 };
 
 /**
@@ -222,11 +283,11 @@ module.exports.read = function (fd, buffer, offset, length, position, callback) 
     {
         process.nextTick(function(){
                          
-        callback(null, fs_delegate.read(fd, buffer, offset, length, position));
+        callback.oncomplete.call(callback, null, fs_delegate.read(fd, buffer, offset, length, position));
                          });
     }
     else
-      return fs_delegate.read(fd, buffer, offset, length, position, callback);
+      return fs_delegate.read(fd, buffer, offset, length, position);
 };
 
 /**
@@ -236,7 +297,10 @@ module.exports.read = function (fd, buffer, offset, length, position, callback) 
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.link = function (srcpath, dstpath, callback) {
-     fs_delegate.link(srcpath, dstpath, callback)
+    if (callback)
+       fs_delegate.link(srcpath, dstpath, callback.oncomplete)
+    else
+        return  fs_delegate.link(srcpath, dstpath);
 };
 
 /**
@@ -247,7 +311,11 @@ module.exports.link = function (srcpath, dstpath, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.symlink = function (srcpath, dstpath, type, callback) {
-     fs_delegate.symlink(srcpath, dstpath, type, callback)
+    if (callback)
+        fs_delegate.symlink(srcpath, dstpath, type, callback.oncomplete)
+     else
+        fs_delegate.symlink(srcpath, dstpath, type)
+
 };
 
 /**
@@ -257,7 +325,11 @@ module.exports.symlink = function (srcpath, dstpath, type, callback) {
  * @return {string} Symbolic link contents (path to source).
  */
 module.exports.readlink = function (path, callback) {
-    return fs_delegate.readlink(path, callback)
+    if (callback)
+        return fs_delegate.readlink(path, callback.oncomplete)
+        else
+            return fs_delegate.readlink(path)
+            
 };
 
 /**
@@ -266,7 +338,11 @@ module.exports.readlink = function (path, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.unlink = function (path, callback) {
-     fs_delegate.unlink(path, callback)
+    if (callback)
+        fs_delegate.unlink(path, callback.oncomplete)
+        else
+            fs_delegate.unlink(path)
+            
 };
 
 /**
@@ -276,8 +352,11 @@ module.exports.unlink = function (path, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.chmod = function (path, mode, callback) {
-     fs_delegate.chmod(path, mode, callback)
-};
+    if (callback)
+        fs_delegate.chmod(path, mode, callback.oncomplete)
+        else
+            fs_delegate.chmod(path, mode)
+            };
 
 /**
  * Change permissions.
@@ -286,8 +365,11 @@ module.exports.chmod = function (path, mode, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.fchmod = function (fd, mode, callback) {
-     fs_delegate.fchmod(fd, mode, callback)
-};
+    if (callback)
+        fs_delegate.fchmod(fd, mode, callback.oncomplete)
+        else
+            fs_delegate.fchmod(fd, mode)
+            };
 
 /**
  * Change user and group owner.
@@ -297,8 +379,11 @@ module.exports.fchmod = function (fd, mode, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.chown = function (path, uid, gid, callback) {
-     fs_delegate.chown(path, uid, gid, callback)
-};
+    if (callback)
+        fs_delegate.chown(path, uid, gid, callback.oncomplete)
+        else
+            fs_delegate.chown(path, uid, gid)
+            };
 
 /**
  * Change user and group owner.
@@ -308,8 +393,11 @@ module.exports.chown = function (path, uid, gid, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.fchown = function (fd, uid, gid, callback) {
-     fs_delegate.fchown(fd, uid, gid, callback)
-};
+    if (callback)
+        fs_delegate.fchown(fd, uid, gid, callback.oncomplete)
+        else
+            fs_delegate.fchown(fd, uid, gid)
+            };
 
 /**
  * Update timestamps.
@@ -319,8 +407,11 @@ module.exports.fchown = function (fd, uid, gid, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.utimes = function (path, atime, mtime, callback) {
-     fs_delegate.utimes(path, atime, mtime, callback)
-};
+    if (callback)
+        fs_delegate.utimes(path, atime, mtime, callback.oncomplete)
+        else
+            fs_delegate.utimes(path, atime, mtime)
+            };
 
 /**
  * Update timestamps.
@@ -330,8 +421,11 @@ module.exports.utimes = function (path, atime, mtime, callback) {
  * @param {function(Error)} callback Optional callback.
  */
 module.exports.futimes = function (fd, atime, mtime, callback) {
-     fs_delegate.futimes(fd, atime, mtime, callback)
-};
+    if (callback)
+        fs_delegate.futimes(fd, atime, mtime, callback.oncomplete)
+        else
+            fs_delegate.futimes(fd, atime, mtime)
+            };
 
 /**
  * Synchronize in-core state with storage device.
@@ -349,4 +443,19 @@ module.exports.fsync = function (fd) {
  */
 module.exports.fdatasync = function (fd) {
      fs_delegate.fdatasync(fd)
+};
+
+// Used to speed up module loading.  Returns the contents of the file as
+// a string or undefined when the file cannot be opened.  The speedup
+// comes from not creating Error objects on failure.
+module.exports.internalModuleReadFile = function (path) {
+    
+    if (module.exports.internalModuleStat(path) === 0)
+    {
+       var contentBase64 = io.nodekit.fs.getContent({path: path});
+        var content = (new Buffer( contentBase64, 'base64')).toString();
+        return content;
+    }
+    else
+        return undefined;
 };

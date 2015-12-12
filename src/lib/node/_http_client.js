@@ -25,6 +25,7 @@ var url = require('url');
 var EventEmitter = require('events').EventEmitter;
 var HTTPParser = process.binding('http_parser').HTTPParser;
 var assert = require('assert').ok;
+var Buffer = require('buffer').Buffer;
 
 var common = require('_http_common');
 
@@ -257,13 +258,12 @@ function socketCloseListener() {
 
   if (parser) {
     parser.finish();
-    freeParser(parser, req);
+    freeParser(parser, req, socket);
   }
 }
 
 function socketErrorListener(err) {
   var socket = this;
-  var parser = socket.parser;
   var req = socket._httpMessage;
   debug('SOCKET ERROR:', err.message, err.stack);
 
@@ -274,10 +274,18 @@ function socketErrorListener(err) {
     req.socket._hadError = true;
   }
 
+  // Handle any pending data
+  socket.read();
+
+  var parser = socket.parser;
   if (parser) {
     parser.finish();
-    freeParser(parser, req);
+    freeParser(parser, req, socket);
   }
+
+  // Ensure that no further data will come out of the socket
+  socket.removeListener('data', socketOnData);
+  socket.removeListener('end', socketOnEnd);
   socket.destroy();
 }
 
@@ -294,7 +302,7 @@ function socketOnEnd() {
   }
   if (parser) {
     parser.finish();
-    freeParser(parser, req);
+    freeParser(parser, req, socket);
   }
   socket.destroy();
 }
@@ -309,7 +317,7 @@ function socketOnData(d) {
   var ret = parser.execute(d);
   if (ret instanceof Error) {
     debug('parse error');
-    freeParser(parser, req);
+    freeParser(parser, req, socket);
     socket.destroy();
     req.emit('error', ret);
     req.socket._hadError = true;
@@ -344,7 +352,7 @@ function socketOnData(d) {
       // Got Upgrade header or CONNECT method, but have no handler.
       socket.destroy();
     }
-    freeParser(parser, req);
+    freeParser(parser, req, socket);
   } else if (parser.incoming && parser.incoming.complete &&
              // When the status code is 100 (Continue), the server will
              // send a final response after this client sends a request
@@ -352,7 +360,7 @@ function socketOnData(d) {
              parser.incoming.statusCode !== 100) {
     socket.removeListener('data', socketOnData);
     socket.removeListener('end', socketOnEnd);
-    freeParser(parser, req);
+    freeParser(parser, req, socket);
   }
 }
 
@@ -363,7 +371,7 @@ function parserOnIncomingClient(res, shouldKeepAlive) {
   var req = socket._httpMessage;
 
 
-  // propogate "domain" setting...
+  // propagate "domain" setting...
   if (req.domain && !res.domain) {
     debug('setting "res.domain"');
     res.domain = req.domain;
@@ -466,7 +474,7 @@ function tickOnSocket(req, socket) {
   socket.parser = parser;
   socket._httpMessage = req;
 
-  // Setup "drain" propogation.
+  // Setup "drain" propagation.
   httpSocketSetup(socket);
 
   // Propagate headers limit from request object to parser

@@ -27,7 +27,9 @@ var crypto = require('crypto');
 var net = require('net');
 var tls = require('tls');
 var util = require('util');
+var listenerCount = require('events').listenerCount;
 var common = require('_tls_common');
+var constants = require('constants');
 
 var Timer = process.binding('timer_wrap').Timer;
 var tls_wrap = process.binding('tls_wrap');
@@ -131,7 +133,7 @@ function requestOCSP(self, hello, ctx, cb) {
   if (ctx.context)
     ctx = ctx.context;
 
-  if (self.server.listeners('OCSPRequest').length === 0) {
+  if (listenerCount(self.server, 'OCSPRequest') === 0) {
     return cb(null);
   } else {
     self.server.emit('OCSPRequest',
@@ -199,7 +201,10 @@ function onnewsession(key, session) {
   var once = false;
 
   this._newSessionPending = true;
-  this.server.emit('newSession', key, session, function() {
+  if (!this.server.emit('newSession', key, session, done))
+    done();
+
+  function done() {
     if (once)
       return;
     once = true;
@@ -210,7 +215,7 @@ function onnewsession(key, session) {
     if (self._securePending)
       self._finishInit();
     self._securePending = false;
-  });
+  }
 }
 
 
@@ -226,6 +231,7 @@ function onocspresponse(resp) {
 function TLSSocket(socket, options) {
   // Disallow wrapping TLSSocket in TLSSocket
   assert(!(socket instanceof TLSSocket));
+  var self = this;
 
   net.Socket.call(this, {
     handle: socket && socket._handle,
@@ -234,9 +240,14 @@ function TLSSocket(socket, options) {
     writable: false
   });
 
-  // To prevent assertion in afterConnect()
-  if (socket)
+  if (socket) {
+    this._parent = socket;
+    socket._destroy = function(exception) {
+      self._destroy(exception);
+    };
+    // To prevent assertion in afterConnect()
     this._connecting = socket._connecting;
+  }
 
   this._tlsOptions = options;
   this._secureEstablished = false;
@@ -311,9 +322,9 @@ TLSSocket.prototype._init = function(socket) {
     this.ssl.handshakes = 0;
 
     if (this.server &&
-        (this.server.listeners('resumeSession').length > 0 ||
-         this.server.listeners('newSession').length > 0 ||
-         this.server.listeners('OCSPRequest').length > 0)) {
+        (listenerCount(this.server, 'resumeSession') > 0 ||
+         listenerCount(this.server, 'newSession') > 0 ||
+         listenerCount(this.server, 'OCSPRequest') > 0)) {
       this.ssl.enableSessionCallbacks();
     }
   } else {
@@ -599,6 +610,7 @@ function Server(/* [options], listener */) {
     ca: self.ca,
     ciphers: self.ciphers,
     ecdhCurve: self.ecdhCurve,
+    dhparam: self.dhparam,
     secureProtocol: self.secureProtocol,
     secureOptions: self.secureOptions,
     honorCipherOrder: self.honorCipherOrder,
@@ -717,14 +729,24 @@ Server.prototype.setOptions = function(options) {
   if (options.ciphers) this.ciphers = options.ciphers;
   if (!util.isUndefined(options.ecdhCurve))
     this.ecdhCurve = options.ecdhCurve;
+  if (options.dhparam) this.dhparam = options.dhparam;
   if (options.sessionTimeout) this.sessionTimeout = options.sessionTimeout;
   if (options.ticketKeys) this.ticketKeys = options.ticketKeys;
-  var secureOptions = options.secureOptions || 0;
+
+  var secureOptions = common._getSecureOptions(options.secureProtocol,
+                                               options.secureOptions);
+
+  if (options.honorCipherOrder) {
+    secureOptions |= constants.SSL_OP_CIPHER_SERVER_PREFERENCE;
+  }
+
   if (options.honorCipherOrder)
     this.honorCipherOrder = true;
   else
     this.honorCipherOrder = false;
-  if (secureOptions) this.secureOptions = secureOptions;
+
+  this.secureOptions = secureOptions;
+
   if (options.NPNProtocols) tls.convertNPNProtocols(options.NPNProtocols, this);
   if (options.sessionIdContext) {
     this.sessionIdContext = options.sessionIdContext;
@@ -819,9 +841,16 @@ exports.connect = function(/* [port, host], options, cb */) {
 
   var defaults = {
     rejectUnauthorized: '0' !== process.env.NODE_TLS_REJECT_UNAUTHORIZED,
-    ciphers: tls.DEFAULT_CIPHERS
+    ciphers: tls.DEFAULT_CIPHERS,
+    checkServerIdentity: tls.checkServerIdentity
   };
+
   options = util._extend(defaults, options || {});
+
+  options.secureOptions = common._getSecureOptions(options.secureProtocol,
+                                                   options.secureOptions);
+
+  assert(typeof options.checkServerIdentity === 'function');
 
   var hostname = options.servername ||
                  options.host ||
@@ -909,7 +938,7 @@ exports.connect = function(/* [port, host], options, cb */) {
       // Verify that server's identity matches it's certificate's names
       if (!verifyError) {
         var cert = result.getPeerCertificate();
-        verifyError = tls.checkServerIdentity(hostname, cert);
+        verifyError = options.checkServerIdentity(hostname, cert);
       }
 
       if (verifyError) {

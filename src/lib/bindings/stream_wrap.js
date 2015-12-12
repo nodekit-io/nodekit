@@ -31,3 +31,5 @@ switch(process.platform) {
 }
 
 exports.Stream = _delegate.Stream;
+exports.ShutdownWrap = function ShutdownWrap(){};
+exports.WriteWrap = function WriteWrap(){};

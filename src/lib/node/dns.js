@@ -25,6 +25,9 @@ var util = require('util');
 var cares = process.binding('cares_wrap');
 var uv = process.binding('uv');
 
+var GetAddrInfoReqWrap = cares.GetAddrInfoReqWrap;
+var GetNameInfoReqWrap = cares.GetNameInfoReqWrap;
+
 var isIp = net.isIP;
 
 
@@ -38,7 +41,7 @@ function errnoException(err, syscall, hostname) {
   }
   var ex = null;
   if (typeof err === 'string') {  // c-ares error code.
-    ex = new Error(syscall + ' ' + err);
+    ex = new Error(syscall + ' ' + err + (hostname ? ' ' + hostname : ''));
     ex.code = err;
     ex.errno = err;
     ex.syscall = syscall;
@@ -102,10 +105,12 @@ function onlookup(err, addresses) {
 // lookup(hostname, [options,] callback)
 exports.lookup = function lookup(hostname, options, callback) {
   var hints = 0;
-  var family = 0;
+  var family = -1;
 
   // Parse arguments
-  if (typeof options === 'function') {
+  if (hostname && typeof hostname !== 'string') {
+    throw TypeError('invalid arguments: hostname must be a string or falsey');
+  } else if (typeof options === 'function') {
     callback = options;
     family = 0;
   } else if (typeof callback !== 'function') {
@@ -120,6 +125,8 @@ exports.lookup = function lookup(hostname, options, callback) {
         hints !== (exports.ADDRCONFIG | exports.V4MAPPED)) {
       throw new TypeError('invalid argument: hints must use valid flags');
     }
+  } else {
+    family = options >>> 0;
   }
 
   if (family !== 0 && family !== 4 && family !== 6)
@@ -138,12 +145,11 @@ exports.lookup = function lookup(hostname, options, callback) {
     return {};
   }
 
-  var req = {
-    callback: callback,
-    family: family,
-    hostname: hostname,
-    oncomplete: onlookup
-  };
+  var req = new GetAddrInfoReqWrap();
+  req.callback = callback;
+  req.family = family;
+  req.hostname = hostname;
+  req.oncomplete = onlookup;
 
   var err = cares.getaddrinfo(req, hostname, family, hints);
   if (err) {
@@ -174,12 +180,12 @@ exports.lookupService = function(host, port, callback) {
 
   callback = makeAsync(callback);
 
-  var req = {
-    callback: callback,
-    host: host,
-    port: port,
-    oncomplete: onlookupservice
-  };
+  var req = new GetNameInfoReqWrap();
+  req.callback = callback;
+  req.host = host;
+  req.port = port;
+  req.oncomplete = onlookupservice;
+
   var err = cares.getnameinfo(req, host, port);
   if (err) throw errnoException(err, 'getnameinfo', host);
 

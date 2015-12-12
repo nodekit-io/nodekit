@@ -35,6 +35,7 @@ try {
 }
 
 var constants = require('constants');
+
 var stream = require('stream');
 var util = require('util');
 
@@ -355,6 +356,19 @@ Verify.prototype.verify = function(object, signature, sigEncoding) {
   return this._handle.verify(toBuf(object), toBuf(signature, sigEncoding));
 };
 
+exports.publicEncrypt = function(options, buffer) {
+  var key = options.key || options;
+  var padding = options.padding || constants.RSA_PKCS1_OAEP_PADDING;
+  return binding.publicEncrypt(toBuf(key), buffer, padding);
+};
+
+exports.privateDecrypt = function(options, buffer) {
+  var key = options.key || options;
+  var passphrase = options.passphrase || null;
+  var padding = options.padding || constants.RSA_PKCS1_OAEP_PADDING;
+  return binding.privateDecrypt(toBuf(key), buffer, padding, passphrase);
+};
+
 
 
 exports.createDiffieHellman = exports.DiffieHellman = DiffieHellman;
@@ -362,6 +376,11 @@ exports.createDiffieHellman = exports.DiffieHellman = DiffieHellman;
 function DiffieHellman(sizeOrKey, keyEncoding, generator, genEncoding) {
   if (!(this instanceof DiffieHellman))
     return new DiffieHellman(sizeOrKey, keyEncoding, generator, genEncoding);
+
+  if (!util.isBuffer(sizeOrKey) &&
+      typeof sizeOrKey !== 'number' &&
+      typeof sizeOrKey !== 'string')
+    throw new TypeError('First argument should be number, string or Buffer');
 
   if (keyEncoding) {
     if (typeof keyEncoding !== 'string' ||
@@ -501,6 +520,53 @@ DiffieHellman.prototype.setPrivateKey = function(key, encoding) {
 };
 
 
+function ECDH(curve) {
+  if (!util.isString(curve))
+    throw new TypeError('curve should be a string');
+
+  this._handle = new binding.ECDH(curve);
+}
+
+exports.createECDH = function createECDH(curve) {
+  return new ECDH(curve);
+};
+
+ECDH.prototype.computeSecret = DiffieHellman.prototype.computeSecret;
+ECDH.prototype.setPrivateKey = DiffieHellman.prototype.setPrivateKey;
+ECDH.prototype.setPublicKey = DiffieHellman.prototype.setPublicKey;
+ECDH.prototype.getPrivateKey = DiffieHellman.prototype.getPrivateKey;
+
+ECDH.prototype.generateKeys = function generateKeys(encoding, format) {
+  this._handle.generateKeys();
+
+  return this.getPublicKey(encoding, format);
+};
+
+ECDH.prototype.getPublicKey = function getPublicKey(encoding, format) {
+  var f;
+  if (format) {
+    if (typeof format === 'number')
+      f = format;
+    if (format === 'compressed')
+      f = constants.POINT_CONVERSION_COMPRESSED;
+    else if (format === 'hybrid')
+      f = constants.POINT_CONVERSION_HYBRID;
+    // Default
+    else if (format === 'uncompressed')
+      f = constants.POINT_CONVERSION_UNCOMPRESSED;
+    else
+      throw TypeError('Bad format: ' + format);
+  } else {
+    f = constants.POINT_CONVERSION_UNCOMPRESSED;
+  }
+  var key = this._handle.getPublicKey(f);
+  encoding = encoding || exports.DEFAULT_ENCODING;
+  if (encoding && encoding !== 'buffer')
+    key = key.toString(encoding);
+  return key;
+};
+
+
 
 exports.pbkdf2 = function(password,
                           salt,
@@ -526,20 +592,22 @@ exports.pbkdf2Sync = function(password, salt, iterations, keylen, digest) {
 
 
 function pbkdf2(password, salt, iterations, keylen, digest, callback) {
+  var encoding = exports.DEFAULT_ENCODING;
+
+  function next(er, ret) {
+    if (ret)
+      ret = ret.toString(encoding);
+    callback(er, ret);
+  }
+
   password = toBuf(password);
   salt = toBuf(salt);
 
-  if (exports.DEFAULT_ENCODING === 'buffer')
+  if (encoding === 'buffer')
     return binding.PBKDF2(password, salt, iterations, keylen, digest, callback);
 
   // at this point, we need to handle encodings.
-  var encoding = exports.DEFAULT_ENCODING;
   if (callback) {
-    function next(er, ret) {
-      if (ret)
-        ret = ret.toString(encoding);
-      callback(er, ret);
-    }
     binding.PBKDF2(password, salt, iterations, keylen, digest, next);
   } else {
     var ret = binding.PBKDF2(password, salt, iterations, keylen, digest);

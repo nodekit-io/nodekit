@@ -20,11 +20,11 @@
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 var NativeModule = require('native_module');
-var util = NativeModule.require('util');
+var util = require('util');
 var runInThisContext = require('vm').runInThisContext;
 var runInNewContext = require('vm').runInNewContext;
 var assert = require('assert').ok;
-var fs = NativeModule.require('fs');
+var fs = require('fs');
 
 
 // If obj.hasOwnProperty has been overridden, then calling
@@ -61,7 +61,7 @@ Module.globalPaths = [];
 Module.wrapper = NativeModule.wrapper;
 Module.wrap = NativeModule.wrap;
 
-var path = NativeModule.require('path');
+var path = require('path');
 
 Module._debug = util.debuglog('module');
 
@@ -84,8 +84,7 @@ var debug = Module._debug;
 function statPath(path) {
   try {
     return fs.statSync(path);
-  } catch (ex) {
-  }
+  } catch (ex) {}
   return false;
 }
 
@@ -132,8 +131,7 @@ Module._realpathCache = {};
 // check if the file exists and is not a directory
 function tryFile(requestPath) {
   var stats = statPath(requestPath);
- 
-    if (stats && !stats.isDirectory()) {
+  if (stats && !stats.isDirectory()) {
     return fs.realpathSync(requestPath, Module._realpathCache);
   }
   return false;
@@ -345,7 +343,10 @@ Module._resolveFilename = function(request, parent) {
 
 // Given a file name, pass it to the proper extension handler.
 Module.prototype.load = function(filename) {
-    assert(!this.loaded);
+  debug('load ' + JSON.stringify(filename) +
+        ' for module ' + JSON.stringify(this.id));
+
+  assert(!this.loaded);
   this.filename = filename;
   this.paths = Module._nodeModulePaths(path.dirname(filename));
 
@@ -359,8 +360,8 @@ Module.prototype.load = function(filename) {
 // Loads a module at the given file path. Returns that module's
 // `exports` property.
 Module.prototype.require = function(path) {
-  assert(util.isString(path), 'path must be a string');
   assert(path, 'missing path');
+  assert(util.isString(path), 'path must be a string');
   return Module._load(path, this);
 };
 

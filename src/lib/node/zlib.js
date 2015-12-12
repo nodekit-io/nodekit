@@ -23,6 +23,7 @@ var Transform = require('_stream_transform');
 
 var binding = process.binding('zlib');
 var util = require('util');
+var Buffer = require('buffer').Buffer;
 var assert = require('assert').ok;
 
 // zlib doesn't provide these, so kludge them in following the same
@@ -47,9 +48,11 @@ binding.Z_MAX_LEVEL = 9;
 binding.Z_DEFAULT_LEVEL = binding.Z_DEFAULT_COMPRESSION;
 
 // expose all the zlib constants
-Object.keys(binding).forEach(function(k) {
-  if (k.match(/^Z/)) exports[k] = binding[k];
-});
+var bkeys = Object.keys(binding);
+for (var bk = 0; bk < bkeys.length; bk++) {
+  var bkey = bkeys[bk];
+  if (bkey.match(/^Z/)) exports[bkey] = binding[bkey];
+}
 
 // translation table for return codes.
 exports.codes = {
@@ -64,9 +67,11 @@ exports.codes = {
   Z_VERSION_ERROR: binding.Z_VERSION_ERROR
 };
 
-Object.keys(exports.codes).forEach(function(k) {
-  exports.codes[exports.codes[k]] = k;
-});
+var ckeys = Object.keys(exports.codes);
+for (var ck = 0; ck < ckeys.length; ck++) {
+  var ckey = ckeys[ck];
+  exports.codes[exports.codes[ckey]] = ckey;
+}
 
 exports.Deflate = Deflate;
 exports.Inflate = Inflate;

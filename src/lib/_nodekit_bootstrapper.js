@@ -28,14 +28,9 @@ var Startup = function Startup() {
     
     console.log = io.nodekit.console.log;
     
-    // save nextTick
-    var _nextTick = process.nextTick;
     
     // run vanilla node.js startup
     BootstrapModule.bootstrap('lib/node.js');
-    
-    // restore nextTick
-    process.nextTick = _nextTick;
     
     console.log = io.nodekit.console.log;
     console.warn = console.log;

@@ -27,6 +27,7 @@ var assert = require('assert');
 var util = require('util');
 
 var Process = process.binding('process_wrap').Process;
+var WriteWrap = process.binding('stream_wrap').WriteWrap;
 var uv = process.binding('uv');
 
 var spawn_sync; // Lazy-loaded process.binding('spawn_sync')
@@ -454,7 +455,8 @@ function setupChannel(target, channel) {
       var obj = handleConversion[message.type];
 
       // convert TCP object to native handle object
-      handle = handleConversion[message.type].send.apply(target, arguments);
+      handle =
+          handleConversion[message.type].send.call(target, message, handle);
 
       // If handle was sent twice, or it is impossible to get native handle
       // out of it - just send a text without the handle.
@@ -472,7 +474,8 @@ function setupChannel(target, channel) {
       return;
     }
 
-    var req = { oncomplete: nop };
+    var req = new WriteWrap();
+    req.oncomplete = nop;
     var string = JSON.stringify(message) + '\n';
     var err = channel.writeUtf8String(req, string, handle);
 
@@ -557,6 +560,8 @@ exports.fork = function(modulePath /*, args, options*/) {
   if (util.isArray(arguments[1])) {
     args = arguments[1];
     options = util._extend({}, arguments[2]);
+  } else if (arguments[1] && typeof arguments[1] !== 'object') {
+    throw new TypeError('Incorrect value of args option');
   } else {
     args = [];
     options = util._extend({}, arguments[1]);
@@ -581,6 +586,13 @@ exports._forkChild = function(fd) {
   // set process.send()
   var p = createPipe(true);
   p.open(fd);
+
+  // p.open() puts the file descriptor in non-blocking mode
+  // but it must be synchronous for backwards compatibility.
+  var err = p.setBlocking(true);
+  if (err)
+    throw errnoException(err, 'setBlocking');
+
   p.unref();
   setupChannel(process, p);
 
@@ -642,7 +654,7 @@ exports.exec = function(command /*, options, callback */) {
 
 
 exports.execFile = function(file /* args, options, callback */) {
-  var args, callback;
+  var args = [], callback;
   var options = {
     encoding: 'utf8',
     timeout: 0,
@@ -652,18 +664,26 @@ exports.execFile = function(file /* args, options, callback */) {
     env: null
   };
 
-  // Parse the parameters.
-
-  if (util.isFunction(arguments[arguments.length - 1])) {
-    callback = arguments[arguments.length - 1];
+  // Parse the optional positional parameters.
+  var pos = 1;
+  if (pos < arguments.length && Array.isArray(arguments[pos])) {
+    args = arguments[pos++];
+  } else if (pos < arguments.length && arguments[pos] == null) {
+    pos++;
   }
 
-  if (util.isArray(arguments[1])) {
-    args = arguments[1];
-    options = util._extend(options, arguments[2]);
-  } else {
-    args = [];
-    options = util._extend(options, arguments[1]);
+  if (pos < arguments.length && util.isObject(arguments[pos])) {
+    options = util._extend(options, arguments[pos++]);
+  } else if (pos < arguments.length && arguments[pos] == null) {
+    pos++;
+  }
+
+  if (pos < arguments.length && util.isFunction(arguments[pos])) {
+    callback = arguments[pos++];
+  }
+
+  if (pos === 1 && arguments.length > 1) {
+    throw new TypeError('Incorrect value of args option');
   }
 
   var child = spawn(file, args, {
@@ -929,28 +949,30 @@ function _validateStdio(stdio, sync) {
 }
 
 
-function normalizeSpawnArguments(/*file, args, options*/) {
+function normalizeSpawnArguments(file /*, args, options*/) {
   var args, options;
-
-  var file = arguments[0];
 
   if (Array.isArray(arguments[1])) {
     args = arguments[1].slice(0);
     options = arguments[2];
-  } else if (arguments[1] && !Array.isArray(arguments[1])) {
+  } else if (arguments[1] !== undefined && !util.isObject(arguments[1])) {
     throw new TypeError('Incorrect value of args option');
   } else {
     args = [];
     options = arguments[1];
   }
 
-  if (!options)
+  if (options === undefined)
     options = {};
+  else if (!util.isObject(options))
+    throw new TypeError('options argument must be an object');
 
+  options = util._extend({}, options);
   args.unshift(file);
 
-  var env = (options && options.env ? options.env : null) || process.env;
+  var env = options.env || process.env;
   var envPairs = [];
+
   for (var key in env) {
     envPairs.push(key + '=' + env[key]);
   }
@@ -968,24 +990,19 @@ function normalizeSpawnArguments(/*file, args, options*/) {
 
 var spawn = exports.spawn = function(/*file, args, options*/) {
   var opts = normalizeSpawnArguments.apply(null, arguments);
-
-  var file = opts.file;
-  var args = opts.args;
   var options = opts.options;
-  var envPairs = opts.envPairs;
-
   var child = new ChildProcess();
 
   child.spawn({
-    file: file,
-    args: args,
-    cwd: options ? options.cwd : null,
-    windowsVerbatimArguments: !!(options && options.windowsVerbatimArguments),
-    detached: !!(options && options.detached),
-    envPairs: envPairs,
-    stdio: options ? options.stdio : null,
-    uid: options ? options.uid : null,
-    gid: options ? options.gid : null
+    file: opts.file,
+    args: opts.args,
+    cwd: options.cwd,
+    windowsVerbatimArguments: !!options.windowsVerbatimArguments,
+    detached: !!options.detached,
+    envPairs: opts.envPairs,
+    stdio: options.stdio,
+    uid: options.uid,
+    gid: options.gid
   });
 
   return child;
@@ -1263,6 +1280,7 @@ function spawnSync(/*file, args, options*/) {
 
   options.file = opts.file;
   options.args = opts.args;
+  options.envPairs = opts.envPairs;
 
   if (options.killSignal)
     options.killSignal = lookupSignal(options.killSignal);
@@ -1339,7 +1357,7 @@ function checkExecSyncError(ret) {
 
 function execFileSync(/*command, options*/) {
   var opts = normalizeSpawnArguments.apply(null, arguments);
-  var inheritStderr = !!!opts.options.stdio;
+  var inheritStderr = !opts.options.stdio;
 
   var ret = spawnSync(opts.file, opts.args.slice(1), opts.options);
 
@@ -1358,7 +1376,7 @@ exports.execFileSync = execFileSync;
 
 function execSync(/*comand, options*/) {
   var opts = normalizeExecArgs.apply(null, arguments);
-  var inheritStderr = opts.options ? !!!opts.options.stdio : true;
+  var inheritStderr = opts.options ? !opts.options.stdio : true;
 
   var ret = spawnSync(opts.file, opts.args, opts.options);
   ret.cmd = opts.cmd;
