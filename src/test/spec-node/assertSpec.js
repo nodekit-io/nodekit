@@ -42,7 +42,7 @@ describe("The assert module", function() {
     try {
       assert.equal('1', '2');
     } catch(err) {
-      expect(err.message).toBe('"1" == "2"');
+      expect(err.message).toBe("'1' == '2'");
     }
   });
 
@@ -51,7 +51,7 @@ describe("The assert module", function() {
     try {
       assert.notEqual('1', '1');
     } catch(err) {
-      expect(err.message).toBe('"1" != "1"');
+      expect(err.message).toBe("'1' != '1'");
     }
   });
 });

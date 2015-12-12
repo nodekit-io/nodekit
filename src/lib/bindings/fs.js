@@ -62,7 +62,7 @@ module.exports.stat = function (path, callback) {
         process.nextTick(function(){
                          try {
         callback.oncomplete.call(callback, null, fs_delegate.stat(path));
-                         } catch (e) { callback(e); }
+                         } catch (e) { callback.oncomplete.call(callback, e); }
                          });
     
     else
@@ -83,7 +83,7 @@ module.exports.internalModuleStat = function (path, callback) {
         process.nextTick(function(){
                          try {
                          callback.call(callback, null, fs_delegate.internalModuleStat(path));
-                         } catch (e) { callback(e); }
+                         } catch (e) { callback.oncomplete.call(callback, e); }
                          });
     
     else

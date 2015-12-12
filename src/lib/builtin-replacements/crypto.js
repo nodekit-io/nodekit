@@ -1133,7 +1133,7 @@ module.exports = function(crypto) {
       try {
         result = pbkdf2Sync(password, salt, iterations, keylen, digest)
       } catch (e) {
-        return callback(e)
+        return callback.oncomplete.call(callback, e);
       }
 
       callback(undefined, result)
