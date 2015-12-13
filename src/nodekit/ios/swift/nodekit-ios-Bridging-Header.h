@@ -16,11 +16,10 @@
  * limitations under the License.
  */
 
+#import <JavaScriptCore/JavaScriptCore.h>
+#import "NKJavascriptBridge.h"
+#import "GCDAsyncSocket.h"
+#import "GCDAsyncUdpSocket.h"
 
 
-//require('test/index.js');
-
-//require('default/index.js');
-require('default/http.js');
-
-//require('demo/index.js');
+#define NSLog(FORMAT, ...) printf("%s\n", [[NSString stringWithFormat:FORMAT, ##__VA_ARGS__] UTF8String]);

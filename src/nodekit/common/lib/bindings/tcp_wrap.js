@@ -1,7 +1,5 @@
 /*
- * nodekit.io
- *
- * Copyright (c) 2015 Domabo. All Rights Reserved.
+ * Copyright 2015 Domabo; Portions Copyright 2014 Red Hat
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +14,21 @@
  * limitations under the License.
  */
 
+"use strict";
 
+var _delegate;
 
-//require('test/index.js');
+switch(process.platform) {
+    case 'darwin', 'ios':
+        _delegate = require('./_delegates/tcp/_darwin_tcp_wrap.js');
+        break;
+    case 'win32':
+        _delegate = require('./_delegates/tcp/_winrt_tcp_wrap.js');
+        break;
+    default:
+        _delegate = require('./_delegates/tcp/_browser_tcp_wrap.js');
+        break;
+}
 
-//require('default/index.js');
-require('default/http.js');
-
-//require('demo/index.js');
+exports.TCP = _delegate.TCP;
+exports.TCPConnectWrap = function TCPConnectWrap(){};

@@ -1,7 +1,5 @@
 /*
- * nodekit.io
- *
- * Copyright (c) 2015 Domabo. All Rights Reserved.
+ * Copyright 2015 Domabo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +14,18 @@
  * limitations under the License.
  */
 
+var _delegate;
 
+switch(process.platform) {
+    case 'darwin', 'ios':
+        _delegate = require('./_delegates/udp/_darwin_udp_wrap.js');
+        break;
+    case 'win32':
+        _delegate = require('./_delegates/udp/_winrt_udp_wrap.js');
+        break;
+    default:
+        _delegate = require('./_delegates/udp/_browser_udp.js');
+        break;
+}
 
-//require('test/index.js');
-
-//require('default/index.js');
-require('default/http.js');
-
-//require('demo/index.js');
+exports.UDP = _delegate.UDP;
