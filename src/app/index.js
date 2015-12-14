@@ -18,9 +18,9 @@
 
 
 
-//require('test/index.js');
+require('test/index.js');
 
 //require('default/index.js');
-require('default/http.js');
+//require('default/http.js');
 
 //require('demo/index.js');

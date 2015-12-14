@@ -26,29 +26,29 @@ internal class NKFileSystem: NSObject {
         return NSFileManager().fileExistsAtPath(path)
     }
     
-    class func getDirectoryAsync(module: String, completionHandler: nodeCallBack) {
+    class func getDirectoryAsync(module: String, completionHandler: NKNodeCallBack) {
         dispatch_async(NKGlobals.NKeventQueue,{
-            completionHandler(NSNull(), self.getDirectory(module))
+            completionHandler(error: NSNull(), value: self.getDirectory(module))
         });
     }
     
     class func getDirectory(module: String) -> NSArray {
-           let path=module; //self.getPath(module)
+        let path=module; //self.getPath(module)
         
-            let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) as NSArray!
-            return dirContents
+        let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) as NSArray!
+        return dirContents
     }
     
-    class func statAsync(module: String, completionHandler: nodeCallBack) {
+    class func statAsync(module: String, completionHandler: NKNodeCallBack) {
         
         let ret = self.stat(module)
         if (ret != nil)
         {
-            completionHandler(NSNull(), ret)
+            completionHandler(error: NSNull(), value: ret!)
             
         } else
         {
-            completionHandler("stat error", NSNull())
+            completionHandler(error: "stat error", value: NSNull())
         }
     }
     
@@ -60,7 +60,7 @@ internal class NKFileSystem: NSObject {
         let attr: NSDictionary!
         do
         {
-             attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
+            attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
             
         } catch _
         {
@@ -91,9 +91,9 @@ internal class NKFileSystem: NSObject {
         return storageItem
     }
     
-    class func getContentAsync(storageItem: NSDictionary! , completionHandler: nodeCallBack) {
+    class func getContentAsync(storageItem: NSDictionary! , completionHandler: NKNodeCallBack) {
         dispatch_async(NKGlobals.NKeventQueue, {
-            completionHandler(NSNull(), self.getContent(storageItem))
+            completionHandler(error: NSNull(), value: self.getContent(storageItem))
         });
     }
     
@@ -103,16 +103,16 @@ internal class NKFileSystem: NSObject {
         let path = storageItem["path"] as! NSString!;
         var data: NSData?
         do {
-          data = try NSData(contentsOfFile: path as String, options: NSDataReadingOptions(rawValue: 0))
+            data = try NSData(contentsOfFile: path as String, options: NSDataReadingOptions(rawValue: 0))
         }
         catch _ {
             return ""
         }
         
         var content: NSString!
-         content =  (data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)))
+        content =  (data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)))
         
-         return content!
+        return content!
     }
     
     
@@ -122,29 +122,30 @@ internal class NKFileSystem: NSObject {
         let data = NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions(rawValue:0))
         
         return data!.writeToFile(path as String, atomically: false)
-        }
+    }
     
-    class func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: nodeCallBack)  {
+    class func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: NKNodeCallBack)  {
         dispatch_async(NKGlobals.NKeventQueue, {
-            completionHandler(NSNull(), self.writeContent(storageItem, str: str))
+            
+            completionHandler(error: NSNull(), value: self.writeContent(storageItem, str: str))
         });
     }
-
-
-    class func getSource(module: String) -> NSString! {
+    
+    
+    class func getSource(module: String) -> String! {
         
         let path=getPath(module);
         
         if (path=="")
         {
-          return ""
+            return ""
         }
         
         let originalEncoding: UnsafeMutablePointer<UInt> = nil
         
-        var content: NSString?
+        var content: String?
         do {
-            content = try NSString(contentsOfFile: path, usedEncoding: originalEncoding)
+            content = try String(contentsOfFile: path, usedEncoding: originalEncoding)
         } catch _ {
             content = nil
         }
@@ -161,7 +162,7 @@ internal class NKFileSystem: NSObject {
         } catch _ {
             return false
         }
-
+        
     }
     
     class func rmdir (path: String) -> Bool {
@@ -173,10 +174,10 @@ internal class NKFileSystem: NSObject {
         } catch _ {
             return false
         }
-            
+        
         
     }
-
+    
     class func move (path: String, path2: String) -> Bool {
         
         
@@ -190,7 +191,7 @@ internal class NKFileSystem: NSObject {
     
     class func unlink (path: String) -> Bool {
         
-         do {
+        do {
             try NSFileManager.defaultManager().removeItemAtPath(path)
             return true
         } catch _ {
@@ -200,7 +201,7 @@ internal class NKFileSystem: NSObject {
         
     }
     
-   class func getPath(module: String) -> String {
+    class func getPath(module: String) -> String {
         
         let directory = (module as NSString).stringByDeletingLastPathComponent
         var fileName = (module as NSString).lastPathComponent
@@ -212,7 +213,7 @@ internal class NKFileSystem: NSObject {
         }
         
         let mainBundle : NSBundle = NSBundle.mainBundle()
-   //     var resourcePath:String! = mainBundle.resourcePath
+        //     var resourcePath:String! = mainBundle.resourcePath
         
         let path = mainBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
         
@@ -226,7 +227,7 @@ internal class NKFileSystem: NSObject {
         
     }
     
-    class func getFullPath(parentModule: String, module: String) -> NSString!{
+    class func getFullPath(parentModule: String, module: String) -> String!{
         
         if (parentModule != "")
         {

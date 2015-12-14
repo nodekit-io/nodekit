@@ -16,8 +16,6 @@
  * limitations under the License.
  */
 
-#import <JavaScriptCore/JavaScriptCore.h>
-#import "NKJavascriptBridge.h"
 #import "GCDAsyncSocket.h"
 #import "GCDAsyncUdpSocket.h"
 

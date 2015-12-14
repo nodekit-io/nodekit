@@ -2,7 +2,7 @@
     "name": "nodekit",
     "main": "index.js",
     "node-main": "",
-    "node-baseurl": "http://localhost:8000",
+    "node-baseurl": "http://localhost:8000/test",
     "node-splashtime": 2000,
     "description": "Default application",
     "author": "Domabo",

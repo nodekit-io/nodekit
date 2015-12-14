@@ -17,9 +17,9 @@
 "use strict";
 
 var _delegate;
-
 switch(process.platform) {
-    case 'darwin', 'ios':
+    case 'darwin':
+    case 'ios':
         _delegate = require('./_delegates/tcp/_darwin_tcp_wrap.js');
         break;
     case 'win32':

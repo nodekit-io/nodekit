@@ -22,12 +22,11 @@ start: function(options) {
          response.writeHead(200, {"Context-Type": "application/json"});
          var jasmineRunner = new JasmineRunner(request);
          jasmineRunner.loadConfig(options);
-         
          jasmineRunner.configureDefaultReporter({onComplete: function(passed) {
                                           response.end( request.getD3ReportAsString());
                                                                               } });
          
-      //   console.error = console.log;
+     //    console.error = console.log;
          jasmineRunner.execute();
             })
     .use('/test/jasmine', serveStatic(jasmineRoot))

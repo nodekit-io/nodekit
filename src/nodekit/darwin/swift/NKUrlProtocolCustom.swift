@@ -18,6 +18,7 @@
 
 import Foundation
 import Cocoa
+import JavaScriptCore
 
 class NKUrlProtocolCustom: NSURLProtocol {
     

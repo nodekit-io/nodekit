@@ -266,7 +266,7 @@ FileSystem.prototype.writeBufferAsync = function (file, buffer) {
  * @return {Promise<[]>} The array of item names (or error if not found or not a directory).
  */
 FileSystem.prototype.getDirList = function (filepath) {
-    var result =io.nodekit.fs.getDirectory(filepath);
+      var result =io.nodekit.fs.getDirectory(filepath);
     return result;
 };
 

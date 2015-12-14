@@ -6,8 +6,10 @@ module.exports = Jasmine;
 module.exports.JsonReporter = require('./jsonReporter');
 
 function Jasmine(container, options) {
+    
     options = options || {};
     var jasmineCore = require('jasmine-core');
+   
     this.jasmine = jasmineCore.boot(jasmineCore);
     this.projectBaseDir = options.projectBaseDir || path.dirname(module.parent.filename);
     this.specFiles = [];
@@ -67,13 +69,12 @@ Jasmine.prototype.loadSpecs = function() {
                            delete require.cache[file];
                            }
                            
-                        //   console.log(file);
                            require(file);
                            });
 };
 
 Jasmine.prototype.loadConfig = function(config) {
-    var specDir = config.spec_dir;
+     var specDir = config.spec_dir;
     var jasmineRunner = this;
     jasmineRunner.specDir = config.spec_dir;
     
@@ -89,7 +90,7 @@ Jasmine.prototype.loadConfig = function(config) {
     }
     
     if(config.spec_files) {
-        jasmineRunner.addSpecFiles(config.spec_files);
+         jasmineRunner.addSpecFiles(config.spec_files);
     }
 };
 
@@ -101,7 +102,7 @@ Jasmine.prototype.addSpecFiles = function(files) {
                   filePaths.forEach(function(filePath) {
                                     
                                     if(jasmineRunner.specFiles.indexOf(filePath) === -1) {
-                                    jasmineRunner.specFiles.push(filePath);
+                                     jasmineRunner.specFiles.push(filePath);
                                     }
                                     });
                   });

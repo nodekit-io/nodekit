@@ -17,6 +17,8 @@
 */
 
 import Cocoa
+import JavaScriptCore
+
 
 struct NKGlobals {
     static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
@@ -48,8 +50,8 @@ class NKNodekit {
             
         //    let nodeModulePath = (resourcePath as NSString).stringByAppendingPathComponent("/app/node_modules")
             
-            let nodeModulePathWeb = (resourcePath as NSString).stringByAppendingPathComponent("/app-shared")
-            let nodeModulePathWeb2 = (resourcePath as NSString).stringByAppendingPathComponent("/app-shared/node_modules")
+        //    let nodeModulePathWeb = (resourcePath as NSString).stringByAppendingPathComponent("/app-shared")
+     //       let nodeModulePathWeb2 = (resourcePath as NSString).stringByAppendingPathComponent("/app-shared/node_modules")
             
             let appModulePath = (appPath as NSString).stringByAppendingPathComponent("/node_modules")
             
@@ -62,7 +64,7 @@ class NKNodekit {
             {
                 NKJavascriptBridge.setWorkingDirectory(appPath)
                 
-                resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(appPath).stringByAppendingString(":").stringByAppendingString(nodeModulePathWeb).stringByAppendingString(":").stringByAppendingString(nodeModulePathWeb2).stringByAppendingString(":").stringByAppendingString(appModulePath)
+                resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(appPath).stringByAppendingString(":").stringByAppendingString(appModulePath)
             }
             else
             {
@@ -73,7 +75,7 @@ class NKNodekit {
                 }
                 NKJavascriptBridge.setWorkingDirectory(webPath)
                 
-                resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(webPath).stringByAppendingString(":").stringByAppendingString(nodeModulePathWeb).stringByAppendingString(":").stringByAppendingString(nodeModulePathWeb2).stringByAppendingString(":").stringByAppendingString(appModulePath)
+                resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(webPath).stringByAppendingString(":").stringByAppendingString(appModulePath)
                 
             }
         

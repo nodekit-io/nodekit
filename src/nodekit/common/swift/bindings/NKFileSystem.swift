@@ -16,7 +16,7 @@
 * limitations under the License.
 */
 
-import Cocoa
+import Foundation
 
 internal class NKFileSystem: NSObject {
     
@@ -24,9 +24,10 @@ internal class NKFileSystem: NSObject {
         return NSFileManager().fileExistsAtPath(path)
     }
     
-    class func getDirectoryAsync(module: String, completionHandler: nodeCallBack) {
+    class func getDirectoryAsync(module: String, completionHandler: NKNodeCallBack) {
+       
         dispatch_async(NKGlobals.NKeventQueue,{
-            completionHandler(NSNull(), self.getDirectory(module))
+            completionHandler(error: NSNull(), value: self.getDirectory(module))
         });
     }
     
@@ -34,19 +35,20 @@ internal class NKFileSystem: NSObject {
            let path=module; //self.getPath(module)
         
             let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) as NSArray!
+        
             return dirContents
     }
     
-    class func statAsync(module: String, completionHandler: nodeCallBack) {
+    class func statAsync(module: String, completionHandler: NKNodeCallBack) {
         
         let ret = self.stat(module)
         if (ret != nil)
         {
-            completionHandler(NSNull(), ret)
+            completionHandler(error: NSNull(), value: ret!)
             
         } else
         {
-            completionHandler("stat error", NSNull())
+            completionHandler(error: "stat error", value: NSNull())
         }
     }
     
@@ -89,9 +91,9 @@ internal class NKFileSystem: NSObject {
         return storageItem
     }
     
-    class func getContentAsync(storageItem: NSDictionary! , completionHandler: nodeCallBack) {
+    class func getContentAsync(storageItem: NSDictionary! , completionHandler: NKNodeCallBack) {
         dispatch_async(NKGlobals.NKeventQueue, {
-            completionHandler(NSNull(), self.getContent(storageItem))
+            completionHandler(error: NSNull(), value: self.getContent(storageItem))
         });
     }
     
@@ -122,14 +124,15 @@ internal class NKFileSystem: NSObject {
         return data!.writeToFile(path as String, atomically: false)
         }
     
-    class func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: nodeCallBack)  {
+    class func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: NKNodeCallBack)  {
         dispatch_async(NKGlobals.NKeventQueue, {
-            completionHandler(NSNull(), self.writeContent(storageItem, str: str))
+      
+            completionHandler(error: NSNull(), value: self.writeContent(storageItem, str: str))
         });
     }
 
 
-    class func getSource(module: String) -> NSString! {
+    class func getSource(module: String) -> String! {
         
         let path=getPath(module);
         
@@ -140,9 +143,9 @@ internal class NKFileSystem: NSObject {
         
         let originalEncoding: UnsafeMutablePointer<UInt> = nil
         
-        var content: NSString?
+        var content: String?
         do {
-            content = try NSString(contentsOfFile: path, usedEncoding: originalEncoding)
+            content = try String(contentsOfFile: path, usedEncoding: originalEncoding)
         } catch _ {
             content = nil
         }
@@ -224,7 +227,7 @@ internal class NKFileSystem: NSObject {
         
     }
     
-    class func getFullPath(parentModule: String, module: String) -> NSString!{
+    class func getFullPath(parentModule: String, module: String) -> String!{
         
         if (parentModule != "")
         {

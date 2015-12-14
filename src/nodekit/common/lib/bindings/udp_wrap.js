@@ -17,7 +17,8 @@
 var _delegate;
 
 switch(process.platform) {
-    case 'darwin', 'ios':
+    case 'darwin':
+    case 'ios':
         _delegate = require('./_delegates/udp/_darwin_udp_wrap.js');
         break;
     case 'win32':
