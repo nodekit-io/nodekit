@@ -76,7 +76,7 @@ class NKUrlFileDecode: NSObject {
             
             if ((resourcePath == nil) && (fileExtension.length > 0))
             {
-                resourcePath = _mainBundle.pathForResource(fileBase as String, ofType:fileExtension as String, inDirectory: ("app-shared" as NSString).stringByAppendingPathComponent(urlPath as String))
+                resourcePath = _mainBundle.pathForResource(fileBase as String, ofType:fileExtension as String, inDirectory: urlPath as String)
             }
             
             if ((resourcePath == nil) && (fileExtension.length == 0))

@@ -17,8 +17,16 @@ class NKJavascriptBridge: NSObject {
     
     
     class func attachToContext(context: JSContext) {
-        
-        let PLATFORM: String = "ios";  // or "darwin"
+
+        #if TARGET_OS_IPHONE
+            let PLATFORM: String = "ios";
+        #elseif TARGET_OS_MAC
+            let PLATFORM: String = "darwin";
+        #elseif TARGET_OS_WIN32
+            let PLATFORM: String = "win32";
+        #else
+            let PLATFORM: String = "darwin";
+        #endif
         
         bridgeContext = context
         
@@ -30,9 +38,9 @@ class NKJavascriptBridge: NSObject {
         
         let process: JSValue = JSValue(object: _process, inContext: context)
         
-    //    context.exceptionHandler = {(ctx: JSContext!, e: JSValue!) -> Void in
-   //         NSLog("Context exception thrown: %@; sourceURL: %@, stack: %@", e, e.valueForProperty("sourceURL"), e.valueForProperty("stack"))
-//}
+        context.exceptionHandler = {(ctx: JSContext!, e: JSValue!) -> Void in
+           NSLog("Context exception thrown: %@; sourceURL: %@, stack: %@", e, e.valueForProperty("sourceURL"), e.valueForProperty("stack"))
+        }
         
         context.setObject(process, forKeyedSubscript: "process")
         
