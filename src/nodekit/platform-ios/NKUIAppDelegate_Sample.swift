@@ -15,22 +15,23 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+/* Uncomment and use this file in application project
 
 import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
     
     var window: UIWindow?
-     var _nodekit : NKNodekit?
+    var _nodekit : NKNodekit?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
         window?.rootViewController = NKWKViewController();
         window?.makeKeyAndVisible()
-       
-       _nodekit = NKNodekit()
+        
+        _nodekit = NKNodekit()
         _nodekit!.run();
         return true
     }
@@ -59,3 +60,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
 }
+*/

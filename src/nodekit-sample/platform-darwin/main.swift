@@ -16,11 +16,13 @@
 * limitations under the License.
 */
 
-import Foundation
+import Cocoa
 
-typealias NKNodeCallBack = (error: AnyObject, value: AnyObject) -> Void
-typealias NKClosure = () -> Void
-typealias NKStringViewer = (msg: String, title: String) -> Void
-typealias NKUrlNavigator = (uri: String, title: String) -> Void
-typealias NKResizer = (width: Int, height: Int) -> Void
-typealias NKNodeEventEmit = (event: String, args: [AnyObject]) -> Void
+let app      = NSApplication.sharedApplication()
+let delegate = NKNSAppDelegate(app: app)
+app.delegate = delegate
+let menu = NKMenu(app: app)
+app.setActivationPolicy(.Regular)
+atexit_b { app.setActivationPolicy(.Prohibited); return }
+app.activateIgnoringOtherApps(true)
+app.run()

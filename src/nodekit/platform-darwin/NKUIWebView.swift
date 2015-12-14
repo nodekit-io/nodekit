@@ -19,98 +19,87 @@
 import Cocoa
 import WebKit
 
-var mainWindows:NSMutableArray? = nil
-var webview:WKWebView! = nil
-
-class NKWKWebView: NSObject, WKScriptMessageHandler {
+public class NKUIWebView: NSObject {
     
-    var mainWindow : NSWindow!
+    var mainWindow : NSWindow! = nil
     
-    init(urlAddress: NSString, title:NSString, width:CGFloat, height:CGFloat )
+    public init(urlAddress: NSString, title:NSString, width:CGFloat, height:CGFloat )
     {
-
         let windowRect : NSRect = (NSScreen.mainScreen()!).frame
-        
         let frameRect : NSRect = NSMakeRect(
             (NSWidth(windowRect) - width)/2,
             (NSHeight(windowRect) - height)/2,
             width, height)
         
         let viewRect : NSRect = NSMakeRect(0,0,width, height);
-        
+     
         mainWindow = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, `defer`: false, screen: NSScreen.mainScreen())
-        
         
         if (mainWindows == nil) {
             mainWindows = NSMutableArray()
         }
         
         mainWindows?.addObject(mainWindow)
+        let webview:WebView = WebView(frame: viewRect)
         
-        let config = WKWebViewConfiguration()
-        let webPrefs = WKPreferences()
+        super.init()
+        
+        let webPrefs : WebPreferences = WebPreferences.standardPreferences()
         
         webPrefs.javaEnabled = false
         webPrefs.plugInsEnabled = false
         webPrefs.javaScriptEnabled = true
         webPrefs.javaScriptCanOpenWindowsAutomatically = false
-        //   webPrefs.loadsImagesAutomatically = true
-        //   webPrefs.allowsAnimatedImages = true
-        //   webPrefs.allowsAnimatedImageLooping = true
-        //   webPrefs.shouldPrintBackgrounds = true
-        //   webPrefs.userStyleSheetEnabled = false
-        //   [webview setApplicationNameForUserAgent:appname];
-        //   [webview setDrawsBackground:false];
+        webPrefs.loadsImagesAutomatically = true
+        webPrefs.allowsAnimatedImages = true
+        webPrefs.allowsAnimatedImageLooping = true
+        webPrefs.shouldPrintBackgrounds = true
+        webPrefs.userStyleSheetEnabled = false
+   
+        webview.autoresizingMask = [NSAutoresizingMaskOptions.ViewWidthSizable, NSAutoresizingMaskOptions.ViewHeightSizable]
         
-        config.preferences = webPrefs
- 
-        
-        super.init()
-        
-        config.userContentController.addScriptMessageHandler(self,
-            name: "interOp");
-        
-        webview = WKWebView(frame: viewRect, configuration: config)
+        webview.applicationNameForUserAgent = "nodeKit"
+        webview.drawsBackground = false
+        webview.preferences = webPrefs
         
         mainWindow.makeKeyAndOrderFront(nil)
         mainWindow.contentView = webview
         mainWindow.title = title as String
-        webview.autoresizingMask = [NSAutoresizingMaskOptions.ViewWidthSizable, NSAutoresizingMaskOptions.ViewHeightSizable]
         
-         NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
-         NSURLProtocol.registerClass(NKUrlProtocolCustom)
+        NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
+        NSURLProtocol.registerClass(NKUrlProtocolCustom)
         
-        
-        NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
-            webview.loadHTMLString(msg!, baseURL: NSURL(string: "about:blank"))
+        NKJavascriptBridge.registerStringViewer( { (msg: String?, title: String?) -> () in
+          webview.mainFrame.loadHTMLString(msg, baseURL: NSURL(string: "about:blank"))
             return
-        })
-        
+        });
         
         NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
             let requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
             self.mainWindow.title = title!
-            webview.loadRequest(requestObj)
+            webview.mainFrame.loadRequest(requestObj)
             return
-        })
+        });
         
+   /*     NKJavascriptBridge.registerResizer ({ (width: NSNumber?, height: NSNumber?) -> () in
+            let widthCG = CGFloat(width!)
+            let heightCG = CGFloat(height!)
+            
+            let windowRect : NSRect = (NSScreen.mainScreen()!).frame
+            let frameRect : NSRect = NSMakeRect(
+                (NSWidth(windowRect) - widthCG)/2,
+                (NSHeight(windowRect) - heightCG)/2,
+                widthCG, heightCG)
+            
+            self.mainWindow.setFrame(frameRect, display: true,animate: true)
+                 return
+        });*/
+        
+          
         let url = NSURL(string: urlAddress as String)
         let requestObj: NSURLRequest = NSURLRequest(URL: url!)
-        webview.loadRequest(requestObj)
-
+        webview.mainFrame.loadRequest(requestObj)
     }
     
-    
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage)
-    {
-        print(message.description)
-    }
-    
-    func close()
-    {
-        mainWindow.close()
-    }
     
 }
-
-

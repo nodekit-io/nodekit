@@ -215,12 +215,20 @@ internal class NKFileSystem: NSObject {
         let mainBundle : NSBundle = NSBundle.mainBundle()
    //     var resourcePath:String! = mainBundle.resourcePath
         
-        let path = mainBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
+        var path = mainBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
         
         if (path == nil)
         {
+            let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodekit.self)
+            
+            path = _nodeKitBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
+            
+            if (path == nil)
+            {
+                
             NSLog("Error - source file not found: %@", directory + "/" + fileName + "." + fileExtension)
             return ""
+            }
         }
         
         return path!;

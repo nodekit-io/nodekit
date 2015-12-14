@@ -33,6 +33,8 @@ class NKUrlFileDecode: NSObject {
         resourcePath = nil;
         
         let _mainBundle: NSBundle = NSBundle.mainBundle()
+        let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodekit.self)
+        
         let _appPath : NSString = (_mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
         let _fileManager : NSFileManager = NSFileManager.defaultManager()
         var _fileTypes: [NSString : NSString] = ["html": "text/html" ,
@@ -69,7 +71,7 @@ class NKUrlFileDecode: NSObject {
                 resourcePath = nil;
             }
             
-            if ((resourcePath == nil) && (fileExtension.length > 0))
+              if ((resourcePath == nil) && (fileExtension.length > 0))
             {
                 resourcePath = _mainBundle.pathForResource(fileBase as String, ofType:fileExtension as String, inDirectory: ("app" as NSString).stringByAppendingPathComponent(urlPath as String))
             }
@@ -89,6 +91,15 @@ class NKUrlFileDecode: NSObject {
                 resourcePath = _mainBundle.pathForResource("index", ofType:"html", inDirectory: ("app" as NSString).stringByAppendingPathComponent(urlPath as String))
             }
             
+            if ((resourcePath == nil)  && (fileExtension.length > 0))
+            {
+                resourcePath = _nodeKitBundle.pathForResource(fileBase as String, ofType:fileExtension as String, inDirectory: urlPath as String)
+            }
+            
+            if ((resourcePath == nil)  && (fileExtension.length == 0))
+            {
+                resourcePath = _nodeKitBundle.pathForResource(fileBase as String, ofType:"html", inDirectory: urlPath as String)
+            }
             
             mimeType = _fileTypes[fileExtension]
             

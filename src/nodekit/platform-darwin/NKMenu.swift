@@ -18,14 +18,14 @@
 
 import Cocoa
 
-class NKMenu {
+public class NKMenu {
     var app: NSApplication
-    init(app: NSApplication) {
+    public init(app: NSApplication) {
         self.app = app
         setup()
     }
     
-    func setup () {
+    public func setup () {
         let mainMenu = NSMenu(title: "AMainMenu")
         for (title, items) in tree() {
             let item = mainMenu.addItemWithTitle(title, action: nil, keyEquivalent:"")
@@ -36,7 +36,7 @@ class NKMenu {
         self.app.menu = mainMenu
     }
     
-    func tree() -> Dictionary<String, [NSMenuItem]>{
+    public func tree() -> Dictionary<String, [NSMenuItem]>{
         return [
             "Edit": [
                 NSMenuItem(title: "Copy", action: nil, keyEquivalent:"c"),

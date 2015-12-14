@@ -23,16 +23,16 @@ struct NKGlobals {
     static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
 }
 
-class NKNodekit {
+public class NKNodekit {
     
-    init()
+    public init()
     {
         self.context = nil;
     }
     
     var context : JSContext?;
     
-    func run() {
+    public func run() {
         
      NKJSContextFactory.createRegularContext( { (context: JSContext!) -> () in
             
@@ -40,12 +40,15 @@ class NKNodekit {
             self.context = context;
             let fileManager = NSFileManager.defaultManager()
             let mainBundle : NSBundle = NSBundle.mainBundle()
-            
+            let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodekit.self)
+        
             let appPath = (mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
             
             let resourcePath:String! = mainBundle.resourcePath
+            let nodekitPath:String! = _nodeKitBundle.resourcePath
+        
             let webPath = (resourcePath as NSString).stringByAppendingPathComponent("/app")
-            
+        
         //    let nodeModulePath = (resourcePath as NSString).stringByAppendingPathComponent("/app/node_modules")
             
            let appModulePath = (appPath as NSString).stringByAppendingPathComponent("/node_modules")
@@ -54,12 +57,12 @@ class NKNodekit {
             let embeddedPackage = (webPath as NSString).stringByAppendingPathComponent("/package.json")
             
             var resPaths : NSString
-            
+        
             if (fileManager.fileExistsAtPath(externalPackage))
             {
                 NKJavascriptBridge.setWorkingDirectory(appPath)
                 
-                resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(appPath).stringByAppendingString(":").stringByAppendingString(appModulePath)
+                resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(appPath).stringByAppendingString(":").stringByAppendingString(appModulePath).stringByAppendingString(":").stringByAppendingString(nodekitPath)
             }
             else
             {
@@ -70,13 +73,13 @@ class NKNodekit {
                 }
                 NKJavascriptBridge.setWorkingDirectory(webPath)
                 
-                resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(webPath).stringByAppendingString(":").stringByAppendingString(":").stringByAppendingString(appModulePath)
+                resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(webPath).stringByAppendingString(":").stringByAppendingString(appModulePath).stringByAppendingString(":").stringByAppendingString(nodekitPath)
                 
             }
         
             NKJavascriptBridge.setNodePaths(resPaths as String)
       
-            let url = mainBundle.pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
+            let url = _nodeKitBundle.pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
             
             let bootstrapper = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding);
         

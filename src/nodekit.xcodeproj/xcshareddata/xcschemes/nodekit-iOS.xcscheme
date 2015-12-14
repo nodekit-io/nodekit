@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E409C9AB1C1DEA9100DFB5E8"
-               BuildableName = "nodekit.app"
-               BlueprintName = "nodekit-mac"
+               BlueprintIdentifier = "E488A0921C1F73170041DFCF"
+               BuildableName = "nodekit.framework"
+               BlueprintName = "nodekit-iOS"
                ReferencedContainer = "container:nodekit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,15 +29,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E409C9AB1C1DEA9100DFB5E8"
-            BuildableName = "nodekit.app"
-            BlueprintName = "nodekit-mac"
-            ReferencedContainer = "container:nodekit.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>
@@ -51,16 +42,15 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E409C9AB1C1DEA9100DFB5E8"
-            BuildableName = "nodekit.app"
-            BlueprintName = "nodekit-mac"
+            BlueprintIdentifier = "E488A0921C1F73170041DFCF"
+            BuildableName = "nodekit.framework"
+            BlueprintName = "nodekit-iOS"
             ReferencedContainer = "container:nodekit.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
@@ -70,16 +60,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "E409C9AB1C1DEA9100DFB5E8"
-            BuildableName = "nodekit.app"
-            BlueprintName = "nodekit-mac"
+            BlueprintIdentifier = "E488A0921C1F73170041DFCF"
+            BuildableName = "nodekit.framework"
+            BlueprintName = "nodekit-iOS"
             ReferencedContainer = "container:nodekit.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
