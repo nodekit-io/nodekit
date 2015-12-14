@@ -30,9 +30,9 @@ class NKJavascriptBridge: NSObject {
         
         let process: JSValue = JSValue(object: _process, inContext: context)
         
-        context.exceptionHandler = {(ctx: JSContext!, e: JSValue!) -> Void in
-            NSLog("Context exception thrown: %@; sourceURL: %@, stack: %@", e, e.valueForProperty("sourceURL"), e.valueForProperty("stack"))
-        }
+    //    context.exceptionHandler = {(ctx: JSContext!, e: JSValue!) -> Void in
+   //         NSLog("Context exception thrown: %@; sourceURL: %@, stack: %@", e, e.valueForProperty("sourceURL"), e.valueForProperty("stack"))
+//}
         
         context.setObject(process, forKeyedSubscript: "process")
         

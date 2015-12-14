@@ -23,7 +23,7 @@
 		E409CA021C1DF31100DFB5E8 /* NKUrlFileDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = E409C9F81C1DF31100DFB5E8 /* NKUrlFileDecode.swift */; };
 		E409CA101C1DF3DA00DFB5E8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E409CA0E1C1DF3DA00DFB5E8 /* Assets.xcassets */; };
 		E409CA111C1DF3DA00DFB5E8 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = E409CA0F1C1DF3DA00DFB5E8 /* Info.plist */; };
-		E409CA161C1DF3F500DFB5E8 /* NodeKitMac.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = E409CA131C1DF3F500DFB5E8 /* NodeKitMac.entitlements */; };
+		E409CA161C1DF3F500DFB5E8 /* nodekit-mac.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = E409CA131C1DF3F500DFB5E8 /* nodekit-mac.entitlements */; };
 		E409CA171C1DF3F500DFB5E8 /* NodeKitIcons.icns in Resources */ = {isa = PBXBuildFile; fileRef = E409CA141C1DF3F500DFB5E8 /* NodeKitIcons.icns */; };
 		E409CA2D1C1DF42100DFB5E8 /* NKUrlProtocolLocalFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E409CA231C1DF42100DFB5E8 /* NKUrlProtocolLocalFile.swift */; };
 		E409CA2E1C1DF42100DFB5E8 /* NKWKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E409CA241C1DF42100DFB5E8 /* NKWKWebView.swift */; };
@@ -73,7 +73,7 @@
 		E409CA0E1C1DF3DA00DFB5E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = nodekit/ios/Assets.xcassets; sourceTree = "<group>"; };
 		E409CA0F1C1DF3DA00DFB5E8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = nodekit/ios/Info.plist; sourceTree = "<group>"; };
 		E409CA121C1DF3F500DFB5E8 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = nodekit/darwin/Info.plist; sourceTree = "<group>"; };
-		E409CA131C1DF3F500DFB5E8 /* NodeKitMac.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = NodeKitMac.entitlements; path = nodekit/darwin/NodeKitMac.entitlements; sourceTree = "<group>"; };
+		E409CA131C1DF3F500DFB5E8 /* nodekit-mac.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "nodekit-mac.entitlements"; path = "nodekit/darwin/nodekit-mac.entitlements"; sourceTree = "<group>"; };
 		E409CA141C1DF3F500DFB5E8 /* NodeKitIcons.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = NodeKitIcons.icns; path = nodekit/darwin/NodeKitIcons.icns; sourceTree = "<group>"; };
 		E409CA231C1DF42100DFB5E8 /* NKUrlProtocolLocalFile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUrlProtocolLocalFile.swift; path = nodekit/darwin/swift/NKUrlProtocolLocalFile.swift; sourceTree = "<group>"; };
 		E409CA241C1DF42100DFB5E8 /* NKWKWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKWKWebView.swift; path = nodekit/darwin/swift/NKWKWebView.swift; sourceTree = "<group>"; };
@@ -163,7 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				E409CA121C1DF3F500DFB5E8 /* Info.plist */,
-				E409CA131C1DF3F500DFB5E8 /* NodeKitMac.entitlements */,
+				E409CA131C1DF3F500DFB5E8 /* nodekit-mac.entitlements */,
 				E409CA141C1DF3F500DFB5E8 /* NodeKitIcons.icns */,
 				E409C9CC1C1DF18400DFB5E8 /* swift */,
 			);
@@ -341,7 +341,7 @@
 			files = (
 				E409C9E11C1DF2CB00DFB5E8 /* splash in Resources */,
 				E409CA761C1E5C2C00DFB5E8 /* test in Resources */,
-				E409CA161C1DF3F500DFB5E8 /* NodeKitMac.entitlements in Resources */,
+				E409CA161C1DF3F500DFB5E8 /* nodekit-mac.entitlements in Resources */,
 				E409CA5B1C1DFB4500DFB5E8 /* lib in Resources */,
 				E409C9D51C1DF1FC00DFB5E8 /* app in Resources */,
 				E409C9D41C1DF1F700DFB5E8 /* default in Resources */,
@@ -516,6 +516,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "nodekit/darwin/nodekit-mac.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = nodekit/darwin/Info.plist;
@@ -534,6 +535,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "nodekit/darwin/nodekit-mac.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = nodekit/darwin/Info.plist;
