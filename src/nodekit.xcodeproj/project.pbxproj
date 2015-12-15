@@ -112,8 +112,8 @@
 		E488A07D1C1F70AC0041DFCF /* NKWKViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKWKViewController.swift; path = "nodekit/platform-ios/NKWKViewController.swift"; sourceTree = "<group>"; };
 		E488A07E1C1F70AC0041DFCF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit/platform-ios/Info.plist"; sourceTree = "<group>"; };
 		E488A0831C1F715D0041DFCF /* lib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = lib; path = nodekit/common/lib; sourceTree = "<group>"; };
-		E488A0931C1F73170041DFCF /* nodekit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = nodekit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E488A0A01C1F736E0041DFCF /* nodekit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = nodekit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E488A0931C1F73170041DFCF /* NodeKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NodeKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E488A0A01C1F736E0041DFCF /* NodeKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NodeKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E488A0AC1C1F74250041DFCF /* nodekit-sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nodekit-sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E488A0D71C1F761F0041DFCF /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; name = app; path = "nodekit-sample/app"; sourceTree = "<group>"; };
 		E488A0E11C1F76510041DFCF /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = "nodekit-sample/platform-darwin/main.swift"; sourceTree = "<group>"; };
@@ -181,8 +181,8 @@
 		E41181481C1F24B4004F97D6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E488A0931C1F73170041DFCF /* nodekit.framework */,
-				E488A0A01C1F736E0041DFCF /* nodekit.framework */,
+				E488A0931C1F73170041DFCF /* NodeKit.framework */,
+				E488A0A01C1F736E0041DFCF /* NodeKit.framework */,
 				E488A0AC1C1F74250041DFCF /* nodekit-sample.app */,
 				E4AD89C41C1F828A0043F630 /* nodekit-sample.app */,
 			);
@@ -364,7 +364,7 @@
 			);
 			name = "nodekit-iOS";
 			productName = "nodekit-iOS";
-			productReference = E488A0931C1F73170041DFCF /* nodekit.framework */;
+			productReference = E488A0931C1F73170041DFCF /* NodeKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		E488A09F1C1F736E0041DFCF /* nodekit-Mac */ = {
@@ -382,7 +382,7 @@
 			);
 			name = "nodekit-Mac";
 			productName = "nodekit-Mac";
-			productReference = E488A0A01C1F736E0041DFCF /* nodekit.framework */;
+			productReference = E488A0A01C1F736E0041DFCF /* NodeKit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		E488A0AB1C1F74250041DFCF /* nodekit-sample-iOS */ = {
@@ -706,8 +706,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/nodekit/platform-ios/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.nodekit;
-				PRODUCT_NAME = nodekit;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
+				PRODUCT_NAME = NodeKit;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -724,8 +724,8 @@
 				INFOPLIST_FILE = "$(SRCROOT)/nodekit/platform-ios/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.nodekit;
-				PRODUCT_NAME = nodekit;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
+				PRODUCT_NAME = NodeKit;
 				SKIP_INSTALL = YES;
 			};
 			name = Release;
@@ -745,8 +745,8 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.nodekit;
-				PRODUCT_NAME = nodekit;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
+				PRODUCT_NAME = NodeKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -768,8 +768,8 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.nodekit;
-				PRODUCT_NAME = nodekit;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
+				PRODUCT_NAME = NodeKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 			};
@@ -880,6 +880,7 @@
 				E4AD89D01C1F828B0043F630 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
