@@ -706,7 +706,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/nodekit/platform-ios/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit.iOS;
 				PRODUCT_NAME = NodeKit;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "NodeKit-ios-Swift.h";
@@ -725,7 +725,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/nodekit/platform-ios/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit.iOS;
 				PRODUCT_NAME = NodeKit;
 				SKIP_INSTALL = YES;
 				SWIFT_OBJC_INTERFACE_HEADER_NAME = "NodeKit-ios-Swift.h";
@@ -747,7 +747,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit.Mac;
 				PRODUCT_NAME = NodeKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
@@ -771,7 +771,7 @@
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
-				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
+				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit.Mac;
 				PRODUCT_NAME = NodeKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
