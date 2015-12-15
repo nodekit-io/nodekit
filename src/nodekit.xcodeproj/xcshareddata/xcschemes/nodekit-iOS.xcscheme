@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E488A0921C1F73170041DFCF"
-               BuildableName = "nodekit.framework"
+               BuildableName = "NodeKit.framework"
                BlueprintName = "nodekit-iOS"
                ReferencedContainer = "container:nodekit.xcodeproj">
             </BuildableReference>
@@ -46,7 +46,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E488A0921C1F73170041DFCF"
-            BuildableName = "nodekit.framework"
+            BuildableName = "NodeKit.framework"
             BlueprintName = "nodekit-iOS"
             ReferencedContainer = "container:nodekit.xcodeproj">
          </BuildableReference>
@@ -64,7 +64,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E488A0921C1F73170041DFCF"
-            BuildableName = "nodekit.framework"
+            BuildableName = "NodeKit.framework"
             BlueprintName = "nodekit-iOS"
             ReferencedContainer = "container:nodekit.xcodeproj">
          </BuildableReference>

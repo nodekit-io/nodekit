@@ -26,7 +26,7 @@ public class NKNSAppDelegate: NSObject, NSApplicationDelegate {
     
     let app: NSApplication
     
-    init(app: NSApplication) {
+    public init(app: NSApplication) {
         self.app = app
         _nodekit = NKNodekit();
     }
