@@ -19,12 +19,11 @@
 import UIKit
 import Foundation
 import WebKit
-class NKWKViewController: UIViewController, WKScriptMessageHandler {
-    
+public class NKWKViewController: UIViewController, WKScriptMessageHandler {
     
     private var webView: WKWebView?
     
-    override func loadView() {
+    override public func loadView() {
        let config = WKWebViewConfiguration()
        let webPrefs = WKPreferences();
         
@@ -78,7 +77,7 @@ class NKWKViewController: UIViewController, WKScriptMessageHandler {
         
     }
     
-    override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor(netHex: 0xFFCE54)
@@ -86,12 +85,12 @@ class NKWKViewController: UIViewController, WKScriptMessageHandler {
         // Do any additional setup after loading the view, typically from a nib.
     }
     
-    override func didReceiveMemoryWarning() {
+    override public func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage)
+  public  func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage)
     {
         print(message.description)
     }
