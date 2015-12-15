@@ -27,9 +27,16 @@ import WebKit
        let config = WKWebViewConfiguration()
        let webPrefs = WKPreferences();
         
-       let urlpath = NSBundle.mainBundle().pathForResource("StartupSplash", ofType: "html", inDirectory: "splash/views/")
-       let url = NSURL.fileURLWithPath(urlpath!)
-        print(url);
+       var urlpath = NSBundle.mainBundle().pathForResource("StartupSplash", ofType: "html", inDirectory: "splash/views/")
+        
+        if (urlpath == nil)
+        {
+              urlpath = NSBundle(forClass: NKNodeKit.self).pathForResource("StartupSplash", ofType: "html", inDirectory: "splash/views/")
+        }
+        
+        
+        let url = NSURL.fileURLWithPath(urlpath!)
+        
         
         webPrefs.javaScriptEnabled = true
         webPrefs.javaScriptCanOpenWindowsAutomatically = false
