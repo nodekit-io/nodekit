@@ -16,13 +16,7 @@
 * limitations under the License.
 */
 
-import Cocoa
+/* Uncomment the following import if using in a standalone project with NodeKit as a framework */
+// import NodeKit
 
-let app      = NSApplication.sharedApplication()
-let delegate = NKNSAppDelegate(app: app)
-app.delegate = delegate
-let menu = NKMenu(app: app)
-app.setActivationPolicy(.Regular)
-atexit_b { app.setActivationPolicy(.Prohibited); return }
-app.activateIgnoringOtherApps(true)
-app.run()
+NKNodeKit.start();

@@ -33,7 +33,7 @@ class NKUrlFileDecode: NSObject {
         resourcePath = nil;
         
         let _mainBundle: NSBundle = NSBundle.mainBundle()
-        let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodekit.self)
+        let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
         
         let _appPath : NSString = (_mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
         let _fileManager : NSFileManager = NSFileManager.defaultManager()

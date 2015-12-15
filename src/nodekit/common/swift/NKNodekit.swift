@@ -15,7 +15,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
 import Foundation
 import JavaScriptCore
 
@@ -23,7 +22,7 @@ struct NKGlobals {
     static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
 }
 
-public class NKNodekit {
+public class NKNodeKit {
     
     public init()
     {
@@ -31,6 +30,14 @@ public class NKNodekit {
     }
     
     var context : JSContext?;
+    
+    public class func start() {
+       #if os(iOS)
+            NKMainMobile.start()
+        #elseif os(OSX)
+            NKMainDesktop.start()
+        #endif
+    }
     
     public func run() {
         
@@ -40,7 +47,7 @@ public class NKNodekit {
             self.context = context;
             let fileManager = NSFileManager.defaultManager()
             let mainBundle : NSBundle = NSBundle.mainBundle()
-            let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodekit.self)
+            let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
         
             let appPath = (mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
             
@@ -69,6 +76,7 @@ public class NKNodekit {
                 if (!fileManager.fileExistsAtPath(embeddedPackage))
                 {
                     print("Missing package.json in main bundle /Resources/app");
+                    print(resourcePath);
                     return;
                 }
                 NKJavascriptBridge.setWorkingDirectory(webPath)

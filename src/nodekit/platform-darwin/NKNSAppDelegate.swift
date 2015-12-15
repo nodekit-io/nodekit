@@ -18,44 +18,29 @@
 
 import Cocoa
 
-public class NKNSAppDelegate: NSObject, NSApplicationDelegate {
+class NKNSAppDelegate: NSObject, NSApplicationDelegate {
     
     var mainWindowView = NKUIWebView(urlAddress: "http://internal/splash/views/StartupSplash.html", title: "", width: 800, height: 600)
     
-    var _nodekit : NKNodekit;
+    var _nodekit : NKNodeKit;
     
     let app: NSApplication
     
-    public init(app: NSApplication) {
+    init(app: NSApplication) {
         self.app = app
-        _nodekit = NKNodekit();
+        _nodekit = NKNodeKit();
     }
     
-    public func applicationDidFinishLaunching(aNotification: NSNotification) {
+    func applicationDidFinishLaunching(aNotification: NSNotification) {
         _nodekit.run()
     }
     
-    public func applicationWillTerminate(aNotification: NSNotification) {
+    func applicationWillTerminate(aNotification: NSNotification) {
         print("EXIT")
     }
     
-    public func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
+    func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true
     }
     
 }
-
-/* Include the following in main.swift to call the above 
-
-import Cocoa
-
-let app      = NSApplication.sharedApplication()
-let delegate = NKNSAppDelegate(app: app)
-app.delegate = delegate
-let menu = NKMenu(app: app)
-app.setActivationPolicy(.Regular)
-atexit_b { app.setActivationPolicy(.Prohibited); return }
-app.activateIgnoringOtherApps(true)
-app.run()
-
-*/

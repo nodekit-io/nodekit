@@ -4,13 +4,13 @@
     "node-main": "",
     "node-baseurl": "http://localhost:8000/test",
     "node-splashtime": 2000,
-    "description": "Sample application",
+    "description": "Default NodeKit application",
     "author": "Domabo",
     "version": "0.5.0",
     "repository": "https://github.com/nodekit-io/nodekit",
     "dependencies": {   }  ,
      "window": {
-        "title": "Sample Application",
+        "title": "Default NodeKit Application",
         "width": 1024,
         "height": 600
     }

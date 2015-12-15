@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		E488A0D81C1F761F0041DFCF /* app in Resources */ = {isa = PBXBuildFile; fileRef = E488A0D71C1F761F0041DFCF /* app */; };
 		E488A0F91C1F76A40041DFCF /* test in Resources */ = {isa = PBXBuildFile; fileRef = E488A0F81C1F76A40041DFCF /* test */; };
-		E488A0FD1C1F76F30041DFCF /* splash in Resources */ = {isa = PBXBuildFile; fileRef = E488A0FB1C1F76F30041DFCF /* splash */; };
-		E488A0FF1C1F76F30041DFCF /* default in Resources */ = {isa = PBXBuildFile; fileRef = E488A0FC1C1F76F30041DFCF /* default */; };
 		E488A1011C1F771D0041DFCF /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E488A0831C1F715D0041DFCF /* lib */; };
 		E488A1021C1F771D0041DFCF /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E488A0831C1F715D0041DFCF /* lib */; };
 		E488A1031C1F772D0041DFCF /* NKJavaScriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A0581C1F70650041DFCF /* NKJavaScriptBridge.swift */; };
@@ -39,7 +37,6 @@
 		E488A1261C1F77420041DFCF /* NKWKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A0761C1F70970041DFCF /* NKWKWebView.swift */; };
 		E488A1281C1F77460041DFCF /* NKWKViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A07D1C1F70AC0041DFCF /* NKWKViewController.swift */; };
 		E488A12E1C1F78890041DFCF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E488A12B1C1F78890041DFCF /* Assets.xcassets */; };
-		E488A12F1C1F78890041DFCF /* NKUIAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A12C1C1F78890041DFCF /* NKUIAppDelegate.swift */; };
 		E488A1321C1F78FB0041DFCF /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = E488A1311C1F78FB0041DFCF /* Launch Screen.storyboard */; };
 		E488A1331C1F7B510041DFCF /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E488A0831C1F715D0041DFCF /* lib */; };
 		E488A1351C1F7B5E0041DFCF /* NKJavaScriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A0581C1F70650041DFCF /* NKJavaScriptBridge.swift */; };
@@ -83,15 +80,30 @@
 		E4AD89E31C1F83330043F630 /* NKUIWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A0751C1F70970041DFCF /* NKUIWebView.swift */; };
 		E4AD89E41C1F83330043F630 /* NKWKWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A0761C1F70970041DFCF /* NKWKWebView.swift */; };
 		E4AD89E51C1F833C0043F630 /* app in Resources */ = {isa = PBXBuildFile; fileRef = E488A0D71C1F761F0041DFCF /* app */; };
-		E4AD89E61C1F833C0043F630 /* default in Resources */ = {isa = PBXBuildFile; fileRef = E488A0FC1C1F76F30041DFCF /* default */; };
-		E4AD89E71C1F833C0043F630 /* splash in Resources */ = {isa = PBXBuildFile; fileRef = E488A0FB1C1F76F30041DFCF /* splash */; };
 		E4AD89E81C1F833C0043F630 /* test in Resources */ = {isa = PBXBuildFile; fileRef = E488A0F81C1F76A40041DFCF /* test */; };
-		E4AD89EC1C1F834B0043F630 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A0E11C1F76510041DFCF /* main.swift */; };
 		E4AD89ED1C1F834B0043F630 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E488A0E31C1F76510041DFCF /* Assets.xcassets */; };
 		E4AD89F21C1F85220043F630 /* NKMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD89F01C1F84D20043F630 /* NKMenu.swift */; };
 		E4AD89F31C1F85220043F630 /* NKNSAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */; };
 		E4AD89F41C1F85230043F630 /* NKMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD89F01C1F84D20043F630 /* NKMenu.swift */; };
 		E4AD89F51C1F85230043F630 /* NKNSAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */; };
+		E4C253D21C20A5FF001B3388 /* NKMainDesktop.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C253D11C20A5FF001B3388 /* NKMainDesktop.swift */; };
+		E4C253D31C20A6BC001B3388 /* NKMainDesktop.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C253D11C20A5FF001B3388 /* NKMainDesktop.swift */; };
+		E4C253D51C20AABC001B3388 /* NKMainMobile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C253D41C20AABC001B3388 /* NKMainMobile.swift */; };
+		E4C253D71C20AB17001B3388 /* NKUIAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C253D61C20AB17001B3388 /* NKUIAppDelegate.swift */; };
+		E4C253DA1C20AC64001B3388 /* NKMainMobile.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C253D41C20AABC001B3388 /* NKMainMobile.swift */; };
+		E4C253DB1C20ACA3001B3388 /* NKUIAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C253D61C20AB17001B3388 /* NKUIAppDelegate.swift */; };
+		E4C253DE1C20AF68001B3388 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C253DD1C20AF68001B3388 /* main.swift */; };
+		E4C253DF1C20AFC0001B3388 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4C253DD1C20AF68001B3388 /* main.swift */; };
+		E4C253ED1C20B4EE001B3388 /* default in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E71C20B4EE001B3388 /* default */; };
+		E4C253EE1C20B4EE001B3388 /* default in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E71C20B4EE001B3388 /* default */; };
+		E4C253EF1C20B4EE001B3388 /* default in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E71C20B4EE001B3388 /* default */; };
+		E4C253F01C20B4EE001B3388 /* default in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E71C20B4EE001B3388 /* default */; };
+		E4C253F11C20B4EE001B3388 /* splash in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E81C20B4EE001B3388 /* splash */; };
+		E4C253F21C20B4EE001B3388 /* splash in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E81C20B4EE001B3388 /* splash */; };
+		E4C253F31C20B4EE001B3388 /* splash in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E81C20B4EE001B3388 /* splash */; };
+		E4C253F41C20B4EE001B3388 /* splash in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E81C20B4EE001B3388 /* splash */; };
+		E4C253F51C20B6F8001B3388 /* app in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E61C20B4EE001B3388 /* app */; };
+		E4C253F61C20B6F9001B3388 /* app in Resources */ = {isa = PBXBuildFile; fileRef = E4C253E61C20B4EE001B3388 /* app */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -116,13 +128,9 @@
 		E488A0A01C1F736E0041DFCF /* NodeKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NodeKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E488A0AC1C1F74250041DFCF /* nodekit-sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nodekit-sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E488A0D71C1F761F0041DFCF /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; name = app; path = "nodekit-sample/app"; sourceTree = "<group>"; };
-		E488A0E11C1F76510041DFCF /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = "nodekit-sample/platform-darwin/main.swift"; sourceTree = "<group>"; };
 		E488A0E31C1F76510041DFCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "nodekit-sample/platform-darwin/Assets.xcassets"; sourceTree = "<group>"; };
 		E488A0F81C1F76A40041DFCF /* test */ = {isa = PBXFileReference; lastKnownFileType = folder; name = test; path = "nodekit-sample/test"; sourceTree = "<group>"; };
-		E488A0FB1C1F76F30041DFCF /* splash */ = {isa = PBXFileReference; lastKnownFileType = folder; name = splash; path = "nodekit-sample/splash"; sourceTree = "<group>"; };
-		E488A0FC1C1F76F30041DFCF /* default */ = {isa = PBXFileReference; lastKnownFileType = folder; name = default; path = "nodekit-sample/default"; sourceTree = "<group>"; };
 		E488A12B1C1F78890041DFCF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = "nodekit-sample/platform-ios/Assets.xcassets"; sourceTree = "<group>"; };
-		E488A12C1C1F78890041DFCF /* NKUIAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUIAppDelegate.swift; path = "nodekit-sample/platform-ios/NKUIAppDelegate.swift"; sourceTree = "<group>"; };
 		E488A12D1C1F78890041DFCF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit-sample/platform-ios/Info.plist"; sourceTree = "<group>"; };
 		E488A1311C1F78FB0041DFCF /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "nodekit-sample/platform-ios/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E488A1511C1F7C880041DFCF /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncSocket.h; path = "nodekit/common/objective-c/GCDAsyncSocket.h"; sourceTree = SOURCE_ROOT; };
@@ -135,7 +143,13 @@
 		E4AD89D11C1F82AA0043F630 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit-sample/platform-darwin/Info.plist"; sourceTree = "<group>"; };
 		E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKNSAppDelegate.swift; path = "nodekit/platform-darwin/NKNSAppDelegate.swift"; sourceTree = "<group>"; };
 		E4AD89F01C1F84D20043F630 /* NKMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMenu.swift; path = "nodekit/platform-darwin/NKMenu.swift"; sourceTree = "<group>"; };
-		E4AD89F61C1F85ED0043F630 /* NKUIAppDelegate_Sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NKUIAppDelegate_Sample.swift; path = "nodekit/platform-ios/NKUIAppDelegate_Sample.swift"; sourceTree = "<group>"; };
+		E4C253D11C20A5FF001B3388 /* NKMainDesktop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMainDesktop.swift; path = "nodekit/platform-darwin/NKMainDesktop.swift"; sourceTree = "<group>"; };
+		E4C253D41C20AABC001B3388 /* NKMainMobile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMainMobile.swift; path = "nodekit/platform-ios/NKMainMobile.swift"; sourceTree = "<group>"; };
+		E4C253D61C20AB17001B3388 /* NKUIAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUIAppDelegate.swift; path = "nodekit/platform-ios/NKUIAppDelegate.swift"; sourceTree = "<group>"; };
+		E4C253DD1C20AF68001B3388 /* main.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = main.swift; path = "nodekit-sample/main.swift"; sourceTree = "<group>"; };
+		E4C253E61C20B4EE001B3388 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; name = app; path = nodekit/common/www/app; sourceTree = "<group>"; };
+		E4C253E71C20B4EE001B3388 /* default */ = {isa = PBXFileReference; lastKnownFileType = folder; name = default; path = nodekit/common/www/default; sourceTree = "<group>"; };
+		E4C253E81C20B4EE001B3388 /* splash */ = {isa = PBXFileReference; lastKnownFileType = folder; name = splash; path = nodekit/common/www/splash; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,9 +206,10 @@
 		E411815F1C1F27B8004F97D6 /* platform-ios */ = {
 			isa = PBXGroup;
 			children = (
-				E488A07D1C1F70AC0041DFCF /* NKWKViewController.swift */,
 				E488A07E1C1F70AC0041DFCF /* Info.plist */,
-				E4AD89F61C1F85ED0043F630 /* NKUIAppDelegate_Sample.swift */,
+				E4C253D61C20AB17001B3388 /* NKUIAppDelegate.swift */,
+				E488A07D1C1F70AC0041DFCF /* NKWKViewController.swift */,
+				E4C253D41C20AABC001B3388 /* NKMainMobile.swift */,
 			);
 			name = "platform-ios";
 			sourceTree = "<group>";
@@ -202,11 +217,12 @@
 		E41181601C1F27C2004F97D6 /* platform-darwin */ = {
 			isa = PBXGroup;
 			children = (
+				E488A0771C1F70970041DFCF /* Info.plist */,
 				E4AD89F01C1F84D20043F630 /* NKMenu.swift */,
 				E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */,
 				E488A0751C1F70970041DFCF /* NKUIWebView.swift */,
 				E488A0761C1F70970041DFCF /* NKWKWebView.swift */,
-				E488A0771C1F70970041DFCF /* Info.plist */,
+				E4C253D11C20A5FF001B3388 /* NKMainDesktop.swift */,
 			);
 			name = "platform-darwin";
 			sourceTree = "<group>";
@@ -217,6 +233,7 @@
 				E488A0831C1F715D0041DFCF /* lib */,
 				E41181871C1F2B78004F97D6 /* swift */,
 				E411816D1C1F2B6C004F97D6 /* objective-c */,
+				E4C253E01C20B481001B3388 /* www */,
 			);
 			name = common;
 			sourceTree = "<group>";
@@ -292,9 +309,8 @@
 		E488A0D31C1F75F00041DFCF /* nodekit-sample */ = {
 			isa = PBXGroup;
 			children = (
+				E4C253DD1C20AF68001B3388 /* main.swift */,
 				E488A0D71C1F761F0041DFCF /* app */,
-				E488A0FC1C1F76F30041DFCF /* default */,
-				E488A0FB1C1F76F30041DFCF /* splash */,
 				E488A0F81C1F76A40041DFCF /* test */,
 				E488A0D61C1F760C0041DFCF /* platform-darwin */,
 				E488A0D51C1F76030041DFCF /* platform-ios */,
@@ -307,7 +323,6 @@
 			children = (
 				E488A1311C1F78FB0041DFCF /* Launch Screen.storyboard */,
 				E488A12B1C1F78890041DFCF /* Assets.xcassets */,
-				E488A12C1C1F78890041DFCF /* NKUIAppDelegate.swift */,
 				E488A12D1C1F78890041DFCF /* Info.plist */,
 			);
 			name = "platform-ios";
@@ -317,10 +332,19 @@
 			isa = PBXGroup;
 			children = (
 				E4AD89D11C1F82AA0043F630 /* Info.plist */,
-				E488A0E11C1F76510041DFCF /* main.swift */,
 				E488A0E31C1F76510041DFCF /* Assets.xcassets */,
 			);
 			name = "platform-darwin";
+			sourceTree = "<group>";
+		};
+		E4C253E01C20B481001B3388 /* www */ = {
+			isa = PBXGroup;
+			children = (
+				E4C253E61C20B4EE001B3388 /* app */,
+				E4C253E71C20B4EE001B3388 /* default */,
+				E4C253E81C20B4EE001B3388 /* splash */,
+			);
+			name = www;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -469,6 +493,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4C253F51C20B6F8001B3388 /* app in Resources */,
+				E4C253ED1C20B4EE001B3388 /* default in Resources */,
+				E4C253F11C20B4EE001B3388 /* splash in Resources */,
 				E488A1011C1F771D0041DFCF /* lib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -477,6 +504,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4C253F61C20B6F9001B3388 /* app in Resources */,
+				E4C253EE1C20B4EE001B3388 /* default in Resources */,
+				E4C253F21C20B4EE001B3388 /* splash in Resources */,
 				E488A1021C1F771D0041DFCF /* lib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -485,10 +515,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E488A0FF1C1F76F30041DFCF /* default in Resources */,
-				E488A0FD1C1F76F30041DFCF /* splash in Resources */,
+				E4C253EF1C20B4EE001B3388 /* default in Resources */,
 				E488A0F91C1F76A40041DFCF /* test in Resources */,
 				E488A0D81C1F761F0041DFCF /* app in Resources */,
+				E4C253F31C20B4EE001B3388 /* splash in Resources */,
 				E488A1331C1F7B510041DFCF /* lib in Resources */,
 				E488A12E1C1F78890041DFCF /* Assets.xcassets in Resources */,
 				E488A1321C1F78FB0041DFCF /* Launch Screen.storyboard in Resources */,
@@ -499,9 +529,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E4AD89E61C1F833C0043F630 /* default in Resources */,
 				E4AD89E81C1F833C0043F630 /* test in Resources */,
-				E4AD89E71C1F833C0043F630 /* splash in Resources */,
+				E4C253F41C20B4EE001B3388 /* splash in Resources */,
+				E4C253F01C20B4EE001B3388 /* default in Resources */,
 				E4AD89ED1C1F834B0043F630 /* Assets.xcassets in Resources */,
 				E4AD89E51C1F833C0043F630 /* app in Resources */,
 				E4AD89D31C1F830F0043F630 /* lib in Resources */,
@@ -518,6 +548,7 @@
 				E488A10D1C1F77310041DFCF /* NKSocketUDP.swift in Sources */,
 				E488A1571C1F7C880041DFCF /* GCDAsyncSocket.m in Sources */,
 				E488A1041C1F772D0041DFCF /* NKJSContextFactory.swift in Sources */,
+				E4C253D71C20AB17001B3388 /* NKUIAppDelegate.swift in Sources */,
 				E488A1151C1F77350041DFCF /* NKUrlProtocolCustom.swift in Sources */,
 				E488A15D1C1F7C880041DFCF /* GCDAsyncUdpSocket.m in Sources */,
 				E488A1141C1F77350041DFCF /* NKUrlProtocolLocalFile.swift in Sources */,
@@ -526,6 +557,7 @@
 				E488A1131C1F77350041DFCF /* NKUrlFileDecode.swift in Sources */,
 				E488A1061C1F772D0041DFCF /* NKTypeAlias.swift in Sources */,
 				E488A1031C1F772D0041DFCF /* NKJavaScriptBridge.swift in Sources */,
+				E4C253D51C20AABC001B3388 /* NKMainMobile.swift in Sources */,
 				E488A10B1C1F77310041DFCF /* NKFileSystem.swift in Sources */,
 				E488A1051C1F772D0041DFCF /* NKNodeKit.swift in Sources */,
 				E488A10C1C1F77310041DFCF /* NKSocketTCP.swift in Sources */,
@@ -537,6 +569,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E488A1581C1F7C880041DFCF /* GCDAsyncSocket.m in Sources */,
+				E4C253D21C20A5FF001B3388 /* NKMainDesktop.swift in Sources */,
 				E488A1111C1F77320041DFCF /* NKSocketUDP.swift in Sources */,
 				E488A1081C1F772E0041DFCF /* NKJSContextFactory.swift in Sources */,
 				E488A1181C1F77350041DFCF /* NKUrlProtocolCustom.swift in Sources */,
@@ -562,17 +595,19 @@
 			files = (
 				E488A1401C1F7B620041DFCF /* NKTimer.swift in Sources */,
 				E488A15F1C1F7C880041DFCF /* GCDAsyncUdpSocket.m in Sources */,
+				E4C253DE1C20AF68001B3388 /* main.swift in Sources */,
 				E488A1461C1F7B650041DFCF /* NKUrlProtocolLocalFile.swift in Sources */,
 				E488A1381C1F7B5E0041DFCF /* NKTypeAlias.swift in Sources */,
+				E4C253DA1C20AC64001B3388 /* NKMainMobile.swift in Sources */,
 				E488A13D1C1F7B620041DFCF /* NKFileSystem.swift in Sources */,
 				E488A1501C1F7BBA0041DFCF /* NKWKViewController.swift in Sources */,
 				E488A1361C1F7B5E0041DFCF /* NKJSContextFactory.swift in Sources */,
+				E4C253DB1C20ACA3001B3388 /* NKUIAppDelegate.swift in Sources */,
 				E488A1471C1F7B650041DFCF /* NKUrlProtocolCustom.swift in Sources */,
 				E488A1371C1F7B5E0041DFCF /* NKNodeKit.swift in Sources */,
 				E488A1351C1F7B5E0041DFCF /* NKJavaScriptBridge.swift in Sources */,
 				E488A1451C1F7B650041DFCF /* NKUrlFileDecode.swift in Sources */,
 				E488A13E1C1F7B620041DFCF /* NKSocketTCP.swift in Sources */,
-				E488A12F1C1F78890041DFCF /* NKUIAppDelegate.swift in Sources */,
 				E488A1591C1F7C880041DFCF /* GCDAsyncSocket.m in Sources */,
 				E488A13F1C1F7B620041DFCF /* NKSocketUDP.swift in Sources */,
 			);
@@ -585,7 +620,6 @@
 				E4AD89DF1C1F83270043F630 /* GCDAsyncSocket.m in Sources */,
 				E4AD89DA1C1F83190043F630 /* NKSocketUDP.swift in Sources */,
 				E4AD89F51C1F85230043F630 /* NKNSAppDelegate.swift in Sources */,
-				E4AD89EC1C1F834B0043F630 /* main.swift in Sources */,
 				E4AD89D51C1F83140043F630 /* NKJSContextFactory.swift in Sources */,
 				E4AD89DE1C1F831D0043F630 /* NKUrlProtocolCustom.swift in Sources */,
 				E4AD89DD1C1F831D0043F630 /* NKUrlProtocolLocalFile.swift in Sources */,
@@ -593,10 +627,12 @@
 				E4AD89DB1C1F83190043F630 /* NKTimer.swift in Sources */,
 				E4AD89DC1C1F831D0043F630 /* NKUrlFileDecode.swift in Sources */,
 				E4AD89D71C1F83140043F630 /* NKTypeAlias.swift in Sources */,
+				E4C253D31C20A6BC001B3388 /* NKMainDesktop.swift in Sources */,
 				E4AD89D41C1F83140043F630 /* NKJavaScriptBridge.swift in Sources */,
 				E4AD89D81C1F83190043F630 /* NKFileSystem.swift in Sources */,
 				E4AD89E31C1F83330043F630 /* NKUIWebView.swift in Sources */,
 				E4AD89D61C1F83140043F630 /* NKNodeKit.swift in Sources */,
+				E4C253DF1C20AFC0001B3388 /* main.swift in Sources */,
 				E4AD89F41C1F85230043F630 /* NKMenu.swift in Sources */,
 				E4AD89E01C1F832A0043F630 /* GCDAsyncUdpSocket.m in Sources */,
 				E4AD89D91C1F83190043F630 /* NKSocketTCP.swift in Sources */,

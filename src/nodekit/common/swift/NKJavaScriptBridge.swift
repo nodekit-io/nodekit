@@ -28,13 +28,11 @@ class NKJavascriptBridge: NSObject {
     
     class func attachToContext(context: JSContext) {
 
-        #if TARGET_OS_IPHONE
+        #if os(iOS)
             let PLATFORM: String = "ios";
-        #elseif TARGET_OS_MAC
+        #elseif os(OSX)
             let PLATFORM: String = "darwin";
-        #elseif TARGET_OS_WIN32
-            let PLATFORM: String = "win32";
-        #else
+         #else
             let PLATFORM: String = "darwin";
         #endif
         

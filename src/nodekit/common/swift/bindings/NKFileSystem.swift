@@ -219,7 +219,7 @@ internal class NKFileSystem: NSObject {
         
         if (path == nil)
         {
-            let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodekit.self)
+            let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
             
             path = _nodeKitBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
             
