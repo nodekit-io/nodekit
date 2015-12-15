@@ -42,7 +42,7 @@ public class NKNSAppDelegate: NSObject, NSApplicationDelegate {
     public func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true
     }
-    A
+    
 }
 
 /* Include the following in main.swift to call the above 
