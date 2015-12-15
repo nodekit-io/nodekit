@@ -709,6 +709,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
 				PRODUCT_NAME = NodeKit;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "NodeKit-ios-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -727,6 +728,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.nodekit.NodeKit;
 				PRODUCT_NAME = NodeKit;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "NodeKit-ios-Swift.h";
 			};
 			name = Release;
 		};
@@ -749,6 +751,7 @@
 				PRODUCT_NAME = NodeKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "NodeKit-Mac-Swift.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -772,6 +775,7 @@
 				PRODUCT_NAME = NodeKit;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+				SWIFT_OBJC_INTERFACE_HEADER_NAME = "NodeKit-Mac-Swift.h";
 			};
 			name = Release;
 		};
