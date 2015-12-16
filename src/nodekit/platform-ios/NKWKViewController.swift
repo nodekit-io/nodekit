@@ -53,7 +53,7 @@ import WebKit
             name: "interOp");
         
         webView = WKWebView(frame:CGRectZero, configuration: config)
-        webView!.backgroundColor = UIColor(netHex: 0xFFCE54)
+        webView!.backgroundColor = UIColor(netHex: 0x2690F6)
         
         webView!.opaque = false;
         webView!.backgroundColor = UIColor.clearColor()
