@@ -87,7 +87,7 @@ import WebKit
     override public func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(netHex: 0xFFCE54)
+        view.backgroundColor = UIColor(netHex: 0x2690F6)
         
         // Do any additional setup after loading the view, typically from a nib.
     }
