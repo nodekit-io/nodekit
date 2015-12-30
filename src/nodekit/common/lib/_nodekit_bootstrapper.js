@@ -32,6 +32,8 @@ var Startup = function Startup() {
     // run vanilla node.js startup
     BootstrapModule.bootstrap('lib/node.js');
     
+    global.setImmediate = function(fn){ process.nextTick(fn.bind.apply(fn, arguments)) }
+        
     console.log = io.nodekit.console.log;
     console.warn = console.log;
     io.nodekit.console.error = BootstrapModule.error;

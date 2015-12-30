@@ -158,13 +158,13 @@ FileSystem.prototype.addStorageItem = function (item) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.loadContentSync = function (file) {
-    
-    if (typeof(file) == 'undefined')
+    if (typeof(file) == 'undefined'  || file._items)
         return null;
     
     try {
     var contentBase64 = io.nodekit.fs.getContent(file._storageItem);
     var content = new Buffer( contentBase64, 'base64');
+        
     file.setContent(content);
     return file;
     }
@@ -193,6 +193,7 @@ FileSystem.prototype.loadContentAsync = function (file) {
  * @return {bool} Success.
  */
 FileSystem.prototype.writeContentSync = function (file) {
+  
     if (typeof(file) == 'undefined')
         return null;
     

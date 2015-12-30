@@ -1,23 +1,14 @@
-/*
- * Copyright 2015 Domabo
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+var msg = require('./_delegates/zlib/pako/lib/zlib/messages');
+var zstream = require('./_delegates/zlib/pako/lib/zlib/zstream');
+var zlib_deflate = require('./_delegates/zlib/pako/lib/zlib/deflate.js');
+var zlib_inflate = require('./_delegates/zlib/pako/lib/zlib/inflate.js');
+var constants = require('./_delegates/zlib/pako/lib/zlib/constants');
 
-var util = require('util'),
-    EventEmitter = require('events').EventEmitter,
-    zlib_delegate = require('./delegates/zlib/binding.js').Zlib
+for (var key in constants) {
+  exports[key] = constants[key];
+}
 
+// zlib modes
 exports.NONE = 0;
 exports.DEFLATE = 1;
 exports.INFLATE = 2;
@@ -27,39 +18,219 @@ exports.DEFLATERAW = 5;
 exports.INFLATERAW = 6;
 exports.UNZIP = 7;
 
+/**
+ * Emulate Node's zlib C++ layer for use by the JS layer in index.js
+ */
 function Zlib(mode) {
-  if (!(this instanceof Zlib)) return new Zlib(mode);
-  this._delegate = new zlib_delegate(mode);
-  this._delegate.on('error', this._onError.bind(this));
+  if (mode < exports.DEFLATE || mode > exports.UNZIP)
+    throw new TypeError("Bad argument");
+    
+  this.mode = mode;
+  this.init_done = false;
+  this.write_in_progress = false;
+  this.pending_close = false;
+  this.windowBits = 0;
+  this.level = 0;
+  this.memLevel = 0;
+  this.strategy = 0;
+  this.dictionary = null;
 }
 
-util.inherits(Zlib, EventEmitter);
-module.exports.Zlib = Zlib;
-
 Zlib.prototype.init = function(windowBits, level, memLevel, strategy, dictionary) {
-    return _delegate.init(windowBits, level, memLevel, strategy, dictionary);
+  this.windowBits = windowBits;
+  this.level = level;
+  this.memLevel = memLevel;
+  this.strategy = strategy;
+  // dictionary not supported.
+  
+  if (this.mode === exports.GZIP || this.mode === exports.GUNZIP)
+    this.windowBits += 16;
+    
+  if (this.mode === exports.UNZIP)
+    this.windowBits += 32;
+    
+  if (this.mode === exports.DEFLATERAW || this.mode === exports.INFLATERAW)
+    this.windowBits = -this.windowBits;
+    
+  this.strm = new zstream();
+  
+  switch (this.mode) {
+    case exports.DEFLATE:
+    case exports.GZIP:
+    case exports.DEFLATERAW:
+      var status = zlib_deflate.deflateInit2(
+        this.strm,
+        this.level,
+        exports.Z_DEFLATED,
+        this.windowBits,
+        this.memLevel,
+        this.strategy
+      );
+      break;
+    case exports.INFLATE:
+    case exports.GUNZIP:
+    case exports.INFLATERAW:
+    case exports.UNZIP:
+      var status  = zlib_inflate.inflateInit2(
+        this.strm,
+        this.windowBits
+      );
+      break;
+    default:
+      throw new Error("Unknown mode " + this.mode);
+  }
+  
+  if (status !== exports.Z_OK) {
+    this._error(status);
+    return;
+  }
+  
+  this.write_in_progress = false;
+  this.init_done = true;
 };
 
-Zlib.prototype.params = function(level, strategy) {
-    return _delegate.params(level, strategy);
+Zlib.prototype.params = function() {
+  throw new Error("deflateParams Not supported");
 };
 
-Zlib.prototype.reset = function() {
-    return _delegate.reset();
+Zlib.prototype._writeCheck = function() {
+  if (!this.init_done)
+    throw new Error("write before init");
+    
+  if (this.mode === exports.NONE)
+    throw new Error("already finalized");
+    
+  if (this.write_in_progress)
+    throw new Error("write already in progress");
+    
+  if (this.pending_close)
+    throw new Error("close is pending");
+};
+
+Zlib.prototype.write = function(flush, input, in_off, in_len, out, out_off, out_len) {    
+  this._writeCheck();
+  this.write_in_progress = true;
+  
+  var self = this;
+  process.nextTick(function() {
+    self.write_in_progress = false;
+    var res = self._write(flush, input, in_off, in_len, out, out_off, out_len);
+    self.callback(res[0], res[1]);
+    
+    if (self.pending_close)
+      self.close();
+  });
+  
+  return this;
+};
+
+// set method for Node buffers, used by pako
+function bufferSet(data, offset) {
+  for (var i = 0; i < data.length; i++) {
+    this[offset + i] = data[i];
+  }
+}
+
+Zlib.prototype.writeSync = function(flush, input, in_off, in_len, out, out_off, out_len) {
+  this._writeCheck();
+  return this._write(flush, input, in_off, in_len, out, out_off, out_len);
+};
+
+Zlib.prototype._write = function(flush, input, in_off, in_len, out, out_off, out_len) {
+  this.write_in_progress = true;
+  
+  if (flush !== exports.Z_NO_FLUSH &&
+      flush !== exports.Z_PARTIAL_FLUSH &&
+      flush !== exports.Z_SYNC_FLUSH &&
+      flush !== exports.Z_FULL_FLUSH &&
+      flush !== exports.Z_FINISH &&
+      flush !== exports.Z_BLOCK) {
+    throw new Error("Invalid flush value");
+  }
+  
+  if (input == null) {
+    input = new Buffer(0);
+    in_len = 0;
+    in_off = 0;
+  }
+  
+  if (out._set)
+    out.set = out._set;
+  else
+    out.set = bufferSet;
+  
+  var strm = this.strm;
+  strm.avail_in = in_len;
+  strm.input = input;
+  strm.next_in = in_off;
+  strm.avail_out = out_len;
+  strm.output = out;
+  strm.next_out = out_off;
+  
+  switch (this.mode) {
+    case exports.DEFLATE:
+    case exports.GZIP:
+    case exports.DEFLATERAW:
+      var status = zlib_deflate.deflate(strm, flush);
+      break;
+    case exports.UNZIP:
+    case exports.INFLATE:
+    case exports.GUNZIP:
+    case exports.INFLATERAW:
+      var status = zlib_inflate.inflate(strm, flush);
+      break;
+    default:
+      throw new Error("Unknown mode " + this.mode);
+  }
+  
+  if (status !== exports.Z_STREAM_END && status !== exports.Z_OK) {
+    this._error(status);
+  }
+  
+  this.write_in_progress = false;
+  return [strm.avail_in, strm.avail_out];
 };
 
 Zlib.prototype.close = function() {
-    return _delegate.close();
+  if (this.write_in_progress) {
+    this.pending_close = true;
+    return;
+  }
+  
+  this.pending_close = false;
+  
+  if (this.mode === exports.DEFLATE || this.mode === exports.GZIP || this.mode === exports.DEFLATERAW) {
+    zlib_deflate.deflateEnd(this.strm);
+  } else {
+    zlib_inflate.inflateEnd(this.strm);
+  }
+  
+  this.mode = exports.NONE;
 };
 
-Zlib.prototype.write = function(flushFlag, chunk, inOffset, inLen, outBuffer, outOffset, outLen) {
-    return _delegate.write(flushFlag, chunk, inOffset, inLen, outBuffer, outOffset, outLen);
+Zlib.prototype.reset = function() {
+  switch (this.mode) {
+    case exports.DEFLATE:
+    case exports.DEFLATERAW:
+      var status = zlib_deflate.deflateReset(this.strm);
+      break;
+    case exports.INFLATE:
+    case exports.INFLATERAW:
+      var status = zlib_inflate.inflateReset(this.strm);
+      break;
+  }
+  
+  if (status !== exports.Z_OK) {
+    this._error(status);
+  }
 };
 
-Zlib.prototype.writeSync = function(flushFlag, chunk, inOffset, inLen, outBuffer, outOffset, outLen) {
-    return _delegate.writeSync(flushFlag, chunk, inOffset, inLen, outBuffer, outOffset, outLen);
+Zlib.prototype._error = function(status) {
+  this.onerror(msg[status] + ': ' + this.strm.msg, status);
+  
+  this.write_in_progress = false;
+  if (this.pending_close)
+    this.close();
 };
 
-Zlib.prototype._onError = function(result) {
-    this.onerror(result.error.message, result.result);
-};
+exports.Zlib = Zlib;

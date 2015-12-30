@@ -4,11 +4,11 @@ var crypto = require('crypto');
 
 describe("crypto Hash module", function() {
 
-  it('should pass testCreateHash', function() {
+ /* it('should pass testCreateHash', function() {
     expect(typeof crypto.createHash).toBe('function');
     var hash = crypto.createHash('sha1');
     expect(hash instanceof crypto.Hash).toBe(true);
-  });
+  });*/
 
   it('should pass testMD5HashDigest', function() {
       var hash = crypto.createHash('md5');

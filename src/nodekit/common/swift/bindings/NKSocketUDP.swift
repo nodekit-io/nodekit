@@ -93,7 +93,17 @@ import JavaScriptCore
         self._addr = address as String;
         self._port = port.unsignedShortValue
         var err: NSError? = nil
-        //TODO Use Flags = reuse address
+        
+        if (flags == 4)
+        {  do {
+            
+           try self._socket?.enableReusePort(true)
+            } catch var error as NSError {
+            err = error
+                } catch {
+            fatalError()
+            }
+        }
         
         if (self._addr != "0.0.0.0")
         {

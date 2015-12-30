@@ -19,7 +19,7 @@
 import Cocoa
 import WebKit
 
-public class NKUIWebView: NSObject {
+public class NKUIWebView: NSObject, WebUIDelegate {
     
     var mainWindow : NSWindow! = nil
     
@@ -62,6 +62,8 @@ public class NKUIWebView: NSObject {
         webview.drawsBackground = false
         webview.preferences = webPrefs
         
+        webview.UIDelegate = self
+        
         mainWindow.makeKeyAndOrderFront(nil)
         mainWindow.contentView = webview
         mainWindow.title = title as String
@@ -99,6 +101,25 @@ public class NKUIWebView: NSObject {
         let url = NSURL(string: urlAddress as String)
         let requestObj: NSURLRequest = NSURLRequest(URL: url!)
         webview.mainFrame.loadRequest(requestObj)
+    }
+    
+    public func webView(sender: WebView!,
+        runOpenPanelForFileButtonWithResultListener resultListener: WebOpenPanelResultListener!)
+    {
+        
+        let openPanel = NSOpenPanel()
+        openPanel.allowsMultipleSelection = false
+        openPanel.canChooseDirectories = false
+        openPanel.canCreateDirectories = false
+        openPanel.canChooseFiles = true
+        
+        openPanel.beginWithCompletionHandler({(result:Int) in
+            if(result == NSFileHandlingPanelOKButton)
+            {
+                let fileURL = openPanel.URL!
+                resultListener.chooseFilename(fileURL.relativePath)
+            }
+        })
     }
     
     

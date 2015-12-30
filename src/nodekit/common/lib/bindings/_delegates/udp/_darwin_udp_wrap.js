@@ -73,7 +73,7 @@ UDP.prototype._onRecv =function UDP_onReceive(chunk, host, port) {
 
 UDP.prototype.bind = function(addr, port, flags) {
      var e = this._udp.bind(addr, port, flags);
-    if (e !== "OK" ) return new Error(e);
+    if (e !== "OK" ) {console.log(e); throw new Error(e); }
 };
 
 UDP.prototype.bind6 = function(ip, port, flags) {

@@ -1,4 +1,4 @@
-/*var helper = require('./specHelper'),
+var helper = require('./specHelper'),
     zlib = require('zlib');
 
 describe('The zlib module', function() {
@@ -128,8 +128,7 @@ describe('The zlib module', function() {
     });
   });
 
-  describe('node.js zlib tests', function() {
-    xit('should work', function() {
+    xit('should pass node tests', function() {
 
       function checkComplete() {
         if (failures > 0) {
@@ -354,6 +353,5 @@ describe('The zlib module', function() {
                   }); }); }); }); }); }); // sad stallman is sad.
       });
     });
-  });
+
 });
-*/

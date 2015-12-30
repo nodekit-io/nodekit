@@ -30,3 +30,4 @@ switch(process.platform) {
 }
 
 exports.UDP = _delegate.UDP;
+exports.SendWrap = function SendWrap(){};

@@ -47,8 +47,46 @@ module.exports.release = function () {
 };
 
 module.exports.networkInterfaces
-= exports.getNetworkInterfaces
-= function () { return {} };
+= exports.getInterfaceAddresses
+= function () { return { lo0:
+    [ { address: '::1',
+        netmask: 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff',
+         family: 'IPv6',
+            mac: '00:00:00:00:00:00',
+        scopeid: 0,
+       internal: true },
+     { address: '127.0.0.1',
+        netmask: '255.0.0.0',
+         family: 'IPv4',
+            mac: '00:00:00:00:00:00',
+       internal: true },
+     { address: 'fe80::1',
+        netmask: 'ffff:ffff:ffff:ffff::',
+         family: 'IPv6',
+            mac: '00:00:00:00:00:00',
+        scopeid: 1,
+       internal: true } ],
+en0:
+    [ { address: 'fe80::4ad7:5ff:fee1:48b9',
+        netmask: 'ffff:ffff:ffff:ffff::',
+         family: 'IPv6',
+            mac: '48:d7:05:e1:48:b9',
+        scopeid: 4,
+       internal: false },
+     { address: '10.26.12.202',
+        netmask: '255.255.192.0',
+         family: 'IPv4',
+            mac: '48:d7:05:e1:48:b9',
+       internal: false } ],
+awdl0:
+    [ { address: 'fe80::7c57:d8ff:fe31:4c82',
+        netmask: 'ffff:ffff:ffff:ffff::',
+         family: 'IPv6',
+            mac: '7e:57:d8:31:4c:82',
+        scopeid: 7,
+       internal: false } ] };
+
+};
 
 module.exports.arch = function () { return 'javascript' };
 

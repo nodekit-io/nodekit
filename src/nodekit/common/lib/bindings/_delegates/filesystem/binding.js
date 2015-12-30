@@ -257,7 +257,7 @@ Binding.prototype.stat = function (filepath, callback) {
               });
     } else {
         var item = this._system.getItemSync(filepath);
-        if (!item) throw new FSError('ENOENT', filepath);
+        if (!item) return false // throw new FSError('ENOENT', filepath);
         return new Stats(item.getStats());
     }
 };
@@ -583,7 +583,7 @@ Binding.prototype.writeBuffer = function(fd, buffer, offset, length, position,
         
         buffer.copy(content, position, offset, sourceEnd);
         var written = sourceEnd - offset;
-        
+        console.log(file.setContent);
         file.setContent(content);
         
         this._system.writeContentAsync(file)

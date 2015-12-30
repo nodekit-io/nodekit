@@ -1,29 +1,28 @@
-/*
- * nodekit.io
- *
- * Copyright (c) 2015 Domabo. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+var util = require('util');
 
+var levelup = require('levelup');
+var memdown = require('memdown');
 
-/*
- * S A M P L E   A P P L I C A T I O N
- *
- * Simple http response server to display default.html
- *
- */
-
+function MemDB (opts, fn) {
+  if (typeof opts == 'function') {
+    fn = opts;
+    opts = {};
+  }
+  if (typeof opts == 'string') opts = {};
+  opts = opts || {};
+  opts.db = function (l) { return new memdown(l) };
+  return levelup('', opts, fn);
+}
+var db = MemDB();
+db.put('name', 'Yuri Irsenovich Kim')
+db.put('dob', '16 February 1941')
+db.put('spouse', 'Kim Young-sook')
+db.put('occupation', 'Clown')
+db.on('open', function() {console.log('open')})
+db.readStream()
+  .on('data', console.log)
+  .on('close', function () { console.log('Show\'s over folks!') })
+  
 
 console.log("STARTING SAMPLE APPLICATION");
 
@@ -45,6 +44,6 @@ var server = http.createServer( function (request, response) {
                                            });
                                });
 
-server.listen(8000);
+server.listen(3000);
 
 console.log("Server running");

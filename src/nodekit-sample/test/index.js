@@ -7,13 +7,22 @@ jasmine.run(
             "spec_files": [
                            "assertSpec.js",
                            "consoleSpec.js",
-                           
+                           "cryptoHashSpec.js",
+                           "cryptoRandomSpec.js",
+                           "cryptoHmacSpec.js",
                              "cryptoPbkdf2Spec.js",
                            "cryptoSignCommonSpec.js",
+                           "dgramSpec.js",
                            
                            "fsSpec.js",
+                           "globalSpec.js",
+                           
                            "httpAgentSpec.js",
+                           "httpClientSpec.js",
+                           
                            "httpSpec.js",
+                           "modulesSpec.js",
+                           
                            "netPauseSpec.js",
                            "netServerSpec.js" ,
                            "osSpec.js",
@@ -31,7 +40,8 @@ jasmine.run(
                            "timersSpec.js",
                            "urlSpec.js",
                            "utilSpec.js",
-                           "zlibSpec.js"
+                           "zlibSpec.js",
+                      
                            
                            
                         /*  "*[sS]pec.js"*/
@@ -42,18 +52,11 @@ jasmine.run(
                           "clusterSpec.js",
                           "cryptoCipherSpec.js",
                           "cryptoDHSpec.js",
-                          "cryptoHashSpec.js",
-                          "cryptoHmacSpec.js",
-                          "cryptoRandomSpec.js",
                           "cryptoSignSpec.js",
                           "dnsSpec.js",
-                          "dgramSpec.js",
                           "fsStatSpec.js",
                           "fsStreamSpec.js",
                           "fsWatchSpec.js",
-                          "globalSpec.js",
-                          "httpClientSpec.js",
-                          "modulesSpec.js",
                           "processSpec.js",
                           "tlsSpec.js",
                           "vmSpec.js",

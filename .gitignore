@@ -25,7 +25,7 @@ xcuserdata/
 
 #Python modules
 MANIFEST
-dist/
+src/nodekit-sample/app/dist/
 build/
 
 # Backup files

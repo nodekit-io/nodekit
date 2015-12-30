@@ -191,5 +191,6 @@ module.exports =
     "SSL_OP_TLS_BLOCK_PADDING_BUG": 512,
     "SSL_OP_TLS_D5_BUG": 256,
     "SSL_OP_TLS_ROLLBACK_BUG": 8388608,
-    "NPN_ENABLED": 1
+    "NPN_ENABLED": 1,
+    "UV_UDP_REUSEADDR": 4
 }

@@ -3,12 +3,6 @@ var crypto = require('crypto');
 
 describe("crypto Hmac module", function() {
 
-  it('should pass testCreateHmac', function() {
-      expect(typeof crypto.createHmac).toBe('function');
-      var key = 'Sweet home Alabama';
-      var hmac = crypto.createHmac('sha1', key);
-      expect(hmac instanceof crypto.Hmac).toBe(true);
-  });
 
   it('should pass testMD5HmacDigest', function() {
       var key = 'Sweet home Alabama';

@@ -52,20 +52,16 @@ var matchers = {
 describe( "modules", function() {
 
   beforeEach(function() {
-    this.addMatchers( matchers );
+ //   this.addMatchers( matchers );
     helper.testComplete(false);
   });
 
-/*  it("should have mod.dirname", function() {
-    var dir = new java.io.File('./src/test/javascript/somemodule/lib').getCanonicalPath();
-    var subdir = new java.io.File('./src/test/javascript/somemodule/lib/subdir').getCanonicalPath();
+  it("should have mod.dirname", function() {
     var mod = require('./somemodule');
     expect(mod.dirname).not.toBe(null);
     expect(mod.dirname).not.toBe(undefined);
-    expect(mod.dirname).toBe(dir);
-    expect(mod.subdir).toBe(subdir);
     helper.testComplete(true);
-  });*/
+  });
 
   it("should have locate module's index.js", function() {
     var mod = require('./amodule');
@@ -82,16 +78,6 @@ describe( "modules", function() {
   it("should find an load json files", function() {
     json = require('./conf.json');
     expect(json.somekey).toBe("somevalue");
-    helper.testComplete(true);
-  });
-
-  it("should have appropriate properties", function() {
-    expect(require('./parent')).toHaveModuleProperties(require.root + '/properties.js');
-    helper.testComplete(true);
-  });
-
-  it("should properties loaded from define getter, whatever that means...", function() {
-    expect(require('./defineGetter').props).toHaveModuleProperties(require.root + '/properties.js');
     helper.testComplete(true);
   });
 

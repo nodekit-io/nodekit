@@ -282,6 +282,24 @@ Item.prototype.setGid = function(gid) {
 
 
 /**
+ * Is File
+ * @return {Date} Modification time.
+ */
+Item.prototype.isFile = function() {
+    return this._isFile;
+};
+
+/**
+ * Is File
+ * @return {Date} Modification time.
+ */
+Item.prototype.isDirectory = function() {
+    return this._isDirectory;
+};
+
+
+
+/**
  * Get item stats.
  * @return {Object} Stats properties.
  */
@@ -297,7 +315,9 @@ Item.prototype.getStats = function() {
     ino: this._id,
     atime: this.getATime(),
     mtime: this.getMTime(),
-    ctime: this.getCTime()
+    ctime: this.getCTime(),
+  isFile: this.isFile,
+  isDirectory: this.isDirectory
   };
 };
 

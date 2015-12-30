@@ -63,6 +63,10 @@
 		E488A15F1C1F7C880041DFCF /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = E488A1541C1F7C880041DFCF /* GCDAsyncUdpSocket.m */; };
 		E488A1651C1F7CA10041DFCF /* NodeKit.h in Headers */ = {isa = PBXBuildFile; fileRef = E488A1621C1F7CA10041DFCF /* NodeKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E488A1661C1F7CA10041DFCF /* NodeKit.h in Headers */ = {isa = PBXBuildFile; fileRef = E488A1621C1F7CA10041DFCF /* NodeKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E49681401C3166F60048CA59 /* NKCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E496813F1C3166F60048CA59 /* NKCrypto.swift */; };
+		E49681411C31C5110048CA59 /* NKCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E496813F1C3166F60048CA59 /* NKCrypto.swift */; };
+		E49681421C31C5130048CA59 /* NKCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E496813F1C3166F60048CA59 /* NKCrypto.swift */; };
+		E49681431C31C5130048CA59 /* NKCrypto.swift in Sources */ = {isa = PBXBuildFile; fileRef = E496813F1C3166F60048CA59 /* NKCrypto.swift */; };
 		E4AD89D31C1F830F0043F630 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E488A0831C1F715D0041DFCF /* lib */; };
 		E4AD89D41C1F83140043F630 /* NKJavaScriptBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A0581C1F70650041DFCF /* NKJavaScriptBridge.swift */; };
 		E4AD89D51C1F83140043F630 /* NKJSContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E488A0591C1F70650041DFCF /* NKJSContextFactory.swift */; };
@@ -139,6 +143,8 @@
 		E488A1541C1F7C880041DFCF /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncUdpSocket.m; path = "nodekit/common/objective-c/GCDAsyncUdpSocket.m"; sourceTree = SOURCE_ROOT; };
 		E488A1611C1F7CA10041DFCF /* NodeKit-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NodeKit-Bridging-Header.h"; path = "nodekit/common/objective-c/NodeKit-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		E488A1621C1F7CA10041DFCF /* NodeKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NodeKit.h; path = "nodekit/common/objective-c/NodeKit.h"; sourceTree = SOURCE_ROOT; };
+		E496813F1C3166F60048CA59 /* NKCrypto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKCrypto.swift; path = nodekit/common/swift/bindings/NKCrypto.swift; sourceTree = SOURCE_ROOT; };
+		E49681441C31D21F0048CA59 /* nodekit-sample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "nodekit-sample.entitlements"; sourceTree = "<group>"; };
 		E4AD89C41C1F828A0043F630 /* nodekit-sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nodekit-sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4AD89D11C1F82AA0043F630 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit-sample/platform-darwin/Info.plist"; sourceTree = "<group>"; };
 		E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKNSAppDelegate.swift; path = "nodekit/platform-darwin/NKNSAppDelegate.swift"; sourceTree = "<group>"; };
@@ -187,6 +193,7 @@
 		E411813D1C1F24B4004F97D6 = {
 			isa = PBXGroup;
 			children = (
+				E49681441C31D21F0048CA59 /* nodekit-sample.entitlements */,
 				E488A03F1C1F6F2A0041DFCF /* src */,
 				E41181481C1F24B4004F97D6 /* Products */,
 			);
@@ -273,6 +280,7 @@
 				E488A0441C1F70450041DFCF /* NKSocketTCP.swift */,
 				E488A0451C1F70450041DFCF /* NKSocketUDP.swift */,
 				E488A0461C1F70450041DFCF /* NKTimer.swift */,
+				E496813F1C3166F60048CA59 /* NKCrypto.swift */,
 			);
 			path = bindings;
 			sourceTree = "<group>";
@@ -464,6 +472,11 @@
 					};
 					E4AD89C31C1F828A0043F630 = {
 						CreatedOnToolsVersion = 7.2;
+						SystemCapabilities = {
+							com.apple.ApplicationGroups.Mac = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -547,6 +560,7 @@
 			files = (
 				E488A10D1C1F77310041DFCF /* NKSocketUDP.swift in Sources */,
 				E488A1571C1F7C880041DFCF /* GCDAsyncSocket.m in Sources */,
+				E49681401C3166F60048CA59 /* NKCrypto.swift in Sources */,
 				E488A1041C1F772D0041DFCF /* NKJSContextFactory.swift in Sources */,
 				E4C253D71C20AB17001B3388 /* NKUIAppDelegate.swift in Sources */,
 				E488A1151C1F77350041DFCF /* NKUrlProtocolCustom.swift in Sources */,
@@ -580,6 +594,7 @@
 				E488A1121C1F77320041DFCF /* NKTimer.swift in Sources */,
 				E4AD89F31C1F85220043F630 /* NKNSAppDelegate.swift in Sources */,
 				E488A1161C1F77350041DFCF /* NKUrlFileDecode.swift in Sources */,
+				E49681431C31C5130048CA59 /* NKCrypto.swift in Sources */,
 				E488A10A1C1F772E0041DFCF /* NKTypeAlias.swift in Sources */,
 				E488A1071C1F772E0041DFCF /* NKJavaScriptBridge.swift in Sources */,
 				E488A10F1C1F77320041DFCF /* NKFileSystem.swift in Sources */,
@@ -598,6 +613,7 @@
 				E4C253DE1C20AF68001B3388 /* main.swift in Sources */,
 				E488A1461C1F7B650041DFCF /* NKUrlProtocolLocalFile.swift in Sources */,
 				E488A1381C1F7B5E0041DFCF /* NKTypeAlias.swift in Sources */,
+				E49681421C31C5130048CA59 /* NKCrypto.swift in Sources */,
 				E4C253DA1C20AC64001B3388 /* NKMainMobile.swift in Sources */,
 				E488A13D1C1F7B620041DFCF /* NKFileSystem.swift in Sources */,
 				E488A1501C1F7BBA0041DFCF /* NKWKViewController.swift in Sources */,
@@ -636,6 +652,7 @@
 				E4AD89F41C1F85230043F630 /* NKMenu.swift in Sources */,
 				E4AD89E01C1F832A0043F630 /* GCDAsyncUdpSocket.m in Sources */,
 				E4AD89D91C1F83190043F630 /* NKSocketTCP.swift in Sources */,
+				E49681411C31C5110048CA59 /* NKCrypto.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -846,6 +863,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "nodekit-sample.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/nodekit-sample/platform-darwin/Info.plist";
@@ -862,6 +880,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "nodekit-sample.entitlements";
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/nodekit-sample/platform-darwin/Info.plist";

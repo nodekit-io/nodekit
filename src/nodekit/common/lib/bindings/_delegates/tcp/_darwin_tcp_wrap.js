@@ -48,8 +48,10 @@ function TCP(tcp) {
     if ((tcp !== null)  && (typeof(tcp) !== 'undefined'))
     {
         this._stream = tcp.stream;
+        this._remoteAddress = tcp.remoteAddress();
     } else
     {
+        this._remoteAddress = null;
         this._tcp = io.nodekit.socket.createTcp();
         this._onConnection = TCP.prototype._onConnection.bind(this);
         this._onAfterConnect = TCP.prototype._onAfterConnect.bind(this);
@@ -119,7 +121,7 @@ TCP.prototype._onAfterConnect = function() {
 // ----------------------------------------
 
 TCP.prototype.getpeername = function(out) {
-    var remote = this._tcp.remoteAddress();
+    var remote = this._remoteAddress;
     out.address = remote.address;
     out.port    = remote.port;
     out.family  = 'IPv4';

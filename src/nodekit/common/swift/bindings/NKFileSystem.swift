@@ -106,6 +106,8 @@ internal class NKFileSystem: NSObject {
           data = try NSData(contentsOfFile: path as String, options: NSDataReadingOptions(rawValue: 0))
         }
         catch _ {
+            print("ERROR reading file");
+            
             return ""
         }
         
@@ -120,7 +122,7 @@ internal class NKFileSystem: NSObject {
         
         let path = storageItem["path"] as! NSString!
         let data = NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions(rawValue:0))
-        
+        print(path as String);
         return data!.writeToFile(path as String, atomically: false)
         }
     

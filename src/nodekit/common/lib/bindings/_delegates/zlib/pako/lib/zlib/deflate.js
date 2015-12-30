@@ -1,6 +1,6 @@
 'use strict';
 
-var utils   = require('../utils/common');
+var utils   = require('./../utils/common');
 var trees   = require('./trees');
 var adler32 = require('./adler32');
 var crc32   = require('./crc32');
@@ -1534,7 +1534,7 @@ function deflate(strm, flush) {
         put_byte(s, val);
       } while (val !== 0);
 
-      if (s.gzhead.hcrc && s.pending > beg){
+      if (s.gzhead.hcrc && s.pending > beg) {
         strm.adler = crc32(strm.adler, s.pending_buf, s.pending - beg, beg);
       }
       if (val === 0) {

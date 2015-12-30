@@ -55,7 +55,7 @@ class NKJavascriptBridge: NSObject {
         let console: JSValue = JSValue(object:["platform": PLATFORM], inContext: context)
         let fs: JSValue = JSValue(object:["platform": PLATFORM], inContext: context)
         let socket: JSValue = JSValue(object:["platform": PLATFORM], inContext: context)
-        
+        let crypto: JSValue = JSValue(object:["crypto": PLATFORM], inContext: context)
         
         let socket_createTcp : @convention(block) () -> JSValue = {
             let server: NKSocketTCP = NKSocketTCP()
@@ -311,12 +311,26 @@ class NKJavascriptBridge: NSObject {
         
         console.setObject(unsafeBitCast(console_resize, AnyObject.self), forKeyedSubscript: "resize")
         
+        /**
+         * Get file content synchronously
+         * @param {string} path Path to directory.
+         * @param {string} content Content to write in base64
+         * @return {bool} success
+         */
+        let crypyo_getRandomBytes: @convention(block)  (JSValue) -> NSArray = { blockSize in
+            
+            return NKCrypto.getRandomBytes(blockSize.toUInt32())
+        }
+        
+        crypto.setObject(unsafeBitCast(crypyo_getRandomBytes, AnyObject.self), forKeyedSubscript: "getRandomBytes")
+        
         
         let io_nodekit: JSValue = JSValue(object: Dictionary<String, AnyObject>(), inContext: context)
         
         io_nodekit.setObject(fs, forKeyedSubscript: "fs");
         io_nodekit.setObject(console, forKeyedSubscript: "console");
         io_nodekit.setObject(socket, forKeyedSubscript: "socket");
+        io_nodekit.setObject(crypto, forKeyedSubscript: "crypto");
         
         let io: JSValue = JSValue(object: Dictionary<String, AnyObject>(), inContext: context)
         

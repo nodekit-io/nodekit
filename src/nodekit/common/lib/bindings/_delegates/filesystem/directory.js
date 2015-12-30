@@ -48,6 +48,8 @@ function Directory() {
    * Permissions.
    */
   this._mode = 0777;
+     this._isFile = false;
+    this._isDirectory = true;
 
 }
 util.inherits(Directory, Item);

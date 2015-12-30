@@ -55,7 +55,9 @@ function File() {
      * @type {number}
      */
     this._size = 0;
-
+    
+    this._isFile = true;
+    this._isDirectory = true;
 }
 util.inherits(File, Item);
 

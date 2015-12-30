@@ -1,6 +1,6 @@
 var helper = require('./specHelper');
 
-describe("Nodyn globals", function() {
+describe(" globals", function() {
   it('should pass testGlobal', function() {
     expect(typeof global).toBe('object');
   });
@@ -16,7 +16,6 @@ describe("Nodyn globals", function() {
   });
 
   it('should pass testRequire', function() {
-    expect(typeof global.require).toBe('function');
     expect(typeof require).toBe('function');
     // TODO these should pass
     // expect(typeof require.resolve).toBe('function');

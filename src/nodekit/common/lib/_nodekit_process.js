@@ -15,7 +15,8 @@
  */
 
 (function(process) {
-    
+ this.global = this;
+ 
   process._nextTick = (function () {
                      var canSetTimeOut = typeof window !== 'undefined'
                      && window.setTimeout;
@@ -49,7 +50,7 @@
                          };
                     }
                      
-                     if (canSetImmediate) {
+                     if (canSetTimeOut) {
                         return function nextTick(fn) {setTimeout(fn, 0);};
                      }
                      
@@ -81,6 +82,57 @@
  
     process.version = 'v0.12.9';
     process.execArgv = ['--nodekit'];
+   process.arch = 'x64';
+ process.umask = function(){return parseInt('0777', 8);}
+ process._needImmediateCallbackValue = false;
+ 
+ Object.defineProperty( process, '_needImmediateCallback', {
+                       get: function() {
+                       return process._needImmediateCallbackValue;
+                       },
+                       set: function(v) {
+                       process._needImmediateCallbackValue = (v?true:false);
+                       if (v)
+                       process.nextTick(process.checkImmediate);
+                       }
+                       });
+ 
+ process.checkImmediate = function() {
+    this._immediateCallback();
+    this._needImmediateCallbackValue = false;
+ }.bind(process)  ;
+	
+ 
+ io.nodekit.console.log('platform: ' + process.platform)
+ 
+/*if ('undefined' === typeof window)
+ {
+   window = {}
+ }*/
+ 
+ if (!global.crypto)
+ {
+   global.crypto = {}
+ }
+ 
+ 
+ if (!global.crypto.randomBytes)
+ {
+ global.crypto.randomBytes = function(size){
+ return new Buffer(io.nodekit.crypto.getRandomBytes(size));
+ };
+ }
+ 
+ if (!global.crypto.getRandomValues)
+ {
+ 
+ // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+    global.crypto.getRandomValues = function(bytes){
+    var buf = new Buffer(io.nodekit.crypto.getRandomBytes(bytes.length))
+    buf.copy(bytes);
+ };
+ }
+
  
  if (Error.captureStackTrace === undefined) {
  Error.captureStackTrace = function (obj) {
