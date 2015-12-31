@@ -78,7 +78,7 @@ io.nodekit.cancelContext = invoke.cancelContext;
 io.nodekit.createServer = invoke.createServer;
 
 process.package =  module._load('app/package.json', null, false);
-
+process.argv = ["node", __dirname + "/" + process.package['main']]
 module._load(process.package['main'], null, true);
 
 io.nodekit.console.setTimeout(1, function(){

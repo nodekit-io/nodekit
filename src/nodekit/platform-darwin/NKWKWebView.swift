@@ -80,7 +80,6 @@ public class NKWKWebView: NSObject, WKScriptMessageHandler {
          NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
          NSURLProtocol.registerClass(NKUrlProtocolCustom)
         
-        
         NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
             webview.loadHTMLString(msg!, baseURL: NSURL(string: "about:blank"))
             return
