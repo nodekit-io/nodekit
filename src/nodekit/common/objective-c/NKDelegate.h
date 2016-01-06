@@ -2,6 +2,7 @@
  * nodekit.io
  *
  * Copyright (c) 2016 OffGrid Networks. All Rights Reserved.
+ * Portions Copyright (c) 2014 Intel Corporation.  All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,11 +17,17 @@
  * limitations under the License.
  */
 
+#import <Foundation/Foundation.h>
 
+@class NKChannel;
 
-//require('test/index.js');
+@protocol NKDelegate<NSObject>
 
-//require('default/index.js');
-require('default/http.js');
+@optional
+- (void)invokeNativeMethod:(NSString *)name arguments:(NSArray *)args;
+- (void)setNativeProperty:(NSString *)name value:(id)value;
+- (NSString*)didGenerateStub:(NSString*)stub;
+- (void)didBindExtension:(NKChannel*)channel instance:(NSInteger)instance;
+- (void)didUnbindExtension;
 
-//require('demo/index.js');
+@end

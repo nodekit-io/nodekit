@@ -16,11 +16,13 @@
  * limitations under the License.
  */
 
+var Startup = function Startup() {
+    console.log("hello");
+    try { sample.hello.show("Hello, world!"); } catch (ex) {console.log(ex.stack); }
+    return 42;
+ }
 
 
-//require('test/index.js');
+return Startup();
 
-//require('default/index.js');
-require('default/http.js');
 
-//require('demo/index.js');

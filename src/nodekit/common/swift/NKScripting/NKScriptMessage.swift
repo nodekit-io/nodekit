@@ -16,13 +16,23 @@
 * limitations under the License.
 */
 
-import UIKit
-
-public class NKMainMobile {
+public class NKScriptMessage : NSObject {
+    public var body : AnyObject;
+    public var name : String
     
-    public class func start () {
-        
-        UIApplicationMain(Process.argc, Process.unsafeArgv, NSStringFromClass(UIApplication), NSStringFromClass(NKUIAppDelegate))
-        
-        }
+    init(name: String, body: AnyObject){
+        self.body = body;
+        self.name = name;
+    }
 }
+
+public protocol NKScriptMessageHandler {
+    func userContentController(userContentController: NKScriptContentController,
+        didReceiveScriptMessage message: NKScriptMessage)
+}
+
+public protocol NKScriptContentController : class {
+    func addScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
+    func removeScriptMessageHandlerForName (name: String)
+}
+

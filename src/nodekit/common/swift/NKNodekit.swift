@@ -1,7 +1,7 @@
 /*
 * nodekit.io
 *
-* Copyright (c) 2015 Domabo. All Rights Reserved.
+* Copyright (c) 2016 OffGrid Networks. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 */
 import Foundation
 import JavaScriptCore
+import WebKit
 
 struct NKGlobals {
     static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
@@ -27,9 +28,11 @@ public class NKNodeKit {
     public init()
     {
         self.context = nil;
+        self.webview = nil;
     }
     
     var context : JSContext?;
+    var webview: WKWebView?;
     
     public class func start() {
        #if os(iOS)
@@ -40,6 +43,30 @@ public class NKNodeKit {
     }
     
     public func run() {
+        
+        NKJSContextFactory.createWKContext( { (webview: WKWebView!) -> () in
+            
+            self.webview = webview;
+ 
+            let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
+            
+            let url = _nodeKitBundle.pathForResource("_nk_boot", ofType: "js", inDirectory: "lib")
+            
+            let bootstrapper = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding);
+            
+      //      let nsurl: NSURL = NSURL(fileURLWithPath: url!)
+            webview.evaluateJavaScript(bootstrapper! as String, completionHandler: nil)
+            
+            webview.evaluateJavaScript("console.log('WKWebView JS Call!')", completionHandler: { (address: AnyObject?, error: NSError?) -> Void in
+                print("callback");
+                print(address);
+                print(error);
+            })
+            
+     
+            
+        });
+
         
      NKJSContextFactory.createRegularContext( { (context: JSContext!) -> () in
             
