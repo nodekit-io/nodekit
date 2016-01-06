@@ -18,27 +18,25 @@
 * limitations under the License.
 */
 
+import Foundation
 import WebKit
 
-class NKWVScript {
-    weak var webView: NKWebView?
-    let wkScript: WKUserScript
+class NKWVUserScript {
+    weak var webView: WKWebView?
+    let wkscript: WKUserScript
     let cleanup: String?
-    let namespace: String?
 
-    init(context: NKWebView, script: NKScript) {
-        
-        let time = WKUserScriptInjectionTime.AtDocumentStart
-        let wkScript = WKUserScript(source: script.source, injectionTime: time, forMainFrameOnly: true)
-         cleanup = script.cleanup;
-         namespace = script.namespace;
-        
+    init(context: WKWebView, script: NKScriptSource) {
         self.webView = context
-        self.wkScript = wkScript
-                
+        self.cleanup = script.cleanup
+         
+        self.wkscript = WKUserScript(source: script.source,
+            injectionTime: WKUserScriptInjectionTime.AtDocumentStart,
+            forMainFrameOnly: true)
+        
         inject()
     }
-   
+
     deinit {
         eject()
     }
@@ -47,18 +45,17 @@ class NKWVScript {
         guard let webView = webView else { return }
 
         // add to userContentController
-        webView.configuration.userContentController.addUserScript(wkScript)
+        webView.configuration.userContentController.addUserScript(wkscript)
 
         // inject into current context
         if webView.URL != nil {
-            webView.evaluateJavaScript(wkScript.source) {
+            webView.evaluateJavaScript(wkscript.source) {
                 if let error = $1 {
                     log("!Failed to inject script. \(error)")
                 }
             }
         }
     }
-    
     private func eject() {
         guard let webView = webView else { return }
 
@@ -67,7 +64,7 @@ class NKWVScript {
         let userScripts = controller.userScripts
         controller.removeAllUserScripts()
         userScripts.forEach {
-            if $0 != self.wkScript { controller.addUserScript($0) }
+            if $0 != self.wkscript { controller.addUserScript($0) }
         }
 
         if webView.URL != nil, let cleanup = cleanup {

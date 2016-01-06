@@ -185,7 +185,7 @@ NKScripting.prototype = {
         while (this.$references[this.$lastRefID] != undefined)
             ++this.$lastRefID;
         this.$references[this.$lastRefID] = obj;
-        return {'$sig': 0x4E4B5756, '$ref': this.$lastRefID++};
+        return {'$sig': 0x5857574F, '$ref': this.$lastRefID++};
     },
     $releaseObject: function(refid) {
         delete this.$references[refid];
@@ -208,5 +208,4 @@ NKScripting.prototype = {
         this.__proto__ = Object.getPrototypeOf(this.__proto__);
     }
 }
-
-//# sourceURL=nkscripting.js
+//# sourceURL=io.nodekit.scripting/nkscripting.js

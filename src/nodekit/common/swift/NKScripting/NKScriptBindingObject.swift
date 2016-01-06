@@ -19,6 +19,7 @@
 */
 
 import Foundation
+import ObjectiveC
 
 class NKScriptBindingObject : NKScriptObject {
     private let key = unsafeAddressOf(NKScriptObject)
@@ -156,7 +157,7 @@ class NKScriptBindingObject : NKScriptObject {
 
     // KVO for syncing properties
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        guard let context = self.context, var prop = keyPath else { return }
+        guard let scriptContext = self.context, var prop = keyPath else { return }
         if channel.typeInfo[prop] == nil {
             if let scriptNameForKey = (object.dynamicType as? NKScriptPlugin.Type)?.scriptNameForKey {
                 prop = prop.withCString(scriptNameForKey) ?? prop
@@ -164,7 +165,7 @@ class NKScriptBindingObject : NKScriptObject {
             assert(channel.typeInfo[prop] != nil)
         }
         let script = "\(namespace).$properties['\(prop)'] = \(serialize(change?[NSKeyValueChangeNewKey]))"
-        context.evaluateJavaScript(script, completionHandler: nil)
+        scriptContext.evaluateJavaScript(script, completionHandler: nil)
     }
 }
 

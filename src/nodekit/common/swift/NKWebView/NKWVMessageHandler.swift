@@ -25,18 +25,16 @@ public class NKWVMessageHandler : NSObject, WKScriptMessageHandler {
     
     private var name: String
     private var messageHandler: NKScriptMessageHandler
-    private var scriptContentController: NKScriptContentController
     
-    init(name: String, messageHandler: NKScriptMessageHandler, scriptContentController: NKScriptContentController) {
+    init(name: String, messageHandler: NKScriptMessageHandler) {
         self.messageHandler = messageHandler
-        self.scriptContentController = scriptContentController
         self.name = name
     }
     
-    public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
+   public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         // A workaround for crash when postMessage(undefined)
         guard unsafeBitCast(message.body, COpaquePointer.self) != nil else { return }
         
-        messageHandler.userContentController(scriptContentController, didReceiveScriptMessage: NKScriptMessage(name: name, body: message.body))
+        messageHandler.userContentController(didReceiveScriptMessage: NKScriptMessage(name: name, body: message.body))
     }
 }

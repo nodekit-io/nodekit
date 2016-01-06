@@ -21,11 +21,12 @@
 import Foundation
 
 public class NKScriptObject : NSObject {
+
     public let namespace: String
     public unowned let channel: NKScriptChannel
     public var context: NKScriptContext? { return channel.context }
     weak var origin: NKScriptObject!
-
+    
     // This object is a plugin object.
     init(namespace: String, channel: NKScriptChannel, origin: NKScriptObject?) {
         self.namespace = namespace
@@ -33,7 +34,7 @@ public class NKScriptObject : NSObject {
         super.init()
         self.origin = origin ?? self
     }
-
+    
     // The object is a stub for a JavaScript object which was retained as an argument.
     private var reference = 0
     convenience init(reference: Int, channel: NKScriptChannel, origin: NKScriptObject) {
@@ -41,7 +42,7 @@ public class NKScriptObject : NSObject {
         self.init(namespace: namespace, channel: channel, origin: origin)
         self.reference = reference
     }
-
+    
     deinit {
         let script: String
         if reference == 0 {
@@ -54,7 +55,7 @@ public class NKScriptObject : NSObject {
         }
         context?.evaluateJavaScript(script, completionHandler: nil)
     }
-
+    
     // Evaluate JavaScript expression
     public func evaluateExpression(expression: String) throws -> AnyObject? {
         return wrapScriptObject(try context?.evaluateJavaScript(scriptForRetaining(expression)))
@@ -75,9 +76,9 @@ public class NKScriptObject : NSObject {
     private func scriptForRetaining(script: String) -> String {
         return origin != nil ? "\(origin.namespace).$retainObject(\(script))" : script
     }
-
+    
     func wrapScriptObject(object: AnyObject!) -> AnyObject! {
-        if let dict = object as? [String: AnyObject] where dict["$sig"] as? NSNumber == 0x4E4B5756 {
+        if let dict = object as? [String: AnyObject] where dict["$sig"] as? NSNumber == 0x5857574F {
             if let num = dict["$ref"] as? NSNumber {
                 return NKScriptObject(reference: num.integerValue, channel: channel, origin: self)
             } else if let namespace = dict["$ns"] as? String {
@@ -86,13 +87,13 @@ public class NKScriptObject : NSObject {
         }
         return object
     }
-
+    
     func serialize(object: AnyObject?) -> String {
         var obj: AnyObject? = object
         if let val = obj as? NSValue {
             obj = val as? NSNumber ?? val.nonretainedObjectValue
         }
-
+        
         if let o = obj as? NKScriptObject {
             return o.namespace
         } else if let s = obj as? String {
@@ -119,7 +120,7 @@ public class NKScriptObject : NSObject {
         }
         return "'\(obj!.description)'"
     }
-
+    
     // JavaScript object operations
     public func construct(arguments arguments: [AnyObject]?, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         let exp = "new " + scriptForCallingMethod(nil, arguments: arguments)
@@ -133,7 +134,7 @@ public class NKScriptObject : NSObject {
         let exp = scriptForCallingMethod(name, arguments: arguments)
         evaluateExpression(exp, completionHandler: completionHandler)
     }
-    
+
     public func construct(arguments arguments: [AnyObject]?) throws -> AnyObject {
         let exp = "new \(scriptForCallingMethod(nil, arguments: arguments))"
         guard let result = try evaluateExpression(exp) else {
@@ -154,7 +155,7 @@ public class NKScriptObject : NSObject {
     public func callMethod(name: String, withArguments arguments: [AnyObject]?, error: NSErrorPointer) -> AnyObject! {
         return evaluateExpression(scriptForCallingMethod(name, arguments: arguments), error: error)
     }
-    
+
     public func defineProperty(name: String, descriptor: [String:AnyObject]) -> AnyObject? {
         let exp = "Object.defineProperty(\(namespace), \(name), \(serialize(descriptor)))"
         return try! evaluateExpression(exp)
@@ -167,7 +168,7 @@ public class NKScriptObject : NSObject {
         let result: AnyObject? = try! evaluateExpression("\(scriptForFetchingProperty(name)) != undefined")
         return (result as? NSNumber)?.boolValue ?? false
     }
-    
+
     public func value(forProperty name: String) -> AnyObject? {
         return try! evaluateExpression(scriptForFetchingProperty(name))
     }
@@ -180,7 +181,7 @@ public class NKScriptObject : NSObject {
     public func setValue(value: AnyObject?, atIndex index: UInt) {
         context?.evaluateJavaScript("\(namespace)[\(index)] = \(serialize(value))", completionHandler: nil)
     }
-    
+
     private func scriptForFetchingProperty(name: String!) -> String {
         if name == nil {
             return namespace

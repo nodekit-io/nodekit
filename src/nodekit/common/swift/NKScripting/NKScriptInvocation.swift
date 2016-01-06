@@ -19,6 +19,7 @@
 */
 
 import Foundation
+import ObjectiveC
 
 public class NKScriptInvocation {
     public final let target: AnyObject
@@ -57,7 +58,7 @@ public class NKScriptInvocation {
     public func call(selector: Selector, withArguments arguments: [Any!] = []) -> Any! {
         return invoke(target, selector: selector, withArguments: arguments, onThread: thread)
     }
-
+    // No callback support, so return value is expected to lose.
     public func asyncCall(selector: Selector, withArguments arguments: [Any!] = []) {
         if queue == nil {
             invoke(target, selector: selector, withArguments: arguments, onThread: thread, waitUntilDone: false)

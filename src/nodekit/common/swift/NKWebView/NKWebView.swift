@@ -18,38 +18,39 @@
 * limitations under the License.
 */
 
+import Foundation
+import ObjectiveC
 import WebKit
 
-public class NKWebView: WKWebView, NKScriptContext, NKScriptContentController  {
-    
-    public var ScriptContentController: NKScriptContentController?
-    
+public class NKWebView: WKWebView {}
+
+extension NKWebView: NKScriptContext {
     public func loadPlugin(object: AnyObject, namespace: String) -> NKScriptObject? {
         let channel = NKScriptChannel(context: self)
         return channel.bindPlugin(object, toNamespace: namespace)
     }
-    
-    public func prepareForPlugin() {
-        let key = unsafeAddressOf(NKScriptChannel)
-        if objc_getAssociatedObject(self, key) != nil { return }
-        
-        ScriptContentController = self;
-        
-        let bundle = NSBundle(forClass: NKWebView.self)
-        guard let path = bundle.pathForResource("nkscripting", ofType: "js"),
-            let source = try? NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) else {
-                die("Failed to read provision script: nkscripting")
-        }
-        
-        let nkPlugin = self.injectJavaScript(NKScript(source: source as String, asFilename: path, namespace: "NKScripting"))
-        objc_setAssociatedObject(self, key, nkPlugin, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        log("+WKWebView(\(unsafeAddressOf(self))) is ready for loading plugins")
+}
+
+extension NKWebView {
+    public func addScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
+    {
+         let handler : WKScriptMessageHandler = NKWVMessageHandler(name: name, messageHandler: scriptMessageHandler)
+        self.configuration.userContentController.addScriptMessageHandler(handler, name: name)
     }
     
-    public func injectJavaScript(script: NKScript) -> AnyObject {
-        return NKWVScript(context: self, script: script)
+    public func removeScriptMessageHandlerForName (name: String)
+    {
+        self.configuration.userContentController.removeScriptMessageHandlerForName(name)
     }
-    
+}
+
+extension NKWebView {
+    public func injectJavaScript(script: NKScriptSource) -> AnyObject {
+        return NKWVUserScript(context: (self as WKWebView), script: script)
+    }
+    // Synchronized evaluateJavaScript
+    // It returns nil if script is a statement or its result is undefined.
+    // So, Swift cannot map the throwing method to Objective-C method.
     public func evaluateJavaScript(script: String) throws -> AnyObject? {
         var result: AnyObject?
         var error: NSError?
@@ -96,7 +97,8 @@ public class NKWebView: WKWebView, NKScriptContext, NKScriptContentController  {
         }
         return result
     }
-    
+
+    // Wrapper method of synchronized evaluateJavaScript for Objective-C
     public func evaluateJavaScript(script: String, error: NSErrorPointer) -> AnyObject? {
         var result: AnyObject?
         var err: NSError?
@@ -108,40 +110,6 @@ public class NKWebView: WKWebView, NKScriptContext, NKScriptContentController  {
         if error != nil { error.memory = err }
         return result
     }
-    
-    public func addScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
-    {
-        let webview = self as WKWebView
-        let handler : WKScriptMessageHandler = NKWVMessageHandler(name: name, messageHandler: scriptMessageHandler, scriptContentController: self)
-        webview.configuration.userContentController.addScriptMessageHandler(handler, name: name)
-        
-    }
-    
-    public func removeScriptMessageHandlerForName (name: String)
-    {
-       let webview = self as WKWebView
-        webview.configuration.userContentController.removeScriptMessageHandlerForName(name)
-    }
 }
 
-extension NKWebView: WKUIDelegate {
-     private func _alert(title title: String?, message: String?) {
-        let myPopup: NSAlert = NSAlert()
-        myPopup.messageText = message ?? "NodeKit"
-        myPopup.informativeText = title!
-        myPopup.alertStyle = NSAlertStyle.WarningAlertStyle
-        myPopup.addButtonWithTitle("OK")
-        myPopup.runModal()
-    }
-    
-    public func webView(webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: () -> Void) {
 
-        _alert(title: self.title, message: message)
-    }
-    
-    public func webView(webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: (String?) -> Void) {
-        
-            completionHandler("hello from native;  you sent: " + prompt);
-
-    }
-}

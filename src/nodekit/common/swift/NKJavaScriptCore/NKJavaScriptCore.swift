@@ -20,71 +20,23 @@
 
 import JavaScriptCore
 
+public class NKJavaScriptCore: JSContext {}
 
-
-public class NKJavaScriptCore: JSContext, NKScriptContext, NKScriptContentController {
-    
-   public var ScriptContentController: NKScriptContentController?
-    
+extension NKJavaScriptCore: NKScriptContext {
     public func loadPlugin(object: AnyObject, namespace: String) -> NKScriptObject? {
-         let channel = NKScriptChannel(context: self)
+        let channel = NKScriptChannel(context: self)
         return channel.bindPlugin(object, toNamespace: namespace)
     }
-    
-    public func evaluateJavaScript(javaScriptString: String,
-        completionHandler: ((AnyObject?,
-        NSError?) -> Void)?) {
-            
-            let result = self.evaluateScript(javaScriptString);
-            completionHandler?(result, nil);
-    }
-    
-    
-    public func prepareForPlugin () {
-        let key = unsafeAddressOf(NKScriptChannel)
-        if objc_getAssociatedObject(self, key) != nil { return }
-        
-        ScriptContentController = self;
-        
-        let bundle = NSBundle(forClass: NKScriptChannel.self)
-        guard let path = bundle.pathForResource("nkscripting", ofType: "js"),
-            let source = try? NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) else {
-                die("Failed to read provision script: nkwebview")
-        }
-        
-        let nkPlugin = self.injectJavaScript(NKScript(source: source as String, asFilename: path, namespace: "NKScripting"))
-        objc_setAssociatedObject(self, key, nkPlugin, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        log("+WKWebView(\(unsafeAddressOf(self))) is ready for loading plugins")
-    }
-    
-    public func injectJavaScript(script: NKScript) -> AnyObject {
-        return NKJSCScript(context: self, script: script)
-    }
+}
 
-    public func evaluateJavaScript(script: String) throws -> AnyObject? {
-        let result = evaluateScript(script)
-        return result
-    }
-
-    public func evaluateJavaScript(script: String, error: NSErrorPointer) -> AnyObject? {
-        var result: AnyObject?
-        var err: NSError?
-        do {
-            result = try evaluateJavaScript(script)
-        } catch let e as NSError {
-            err = e
-        }
-        if error != nil { error.memory = err }
-        return result
-    }
-    
+extension NKJavaScriptCore {
     public func addScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
     {
         let context: JSContext = self
+        let name = name;
         
         guard let messageHandlers = context.valueForKey("NKScripting")?.valueForKey("messageHandlers") else {return }
-            
-  
+        
         var namedHandler : JSValue;
         if (messageHandlers.hasProperty(name))
         {
@@ -95,7 +47,7 @@ public class NKJavaScriptCore: JSContext, NKScriptContext, NKScriptContentContro
         }
         
         let postMessage: @convention(block) [String: AnyObject] -> () = { body in
-            scriptMessageHandler.userContentController(self, didReceiveScriptMessage: NKScriptMessage(name: name, body: body))
+            scriptMessageHandler.userContentController(didReceiveScriptMessage: NKScriptMessage(name: name, body: body))
         }
         
         namedHandler.setValue(unsafeBitCast(postMessage, AnyObject.self), forProperty: "postMessage:")
@@ -108,7 +60,37 @@ public class NKJavaScriptCore: JSContext, NKScriptContext, NKScriptContentContro
         let cleanup = "delete nkNodeKit.messageHandlers.\(name)"
         context.evaluateScript(cleanup)
     }
-    
 }
 
+extension NKJavaScriptCore {
+    
+    public func injectJavaScript(script: NKScriptSource) -> AnyObject {
+        return NKJSCScript(context: self, script: script)
+    }
+    
+    public func evaluateJavaScript(javaScriptString: String,
+        completionHandler: ((AnyObject?,
+        NSError?) -> Void)?) {
+            
+            let result = self.evaluateScript(javaScriptString);
+            completionHandler?(result, nil);
+    }
+   
+    public func evaluateJavaScript(script: String) throws -> AnyObject? {
+        let result = evaluateScript(script)
+        return result
+    }
+    
+    public func evaluateJavaScript(script: String, error: NSErrorPointer) -> AnyObject? {
+        var result: AnyObject?
+        var err: NSError?
+        do {
+            result = try evaluateJavaScript(script)
+        } catch let e as NSError {
+            err = e
+        }
+        if error != nil { error.memory = err }
+        return result
+    }
 
+}

@@ -18,19 +18,15 @@
 * limitations under the License.
 */
 
-import WebKit
-
 class NKJSCScript {
     weak var context: NKScriptContext?
     let source: String
     let cleanup: String?
-    let namespace: String?
     
-    init(context: NKScriptContext, script: NKScript) {
+    init(context: NKScriptContext, script: NKScriptSource) {
         self.context = context
         self.source = script.source
         self.cleanup = script.cleanup;
-        self.namespace = script.namespace;
         
         inject()
     }

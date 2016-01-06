@@ -27,12 +27,5 @@ public class NKScriptMessage : NSObject {
 }
 
 public protocol NKScriptMessageHandler {
-    func userContentController(userContentController: NKScriptContentController,
-        didReceiveScriptMessage message: NKScriptMessage)
+    func userContentController(didReceiveScriptMessage message: NKScriptMessage)
 }
-
-public protocol NKScriptContentController : class {
-    func addScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
-    func removeScriptMessageHandlerForName (name: String)
-}
-

@@ -21,13 +21,13 @@
 import Foundation
 
 public protocol NKScriptContext: class {
-    var ScriptContentController: NKScriptContentController? {get set}
     func loadPlugin(object: AnyObject, namespace: String) -> NKScriptObject?
-    func prepareForPlugin ()
     func evaluateJavaScript(javaScriptString: String,
         completionHandler: ((AnyObject?,
         NSError?) -> Void)?)
     func evaluateJavaScript(script: String) throws -> AnyObject?
     func evaluateJavaScript(script: String, error: NSErrorPointer) -> AnyObject?
-    func injectJavaScript(script: NKScript) -> AnyObject
+    func injectJavaScript(script: NKScriptSource) -> AnyObject
+    func addScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
+    func removeScriptMessageHandlerForName (name: String)
 }

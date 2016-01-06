@@ -19,6 +19,7 @@
 */
 
 import Foundation
+import ObjectiveC
 
 class NKScriptMetaObject: CollectionType {
     enum Member {

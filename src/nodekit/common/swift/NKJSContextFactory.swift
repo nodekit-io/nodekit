@@ -31,7 +31,16 @@ struct NKJSContextFactory {
         callback(context)
     }
     
-    static func createWKContext(callback: (WKWebView!)-> () )
+    static func createJavaScriptCoreContext(callback: (NKScriptContext!)-> () )
+    {
+      print("Starting NK javascriptcore native engine")
+       let vm = JSVirtualMachine()
+       let context = NKJavaScriptCore(virtualMachine: vm)
+        
+        callback(context)
+    }
+    
+    static func createWKWebKitContext(callback: (NKScriptContext!)-> () )
     {
         let width: CGFloat = 400
         let height: CGFloat = 300
@@ -76,7 +85,7 @@ struct NKJSContextFactory {
         mainWindow.title = "NodeKit VM"
         webview.autoresizingMask = [NSAutoresizingMaskOptions.ViewWidthSizable, NSAutoresizingMaskOptions.ViewHeightSizable]
         
-   //     webview.loadPlugin(HelloWorld(), namespace: "io.nodekit")
+        webview.loadPlugin(HelloWorld(), namespace: "io.nodekit")
     //    let url = NSURL(string: "http://nodekit.io" as String)
     //    let requestObj: NSURLRequest = NSURLRequest(URL: url!)
       //  webview.loadRequest(requestObj)
@@ -87,7 +96,11 @@ struct NKJSContextFactory {
     }
 }
 
-class HelloWorld {
+class HelloWorld : NSObject {
+    override init()
+    {
+        super.init()
+    }
     @objc func alert(text: AnyObject?) -> String  {
          dispatch_async(dispatch_get_main_queue()) {
             _alert(title: text as? String, message: nil)
@@ -103,4 +116,26 @@ private func _alert(title title: String?, message: String?) {
     myPopup.alertStyle = NSAlertStyle.WarningAlertStyle
     myPopup.addButtonWithTitle("OK")
     myPopup.runModal()
+}
+
+extension NKWebView: WKUIDelegate {
+    private func _alert(title title: String?, message: String?) {
+        let myPopup: NSAlert = NSAlert()
+        myPopup.messageText = message ?? "NodeKit"
+        myPopup.informativeText = title!
+        myPopup.alertStyle = NSAlertStyle.WarningAlertStyle
+        myPopup.addButtonWithTitle("OK")
+        myPopup.runModal()
+    }
+    
+    public func webView(webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: () -> Void) {
+        
+        _alert(title: self.title, message: message)
+    }
+    
+    public func webView(webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: (String?) -> Void) {
+        
+        completionHandler("hello from native;  you sent: " + prompt);
+        
+    }
 }

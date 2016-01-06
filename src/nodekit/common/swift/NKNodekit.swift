@@ -28,11 +28,13 @@ public class NKNodeKit {
     public init()
     {
         self.context = nil;
+        self.context2 = nil;
         self.webview = nil;
     }
     
     var context : JSContext?;
-    var webview: WKWebView?;
+    var context2 : NKScriptContext?;
+    var webview: NKScriptContext?;
     
     public class func start() {
        #if os(iOS)
@@ -44,7 +46,7 @@ public class NKNodeKit {
     
     public func run() {
         
-        NKJSContextFactory.createWKContext( { (webview: WKWebView!) -> () in
+        NKJSContextFactory.createWKWebKitContext( { (webview: NKScriptContext!) -> () in
             
             self.webview = webview;
  
@@ -57,7 +59,7 @@ public class NKNodeKit {
       //      let nsurl: NSURL = NSURL(fileURLWithPath: url!)
             webview.evaluateJavaScript(bootstrapper! as String, completionHandler: nil)
             
-            webview.evaluateJavaScript("console.log('WKWebView JS Call!')", completionHandler: { (address: AnyObject?, error: NSError?) -> Void in
+            webview.evaluateJavaScript("console.log('NKWebView JS Call!')", completionHandler: { (address: AnyObject?, error: NSError?) -> Void in
                 print("callback");
                 print(address);
                 print(error);
@@ -66,7 +68,27 @@ public class NKNodeKit {
      
             
         });
-
+        
+     /*  NKJSContextFactory.createJavaScriptCoreContext( { (context2: NKScriptContext!) -> () in
+            
+            self.context2 = context2;
+            
+            let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
+            
+            let url = _nodeKitBundle.pathForResource("_nk_boot", ofType: "js", inDirectory: "lib")
+            
+            let bootstrapper = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding);
+            
+            //      let nsurl: NSURL = NSURL(fileURLWithPath: url!)
+            context2.evaluateJavaScript(bootstrapper! as String, completionHandler: nil)
+            
+            context2.evaluateJavaScript("console.log('NKJavaScriptCore JS Call!')", completionHandler: { (address: AnyObject?, error: NSError?) -> Void in
+                print("callback");
+                print(address);
+                print(error);
+            })
+        });
+*/
         
      NKJSContextFactory.createRegularContext( { (context: JSContext!) -> () in
             

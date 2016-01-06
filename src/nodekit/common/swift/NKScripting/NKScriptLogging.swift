@@ -131,11 +131,10 @@ public class NKScriptLogging : NKScriptPlugin {
 private let logger = NKScriptLogging(facility: "io.nodekit.scripting")
 func log(message: String, level: NKScriptLogging.Level? = nil) {
     logger.log(message, level: level)
-    print(message)
+    print(message);
 }
 
 @noreturn func die(@autoclosure message: ()->String, file: StaticString = __FILE__, line: UInt = __LINE__) {
     logger.log(message(), level: .Alert)
-     print(message)
     fatalError(message, file: file, line: line)
 }
