@@ -36,7 +36,7 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationWillTerminate(aNotification: NSNotification) {
-        print("EXIT")
+        log("EXIT")
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {

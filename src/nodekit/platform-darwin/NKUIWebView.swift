@@ -96,6 +96,10 @@ public class NKUIWebView: NSObject, WebUIDelegate {
             self.mainWindow.setFrame(frameRect, display: true,animate: true)
                  return
         });*/
+        webview.frameLoadDelegate = NKWebFrameLoadDelegate(callback: { (webview: NKScriptContext!) -> () in
+            
+            print("NKSCRIPTCONTEXT FOUND");
+        });
         
           
         let url = NSURL(string: urlAddress as String)
@@ -122,5 +126,6 @@ public class NKUIWebView: NSObject, WebUIDelegate {
         })
     }
     
+   
     
 }

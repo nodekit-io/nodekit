@@ -29,8 +29,8 @@ class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = NKWKViewController();
         window?.makeKeyAndVisible()
         
-        _nodekit = NKNodeKit()
-        _nodekit!.run();
+       _nodekit = NKNodeKit()
+       _nodekit!.run();
         return true
     }
     
@@ -54,7 +54,7 @@ class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        print("EXIT")
+        log("EXIT")
     }
     
 }

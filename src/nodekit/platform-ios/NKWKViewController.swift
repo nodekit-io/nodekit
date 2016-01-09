@@ -22,6 +22,7 @@ import WebKit
  public class NKWKViewController: UIViewController, WKScriptMessageHandler {
     
     private var webView: WKWebView?
+    private var webView2: UIWebView?
     
     override public func loadView() {
        let config = WKWebViewConfiguration()
@@ -66,7 +67,7 @@ import WebKit
         NSURLProtocol.registerClass(NKUrlProtocolCustom)
         
         NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
-            self.webView!.loadHTMLString(msg!, baseURL: NSURL(string: "about:blank"))
+            self.webView!.loadHTMLString(msg!, baseURL: NSURL(string: "nodekit:renderer"))
             return
         })
         
@@ -81,7 +82,22 @@ import WebKit
         let requestObj: NSURLRequest = NSURLRequest(URL: url)
         webView!.loadRequest(requestObj)
         view = webView
+   
         
+  /*      let id = NKJSContextFactory.sequenceNumber
+        log("+Starting NodeKit UIWebView-JavaScriptCore JavaScript Engine \(id)")
+        let webView:UIWebView = UIWebView(frame: CGRectZero)
+        var item = Dictionary<String, AnyObject>()
+        
+        webView.opaque = false;
+        webView.backgroundColor = UIColor.clearColor()
+
+        NKJSContextFactory._contexts[id] = item;
+        webView.delegate = NKUIWebViewDelegate(webView: webView, delegate: self);
+        
+         webView.loadHTMLString("<HTML><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
+        item["UIWebView"] = webView
+        view = webView */
     }
     
     override public func viewDidLoad() {
@@ -99,7 +115,7 @@ import WebKit
     
   public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage)
     {
-        print(message.description)
+        log(message.description)
     }
     
 }

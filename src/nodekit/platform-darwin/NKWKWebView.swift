@@ -102,7 +102,7 @@ public class NKWKWebView: NSObject, WKScriptMessageHandler {
     
     public func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage)
     {
-        print(message.description)
+        log(message.description)
     }
     
     public func close()

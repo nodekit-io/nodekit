@@ -16,13 +16,8 @@
  * limitations under the License.
  */
 
-var Startup = function Startup() {
-    console.log("hello");
-    try { sample.hello.show("Hello, world!"); } catch (ex) {console.log(ex.stack); }
-    return 42;
+var nk_boot = function nk_boot() {
+    console.log("_nk_boot_ STARTUP");
  }
 
-
-return Startup();
-
-
+nk_boot();
