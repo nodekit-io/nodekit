@@ -21,3 +21,9 @@ var nk_boot = function nk_boot() {
  }
 
 nk_boot();
+
+var app = io.nodekit.app;
+
+app.on('ready', function(){
+       io.nodekit.console.alert('App is Ready');
+       })

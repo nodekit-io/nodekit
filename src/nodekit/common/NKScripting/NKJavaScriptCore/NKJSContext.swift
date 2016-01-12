@@ -20,9 +20,28 @@
 
 import JavaScriptCore
 
-extension JSContext: NKScriptContext {
+extension JSContext: NKScriptContextHost {
     
     public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
+    
+    public func NKgetScriptContext(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int{
+        let context = self;
+        
+        let id = NKJSContextFactory.sequenceNumber
+        
+        log("+NodeKit JavaScriptCore JavaScript Engine E\(id)")
+          objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        
+        cb.NKScriptEngineLoaded(context)
+        cb.NKApplicationReady(id, context: context)
+        
+        return id;
+    }
+}
+
+extension JSContext: NKScriptContext {
+
+    // public var NKid: Int ---- see NKScriptContextHost Extension
     
     public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {
         let bridge: NKScriptPluginType = NKScriptPluginType(rawValue: ((options["PluginBridge"] as? Int) ?? NKScriptPluginType.NKScriptPlugin.rawValue))!

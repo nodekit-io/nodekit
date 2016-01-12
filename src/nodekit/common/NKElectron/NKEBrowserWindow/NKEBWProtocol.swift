@@ -21,14 +21,14 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc protocol NKBrowserWindowProtocol: NKScriptPlugin {
+@objc protocol NKEBWProtocol: NKScriptPlugin {
     
     // Creates a new BrowserWindow with native properties as set by the options.
     init(options: Dictionary<String, AnyObject>)
     
     // class functions
-    static func getAllWindows() -> [NKBrowserWindowProtocol]
-    static func getFocusedWindow() -> NKBrowserWindowProtocol?
+    static func getAllWindows() -> [NKEBWProtocol]
+    static func getFocusedWindow() -> NKEBWProtocol?
     static func fromWebContents(webContents: AnyObject) -> AnyObject?
     static func fromContext(context: AnyObject) -> AnyObject?
     static func fromId(id: Int) -> AnyObject?

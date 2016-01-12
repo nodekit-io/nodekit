@@ -19,15 +19,15 @@
 import Foundation
 import WebKit
 
-extension NKBrowserWindow: WebUIDelegate {
+extension NKEBrowserWindow: WebUIDelegate {
     
     internal func createUIWebView(window: AnyObject, options: Dictionary<String, AnyObject>) -> Int {
         guard let window = window as? NSWindow else {return 0}
         
-        let urlAddress: String = (options[NKBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+        let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
         
-        let width: CGFloat = CGFloat((options[NKBrowserOptions.kWidth] as? Int) ?? 800)
-        let height: CGFloat = CGFloat((options[NKBrowserOptions.kHeight] as? Int) ?? 600)
+        let width: CGFloat = CGFloat((options[NKEBrowserOptions.kWidth] as? Int) ?? 800)
+        let height: CGFloat = CGFloat((options[NKEBrowserOptions.kHeight] as? Int) ?? 600)
         let viewRect : NSRect = NSMakeRect(0,0,width, height);
         
         // create WebView
@@ -54,7 +54,7 @@ extension NKBrowserWindow: WebUIDelegate {
        webView.UIDelegate = self
 
         window.contentView = webView
-       let id = NKJSContextFactory.useUIWebView(webView, options: [String: AnyObject](), delegate: self)
+       let id = webView.NKgetScriptContext( [String: AnyObject](), delegate: self)
         
       NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
         //  NSURLProtocol.registerClass(NKUrlProtocolCustom)

@@ -21,7 +21,7 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-extension NKBrowserWindow {
+extension NKEBrowserWindow {
         
     internal func createWindow(options: Dictionary<String, AnyObject>) -> AnyObject {
         let window = UIApplication.sharedApplication().delegate!.window!
@@ -29,7 +29,7 @@ extension NKBrowserWindow {
     }
 }
 
-extension NKBrowserWindow: NKBrowserWindowProtocol {
+extension NKEBrowserWindow: NKEBWProtocol {
     func destroy() -> Void { NotImplemented(); }
     func close() -> Void {NotImplemented();}
     

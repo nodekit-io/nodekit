@@ -20,12 +20,12 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-extension NKBrowserWindow {
+extension NKEBrowserWindow {
     
     internal func createWKWebView(window: AnyObject, options: Dictionary<String, AnyObject>) -> Int {
         guard let window = window as? UIWindow else {return 0;}
         
-        let urlAddress: String = (options[NKBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+        let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
         
         let url: NSURL?
         if (urlAddress == "file:///splash/views/StartupSplash.html")
@@ -57,7 +57,7 @@ extension NKBrowserWindow {
 
         window.rootViewController?.view = webView
         
-        let id = NKJSContextFactory.useWKWebView(webView, options: [String: AnyObject](), delegate: self)
+        let id = webView.NKgetScriptContext([String: AnyObject](), delegate: self)
         
          let requestObj: NSURLRequest = NSURLRequest(URL: url!)
        

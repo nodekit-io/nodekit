@@ -20,64 +20,20 @@ import Foundation
 import WebKit
 
 extension NKJSContextFactory {
-    func createContextWKWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
+    func createContextWKWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
     {
-        let id = NKJSContextFactory.sequenceNumber
-        
-        let createContextMainThread = {()-> Void in
-            log("+Starting NodeKit Nitro JavaScript Engine E\(id)")
-            
-            var item = Dictionary<String, AnyObject>()
-            NKJSContextFactory._contexts[id] = item;
-            
-            let config = WKWebViewConfiguration()
-            let webPrefs = WKPreferences()
-            webPrefs.javaScriptEnabled = true
-            webPrefs.javaScriptCanOpenWindowsAutomatically = true
-            
-            config.preferences = webPrefs
-            
-            let webView = WKWebView(frame: CGRectZero, configuration: config)
-            
-            webView.navigationDelegate = NKWKWebViewDelegate(id: id, webView: webView, delegate: cb);
-            
-            item["WKWebView"] = webView
-            
-            objc_setAssociatedObject(webView, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            
-            // must call callback before page load as all plugins need to be initialized at this stage to secure channel
-            cb.NKScriptEngineLoaded(webView)
-            
-            webView.loadHTMLString("<HTML><BODY>NodeKit WKWebView: VM \(id)</BODY></HTML>", baseURL: NSURL(string: "about: blank"))
-        }
-        
-        if (!NSThread.isMainThread())
-        {
-            createContextMainThread()
-        }
-        else
-        {
-            dispatch_async(dispatch_get_main_queue(), createContextMainThread)
-        }
-        return id;
-    }
-    
-    class func useWKWebView(webView: WKWebView, options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
-    {
-        let id = NKJSContextFactory.sequenceNumber
-        log("+Starting Renderer NodeKit Nitro JavaScript Engine E\(id)")
+        let config = WKWebViewConfiguration()
+        let webPrefs = WKPreferences()
+        webPrefs.javaScriptEnabled = true
+        webPrefs.javaScriptCanOpenWindowsAutomatically = true
+        config.preferences = webPrefs
+        let webView = WKWebView(frame: CGRectZero, configuration: config)
+        let id = webView.NKgetScriptContext(options, delegate: cb)
         
         var item = Dictionary<String, AnyObject>()
         NKJSContextFactory._contexts[id] = item;
+        item["WKWebView"] = self
         
-        webView.navigationDelegate = NKWKWebViewDelegate(id: id, webView: webView, delegate: cb);
-        
-        item["WKWebView"] = webView
-        
-        objc_setAssociatedObject(webView, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
-        // must call callback before page load as all plugins need to be initialized at this stage to secure channel
-        cb.NKScriptEngineLoaded(webView)
-        return id;
+        webView.loadHTMLString("<HTML><BODY>NodeKit WKWebView: VM \(id)</BODY></HTML>", baseURL: NSURL(string: "about: blank"))
     }
 }

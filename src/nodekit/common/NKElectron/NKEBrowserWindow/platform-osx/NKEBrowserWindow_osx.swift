@@ -21,12 +21,12 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-extension NKBrowserWindow {
+extension NKEBrowserWindow {
         
     internal func createWindow(options: Dictionary<String, AnyObject>) -> AnyObject {
-        let width: CGFloat = CGFloat((options[NKBrowserOptions.kWidth] as? Int) ?? NKDefaults.kWidth)
-        let height: CGFloat = CGFloat((options[NKBrowserOptions.kHeight] as? Int) ?? NKDefaults.kHeight)
-        let title: String = (options[NKBrowserOptions.kTitle] as? String) ?? NKDefaults.kTitle
+        let width: CGFloat = CGFloat((options[NKEBrowserOptions.kWidth] as? Int) ?? NKEBrowserDefaults.kWidth)
+        let height: CGFloat = CGFloat((options[NKEBrowserOptions.kHeight] as? Int) ?? NKEBrowserDefaults.kHeight)
+        let title: String = (options[NKEBrowserOptions.kTitle] as? String) ?? NKEBrowserDefaults.kTitle
         
         let windowRect : NSRect = (NSScreen.mainScreen()!).frame
         let frameRect : NSRect = NSMakeRect(
@@ -43,7 +43,7 @@ extension NKBrowserWindow {
     }
 }
 
-extension NKBrowserWindow: NKBrowserWindowProtocol {
+extension NKEBrowserWindow: NKEBWProtocol {
     func destroy() -> Void { NotImplemented(); }
     func close() -> Void {
         guard let window = objc_getAssociatedObject(self, unsafeAddressOf(NSWindow)) as? NSWindow else {return;}

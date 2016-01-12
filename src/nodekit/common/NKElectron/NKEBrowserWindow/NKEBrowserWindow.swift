@@ -1,9 +1,27 @@
+/*
+* nodekit.io
+*
+* Copyright (c) -> Void 2016 OffGrid Networks. All Rights Reserved.
+* Portions Copyright (c) 2013 GitHub, Inc. under MIT License
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 
 import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc class NKBrowserWindow: NSObject, NKScriptContextDelegate {
+@objc class NKEBrowserWindow: NSObject, NKScriptContextDelegate {
     
     private var _window: AnyObject?;
     private weak var _context: NKScriptContext?
@@ -21,10 +39,10 @@ import JavaScriptCore
         
         let createBlock = {() -> Void in
             
-            let browserType = NKBrowserType(rawValue: (options[NKBrowserOptions.nkBrowserType] as? String) ?? NKDefaults.nkBrowserType)!
+            let browserType = NKEBrowserType(rawValue: (options[NKEBrowserOptions.nkBrowserType] as? String) ?? NKEBrowserDefaults.nkBrowserType)!
             
             let window = self.createWindow(options);
-            NKBrowserWindow.windowArray.addObject(window)
+            NKEBrowserWindow.windowArray.addObject(window)
             self._window = window;
             
             switch browserType {
@@ -61,8 +79,8 @@ import JavaScriptCore
     }
     
     // class functions
-    static func getAllWindows() -> [NKBrowserWindowProtocol] { NotImplemented(); return [NKBrowserWindowProtocol]() }
-    static func getFocusedWindow() -> NKBrowserWindowProtocol?  { NotImplemented(); return nil }
+    static func getAllWindows() -> [NKEBWProtocol] { NotImplemented(); return [NKEBWProtocol]() }
+    static func getFocusedWindow() -> NKEBWProtocol?  { NotImplemented(); return nil }
     static func fromWebContents(webContents: AnyObject) -> AnyObject?  { NotImplemented(); return nil }
     static func fromContext(context: AnyObject) -> AnyObject?  { NotImplemented(); return nil }
     static func fromId(id: Int) -> AnyObject?  { NotImplemented(); return nil }
@@ -78,12 +96,12 @@ import JavaScriptCore
         }
     }
       
-    private static func NotImplemented() -> Void {
-        NSException(name: "NotImplemented", reason: "This function is not implemented", userInfo: nil).raise()
+    private static func NotImplemented(functionName: String = __FUNCTION__) -> Void {
+        log("!browserWindow.\(functionName) is not implemented");
     }
     
-    private func NotImplemented() -> Void {
-        NSException(name: "NotImplemented", reason: "This function is not implemented", userInfo: nil).raise()
+    private func NotImplemented(functionName: String = __FUNCTION__) -> Void {
+        log("!browserWindow.\(functionName) is not implemented");
     }
     
     func _getNativeWindow() -> AnyObject? { return _window; }

@@ -171,7 +171,7 @@ class NKScriptBindingObject : NKScriptObject {
 }
 
 public extension NSObject {
-    var scriptObject: NKScriptObject? {
+    var NKscriptObject: NKScriptObject? {
         return objc_getAssociatedObject(self, unsafeAddressOf(NKScriptObject)) as? NKScriptObject
     }
 }

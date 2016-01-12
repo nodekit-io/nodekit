@@ -19,12 +19,12 @@
 
 import Foundation
 
-public enum NKBrowserType : String {
+public enum NKEBrowserType : String {
     case WKWebView = "WKWebView"
     case UIWebView = "UIWebView"
 }
 
-struct NKDefaults {
+struct NKEBrowserDefaults {
     static let nkBrowserType: String = "WKWebView"
     static let kTitle: String = "NodeKit App"
     static let kWidth: Int = 800
@@ -32,7 +32,7 @@ struct NKDefaults {
     static let kPreloadURL: String = "https://google.com"
 }
 
-struct NKBrowserOptions {
+struct NKEBrowserOptions {
     static let nkBrowserType: String = "nk.browserType"
     static let kTitle: String = "title"
     static let kIcon: String = "icon"
@@ -102,7 +102,7 @@ struct NKBrowserOptions {
 }
 
 
-struct NKBrowserSwitches {
+struct NKEBrowserSwitches {
 
    // Enable plugins.
     static let kEnablePlugins: String = "enable-plugins"

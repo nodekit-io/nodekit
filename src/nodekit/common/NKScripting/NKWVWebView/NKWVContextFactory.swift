@@ -20,19 +20,11 @@ import Foundation
 import WebKit
 
 extension NKJSContextFactory {
-    
-   public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
+   public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
     {
-        let id = NKJSContextFactory.sequenceNumber
-        log("+Starting NodeKit WebView-JavaScriptCore JavaScript Engine E\(id)")
-        var item = Dictionary<String, AnyObject>()
+      let webView:WebView = WebView(frame: CGRectZero)
         
-        let webView:WebView = WebView(frame: CGRectZero)
-        
-        item["WebView"] = webView
-        NKJSContextFactory._contexts[id] = item;
-        
-        let webPrefs : WebPreferences = WebPreferences.standardPreferences()
+       let webPrefs : WebPreferences = WebPreferences.standardPreferences()
         webPrefs.javaEnabled = false
         webPrefs.plugInsEnabled = false
         webPrefs.javaScriptEnabled = true
@@ -43,27 +35,17 @@ extension NKJSContextFactory {
         webPrefs.shouldPrintBackgrounds = true
         webPrefs.userStyleSheetEnabled = false
         
-    
         webView.applicationNameForUserAgent = "nodeKit"
         webView.drawsBackground = false
         webView.preferences = webPrefs
         
-        webView.frameLoadDelegate =  NKWVWebViewDelegate(id: id, webView: webView, delegate: cb);
+        let id = webView.NKgetScriptContext(options, delegate: cb)
         
-        webView.mainFrame.loadHTMLString("<HTML><HEAD><script>// nodekit</script></HEAD><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
-        return id;
-
-    }
-    
-    class func useUIWebView(webView:WebView, options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
-    {
-        let id = NKJSContextFactory.sequenceNumber
-        log("+Starting Renderer NodeKit WebView-JavaScriptCore JavaScript Engine E\(id)")
         var item = Dictionary<String, AnyObject>()
         item["WebView"] = webView
         NKJSContextFactory._contexts[id] = item;
         
-        webView.frameLoadDelegate =  NKWVWebViewDelegate(id: id, webView: webView, delegate: cb);
-        return id;
+        webView.mainFrame.loadHTMLString("<HTML><HEAD><script>// nodekit</script></HEAD><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
+
     }
-}
+  }

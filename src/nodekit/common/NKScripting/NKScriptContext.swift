@@ -32,12 +32,19 @@ public protocol NKScriptContext: class {
     func NKinjectJavaScript(script: NKScriptSource) -> AnyObject?
 }
 
-public protocol NKScriptContextDelegate: class {
-    func NKScriptEngineLoaded(context: NKScriptContext) -> Void
-    func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void
+public protocol NKScriptContextHost: class {
+    var NKid: Int { get }
+    func NKgetScriptContext(options: [String: AnyObject], delegate cb: NKScriptContextDelegate) -> Int
 }
 
 internal protocol NKScriptContentController: class {
     func NKaddScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
     func NKremoveScriptMessageHandlerForName (name: String)
 }
+
+public protocol NKScriptContextDelegate: class {
+    func NKScriptEngineLoaded(context: NKScriptContext) -> Void
+    func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void
+}
+
+public class NKJSContextId {}

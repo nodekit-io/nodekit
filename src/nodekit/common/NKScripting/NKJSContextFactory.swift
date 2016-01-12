@@ -25,8 +25,6 @@ public enum NKEngineType : Int {
     case UIWebView = 2
 }
 
-public class NKJSContextId {}
-
 public class NKJSContextFactory {
     
     internal static var _contexts: Dictionary<Int, AnyObject> = Dictionary<Int, AnyObject>()

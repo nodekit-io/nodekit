@@ -23,7 +23,7 @@ class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var _nodekit : NKNodeKit?
     
-    private var splashWindow: NKBrowserWindow?
+    private var splashWindow: NKEBrowserWindow?
     
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         

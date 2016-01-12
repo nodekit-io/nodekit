@@ -2,6 +2,7 @@
 * nodekit.io
 *
 * Copyright (c) 2016 OffGrid Networks. All Rights Reserved.
+* Portions Copyright (c) 2013 GitHub, Inc. under MIT License
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,21 +18,3 @@
 */
 
 import Foundation
-import JavaScriptCore
-
-extension NKJSContextFactory {
-    
-    func createContextJavaScriptCore(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
-    {
-        dispatch_async(NKScriptChannel.defaultQueue) {
-            let vm = JSVirtualMachine()
-            let context = JSContext(virtualMachine: vm)
-            let id = context.NKgetScriptContext(options, delegate: cb)
-            
-            var item = Dictionary<String, AnyObject>()
-            NKJSContextFactory._contexts[id] = item;
-            item["JSVirtualMachine"] = vm
-            item["context"] = context
-        }
-    }
-}

@@ -22,32 +22,10 @@ import UIKit
 
 extension NKJSContextFactory {
     
-   public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
+   public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
     {
-        let id = NKJSContextFactory.sequenceNumber
-        log("+Starting NodeKit UIWebView-JavaScriptCore JavaScript Engine E\(id)")
         let webView:UIWebView = UIWebView(frame: CGRectZero)
-        var item = Dictionary<String, AnyObject>()
-        
-        NKJSContextFactory._contexts[id] = item;
-        webView.delegate = NKUIWebViewDelegate(id: id, webView: webView, delegate: cb);
-        
+        let id = webView.NKgetScriptContext(options, delegate: cb)
         webView.loadHTMLString("<HTML><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
-        item["UIWebView"] = webView
-        return id
-        
-    }
-    
-    class func useUIWebView(webView: UIWebView, options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
-    {
-        let id = NKJSContextFactory.sequenceNumber
-        log("+Starting Renderer NodeKit UIWebView-JavaScriptCore JavaScript Engine E\(id)")
-        var item = Dictionary<String, AnyObject>()
-        
-        NKJSContextFactory._contexts[id] = item;
-        webView.delegate = NKUIWebViewDelegate(id: id, webView: webView, delegate: cb);
-        
-        item["UIWebView"] = webView
-        return id
     }
 }

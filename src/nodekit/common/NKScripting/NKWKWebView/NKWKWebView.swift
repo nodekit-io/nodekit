@@ -22,9 +22,20 @@ import Foundation
 import ObjectiveC
 import WebKit
 
-extension WKWebView: NKScriptContext {
+extension WKWebView: NKScriptContext, NKScriptContextHost {
     
     public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
+    
+    public func NKgetScriptContext(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
+    {
+        let id = NKJSContextFactory.sequenceNumber
+        log("+NodeKit Nitro JavaScript Engine E\(id)")
+        
+        self.navigationDelegate = NKWKWebViewDelegate(id: id, webView: self, delegate: cb);
+        objc_setAssociatedObject(self, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        cb.NKScriptEngineLoaded(self)
+        return id;
+    }
     
     public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {
         let bridge = options["PluginBridge"] as? NKScriptPluginType ?? NKScriptPluginType.NKScriptPlugin

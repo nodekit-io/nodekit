@@ -20,7 +20,7 @@ import Cocoa
 
 class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate {
    
-    private var splashWindow: NKBrowserWindow? = NKBrowserWindow(options: [
+    private var splashWindow: NKEBrowserWindow? = NKEBrowserWindow(options: [
         "nk.browserType": "UIWebView",
         "title": "",
         "preloadURL": "http://internal/splash/views/StartupSplash.html",
@@ -39,10 +39,11 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate 
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
        _nodekit.run(self)
-
+        NKEventEmitter.global.emit("nk.ApplicationDidFinishLaunching", ())
      }
     
     func applicationWillTerminate(aNotification: NSNotification) {
+        NKEventEmitter.global.emit("nk.ApplicationWillTerminate", ())
         log("EXIT")
     }
     
