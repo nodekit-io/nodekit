@@ -23,10 +23,13 @@ class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     var _nodekit : NKNodeKit?
     
+    private var splashWindow: NKBrowserWindow?
+    
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         
         window = UIWindow(frame: UIScreen.mainScreen().bounds)
-        window?.rootViewController = NKWKViewController();
+        window?.rootViewController = UIViewController()
+         
         window?.makeKeyAndVisible()
         
        _nodekit = NKNodeKit()
@@ -57,4 +60,10 @@ class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
         log("EXIT")
     }
     
+    func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
+    }
+    
+    func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
+     }
+
 }

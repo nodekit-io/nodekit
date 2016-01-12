@@ -22,9 +22,11 @@ import WebKit
 @objc internal class NKWKWebViewDelegate: NSObject, WKNavigationDelegate {
     
     weak var delegate: NKScriptContextDelegate?
+    var id: Int
     
-    init(webView: WKWebView, delegate cb: NKScriptContextDelegate){
+    init(id: Int, webView: WKWebView, delegate cb: NKScriptContextDelegate){
         self.delegate = cb;
+        self.id = id;
         super.init()
         objc_setAssociatedObject(webView, unsafeAddressOf(self), self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
@@ -40,7 +42,7 @@ import WebKit
                 objc_setAssociatedObject(webView, unsafeAddressOf(self), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
                 self.delegate = nil;
                 
-                callback.NKApplicationReady(webView)
+                callback.NKApplicationReady(self.id, context: webView)
             }
             
             if (NSThread.isMainThread())

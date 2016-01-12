@@ -18,10 +18,16 @@
 
 import Cocoa
 
-class NKNSAppDelegate: NSObject, NSApplicationDelegate {
-    
-    var mainWindowView = NKUIWebView(urlAddress: "http://internal/splash/views/StartupSplash.html", title: "", width: 800, height: 600)
-    
+class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate {
+   
+    private var splashWindow: NKBrowserWindow? = NKBrowserWindow(options: [
+        "nk.browserType": "UIWebView",
+        "title": "",
+        "preloadURL": "http://internal/splash/views/StartupSplash.html",
+        "width": 800,
+        "height": 600
+        ])
+
     var _nodekit : NKNodeKit;
     
     let app: NSApplication
@@ -32,8 +38,9 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate {
     }
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        _nodekit.run()
-    }
+       _nodekit.run(self)
+
+     }
     
     func applicationWillTerminate(aNotification: NSNotification) {
         log("EXIT")
@@ -43,4 +50,12 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate {
         return true
     }
     
+     func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
+    }
+    
+     func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
+        splashWindow?.close()
+        splashWindow = nil;
+    }
+
 }

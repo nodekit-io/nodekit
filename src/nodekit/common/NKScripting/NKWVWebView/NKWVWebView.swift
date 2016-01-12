@@ -16,6 +16,19 @@
 * limitations under the License.
 */
 
-import Foundation
 import WebKit
 import JavaScriptCore
+
+extension WebView {
+    var currentJSContext: JSContext? {
+        get {
+            let key = unsafeAddressOf(JSContext)
+            return objc_getAssociatedObject(self, key) as? JSContext
+        }
+        set(context) {
+            let key = unsafeAddressOf(JSContext)
+            objc_setAssociatedObject(self, key, context, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        }
+    }
+}
+

@@ -22,7 +22,7 @@ import WebKit
 var mainWindows:NSMutableArray? = nil
 var webview:WKWebView! = nil
 
-public class NKWKWebView: NSObject, WKScriptMessageHandler {
+public class NKWKWebView_NOTUSED: NSObject, WKScriptMessageHandler {
     
     var mainWindow : NSWindow!
     

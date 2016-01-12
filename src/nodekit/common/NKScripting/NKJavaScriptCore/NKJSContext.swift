@@ -22,8 +22,10 @@ import JavaScriptCore
 
 extension JSContext: NKScriptContext {
     
+    public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
+    
     public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {
-        let bridge = NKScriptPluginType(rawValue: (options["PluginBridge"] as? Int)!) ?? NKScriptPluginType.NKScriptPlugin
+        let bridge: NKScriptPluginType = NKScriptPluginType(rawValue: ((options["PluginBridge"] as? Int) ?? NKScriptPluginType.NKScriptPlugin.rawValue))!
         switch bridge {
         case .JSExport:
             self.setObjectForNamespace(object, namespace: namespace);

@@ -20,20 +20,29 @@ import Foundation
 import JavaScriptCore
 
 extension NKJSContextFactory {
-    func createContextJavaScriptCore(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
+    
+    func createContextJavaScriptCore(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
     {
         let id = NKJSContextFactory.sequenceNumber
-        log("+Starting NodeKit JavaScriptCore JavaScript Engine \(id)")
-        var item = Dictionary<String, AnyObject>()
-        NKJSContextFactory._contexts[id] = item;
         
-        let vm = JSVirtualMachine()
-        let context = JSContext(virtualMachine: vm)
+       dispatch_async(NKScriptChannel.defaultQueue) {
+            log("+Starting NodeKit JavaScriptCore JavaScript Engine E\(id)")
+            var item = Dictionary<String, AnyObject>()
+            NKJSContextFactory._contexts[id] = item;
+            
+             let vm = JSVirtualMachine()
+           let context = JSContext(virtualMachine: vm)
+            
+          //  Store JVM and JSC to retain
+            item["JSVirtualMachine"] = vm
+            item["context"] = context
+            
+            objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            
+            cb.NKScriptEngineLoaded(context)
+            cb.NKApplicationReady(context.NKid, context: context)
+         }
         
-        // Store JVM and JSC to retain
-        item["JSVirtualMachine"] = vm
-        item["context"] = context
-        cb.NKScriptEngineLoaded(context)
-        cb.NKApplicationReady(context)
+        return id;
     }
  }

@@ -23,6 +23,9 @@ import ObjectiveC
 import WebKit
 
 extension WKWebView: NKScriptContext {
+    
+    public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
+    
     public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {
         let bridge = options["PluginBridge"] as? NKScriptPluginType ?? NKScriptPluginType.NKScriptPlugin
         
@@ -39,7 +42,7 @@ extension WKWebView: NKScriptContext {
     }
 
     public func NKinjectJavaScript(script: NKScriptSource) -> AnyObject? {
-        return NKWVUserScript(context: (self as WKWebView), script: script)
+        return NKWKUserScript(context: (self as WKWebView), script: script)
     }
     
     public func NKevaluateJavaScript(javaScriptString: String,
@@ -115,7 +118,7 @@ extension WKWebView: NKScriptContext {
 extension WKWebView: NKScriptContentController {
     internal func NKaddScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
     {
-        let handler : WKScriptMessageHandler = NKWVMessageHandler(name: name, messageHandler: scriptMessageHandler)
+        let handler : WKScriptMessageHandler = NKWKMessageHandler(name: name, messageHandler: scriptMessageHandler)
         self.configuration.userContentController.addScriptMessageHandler(handler, name: name)
     }
     
@@ -124,3 +127,4 @@ extension WKWebView: NKScriptContentController {
         self.configuration.userContentController.removeScriptMessageHandlerForName(name)
     }
 }
+

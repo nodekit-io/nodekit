@@ -20,13 +20,13 @@ import Foundation
 import WebKit
 
 extension NKJSContextFactory {
-    func createContextWKWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
+    func createContextWKWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
     {
+        let id = NKJSContextFactory.sequenceNumber
         
         let createContextMainThread = {()-> Void in
-            log("+Starting NodeKit Nitro JavaScript engine")
+            log("+Starting NodeKit Nitro JavaScript Engine E\(id)")
             
-            let id = NKJSContextFactory.sequenceNumber
             var item = Dictionary<String, AnyObject>()
             NKJSContextFactory._contexts[id] = item;
             
@@ -39,9 +39,11 @@ extension NKJSContextFactory {
             
             let webView = WKWebView(frame: CGRectZero, configuration: config)
             
-             webView.navigationDelegate = NKWKWebViewDelegate(webView: webView, delegate: cb);
+            webView.navigationDelegate = NKWKWebViewDelegate(id: id, webView: webView, delegate: cb);
             
             item["WKWebView"] = webView
+            
+            objc_setAssociatedObject(webView, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             
             // must call callback before page load as all plugins need to be initialized at this stage to secure channel
             cb.NKScriptEngineLoaded(webView)
@@ -57,6 +59,25 @@ extension NKJSContextFactory {
         {
             dispatch_async(dispatch_get_main_queue(), createContextMainThread)
         }
-       
+        return id;
+    }
+    
+    class func useWKWebView(webView: WKWebView, options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int
+    {
+        let id = NKJSContextFactory.sequenceNumber
+        log("+Starting Renderer NodeKit Nitro JavaScript Engine E\(id)")
+        
+        var item = Dictionary<String, AnyObject>()
+        NKJSContextFactory._contexts[id] = item;
+        
+        webView.navigationDelegate = NKWKWebViewDelegate(id: id, webView: webView, delegate: cb);
+        
+        item["WKWebView"] = webView
+        
+        objc_setAssociatedObject(webView, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        
+        // must call callback before page load as all plugins need to be initialized at this stage to secure channel
+        cb.NKScriptEngineLoaded(webView)
+        return id;
     }
 }

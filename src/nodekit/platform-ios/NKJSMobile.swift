@@ -26,7 +26,7 @@ import UIKit
 }
 
 
-@objc class HelloWorldMobile: NSObject, jse {
+@objc class HelloWorldTest: NSObject, jse {
      func alert(text: AnyObject?) -> String  {
         dispatch_async(dispatch_get_main_queue()) {
             self._alert(title: text as? String, message: nil)

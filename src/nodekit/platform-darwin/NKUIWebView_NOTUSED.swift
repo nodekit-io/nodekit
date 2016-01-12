@@ -19,7 +19,7 @@
 import Cocoa
 import WebKit
 
-public class NKUIWebView: NSObject, WebUIDelegate {
+public class NKUIWebView_NOTUSED: NSObject, WebUIDelegate {
     
     var mainWindow : NSWindow! = nil
     
@@ -96,12 +96,7 @@ public class NKUIWebView: NSObject, WebUIDelegate {
             self.mainWindow.setFrame(frameRect, display: true,animate: true)
                  return
         });*/
-        webview.frameLoadDelegate = NKWebFrameLoadDelegate(callback: { (webview: NKScriptContext!) -> () in
-            
-            print("NKSCRIPTCONTEXT FOUND");
-        });
         
-          
         let url = NSURL(string: urlAddress as String)
         let requestObj: NSURLRequest = NSURLRequest(URL: url!)
         webview.mainFrame.loadRequest(requestObj)
@@ -125,7 +120,5 @@ public class NKUIWebView: NSObject, WebUIDelegate {
             }
         })
     }
-    
-   
     
 }

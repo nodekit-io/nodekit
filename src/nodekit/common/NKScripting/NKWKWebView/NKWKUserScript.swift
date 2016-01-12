@@ -21,7 +21,7 @@
 import Foundation
 import WebKit
 
-class NKWVUserScript {
+class NKWKUserScript {
     weak var webView: WKWebView?
     var wkscript: WKUserScript?
     let cleanup: String?
@@ -54,14 +54,14 @@ class NKWVUserScript {
         if webView.URL != nil {
             webView.evaluateJavaScript(wkscript.source) {
                 if let error = $1 {
-                    log("!Failed to inject script. \(error) on file \(self.filename) ")
+                    log("!E\(webView.NKid) Failed to inject script. \(error) on file \(self.filename) ")
                 } else {
-                   log("+Injected and executed \(self.filename) ")
+                   log("+E\(webView.NKid) Injected and executed \(self.filename) ")
                 }
             }
         } else
         {
-            log("+Injected \(self.filename) ")
+            log("+E\(webView.NKid) Injected \(self.filename) ")
         }
     }
     private func eject() {
@@ -80,7 +80,7 @@ class NKWVUserScript {
             webView.evaluateJavaScript(cleanup, completionHandler: nil)
         }
         
-        log("Removed script \(self.filename) ")
+        log("+E\(webView.NKid) Removed script \(self.filename) ")
         
         self.wkscript = nil
     }

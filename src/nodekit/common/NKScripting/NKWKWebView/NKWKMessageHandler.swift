@@ -21,7 +21,7 @@
 import Foundation
 import WebKit
 
-public class NKWVMessageHandler : NSObject, WKScriptMessageHandler {
+public class NKWKMessageHandler : NSObject, WKScriptMessageHandler {
     
     private var name: String
     private var messageHandler: NKScriptMessageHandler

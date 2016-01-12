@@ -21,18 +21,19 @@ import JavaScriptCore
 
 public enum NKEngineType : Int {
     case JavaScriptCore  = 0
-    case WKWebView = 1
-    case UIWebView
-    case WebView
+    case Nitro = 1
+    case UIWebView = 2
 }
+
+public class NKJSContextId {}
 
 public class NKJSContextFactory {
     
-    internal static var _contexts: Dictionary<UInt, AnyObject> = Dictionary<UInt, AnyObject>()
+    internal static var _contexts: Dictionary<Int, AnyObject> = Dictionary<Int, AnyObject>()
     
-    internal class var sequenceNumber: UInt {
+    internal class var sequenceNumber: Int {
         struct sequence{
-            static var number: UInt = 0
+            static var number: Int = 0
         }
         return ++sequence.number
     }
@@ -44,12 +45,10 @@ public class NKJSContextFactory {
         switch engine {
         case .JavaScriptCore:
             self.createContextJavaScriptCore(options, delegate: cb)
-        case .WKWebView:
+        case .Nitro:
             self.createContextWKWebView(options, delegate: cb)
         case .UIWebView:
             self.createContextUIWebView(options, delegate: cb)
-        case .WebView:
-            NSException(name: "Unsupported NKContextType", reason: "Use JavaScriptCore or WKWebView", userInfo: nil).raise()
         }
     }
 }

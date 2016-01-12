@@ -25,11 +25,13 @@ import JavaScriptCore
     weak var delegate: NKScriptContextDelegate?
     weak var webView: UIWebView?
     var context: JSContext?
+    var id: Int;
     
-    init(webView: UIWebView, delegate cb: NKScriptContextDelegate){
+    init(id: Int, webView: UIWebView, delegate cb: NKScriptContextDelegate){
         self.delegate = cb;
         self.webView = webView;
         self.context = nil;
+        self.id = id;
         super.init()
         objc_setAssociatedObject(webView, unsafeAddressOf(self), self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         webView.registerForJSContext(callback: self.gotJavaScriptContext)
@@ -40,6 +42,9 @@ import JavaScriptCore
         
          guard let callback = self.delegate else {return;}
         self.context = context;
+        
+        objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), self.id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        
         callback.NKScriptEngineLoaded(context)
         
     }
@@ -50,13 +55,13 @@ import JavaScriptCore
         let didFinishLoad = {() -> Void in
             guard let webView = self.webView else {return;}
             guard let callback = self.delegate else {return;}
-            self.webView!.delegate = nil;
-            objc_setAssociatedObject(webView, unsafeAddressOf(self), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            webView.delegate = nil;
+            objc_setAssociatedObject(self.context, unsafeAddressOf(self), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
             self.delegate = nil;
             self.webView = nil;
             guard let context = self.context else {return;}
             self.context = nil;
-            callback.NKApplicationReady(context)
+            callback.NKApplicationReady(self.id, context: context)
         }
         
         if (NSThread.isMainThread())

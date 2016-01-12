@@ -36,14 +36,14 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         set { instances[0] = newValue }
     }
 
-    private class var sequenceNumber: UInt {
+    private class var sequenceNumber: Int {
         struct sequence{
-            static var number: UInt = 0
+            static var number: Int = 0
         }
         return ++sequence.number
     }
 
-    private static var defaultQueue: dispatch_queue_t = {
+    internal static var defaultQueue: dispatch_queue_t = {
         let label = "io.nodekit.scripting.default-queue"
         return dispatch_queue_create(label, DISPATCH_QUEUE_SERIAL)
     }()
@@ -85,7 +85,16 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         let nkscript = context!.NKinjectJavaScript(NKScriptSource(source: source as String, asFilename: "io.nodekit/scripting/nkscripting.js", namespace: "NKScripting"))
         objc_setAssociatedObject(context, key, nkscript, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
-        log("+NKScriptContext(\(unsafeAddressOf(context!))) is ready for loading plugins")
+        let key2 = unsafeAddressOf(NKScriptInvocation)
+        guard let path2 = bundle.pathForResource("promise", ofType: "js"),
+            let source2 = try? NSString(contentsOfFile: path2, encoding: NSUTF8StringEncoding) else {
+                die("Failed to read provision script: nkscripting")
+        }
+        
+        let nkpromise = context!.NKinjectJavaScript(NKScriptSource(source: source2 as String, asFilename: "io.nodekit/scripting/promise", namespace: "Promise"))
+        objc_setAssociatedObject(context, key2, nkpromise, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+
+        log("E\(context!.NKid) JavaScript Engine is ready for loading plugins")
     }
 
     public func bindPlugin(object: AnyObject, toNamespace namespace: String) -> NKScriptObject? {
@@ -98,7 +107,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         principal = NKScriptBindingObject(namespace: namespace, channel: self, object: object)
         userScript = context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: _stdlib_getDemangledTypeName(object)))
         
-        log("+Plugin object \(object) is bound to \(namespace) with channel \(id)")
+        log("+E\(context.NKid) Plugin object \(object) is bound to \(namespace) with channel \(id)")
         return principal as NKScriptObject
     }
     
@@ -130,7 +139,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
                         unbind()
                     } else if let instance = instances.removeValueForKey(target) {
                         // Dispose instance
-                        log("+Instance \(target) is unbound from \(instance.namespace)")
+                        log("+E\(context!.NKid) Instance \(target) is unbound from \(instance.namespace)")
                     } else {
                         log("?Invalid instance id: \(target)")
                     }
@@ -150,7 +159,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
                 let args = body["$operand"] as? [AnyObject]
                 let namespace = "\(principal.namespace)[\(target)]"
                 instances[target] = NKScriptBindingObject(namespace: namespace, channel: self, arguments: args)
-                log("+Instance \(target) is bound to \(namespace)")
+                log("+E\(context!.NKid) Instance \(target) is bound to \(namespace)")
             } // else Unknown opcode
         } else if let obj = principal.plugin as? NKScriptMessageHandler {
             // Plugin claims for raw messages

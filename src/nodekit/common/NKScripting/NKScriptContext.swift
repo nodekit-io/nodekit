@@ -21,6 +21,7 @@
 import Foundation
 
 public protocol NKScriptContext: class {
+    var NKid: Int { get }
     func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject>) -> AnyObject?
     
     func NKevaluateJavaScript(javaScriptString: String,
@@ -33,7 +34,7 @@ public protocol NKScriptContext: class {
 
 public protocol NKScriptContextDelegate: class {
     func NKScriptEngineLoaded(context: NKScriptContext) -> Void
-    func NKApplicationReady(context: NKScriptContext) -> Void
+    func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void
 }
 
 internal protocol NKScriptContentController: class {
