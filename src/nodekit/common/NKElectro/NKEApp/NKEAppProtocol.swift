@@ -36,21 +36,13 @@ import JavaScriptCore
     func allowNTLMCredentialsForAllDomains(allow: Bool) -> Void
     func makeSingleInstance(callback: AnyObject) -> Void
     func setAppUserModelId(id: String) -> Void //WINDOWS
-    var commandLine: NKEAppProtocolCommandLine? {get}
-    var dock: NKEAppProtocolDock? {get}
-}
-
-@objc protocol NKEAppProtocolCommandLine: NKScriptPlugin {
     func appendSwitch(`switch`: String, value: String?) -> Void
     func appendArgument(value: String) -> Void
-}
-
-@objc protocol NKEAppProtocolDock: NKScriptPlugin {
-    func bounce(type: String?) -> Int //OS X
-    func cancelBounce(id: Int) -> Void //OS X
-    func setBadge(text: String) -> Void //OS X
-    func getBadge() -> String //OS X
-    func hide() -> Void //OS X
-    func show() -> Void //OS X
-    func setMenu(menu: AnyObject) -> Void //OS X
+    func dockBounce(type: String?) -> Int //OS X
+    func dockCancelBounce(id: Int) -> Void //OS X
+    func dockSetBadge(text: String) -> Void //OS X
+    func dockGetBadge() -> String //OS X
+    func dockHide() -> Void //OS X
+    func dockShow() -> Void //OS X
+    func dockSetMenu(menu: AnyObject) -> Void //OS X
 }

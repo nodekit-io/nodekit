@@ -2,6 +2,7 @@
 * nodekit.io
 *
 * Copyright (c) 2016 OffGrid Networks. All Rights Reserved.
+* Portions Copyright (c) 2013 GitHub, Inc. under MIT License
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.
@@ -17,18 +18,16 @@
 */
 
 import Foundation
-import JavaScriptCore
-import UIKit
 
-extension NKJSContextFactory {
+
+@objc class NKE_IpcMain: NSObject, NKE_IpcMainProtocol {
+    private var events: NKEventEmitter = NKEventEmitter.global
     
-    public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
-    {
-        dispatch_async(NKScriptChannel.defaultQueue) {
-            
-            let webView:UIWebView = UIWebView(frame: CGRectZero)
-            let id = webView.NKgetScriptContext(options, delegate: cb)
-            webView.loadHTMLString("<HTML><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
+    override init(){
+        super.init()
+        
+        events.on("nk.ipcMain") { (item: NKE_IPC_Event) -> Void in
+              self.NKscriptObject?.callMethod("emit", withArguments: [item.channel, item.event, item.arg], completionHandler: nil)
         }
     }
 }

@@ -21,9 +21,27 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc class NKEApp: NSObject, NKScriptContextDelegate, NKEAppProtocol {
+extension NKEApp: NKScriptPlugin {
     
-    private weak var _context: NKScriptContext?
+    static func attachTo(context: NKScriptContext) {
+        let principal = NKEApp()
+        context.NKloadPlugin(principal, namespace: "io.nodekit.app", options: [String:AnyObject]());
+    }
+    
+    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+        switch (forKey) {
+        case ".global":
+            let url = NSBundle(forClass: NKEApp.self).pathForResource("app", ofType: "js", inDirectory: "lib-electro")
+            let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
+            return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
+        default:
+            return stub;
+        }
+    }
+}
+
+@objc class NKEApp: NSObject, NKEAppProtocol {
+    
     private var events: NKEventEmitter = NKEventEmitter.global
     
     override init(){
@@ -31,9 +49,8 @@ import JavaScriptCore
         initializeEvents()
     }
 
-    func quit() -> Void {  NSApplication.sharedApplication().terminate(self) }
+    func quit() -> Void {  exit(0) }
     func exit(exitCode: Int) -> Void { exit(exitCode) }
-    
     
     func getAppPath() -> String { return (NSBundle.mainBundle().bundlePath as NSString).stringByDeletingLastPathComponent }
     func getPath(name: String) -> String { return NKEAppDirectory.getPath(name) }
@@ -48,8 +65,17 @@ import JavaScriptCore
     func allowNTLMCredentialsForAllDomains(allow: Bool) -> Void { NotImplemented(); }
     func makeSingleInstance(callback: AnyObject) -> Void { NotImplemented(); }
     func setAppUserModelId(id: String) -> Void { NotImplemented(); } //WINDOWS
-    var commandLine: NKEAppProtocolCommandLine? {get { return nil}}
-    var dock: NKEAppProtocolDock? {get { return nil}}
+    
+    func appendSwitch(`switch`: String, value: String?) -> Void { NotImplemented(); }
+    func appendArgument(value: String) -> Void { NotImplemented(); }
+    func dockBounce(type: String?) -> Int { NotImplemented(); return 0 }//OS X
+    func dockCancelBounce(id: Int) -> Void { NotImplemented(); } //OS X
+    func dockSetBadge(text: String) -> Void { NotImplemented(); } //OS X
+    func dockGetBadge() -> String { NotImplemented(); return "" } //OS X
+    func dockHide() -> Void { NotImplemented(); } //OS X
+    func dockShow() -> Void { NotImplemented(); } //OS X
+    func dockSetMenu(menu: AnyObject) -> Void { NotImplemented(); } //OS X
+
     
     // Event: 'will-finish-launching'
     
@@ -84,13 +110,6 @@ import JavaScriptCore
     // Event: 'gpu-process-crashed'
     }
     
-    internal func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
-        self._context = context;
-    }
-    
-    internal func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
-    }
-  
     private static func NotImplemented(functionName: String = __FUNCTION__) -> Void {
         log("!app.\(functionName) is not implemented");
     }

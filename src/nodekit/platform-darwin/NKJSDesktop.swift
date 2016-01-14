@@ -37,7 +37,7 @@ import Cocoa
     private func _alert(title title: String?, message: String?) {
         let myPopup: NSAlert = NSAlert()
         myPopup.messageText = message ?? "NodeKit"
-        myPopup.informativeText = title!
+        myPopup.informativeText = title ?? ""
         myPopup.alertStyle = NSAlertStyle.WarningAlertStyle
         myPopup.addButtonWithTitle("OK")
         myPopup.runModal()

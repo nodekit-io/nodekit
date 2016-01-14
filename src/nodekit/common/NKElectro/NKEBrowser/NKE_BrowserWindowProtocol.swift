@@ -21,21 +21,20 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc protocol NKEBWProtocol: NKScriptPlugin {
+@objc protocol NKE_BrowserWindowProtocol: NKScriptPlugin {
     
     // Creates a new BrowserWindow with native properties as set by the options.
     init(options: Dictionary<String, AnyObject>)
     
     // class functions
-    static func getAllWindows() -> [NKEBWProtocol]
-    static func getFocusedWindow() -> NKEBWProtocol?
+    static func getAllWindows() -> [NKE_BrowserWindowProtocol]
+    static func getFocusedWindow() -> NKE_BrowserWindowProtocol?
     static func fromWebContents(webContents: AnyObject) -> AnyObject?
     static func fromContext(context: AnyObject) -> AnyObject?
-    static func fromId(id: Int) -> AnyObject?
-    static func addDevToolsExtension(path: String) -> Void // not implemnented
-    static func removeDevToolsExtension(name: String) -> Void // not implemnented
+    static func fromId(id: Int) -> NKE_BrowserWindowProtocol?
+    static func addDevToolsExtension(path: String) -> Void // not implemented
+    static func removeDevToolsExtension(name: String) -> Void // not implemented
     
-    var webContents: AnyObject? {get}
     var id: Int {get}
     
     func destroy() -> Void

@@ -44,6 +44,8 @@ extension JSContext: NKScriptContext {
     // public var NKid: Int ---- see NKScriptContextHost Extension
     
     public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {
+        let mainThread: Bool = (options["MainThread"] as? Bool) ?? false
+        
         let bridge: NKScriptPluginType = NKScriptPluginType(rawValue: ((options["PluginBridge"] as? Int) ?? NKScriptPluginType.NKScriptPlugin.rawValue))!
         switch bridge {
         case .JSExport:
@@ -51,7 +53,13 @@ extension JSContext: NKScriptContext {
             log("+Plugin object \(object) is bound to \(namespace) with JSExport channel")
             return object;
         default:
-            let channel = NKScriptChannel(context: self)
+            let channel: NKScriptChannel
+            if (mainThread)
+            {
+               channel = NKScriptChannel(context: self, queue: dispatch_get_main_queue() )
+            } else {
+               channel = NKScriptChannel(context: self)
+            }
             channel.userContentController = self;
             return channel.bindPlugin(object, toNamespace: namespace)
         }

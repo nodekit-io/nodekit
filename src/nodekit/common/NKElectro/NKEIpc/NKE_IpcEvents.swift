@@ -18,3 +18,17 @@
 */
 
 import Foundation
+
+internal struct NKE_IPC_Event {
+    var channel: String
+    var event: Dictionary<String, AnyObject>
+    var arg: [AnyObject]
+    
+    init(channel: String, event: Dictionary<String, AnyObject>, arg: [AnyObject])
+    {
+        self.channel = channel;
+        self.event = event;
+        self.arg = arg;
+    }
+
+}

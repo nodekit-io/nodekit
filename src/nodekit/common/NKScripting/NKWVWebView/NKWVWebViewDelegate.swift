@@ -59,7 +59,7 @@ import JavaScriptCore
         }
 
     }
-    
+
     
     public func webView(sender: WebView!,
         didFinishLoadForFrame frame: WebFrame!) {
@@ -88,8 +88,7 @@ import JavaScriptCore
                 dispatch_async(dispatch_get_main_queue(), didFinishLoad)
             }
 
-            
-            
     }
+    
 }
 

@@ -109,7 +109,9 @@ class NKScriptMetaObject: CollectionType {
                 if let end = name.characters.indexOf(":") {
                     name = name[name.startIndex ..< end]
                 }
-                if let cls = plugin as? NKScriptPlugin.Type {
+                if name.characters.first == "_" {
+                    return true
+                } else if let cls = plugin as? NKScriptPlugin.Type {
                     if cls.isSelectorExcludedFromScript?(selector) ?? false {
                         return true
                     }
@@ -119,22 +121,18 @@ class NKScriptMetaObject: CollectionType {
                     } else {
                         name = cls.scriptNameForSelector?(selector) ?? name
                     }
-                } else if name.characters.first == "_" {
-                    return true
                 }
-
             case .Property(_, _):
-                if let cls = plugin as? NKScriptPlugin.Type {
+                if name.characters.first == "_" {
+                    return true
+                } else if let cls = plugin as? NKScriptPlugin.Type {
                     if let isExcluded = cls.isKeyExcludedFromScript where name.withCString(isExcluded) {
                         return true
                     }
                     if let scriptNameForKey = cls.scriptNameForKey {
                         name = name.withCString(scriptNameForKey) ?? name
                     }
-                } else if name.characters.first == "_" {
-                    return true
                 }
-
             case let .Initializer(selector, _):
                 if selector == Selector("initByScriptWithArguments:") {
                     member = .Initializer(selector: selector, arity: -1)
@@ -148,7 +146,7 @@ class NKScriptMetaObject: CollectionType {
             }
             assert(members.indexForKey(name) == nil, "Plugin class \(plugin) has a conflict in member name '\(name)'")
             members[name] = member
-            return true
+           return true
         }
     }
 

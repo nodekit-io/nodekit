@@ -20,7 +20,13 @@ import Foundation
 import WebKit
 import UIKit
 
-extension NKEBrowserWindow {
+
+
+extension NKE_BrowserWindow {
+    
+    internal func UIApplicationReady() -> Void {
+        (self._webView as! UIWebView).delegate = self;
+    }
     
     internal func createUIWebView(window: AnyObject, options: Dictionary<String, AnyObject>) -> Int {
         guard let window = window as? UIWindow else {return 0}
@@ -29,6 +35,8 @@ extension NKEBrowserWindow {
         
           // create WebView
         let webView:UIWebView = UIWebView(frame: CGRect.zero)
+        self._webView = webView;
+        
         window.rootViewController?.view = webView
         
         let id = webView.NKgetScriptContext([String: AnyObject](), delegate: self)
@@ -40,4 +48,19 @@ extension NKEBrowserWindow {
         
         return id;
     }
+}
+
+
+extension NKE_BrowserWindow: UIWebViewDelegate {
+    
+    func webViewDidFinishLoad(webView: UIWebView)
+    {
+       self._events.emit("did-finish-load", self._id)
+    }
+    
+    func webView(webView: UIWebView,
+        didFailLoadWithError error: NSError?) {
+      self._events.emit("did-fail-loading", error?.description)
+    }
+    
 }

@@ -20,7 +20,12 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-extension NKEBrowserWindow {
+
+extension NKE_BrowserWindow {
+    
+    internal func WKApplicationReady() -> Void {
+          (self._webView as! WKWebView).navigationDelegate = self;
+    }
     
     internal func createWKWebView(window: AnyObject, options: Dictionary<String, AnyObject>) -> Int {
         guard let window = window as? UIWindow else {return 0;}
@@ -52,6 +57,8 @@ extension NKEBrowserWindow {
         config.preferences = webPrefs
         
         let webView = WKWebView(frame: CGRect.zero, configuration: config)
+        self._webView = webView;
+        
         // webView.opaque = false;
         // webView.backgroundColor = UIColor.clearColor()
 
@@ -66,3 +73,27 @@ extension NKEBrowserWindow {
         return id;
     }
 }
+
+
+extension NKE_BrowserWindow: WKNavigationDelegate {
+    
+    func webView(webView: WKWebView,
+        didFinishNavigation navigation: WKNavigation!)
+    {
+        self._events.emit("did-finish-load", self._id)
+    }
+    
+    func webView(webView: WKWebView,
+        didFailNavigation navigation: WKNavigation!,
+        withError error: NSError) {
+            self._events.emit("did-fail-loading", error.description)
+    }
+    
+    func webView(webView: WKWebView,
+        didFailProvisionalNavigation navigation: WKNavigation!,
+        withError error: NSError) {
+            self._events.emit("did-fail-loading", error.description)
+    }
+}
+
+

@@ -22,30 +22,33 @@ import WebKit
 extension NKJSContextFactory {
    public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
     {
-      let webView:WebView = WebView(frame: CGRectZero)
-        
-       let webPrefs : WebPreferences = WebPreferences.standardPreferences()
-        webPrefs.javaEnabled = false
-        webPrefs.plugInsEnabled = false
-        webPrefs.javaScriptEnabled = true
-        webPrefs.javaScriptCanOpenWindowsAutomatically = false
-        webPrefs.loadsImagesAutomatically = true
-        webPrefs.allowsAnimatedImages = true
-        webPrefs.allowsAnimatedImageLooping = true
-        webPrefs.shouldPrintBackgrounds = true
-        webPrefs.userStyleSheetEnabled = false
-        
-        webView.applicationNameForUserAgent = "nodeKit"
-        webView.drawsBackground = false
-        webView.preferences = webPrefs
-        
-        let id = webView.NKgetScriptContext(options, delegate: cb)
-        
-        var item = Dictionary<String, AnyObject>()
-        item["WebView"] = webView
-        NKJSContextFactory._contexts[id] = item;
-        
-        webView.mainFrame.loadHTMLString("<HTML><HEAD><script>// nodekit</script></HEAD><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
+        dispatch_async(NKScriptChannel.defaultQueue) {
+            
+            let webView:WebView = WebView(frame: CGRectZero)
+            
+            let webPrefs : WebPreferences = WebPreferences.standardPreferences()
+            webPrefs.javaEnabled = false
+            webPrefs.plugInsEnabled = false
+            webPrefs.javaScriptEnabled = true
+            webPrefs.javaScriptCanOpenWindowsAutomatically = false
+            webPrefs.loadsImagesAutomatically = true
+            webPrefs.allowsAnimatedImages = true
+            webPrefs.allowsAnimatedImageLooping = true
+            webPrefs.shouldPrintBackgrounds = true
+            webPrefs.userStyleSheetEnabled = false
+            
+            webView.applicationNameForUserAgent = "nodeKit"
+            webView.drawsBackground = false
+            webView.preferences = webPrefs
+            
+            let id = webView.NKgetScriptContext(options, delegate: cb)
+            
+            var item = Dictionary<String, AnyObject>()
+            item["WebView"] = webView
+            NKJSContextFactory._contexts[id] = item;
+            
+            webView.mainFrame.loadHTMLString("<HTML><HEAD><script>// nodekit</script></HEAD><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
+        }
 
     }
   }

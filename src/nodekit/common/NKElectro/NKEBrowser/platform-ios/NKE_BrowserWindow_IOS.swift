@@ -21,34 +21,22 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-extension NKEBrowserWindow {
+extension NKE_BrowserWindow {
         
     internal func createWindow(options: Dictionary<String, AnyObject>) -> AnyObject {
-        let width: CGFloat = CGFloat((options[NKEBrowserOptions.kWidth] as? Int) ?? NKEBrowserDefaults.kWidth)
-        let height: CGFloat = CGFloat((options[NKEBrowserOptions.kHeight] as? Int) ?? NKEBrowserDefaults.kHeight)
-        let title: String = (options[NKEBrowserOptions.kTitle] as? String) ?? NKEBrowserDefaults.kTitle
-        
-        let windowRect : NSRect = (NSScreen.mainScreen()!).frame
-        let frameRect : NSRect = NSMakeRect(
-            (NSWidth(windowRect) - width)/2,
-            (NSHeight(windowRect) - height)/2,
-            width, height)
-        
-        let window = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, `defer`: false, screen: NSScreen.mainScreen())
-        objc_setAssociatedObject(self, unsafeAddressOf(NSWindow), window, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
-         window.title = title
-        window.makeKeyAndOrderFront(nil)
-        return window;
+        let window = UIApplication.sharedApplication().delegate!.window!
+        return window!
     }
 }
 
-extension NKEBrowserWindow: NKEBWProtocol {
+
+extension NKE_BrowserWindow: NKE_BrowserWindowProtocol {
     func destroy() -> Void { NotImplemented(); }
-    func close() -> Void {
-        guard let window = objc_getAssociatedObject(self, unsafeAddressOf(NSWindow)) as? NSWindow else {return;}
-        window.close();
-        objc_setAssociatedObject(self, unsafeAddressOf(NSWindow), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    func close() -> Void {NotImplemented();
+        self._window = nil;
+        NKE_BrowserWindow._windowArray[self._id] = nil;
+        _context = nil
+        _webView = nil
     }
     
     func focus() -> Void { NotImplemented(); }
@@ -123,5 +111,19 @@ extension NKEBrowserWindow: NKEBWProtocol {
     
     private func NotImplemented() -> Void {
         NSException(name: "NotImplemented", reason: "This function is not implemented", userInfo: nil).raise()
+    }
+}
+
+public extension UIColor {
+    convenience public init(red: Int, green: Int, blue: Int) {
+        assert(red >= 0 && red <= 255, "Invalid red component")
+        assert(green >= 0 && green <= 255, "Invalid green component")
+        assert(blue >= 0 && blue <= 255, "Invalid blue component")
+        
+        self.init(red: CGFloat(red) / 255.0, green: CGFloat(green) / 255.0, blue: CGFloat(blue) / 255.0, alpha: 1.0)
+    }
+    
+    convenience public init(netHex:Int) {
+        self.init(red:(netHex >> 16) & 0xff, green:(netHex >> 8) & 0xff, blue:netHex & 0xff)
     }
 }

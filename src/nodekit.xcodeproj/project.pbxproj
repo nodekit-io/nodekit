@@ -150,6 +150,106 @@
 		E48C5F121C3F3EE6006CEF53 /* NKUIContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C5F101C3F3EE6006CEF53 /* NKUIContextFactory.swift */; };
 		E48C5F141C3F4031006CEF53 /* NKJSCContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C5F131C3F4031006CEF53 /* NKJSCContextFactory.swift */; };
 		E48C5F151C3F4031006CEF53 /* NKJSCContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C5F131C3F4031006CEF53 /* NKJSCContextFactory.swift */; };
+		E4A8386E1C46B7FD00514698 /* lib-electro in Resources */ = {isa = PBXBuildFile; fileRef = E4A8386D1C46B7FD00514698 /* lib-electro */; };
+		E4A8386F1C46B7FD00514698 /* lib-electro in Resources */ = {isa = PBXBuildFile; fileRef = E4A8386D1C46B7FD00514698 /* lib-electro */; };
+		E4A838701C46B7FD00514698 /* lib-electro in Resources */ = {isa = PBXBuildFile; fileRef = E4A8386D1C46B7FD00514698 /* lib-electro */; };
+		E4A838711C46B7FD00514698 /* lib-electro in Resources */ = {isa = PBXBuildFile; fileRef = E4A8386D1C46B7FD00514698 /* lib-electro */; };
+		E4A838721C46B80200514698 /* NKEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838501C46B7C700514698 /* NKEApp.swift */; };
+		E4A838731C46B80200514698 /* NKEAppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838511C46B7C700514698 /* NKEAppDirectory.swift */; };
+		E4A838741C46B80200514698 /* NKEAppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838521C46B7C700514698 /* NKEAppProtocol.swift */; };
+		E4A838751C46B80200514698 /* NKEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838501C46B7C700514698 /* NKEApp.swift */; };
+		E4A838761C46B80200514698 /* NKEAppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838511C46B7C700514698 /* NKEAppDirectory.swift */; };
+		E4A838771C46B80200514698 /* NKEAppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838521C46B7C700514698 /* NKEAppProtocol.swift */; };
+		E4A838781C46B80300514698 /* NKEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838501C46B7C700514698 /* NKEApp.swift */; };
+		E4A838791C46B80300514698 /* NKEAppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838511C46B7C700514698 /* NKEAppDirectory.swift */; };
+		E4A8387A1C46B80300514698 /* NKEAppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838521C46B7C700514698 /* NKEAppProtocol.swift */; };
+		E4A8387B1C46B80300514698 /* NKEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838501C46B7C700514698 /* NKEApp.swift */; };
+		E4A8387C1C46B80300514698 /* NKEAppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838511C46B7C700514698 /* NKEAppDirectory.swift */; };
+		E4A8387D1C46B80300514698 /* NKEAppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838521C46B7C700514698 /* NKEAppProtocol.swift */; };
+		E4A838961C46B81C00514698 /* NKEDialog-ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838601C46B7C700514698 /* NKEDialog-ios.swift */; };
+		E4A838981C46B81C00514698 /* NKEDialogProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838621C46B7C700514698 /* NKEDialogProtocol.swift */; };
+		E4A8389A1C46B81C00514698 /* NKEDialog-osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838611C46B7C700514698 /* NKEDialog-osx.swift */; };
+		E4A8389B1C46B81C00514698 /* NKEDialogProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838621C46B7C700514698 /* NKEDialogProtocol.swift */; };
+		E4A8389C1C46B81C00514698 /* NKEDialog-ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838601C46B7C700514698 /* NKEDialog-ios.swift */; };
+		E4A8389E1C46B81C00514698 /* NKEDialogProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838621C46B7C700514698 /* NKEDialogProtocol.swift */; };
+		E4A838A01C46B81E00514698 /* NKEDialog-osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838611C46B7C700514698 /* NKEDialog-osx.swift */; };
+		E4A838A11C46B81E00514698 /* NKEDialogProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838621C46B7C700514698 /* NKEDialogProtocol.swift */; };
+		E4A838A21C46B83000514698 /* NKE_IpcMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838641C46B7C700514698 /* NKE_IpcMain.swift */; };
+		E4A838A31C46B83000514698 /* NKE_IpcMainProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838651C46B7C700514698 /* NKE_IpcMainProtocol.swift */; };
+		E4A838A41C46B83000514698 /* NKE_IpcMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838641C46B7C700514698 /* NKE_IpcMain.swift */; };
+		E4A838A51C46B83000514698 /* NKE_IpcMainProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838651C46B7C700514698 /* NKE_IpcMainProtocol.swift */; };
+		E4A838A61C46B83100514698 /* NKE_IpcMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838641C46B7C700514698 /* NKE_IpcMain.swift */; };
+		E4A838A71C46B83100514698 /* NKE_IpcMainProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838651C46B7C700514698 /* NKE_IpcMainProtocol.swift */; };
+		E4A838A81C46B83100514698 /* NKE_IpcMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838641C46B7C700514698 /* NKE_IpcMain.swift */; };
+		E4A838A91C46B83100514698 /* NKE_IpcMainProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838651C46B7C700514698 /* NKE_IpcMainProtocol.swift */; };
+		E4A838AA1C46B83A00514698 /* NKEMenu-ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838671C46B7C700514698 /* NKEMenu-ios.swift */; };
+		E4A838AB1C46B83A00514698 /* NKEMenu-ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838671C46B7C700514698 /* NKEMenu-ios.swift */; };
+		E4A838AC1C46B83D00514698 /* NKEMenu-osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838681C46B7C700514698 /* NKEMenu-osx.swift */; };
+		E4A838AD1C46B83E00514698 /* NKEMenu-osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838681C46B7C700514698 /* NKEMenu-osx.swift */; };
+		E4A838AE1C46B84500514698 /* NKEMenuProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838691C46B7C700514698 /* NKEMenuProtocol.swift */; };
+		E4A838AF1C46B84500514698 /* NKEMenuProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838691C46B7C700514698 /* NKEMenuProtocol.swift */; };
+		E4A838B01C46B84600514698 /* NKEMenuProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838691C46B7C700514698 /* NKEMenuProtocol.swift */; };
+		E4A838B11C46B84600514698 /* NKEMenuProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838691C46B7C700514698 /* NKEMenuProtocol.swift */; };
+		E4A838CD1C46F26000514698 /* NKE_BrowserConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C01C46F26000514698 /* NKE_BrowserConstants.swift */; };
+		E4A838CE1C46F26000514698 /* NKE_BrowserConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C01C46F26000514698 /* NKE_BrowserConstants.swift */; };
+		E4A838CF1C46F26000514698 /* NKE_BrowserConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C01C46F26000514698 /* NKE_BrowserConstants.swift */; };
+		E4A838D01C46F26000514698 /* NKE_BrowserConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C01C46F26000514698 /* NKE_BrowserConstants.swift */; };
+		E4A838D11C46F26000514698 /* NKE_BrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C11C46F26000514698 /* NKE_BrowserWindow.swift */; };
+		E4A838D21C46F26000514698 /* NKE_BrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C11C46F26000514698 /* NKE_BrowserWindow.swift */; };
+		E4A838D31C46F26000514698 /* NKE_BrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C11C46F26000514698 /* NKE_BrowserWindow.swift */; };
+		E4A838D41C46F26000514698 /* NKE_BrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C11C46F26000514698 /* NKE_BrowserWindow.swift */; };
+		E4A838D51C46F26000514698 /* NKE_BrowserWindowProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C21C46F26000514698 /* NKE_BrowserWindowProtocol.swift */; };
+		E4A838D61C46F26000514698 /* NKE_BrowserWindowProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C21C46F26000514698 /* NKE_BrowserWindowProtocol.swift */; };
+		E4A838D71C46F26000514698 /* NKE_BrowserWindowProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C21C46F26000514698 /* NKE_BrowserWindowProtocol.swift */; };
+		E4A838D81C46F26000514698 /* NKE_BrowserWindowProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C21C46F26000514698 /* NKE_BrowserWindowProtocol.swift */; };
+		E4A838D91C46F26000514698 /* NKE_WebContentsBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C31C46F26000514698 /* NKE_WebContentsBase.swift */; };
+		E4A838DA1C46F26000514698 /* NKE_WebContentsBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C31C46F26000514698 /* NKE_WebContentsBase.swift */; };
+		E4A838DB1C46F26000514698 /* NKE_WebContentsBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C31C46F26000514698 /* NKE_WebContentsBase.swift */; };
+		E4A838DC1C46F26000514698 /* NKE_WebContentsBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C31C46F26000514698 /* NKE_WebContentsBase.swift */; };
+		E4A838DD1C46F26000514698 /* NKE_WebContentsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C41C46F26000514698 /* NKE_WebContentsProtocol.swift */; };
+		E4A838DE1C46F26000514698 /* NKE_WebContentsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C41C46F26000514698 /* NKE_WebContentsProtocol.swift */; };
+		E4A838DF1C46F26000514698 /* NKE_WebContentsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C41C46F26000514698 /* NKE_WebContentsProtocol.swift */; };
+		E4A838E01C46F26000514698 /* NKE_WebContentsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C41C46F26000514698 /* NKE_WebContentsProtocol.swift */; };
+		E4A838E11C46F26000514698 /* NKE_BrowserWindow_UI_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C61C46F26000514698 /* NKE_BrowserWindow_UI_IOS.swift */; };
+		E4A838E31C46F26000514698 /* NKE_BrowserWindow_UI_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C61C46F26000514698 /* NKE_BrowserWindow_UI_IOS.swift */; };
+		E4A838E51C46F26000514698 /* NKE_BrowserWindow_WK_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C71C46F26000514698 /* NKE_BrowserWindow_WK_IOS.swift */; };
+		E4A838E71C46F26000514698 /* NKE_BrowserWindow_WK_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C71C46F26000514698 /* NKE_BrowserWindow_WK_IOS.swift */; };
+		E4A838E91C46F26000514698 /* NKE_BrowserWindow_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C81C46F26000514698 /* NKE_BrowserWindow_IOS.swift */; };
+		E4A838EB1C46F26000514698 /* NKE_BrowserWindow_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838C81C46F26000514698 /* NKE_BrowserWindow_IOS.swift */; };
+		E4A838EE1C46F26000514698 /* NKE_BrowserWindow_UI_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838CA1C46F26000514698 /* NKE_BrowserWindow_UI_OSX.swift */; };
+		E4A838F01C46F26000514698 /* NKE_BrowserWindow_UI_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838CA1C46F26000514698 /* NKE_BrowserWindow_UI_OSX.swift */; };
+		E4A838F21C46F26000514698 /* NKE_BrowserWindow_WK_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838CB1C46F26000514698 /* NKE_BrowserWindow_WK_OSX.swift */; };
+		E4A838F41C46F26000514698 /* NKE_BrowserWindow_WK_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838CB1C46F26000514698 /* NKE_BrowserWindow_WK_OSX.swift */; };
+		E4A838F61C46F26000514698 /* NKEBrowserWindow_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838CC1C46F26000514698 /* NKEBrowserWindow_OSX.swift */; };
+		E4A838F81C46F26000514698 /* NKEBrowserWindow_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A838CC1C46F26000514698 /* NKEBrowserWindow_OSX.swift */; };
+		E4A839211C47027D00514698 /* NKE_WebContentsUI_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8391F1C47027D00514698 /* NKE_WebContentsUI_IOS.swift */; };
+		E4A839221C47027D00514698 /* NKE_WebContentsUI_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8391F1C47027D00514698 /* NKE_WebContentsUI_IOS.swift */; };
+		E4A839231C47027D00514698 /* NKE_WebContentsWK_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839201C47027D00514698 /* NKE_WebContentsWK_IOS.swift */; };
+		E4A839241C47027D00514698 /* NKE_WebContentsWK_IOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839201C47027D00514698 /* NKE_WebContentsWK_IOS.swift */; };
+		E4A839271C47028B00514698 /* NKE_WebContentsUI_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839251C47028B00514698 /* NKE_WebContentsUI_OSX.swift */; };
+		E4A839281C47028B00514698 /* NKE_WebContentsUI_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839251C47028B00514698 /* NKE_WebContentsUI_OSX.swift */; };
+		E4A839291C47028B00514698 /* NKE_WebContentsWK_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839261C47028B00514698 /* NKE_WebContentsWK_OSX.swift */; };
+		E4A8392A1C47028B00514698 /* NKE_WebContentsWK_OSX.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839261C47028B00514698 /* NKE_WebContentsWK_OSX.swift */; };
+		E4A8392F1C47418900514698 /* NKE_IpcRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8392E1C47418900514698 /* NKE_IpcRenderer.swift */; };
+		E4A839301C47418900514698 /* NKE_IpcRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8392E1C47418900514698 /* NKE_IpcRenderer.swift */; };
+		E4A839321C4741A400514698 /* NKE_IpcRendererProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839311C4741A400514698 /* NKE_IpcRendererProtocol.swift */; };
+		E4A839331C4741A400514698 /* NKE_IpcRendererProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839311C4741A400514698 /* NKE_IpcRendererProtocol.swift */; };
+		E4A839351C4741E600514698 /* NKE_IpcEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839341C4741E600514698 /* NKE_IpcEvents.swift */; };
+		E4A839361C4741E600514698 /* NKE_IpcEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839341C4741E600514698 /* NKE_IpcEvents.swift */; };
+		E4A8393A1C47446C00514698 /* NKE_BootMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839381C47446C00514698 /* NKE_BootMain.swift */; };
+		E4A8393B1C47446C00514698 /* NKE_BootMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839381C47446C00514698 /* NKE_BootMain.swift */; };
+		E4A8393C1C47446C00514698 /* NKE_BootMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839381C47446C00514698 /* NKE_BootMain.swift */; };
+		E4A8393D1C47446C00514698 /* NKE_BootMain.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839381C47446C00514698 /* NKE_BootMain.swift */; };
+		E4A8393E1C47446C00514698 /* NKE_BootRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839391C47446C00514698 /* NKE_BootRenderer.swift */; };
+		E4A8393F1C47446C00514698 /* NKE_BootRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839391C47446C00514698 /* NKE_BootRenderer.swift */; };
+		E4A839401C47446C00514698 /* NKE_BootRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839391C47446C00514698 /* NKE_BootRenderer.swift */; };
+		E4A839411C47446C00514698 /* NKE_BootRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839391C47446C00514698 /* NKE_BootRenderer.swift */; };
+		E4A839421C47511100514698 /* NKE_IpcRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8392E1C47418900514698 /* NKE_IpcRenderer.swift */; };
+		E4A839431C47511100514698 /* NKE_IpcRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8392E1C47418900514698 /* NKE_IpcRenderer.swift */; };
+		E4A839441C47511700514698 /* NKE_IpcRendererProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839311C4741A400514698 /* NKE_IpcRendererProtocol.swift */; };
+		E4A839451C47511700514698 /* NKE_IpcRendererProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839311C4741A400514698 /* NKE_IpcRendererProtocol.swift */; };
+		E4A839461C47511F00514698 /* NKE_IpcEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839341C4741E600514698 /* NKE_IpcEvents.swift */; };
+		E4A839471C47512000514698 /* NKE_IpcEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A839341C4741E600514698 /* NKE_IpcEvents.swift */; };
 		E4AD89D31C1F830F0043F630 /* lib in Resources */ = {isa = PBXBuildFile; fileRef = E488A0831C1F715D0041DFCF /* lib */; };
 		E4AD89E51C1F833C0043F630 /* app in Resources */ = {isa = PBXBuildFile; fileRef = E488A0D71C1F761F0041DFCF /* app */; };
 		E4AD89E81C1F833C0043F630 /* test in Resources */ = {isa = PBXBuildFile; fileRef = E488A0F81C1F76A40041DFCF /* test */; };
@@ -200,50 +300,10 @@
 		E4D8C32C1C45463A00D07A0F /* NKWKContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C5F0D1C3F3E81006CEF53 /* NKWKContextFactory.swift */; };
 		E4D8C32D1C45463A00D07A0F /* NKWKContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C5F0D1C3F3E81006CEF53 /* NKWKContextFactory.swift */; };
 		E4D8C32E1C45463A00D07A0F /* NKWKContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C5F0D1C3F3E81006CEF53 /* NKWKContextFactory.swift */; };
-		E4D8C3A51C45519A00D07A0F /* NKEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3941C45519A00D07A0F /* NKEApp.swift */; };
-		E4D8C3A61C45519A00D07A0F /* NKEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3941C45519A00D07A0F /* NKEApp.swift */; };
-		E4D8C3A71C45519A00D07A0F /* NKEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3941C45519A00D07A0F /* NKEApp.swift */; };
-		E4D8C3A81C45519A00D07A0F /* NKEApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3941C45519A00D07A0F /* NKEApp.swift */; };
-		E4D8C3A91C45519A00D07A0F /* NKEAppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3951C45519A00D07A0F /* NKEAppConstants.swift */; };
-		E4D8C3AA1C45519A00D07A0F /* NKEAppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3951C45519A00D07A0F /* NKEAppConstants.swift */; };
-		E4D8C3AB1C45519A00D07A0F /* NKEAppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3951C45519A00D07A0F /* NKEAppConstants.swift */; };
-		E4D8C3AC1C45519A00D07A0F /* NKEAppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3951C45519A00D07A0F /* NKEAppConstants.swift */; };
-		E4D8C3AD1C45519A00D07A0F /* NKEAppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3961C45519A00D07A0F /* NKEAppProtocol.swift */; };
-		E4D8C3AE1C45519A00D07A0F /* NKEAppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3961C45519A00D07A0F /* NKEAppProtocol.swift */; };
-		E4D8C3AF1C45519A00D07A0F /* NKEAppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3961C45519A00D07A0F /* NKEAppProtocol.swift */; };
-		E4D8C3B01C45519A00D07A0F /* NKEAppProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3961C45519A00D07A0F /* NKEAppProtocol.swift */; };
-		E4D8C3B11C45519A00D07A0F /* NKEBrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39A1C45519A00D07A0F /* NKEBrowserWindow.swift */; };
-		E4D8C3B21C45519A00D07A0F /* NKEBrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39A1C45519A00D07A0F /* NKEBrowserWindow.swift */; };
-		E4D8C3B31C45519A00D07A0F /* NKEBrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39A1C45519A00D07A0F /* NKEBrowserWindow.swift */; };
-		E4D8C3B41C45519A00D07A0F /* NKEBrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39A1C45519A00D07A0F /* NKEBrowserWindow.swift */; };
-		E4D8C3B51C45519A00D07A0F /* NKEBWConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39B1C45519A00D07A0F /* NKEBWConstants.swift */; };
-		E4D8C3B61C45519A00D07A0F /* NKEBWConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39B1C45519A00D07A0F /* NKEBWConstants.swift */; };
-		E4D8C3B71C45519A00D07A0F /* NKEBWConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39B1C45519A00D07A0F /* NKEBWConstants.swift */; };
-		E4D8C3B81C45519A00D07A0F /* NKEBWConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39B1C45519A00D07A0F /* NKEBWConstants.swift */; };
-		E4D8C3B91C45519A00D07A0F /* NKEBWProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39C1C45519A00D07A0F /* NKEBWProtocol.swift */; };
-		E4D8C3BA1C45519A00D07A0F /* NKEBWProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39C1C45519A00D07A0F /* NKEBWProtocol.swift */; };
-		E4D8C3BB1C45519A00D07A0F /* NKEBWProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39C1C45519A00D07A0F /* NKEBWProtocol.swift */; };
-		E4D8C3BC1C45519A00D07A0F /* NKEBWProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39C1C45519A00D07A0F /* NKEBWProtocol.swift */; };
-		E4D8C3BD1C45519A00D07A0F /* NKEBrowserWindow_ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39E1C45519A00D07A0F /* NKEBrowserWindow_ios.swift */; };
-		E4D8C3BF1C45519A00D07A0F /* NKEBrowserWindow_ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39E1C45519A00D07A0F /* NKEBrowserWindow_ios.swift */; };
-		E4D8C3C11C45519A00D07A0F /* NKEBW_UIWebView_ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39F1C45519A00D07A0F /* NKEBW_UIWebView_ios.swift */; };
-		E4D8C3C31C45519A00D07A0F /* NKEBW_UIWebView_ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C39F1C45519A00D07A0F /* NKEBW_UIWebView_ios.swift */; };
-		E4D8C3C51C45519A00D07A0F /* NKEBW_WKWebView_ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3A01C45519A00D07A0F /* NKEBW_WKWebView_ios.swift */; };
-		E4D8C3C71C45519A00D07A0F /* NKEBW_WKWebView_ios.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3A01C45519A00D07A0F /* NKEBW_WKWebView_ios.swift */; };
-		E4D8C3CA1C45519A00D07A0F /* NKEBrowserWindow_osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3A21C45519A00D07A0F /* NKEBrowserWindow_osx.swift */; };
-		E4D8C3CC1C45519A00D07A0F /* NKEBrowserWindow_osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3A21C45519A00D07A0F /* NKEBrowserWindow_osx.swift */; };
-		E4D8C3CE1C45519A00D07A0F /* NKEBW_UIWebView_osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3A31C45519A00D07A0F /* NKEBW_UIWebView_osx.swift */; };
-		E4D8C3D01C45519A00D07A0F /* NKEBW_UIWebView_osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3A31C45519A00D07A0F /* NKEBW_UIWebView_osx.swift */; };
-		E4D8C3D21C45519A00D07A0F /* NKEBW_WKWebView_osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3A41C45519A00D07A0F /* NKEBW_WKWebView_osx.swift */; };
-		E4D8C3D41C45519A00D07A0F /* NKEBW_WKWebView_osx.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3A41C45519A00D07A0F /* NKEBW_WKWebView_osx.swift */; };
 		E4D8C3D61C455D1900D07A0F /* NKEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3D51C455D1900D07A0F /* NKEventEmitter.swift */; };
 		E4D8C3D71C455D1900D07A0F /* NKEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3D51C455D1900D07A0F /* NKEventEmitter.swift */; };
 		E4D8C3D81C455D1900D07A0F /* NKEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3D51C455D1900D07A0F /* NKEventEmitter.swift */; };
 		E4D8C3D91C455D1900D07A0F /* NKEventEmitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3D51C455D1900D07A0F /* NKEventEmitter.swift */; };
-		E4D8C3DB1C45718500D07A0F /* NKEAppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3DA1C45718500D07A0F /* NKEAppDirectory.swift */; };
-		E4D8C3DC1C45718500D07A0F /* NKEAppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3DA1C45718500D07A0F /* NKEAppDirectory.swift */; };
-		E4D8C3DD1C45718500D07A0F /* NKEAppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3DA1C45718500D07A0F /* NKEAppDirectory.swift */; };
-		E4D8C3DE1C45718500D07A0F /* NKEAppDirectory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4D8C3DA1C45718500D07A0F /* NKEAppDirectory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -304,6 +364,38 @@
 		E48C5F101C3F3EE6006CEF53 /* NKUIContextFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKUIContextFactory.swift; sourceTree = "<group>"; };
 		E48C5F131C3F4031006CEF53 /* NKJSCContextFactory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKJSCContextFactory.swift; sourceTree = "<group>"; };
 		E49681441C31D21F0048CA59 /* nodekit-sample.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "nodekit-sample.entitlements"; sourceTree = "<group>"; };
+		E4A838501C46B7C700514698 /* NKEApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NKEApp.swift; sourceTree = "<group>"; };
+		E4A838511C46B7C700514698 /* NKEAppDirectory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NKEAppDirectory.swift; sourceTree = "<group>"; };
+		E4A838521C46B7C700514698 /* NKEAppProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NKEAppProtocol.swift; sourceTree = "<group>"; };
+		E4A838601C46B7C700514698 /* NKEDialog-ios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NKEDialog-ios.swift"; sourceTree = "<group>"; };
+		E4A838611C46B7C700514698 /* NKEDialog-osx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NKEDialog-osx.swift"; sourceTree = "<group>"; };
+		E4A838621C46B7C700514698 /* NKEDialogProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NKEDialogProtocol.swift; sourceTree = "<group>"; };
+		E4A838641C46B7C700514698 /* NKE_IpcMain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NKE_IpcMain.swift; sourceTree = "<group>"; };
+		E4A838651C46B7C700514698 /* NKE_IpcMainProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NKE_IpcMainProtocol.swift; sourceTree = "<group>"; };
+		E4A838671C46B7C700514698 /* NKEMenu-ios.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NKEMenu-ios.swift"; sourceTree = "<group>"; };
+		E4A838681C46B7C700514698 /* NKEMenu-osx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NKEMenu-osx.swift"; sourceTree = "<group>"; };
+		E4A838691C46B7C700514698 /* NKEMenuProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NKEMenuProtocol.swift; sourceTree = "<group>"; };
+		E4A8386D1C46B7FD00514698 /* lib-electro */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "lib-electro"; sourceTree = "<group>"; };
+		E4A838C01C46F26000514698 /* NKE_BrowserConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BrowserConstants.swift; sourceTree = "<group>"; };
+		E4A838C11C46F26000514698 /* NKE_BrowserWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BrowserWindow.swift; sourceTree = "<group>"; };
+		E4A838C21C46F26000514698 /* NKE_BrowserWindowProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BrowserWindowProtocol.swift; sourceTree = "<group>"; };
+		E4A838C31C46F26000514698 /* NKE_WebContentsBase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_WebContentsBase.swift; sourceTree = "<group>"; };
+		E4A838C41C46F26000514698 /* NKE_WebContentsProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_WebContentsProtocol.swift; sourceTree = "<group>"; };
+		E4A838C61C46F26000514698 /* NKE_BrowserWindow_UI_IOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BrowserWindow_UI_IOS.swift; sourceTree = "<group>"; };
+		E4A838C71C46F26000514698 /* NKE_BrowserWindow_WK_IOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BrowserWindow_WK_IOS.swift; sourceTree = "<group>"; };
+		E4A838C81C46F26000514698 /* NKE_BrowserWindow_IOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BrowserWindow_IOS.swift; sourceTree = "<group>"; };
+		E4A838CA1C46F26000514698 /* NKE_BrowserWindow_UI_OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BrowserWindow_UI_OSX.swift; sourceTree = "<group>"; };
+		E4A838CB1C46F26000514698 /* NKE_BrowserWindow_WK_OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BrowserWindow_WK_OSX.swift; sourceTree = "<group>"; };
+		E4A838CC1C46F26000514698 /* NKEBrowserWindow_OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBrowserWindow_OSX.swift; sourceTree = "<group>"; };
+		E4A8391F1C47027D00514698 /* NKE_WebContentsUI_IOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_WebContentsUI_IOS.swift; sourceTree = "<group>"; };
+		E4A839201C47027D00514698 /* NKE_WebContentsWK_IOS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_WebContentsWK_IOS.swift; sourceTree = "<group>"; };
+		E4A839251C47028B00514698 /* NKE_WebContentsUI_OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_WebContentsUI_OSX.swift; sourceTree = "<group>"; };
+		E4A839261C47028B00514698 /* NKE_WebContentsWK_OSX.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_WebContentsWK_OSX.swift; sourceTree = "<group>"; };
+		E4A8392E1C47418900514698 /* NKE_IpcRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_IpcRenderer.swift; sourceTree = "<group>"; };
+		E4A839311C4741A400514698 /* NKE_IpcRendererProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_IpcRendererProtocol.swift; sourceTree = "<group>"; };
+		E4A839341C4741E600514698 /* NKE_IpcEvents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_IpcEvents.swift; sourceTree = "<group>"; };
+		E4A839381C47446C00514698 /* NKE_BootMain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BootMain.swift; sourceTree = "<group>"; };
+		E4A839391C47446C00514698 /* NKE_BootRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKE_BootRenderer.swift; sourceTree = "<group>"; };
 		E4AD89C41C1F828A0043F630 /* nodekit-sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nodekit-sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4AD89D11C1F82AA0043F630 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit-sample/platform-darwin/Info.plist"; sourceTree = "<group>"; };
 		E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKNSAppDelegate.swift; path = "nodekit/platform-darwin/NKNSAppDelegate.swift"; sourceTree = "<group>"; };
@@ -321,20 +413,7 @@
 		E4D8C2D71C418D4C00D07A0F /* NKWVWebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKWVWebView.swift; sourceTree = "<group>"; };
 		E4D8C2D81C418D4C00D07A0F /* NKWVWebViewDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKWVWebViewDelegate.swift; sourceTree = "<group>"; };
 		E4D8C2F71C44600B00D07A0F /* promise.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = promise.js; sourceTree = "<group>"; };
-		E4D8C3941C45519A00D07A0F /* NKEApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEApp.swift; sourceTree = "<group>"; };
-		E4D8C3951C45519A00D07A0F /* NKEAppConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEAppConstants.swift; sourceTree = "<group>"; };
-		E4D8C3961C45519A00D07A0F /* NKEAppProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEAppProtocol.swift; sourceTree = "<group>"; };
-		E4D8C39A1C45519A00D07A0F /* NKEBrowserWindow.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBrowserWindow.swift; sourceTree = "<group>"; };
-		E4D8C39B1C45519A00D07A0F /* NKEBWConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBWConstants.swift; sourceTree = "<group>"; };
-		E4D8C39C1C45519A00D07A0F /* NKEBWProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBWProtocol.swift; sourceTree = "<group>"; };
-		E4D8C39E1C45519A00D07A0F /* NKEBrowserWindow_ios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBrowserWindow_ios.swift; sourceTree = "<group>"; };
-		E4D8C39F1C45519A00D07A0F /* NKEBW_UIWebView_ios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBW_UIWebView_ios.swift; sourceTree = "<group>"; };
-		E4D8C3A01C45519A00D07A0F /* NKEBW_WKWebView_ios.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBW_WKWebView_ios.swift; sourceTree = "<group>"; };
-		E4D8C3A21C45519A00D07A0F /* NKEBrowserWindow_osx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBrowserWindow_osx.swift; sourceTree = "<group>"; };
-		E4D8C3A31C45519A00D07A0F /* NKEBW_UIWebView_osx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBW_UIWebView_osx.swift; sourceTree = "<group>"; };
-		E4D8C3A41C45519A00D07A0F /* NKEBW_WKWebView_osx.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEBW_WKWebView_osx.swift; sourceTree = "<group>"; };
 		E4D8C3D51C455D1900D07A0F /* NKEventEmitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEventEmitter.swift; sourceTree = "<group>"; };
-		E4D8C3DA1C45718500D07A0F /* NKEAppDirectory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKEAppDirectory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -420,7 +499,7 @@
 			isa = PBXGroup;
 			children = (
 				E48C5E761C3F203C006CEF53 /* NKCore */,
-				E4D8C32F1C454E7600D07A0F /* NKElectron */,
+				E4A838351C46B7C700514698 /* NKElectro */,
 				E48C5E551C3F203C006CEF53 /* NKNetworking */,
 				E48C5E5A1C3F203C006CEF53 /* NKScripting */,
 				E48C5E721C3F203C006CEF53 /* NKUrlProtocol */,
@@ -597,6 +676,110 @@
 			path = nodekit/common/NKScripting/NKUIWebView;
 			sourceTree = SOURCE_ROOT;
 		};
+		E4A838351C46B7C700514698 /* NKElectro */ = {
+			isa = PBXGroup;
+			children = (
+				E4A8386D1C46B7FD00514698 /* lib-electro */,
+				E4A839371C47446C00514698 /* NKE_Boot */,
+				E4A8384F1C46B7C700514698 /* NKEApp */,
+				E4A838BF1C46F26000514698 /* NKEBrowser */,
+				E4A8385F1C46B7C700514698 /* NKEDialog */,
+				E4A838631C46B7C700514698 /* NKEIpc */,
+				E4A838661C46B7C700514698 /* NKEMenu */,
+			);
+			name = NKElectro;
+			path = nodekit/common/NKElectro;
+			sourceTree = "<group>";
+		};
+		E4A8384F1C46B7C700514698 /* NKEApp */ = {
+			isa = PBXGroup;
+			children = (
+				E4A838501C46B7C700514698 /* NKEApp.swift */,
+				E4A838511C46B7C700514698 /* NKEAppDirectory.swift */,
+				E4A838521C46B7C700514698 /* NKEAppProtocol.swift */,
+			);
+			path = NKEApp;
+			sourceTree = "<group>";
+		};
+		E4A8385F1C46B7C700514698 /* NKEDialog */ = {
+			isa = PBXGroup;
+			children = (
+				E4A838601C46B7C700514698 /* NKEDialog-ios.swift */,
+				E4A838611C46B7C700514698 /* NKEDialog-osx.swift */,
+				E4A838621C46B7C700514698 /* NKEDialogProtocol.swift */,
+			);
+			path = NKEDialog;
+			sourceTree = "<group>";
+		};
+		E4A838631C46B7C700514698 /* NKEIpc */ = {
+			isa = PBXGroup;
+			children = (
+				E4A839341C4741E600514698 /* NKE_IpcEvents.swift */,
+				E4A838641C46B7C700514698 /* NKE_IpcMain.swift */,
+				E4A8392E1C47418900514698 /* NKE_IpcRenderer.swift */,
+				E4A838651C46B7C700514698 /* NKE_IpcMainProtocol.swift */,
+				E4A839311C4741A400514698 /* NKE_IpcRendererProtocol.swift */,
+			);
+			path = NKEIpc;
+			sourceTree = "<group>";
+		};
+		E4A838661C46B7C700514698 /* NKEMenu */ = {
+			isa = PBXGroup;
+			children = (
+				E4A838671C46B7C700514698 /* NKEMenu-ios.swift */,
+				E4A838681C46B7C700514698 /* NKEMenu-osx.swift */,
+				E4A838691C46B7C700514698 /* NKEMenuProtocol.swift */,
+			);
+			path = NKEMenu;
+			sourceTree = "<group>";
+		};
+		E4A838BF1C46F26000514698 /* NKEBrowser */ = {
+			isa = PBXGroup;
+			children = (
+				E4A838C01C46F26000514698 /* NKE_BrowserConstants.swift */,
+				E4A838C11C46F26000514698 /* NKE_BrowserWindow.swift */,
+				E4A838C21C46F26000514698 /* NKE_BrowserWindowProtocol.swift */,
+				E4A838C31C46F26000514698 /* NKE_WebContentsBase.swift */,
+				E4A838C41C46F26000514698 /* NKE_WebContentsProtocol.swift */,
+				E4A838C51C46F26000514698 /* platform-ios */,
+				E4A838C91C46F26000514698 /* platform-osx */,
+			);
+			path = NKEBrowser;
+			sourceTree = "<group>";
+		};
+		E4A838C51C46F26000514698 /* platform-ios */ = {
+			isa = PBXGroup;
+			children = (
+				E4A838C81C46F26000514698 /* NKE_BrowserWindow_IOS.swift */,
+				E4A838C61C46F26000514698 /* NKE_BrowserWindow_UI_IOS.swift */,
+				E4A838C71C46F26000514698 /* NKE_BrowserWindow_WK_IOS.swift */,
+				E4A8391F1C47027D00514698 /* NKE_WebContentsUI_IOS.swift */,
+				E4A839201C47027D00514698 /* NKE_WebContentsWK_IOS.swift */,
+			);
+			path = "platform-ios";
+			sourceTree = "<group>";
+		};
+		E4A838C91C46F26000514698 /* platform-osx */ = {
+			isa = PBXGroup;
+			children = (
+				E4A838CC1C46F26000514698 /* NKEBrowserWindow_OSX.swift */,
+				E4A838CA1C46F26000514698 /* NKE_BrowserWindow_UI_OSX.swift */,
+				E4A838CB1C46F26000514698 /* NKE_BrowserWindow_WK_OSX.swift */,
+				E4A839251C47028B00514698 /* NKE_WebContentsUI_OSX.swift */,
+				E4A839261C47028B00514698 /* NKE_WebContentsWK_OSX.swift */,
+			);
+			path = "platform-osx";
+			sourceTree = "<group>";
+		};
+		E4A839371C47446C00514698 /* NKE_Boot */ = {
+			isa = PBXGroup;
+			children = (
+				E4A839381C47446C00514698 /* NKE_BootMain.swift */,
+				E4A839391C47446C00514698 /* NKE_BootRenderer.swift */,
+			);
+			path = NKE_Boot;
+			sourceTree = "<group>";
+		};
 		E4C253E01C20B481001B3388 /* www */ = {
 			isa = PBXGroup;
 			children = (
@@ -615,76 +798,6 @@
 				E4D8C2D81C418D4C00D07A0F /* NKWVWebViewDelegate.swift */,
 			);
 			path = NKWVWebView;
-			sourceTree = "<group>";
-		};
-		E4D8C32F1C454E7600D07A0F /* NKElectron */ = {
-			isa = PBXGroup;
-			children = (
-				E4D8C3931C45519A00D07A0F /* NKEApp */,
-				E4D8C3991C45519A00D07A0F /* NKEBrowserWindow */,
-			);
-			name = NKElectron;
-			sourceTree = "<group>";
-		};
-		E4D8C3931C45519A00D07A0F /* NKEApp */ = {
-			isa = PBXGroup;
-			children = (
-				E4D8C3941C45519A00D07A0F /* NKEApp.swift */,
-				E4D8C3DA1C45718500D07A0F /* NKEAppDirectory.swift */,
-				E4D8C3951C45519A00D07A0F /* NKEAppConstants.swift */,
-				E4D8C3961C45519A00D07A0F /* NKEAppProtocol.swift */,
-				E4D8C3971C45519A00D07A0F /* platform-ios */,
-				E4D8C3981C45519A00D07A0F /* platform-osx */,
-			);
-			name = NKEApp;
-			path = nodekit/common/NKElectron/NKEApp;
-			sourceTree = "<group>";
-		};
-		E4D8C3971C45519A00D07A0F /* platform-ios */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "platform-ios";
-			sourceTree = "<group>";
-		};
-		E4D8C3981C45519A00D07A0F /* platform-osx */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = "platform-osx";
-			sourceTree = "<group>";
-		};
-		E4D8C3991C45519A00D07A0F /* NKEBrowserWindow */ = {
-			isa = PBXGroup;
-			children = (
-				E4D8C39A1C45519A00D07A0F /* NKEBrowserWindow.swift */,
-				E4D8C39B1C45519A00D07A0F /* NKEBWConstants.swift */,
-				E4D8C39C1C45519A00D07A0F /* NKEBWProtocol.swift */,
-				E4D8C39D1C45519A00D07A0F /* platform-ios */,
-				E4D8C3A11C45519A00D07A0F /* platform-osx */,
-			);
-			name = NKEBrowserWindow;
-			path = nodekit/common/NKElectron/NKEBrowserWindow;
-			sourceTree = "<group>";
-		};
-		E4D8C39D1C45519A00D07A0F /* platform-ios */ = {
-			isa = PBXGroup;
-			children = (
-				E4D8C39E1C45519A00D07A0F /* NKEBrowserWindow_ios.swift */,
-				E4D8C39F1C45519A00D07A0F /* NKEBW_UIWebView_ios.swift */,
-				E4D8C3A01C45519A00D07A0F /* NKEBW_WKWebView_ios.swift */,
-			);
-			path = "platform-ios";
-			sourceTree = "<group>";
-		};
-		E4D8C3A11C45519A00D07A0F /* platform-osx */ = {
-			isa = PBXGroup;
-			children = (
-				E4D8C3A21C45519A00D07A0F /* NKEBrowserWindow_osx.swift */,
-				E4D8C3A31C45519A00D07A0F /* NKEBW_UIWebView_osx.swift */,
-				E4D8C3A41C45519A00D07A0F /* NKEBW_WKWebView_osx.swift */,
-			);
-			path = "platform-osx";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -843,6 +956,7 @@
 				E4C253F51C20B6F8001B3388 /* app in Resources */,
 				E4C253ED1C20B4EE001B3388 /* default in Resources */,
 				E4D8C2F81C44600B00D07A0F /* promise.js in Resources */,
+				E4A8386E1C46B7FD00514698 /* lib-electro in Resources */,
 				E4C253F11C20B4EE001B3388 /* splash in Resources */,
 				E48C5EA81C3F203C006CEF53 /* nkscripting.js in Resources */,
 				E488A1011C1F771D0041DFCF /* lib in Resources */,
@@ -856,6 +970,7 @@
 				E4C253F61C20B6F9001B3388 /* app in Resources */,
 				E4C253EE1C20B4EE001B3388 /* default in Resources */,
 				E4D8C2F91C44600B00D07A0F /* promise.js in Resources */,
+				E4A8386F1C46B7FD00514698 /* lib-electro in Resources */,
 				E4C253F21C20B4EE001B3388 /* splash in Resources */,
 				E48C5EA91C3F203C006CEF53 /* nkscripting.js in Resources */,
 				E488A1021C1F771D0041DFCF /* lib in Resources */,
@@ -875,6 +990,7 @@
 				E48C5EAA1C3F203C006CEF53 /* nkscripting.js in Resources */,
 				E488A12E1C1F78890041DFCF /* Assets.xcassets in Resources */,
 				E488A1321C1F78FB0041DFCF /* Launch Screen.storyboard in Resources */,
+				E4A838701C46B7FD00514698 /* lib-electro in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -886,6 +1002,7 @@
 				E4C253F41C20B4EE001B3388 /* splash in Resources */,
 				E4C253F01C20B4EE001B3388 /* default in Resources */,
 				E4AD89ED1C1F834B0043F630 /* Assets.xcassets in Resources */,
+				E4A838711C46B7FD00514698 /* lib-electro in Resources */,
 				E4D8C2FB1C44600B00D07A0F /* promise.js in Resources */,
 				E48C5EAB1C3F203C006CEF53 /* nkscripting.js in Resources */,
 				E4AD89E51C1F833C0043F630 /* app in Resources */,
@@ -901,54 +1018,68 @@
 			buildActionMask = 2147483647;
 			files = (
 				E48C5ED81C3F203C006CEF53 /* NKUrlFileDecode.swift in Sources */,
+				E4A838A21C46B83000514698 /* NKE_IpcMain.swift in Sources */,
 				E48C5EC81C3F203C006CEF53 /* NKWKWebView.swift in Sources */,
 				E48C5F0B1C3F3758006CEF53 /* NKUIWebView.swift in Sources */,
 				E48C5EE01C3F203C006CEF53 /* NKUrlProtocolLocalFile.swift in Sources */,
 				E48C5EAC1C3F203C006CEF53 /* NKScriptInvocation.swift in Sources */,
 				E4C253D71C20AB17001B3388 /* NKUIAppDelegate.swift in Sources */,
+				E4A838961C46B81C00514698 /* NKEDialog-ios.swift in Sources */,
+				E4A838741C46B80200514698 /* NKEAppProtocol.swift in Sources */,
+				E4A838AE1C46B84500514698 /* NKEMenuProtocol.swift in Sources */,
+				E4A838D51C46F26000514698 /* NKE_BrowserWindowProtocol.swift in Sources */,
+				E4A838DD1C46F26000514698 /* NKE_WebContentsProtocol.swift in Sources */,
 				E48C5EB01C3F203C006CEF53 /* NKScriptLogging.swift in Sources */,
+				E4A838981C46B81C00514698 /* NKEDialogProtocol.swift in Sources */,
 				E48C5E9C1C3F203C006CEF53 /* NKScriptBindingObject.swift in Sources */,
 				E48C5EB41C3F203C006CEF53 /* NKScriptMessage.swift in Sources */,
 				E48C5EDC1C3F203C006CEF53 /* NKUrlProtocolCustom.swift in Sources */,
+				E4A838E51C46F26000514698 /* NKE_BrowserWindow_WK_IOS.swift in Sources */,
 				E48C5ED01C3F203C006CEF53 /* NKWKUserScript.swift in Sources */,
 				E48C5ECC1C3F203C006CEF53 /* NKWKMessageHandler.swift in Sources */,
+				E4A838731C46B80200514698 /* NKEAppDirectory.swift in Sources */,
 				E48C5F051C3F2189006CEF53 /* NKJSContextFactory.swift in Sources */,
-				E4D8C3C11C45519A00D07A0F /* NKEBW_UIWebView_ios.swift in Sources */,
+				E4A838A31C46B83000514698 /* NKE_IpcMainProtocol.swift in Sources */,
 				E48C5EA41C3F203C006CEF53 /* NKScriptContext.swift in Sources */,
+				E4A838AA1C46B83A00514698 /* NKEMenu-ios.swift in Sources */,
 				E48C5E861C3F203C006CEF53 /* GCDAsyncSocket.m in Sources */,
 				E4D8C2D11C416CAD00D07A0F /* NKUIWebViewDelegate.swift in Sources */,
 				E48C5E4B1C3DC31F006CEF53 /* NKJSMobile.swift in Sources */,
 				E48C5EEC1C3F203C006CEF53 /* NKSocketTCP.swift in Sources */,
 				E4D8C2D31C416DE000D07A0F /* NKWKWebViewDelegate.swift in Sources */,
 				E4D8C3D61C455D1900D07A0F /* NKEventEmitter.swift in Sources */,
-				E4D8C3B11C45519A00D07A0F /* NKEBrowserWindow.swift in Sources */,
 				E48C5EF81C3F203C006CEF53 /* NKJavaScriptBridge.swift in Sources */,
-				E4D8C3A91C45519A00D07A0F /* NKEAppConstants.swift in Sources */,
-				E4D8C3C51C45519A00D07A0F /* NKEBW_WKWebView_ios.swift in Sources */,
-				E4D8C3A51C45519A00D07A0F /* NKEApp.swift in Sources */,
 				E48C5F141C3F4031006CEF53 /* NKJSCContextFactory.swift in Sources */,
-				E4D8C3AD1C45519A00D07A0F /* NKEAppProtocol.swift in Sources */,
+				E4A8393E1C47446C00514698 /* NKE_BootRenderer.swift in Sources */,
+				E4A838E91C46F26000514698 /* NKE_BrowserWindow_IOS.swift in Sources */,
+				E4A838721C46B80200514698 /* NKEApp.swift in Sources */,
 				E48C5EC01C3F203C006CEF53 /* NKScriptPlugin.swift in Sources */,
-				E4D8C3BD1C45519A00D07A0F /* NKEBrowserWindow_ios.swift in Sources */,
 				E48C5EA01C3F203C006CEF53 /* NKScriptChannel.swift in Sources */,
-				E4D8C3B91C45519A00D07A0F /* NKEBWProtocol.swift in Sources */,
 				E48C5EF01C3F203C006CEF53 /* NKSocketUDP.swift in Sources */,
 				E48C5E8C1C3F203C006CEF53 /* GCDAsyncUdpSocket.m in Sources */,
+				E4A838E11C46F26000514698 /* NKE_BrowserWindow_UI_IOS.swift in Sources */,
 				E4C253D51C20AABC001B3388 /* NKMainMobile.swift in Sources */,
 				E48C5F111C3F3EE6006CEF53 /* NKUIContextFactory.swift in Sources */,
 				E48C5E981C3F203C006CEF53 /* NKJSCScript.swift in Sources */,
+				E4A839451C47511700514698 /* NKE_IpcRendererProtocol.swift in Sources */,
+				E4A8393A1C47446C00514698 /* NKE_BootMain.swift in Sources */,
 				E48C5E941C3F203C006CEF53 /* NKJSContext.swift in Sources */,
 				E48C5EF41C3F203C006CEF53 /* NKTimer.swift in Sources */,
 				E48C5EE41C3F203C006CEF53 /* NKCrypto.swift in Sources */,
+				E4A839231C47027D00514698 /* NKE_WebContentsWK_IOS.swift in Sources */,
 				E48C5EB81C3F203C006CEF53 /* NKScriptMetaObject.swift in Sources */,
 				E48C5EC41C3F203C006CEF53 /* NKScriptSource.swift in Sources */,
 				E4D8C32E1C45463A00D07A0F /* NKWKContextFactory.swift in Sources */,
-				E4D8C3B51C45519A00D07A0F /* NKEBWConstants.swift in Sources */,
+				E4A839471C47512000514698 /* NKE_IpcEvents.swift in Sources */,
+				E4A838D91C46F26000514698 /* NKE_WebContentsBase.swift in Sources */,
+				E4A839431C47511100514698 /* NKE_IpcRenderer.swift in Sources */,
 				E48C5EBC1C3F203C006CEF53 /* NKScriptObject.swift in Sources */,
+				E4A838D11C46F26000514698 /* NKE_BrowserWindow.swift in Sources */,
 				E48C5EE81C3F203C006CEF53 /* NKFileSystem.swift in Sources */,
+				E4A839211C47027D00514698 /* NKE_WebContentsUI_IOS.swift in Sources */,
+				E4A838CD1C46F26000514698 /* NKE_BrowserConstants.swift in Sources */,
 				E48C5EFC1C3F203C006CEF53 /* NKNodeKit.swift in Sources */,
 				E48C5F001C3F203C006CEF53 /* NKTypeAlias.swift in Sources */,
-				E4D8C3DB1C45718500D07A0F /* NKEAppDirectory.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -958,52 +1089,66 @@
 			files = (
 				E48C5EF91C3F203C006CEF53 /* NKJavaScriptBridge.swift in Sources */,
 				E48C5E871C3F203C006CEF53 /* GCDAsyncSocket.m in Sources */,
-				E4D8C3DC1C45718500D07A0F /* NKEAppDirectory.swift in Sources */,
 				E4D8C3D71C455D1900D07A0F /* NKEventEmitter.swift in Sources */,
+				E4A838CE1C46F26000514698 /* NKE_BrowserConstants.swift in Sources */,
 				E48C5EE11C3F203C006CEF53 /* NKUrlProtocolLocalFile.swift in Sources */,
 				E48C5EF51C3F203C006CEF53 /* NKTimer.swift in Sources */,
+				E4A839291C47028B00514698 /* NKE_WebContentsWK_OSX.swift in Sources */,
+				E4A838DA1C46F26000514698 /* NKE_WebContentsBase.swift in Sources */,
 				E48C5EDD1C3F203C006CEF53 /* NKUrlProtocolCustom.swift in Sources */,
+				E4A838761C46B80200514698 /* NKEAppDirectory.swift in Sources */,
+				E4A838F21C46F26000514698 /* NKE_BrowserWindow_WK_OSX.swift in Sources */,
 				E4D8C2E31C418DE200D07A0F /* NKJSCContextFactory.swift in Sources */,
-				E4D8C3AE1C45519A00D07A0F /* NKEAppProtocol.swift in Sources */,
 				E48C5EAD1C3F203C006CEF53 /* NKScriptInvocation.swift in Sources */,
-				E4D8C3BA1C45519A00D07A0F /* NKEBWProtocol.swift in Sources */,
 				E48C5EBD1C3F203C006CEF53 /* NKScriptObject.swift in Sources */,
+				E4A8389A1C46B81C00514698 /* NKEDialog-osx.swift in Sources */,
+				E4A838D21C46F26000514698 /* NKE_BrowserWindow.swift in Sources */,
 				E48C5EED1C3F203C006CEF53 /* NKSocketTCP.swift in Sources */,
+				E4A838771C46B80200514698 /* NKEAppProtocol.swift in Sources */,
+				E4A838A51C46B83000514698 /* NKE_IpcMainProtocol.swift in Sources */,
 				E48C5EA51C3F203C006CEF53 /* NKScriptContext.swift in Sources */,
+				E4A839271C47028B00514698 /* NKE_WebContentsUI_OSX.swift in Sources */,
 				E48C5EFD1C3F203C006CEF53 /* NKNodeKit.swift in Sources */,
 				E48C5F011C3F203C006CEF53 /* NKTypeAlias.swift in Sources */,
 				E48C5EB51C3F203C006CEF53 /* NKScriptMessage.swift in Sources */,
+				E4A839351C4741E600514698 /* NKE_IpcEvents.swift in Sources */,
 				E4D8C2DD1C418D4C00D07A0F /* NKWVWebViewDelegate.swift in Sources */,
 				E4C253D21C20A5FF001B3388 /* NKMainDesktop.swift in Sources */,
 				E48C5EF11C3F203C006CEF53 /* NKSocketUDP.swift in Sources */,
 				E4D8C2D91C418D4C00D07A0F /* NKWVContextFactory.swift in Sources */,
+				E4A8393B1C47446C00514698 /* NKE_BootMain.swift in Sources */,
+				E4A8392F1C47418900514698 /* NKE_IpcRenderer.swift in Sources */,
 				E4D8C2DB1C418D4C00D07A0F /* NKWVWebView.swift in Sources */,
 				E4AD89F21C1F85220043F630 /* NKMenu.swift in Sources */,
+				E4A838AC1C46B83D00514698 /* NKEMenu-osx.swift in Sources */,
+				E4A838AF1C46B84500514698 /* NKEMenuProtocol.swift in Sources */,
 				E4D8C2E01C418DDB00D07A0F /* NKWKWebViewDelegate.swift in Sources */,
 				E48C5EA11C3F203C006CEF53 /* NKScriptChannel.swift in Sources */,
-				E4D8C3CE1C45519A00D07A0F /* NKEBW_UIWebView_osx.swift in Sources */,
-				E4D8C3AA1C45519A00D07A0F /* NKEAppConstants.swift in Sources */,
+				E4A838DE1C46F26000514698 /* NKE_WebContentsProtocol.swift in Sources */,
 				E4D8C2E61C4194FE00D07A0F /* NKJSDesktop.swift in Sources */,
-				E4D8C3CA1C45519A00D07A0F /* NKEBrowserWindow_osx.swift in Sources */,
-				E4D8C3A61C45519A00D07A0F /* NKEApp.swift in Sources */,
 				E48C5EE91C3F203C006CEF53 /* NKFileSystem.swift in Sources */,
 				E48C5EB91C3F203C006CEF53 /* NKScriptMetaObject.swift in Sources */,
 				E48C5EC11C3F203C006CEF53 /* NKScriptPlugin.swift in Sources */,
 				E48C5E9D1C3F203C006CEF53 /* NKScriptBindingObject.swift in Sources */,
 				E48C5E8D1C3F203C006CEF53 /* GCDAsyncUdpSocket.m in Sources */,
 				E48C5E951C3F203C006CEF53 /* NKJSContext.swift in Sources */,
+				E4A838EE1C46F26000514698 /* NKE_BrowserWindow_UI_OSX.swift in Sources */,
 				E48C5E991C3F203C006CEF53 /* NKJSCScript.swift in Sources */,
+				E4A8389B1C46B81C00514698 /* NKEDialogProtocol.swift in Sources */,
 				E48C5EB11C3F203C006CEF53 /* NKScriptLogging.swift in Sources */,
+				E4A839321C4741A400514698 /* NKE_IpcRendererProtocol.swift in Sources */,
+				E4A838751C46B80200514698 /* NKEApp.swift in Sources */,
+				E4A838D61C46F26000514698 /* NKE_BrowserWindowProtocol.swift in Sources */,
 				E48C5EE51C3F203C006CEF53 /* NKCrypto.swift in Sources */,
 				E4D8C32D1C45463A00D07A0F /* NKWKContextFactory.swift in Sources */,
 				E4AD89F31C1F85220043F630 /* NKNSAppDelegate.swift in Sources */,
 				E48C5ECD1C3F203C006CEF53 /* NKWKMessageHandler.swift in Sources */,
+				E4A838F61C46F26000514698 /* NKEBrowserWindow_OSX.swift in Sources */,
+				E4A8393F1C47446C00514698 /* NKE_BootRenderer.swift in Sources */,
 				E48C5F061C3F2189006CEF53 /* NKJSContextFactory.swift in Sources */,
-				E4D8C3D21C45519A00D07A0F /* NKEBW_WKWebView_osx.swift in Sources */,
-				E4D8C3B21C45519A00D07A0F /* NKEBrowserWindow.swift in Sources */,
-				E4D8C3B61C45519A00D07A0F /* NKEBWConstants.swift in Sources */,
 				E48C5ED11C3F203C006CEF53 /* NKWKUserScript.swift in Sources */,
 				E48C5ED91C3F203C006CEF53 /* NKUrlFileDecode.swift in Sources */,
+				E4A838A41C46B83000514698 /* NKE_IpcMain.swift in Sources */,
 				E48C5EC51C3F203C006CEF53 /* NKScriptSource.swift in Sources */,
 				E48C5EC91C3F203C006CEF53 /* NKWKWebView.swift in Sources */,
 			);
@@ -1015,18 +1160,25 @@
 			files = (
 				E4D8C2D41C416DE000D07A0F /* NKWKWebViewDelegate.swift in Sources */,
 				E48C5EFA1C3F203C006CEF53 /* NKJavaScriptBridge.swift in Sources */,
-				E4D8C3DD1C45718500D07A0F /* NKEAppDirectory.swift in Sources */,
 				E4D8C3D81C455D1900D07A0F /* NKEventEmitter.swift in Sources */,
+				E4A838CF1C46F26000514698 /* NKE_BrowserConstants.swift in Sources */,
 				E48C5E881C3F203C006CEF53 /* GCDAsyncSocket.m in Sources */,
 				E48C5EE21C3F203C006CEF53 /* NKUrlProtocolLocalFile.swift in Sources */,
+				E4A838DB1C46F26000514698 /* NKE_WebContentsBase.swift in Sources */,
 				E48C5EF61C3F203C006CEF53 /* NKTimer.swift in Sources */,
+				E4A839221C47027D00514698 /* NKE_WebContentsUI_IOS.swift in Sources */,
+				E4A838791C46B80300514698 /* NKEAppDirectory.swift in Sources */,
 				E48C5EDE1C3F203C006CEF53 /* NKUrlProtocolCustom.swift in Sources */,
-				E4D8C3AF1C45519A00D07A0F /* NKEAppProtocol.swift in Sources */,
 				E48C5EAE1C3F203C006CEF53 /* NKScriptInvocation.swift in Sources */,
-				E4D8C3BB1C45519A00D07A0F /* NKEBWProtocol.swift in Sources */,
 				E48C5EBE1C3F203C006CEF53 /* NKScriptObject.swift in Sources */,
 				E48C5EEE1C3F203C006CEF53 /* NKSocketTCP.swift in Sources */,
+				E4A838D31C46F26000514698 /* NKE_BrowserWindow.swift in Sources */,
+				E4A838A71C46B83100514698 /* NKE_IpcMainProtocol.swift in Sources */,
+				E4A839421C47511100514698 /* NKE_IpcRenderer.swift in Sources */,
+				E4A8387A1C46B80300514698 /* NKEAppProtocol.swift in Sources */,
 				E48C5EA61C3F203C006CEF53 /* NKScriptContext.swift in Sources */,
+				E4A839401C47446C00514698 /* NKE_BootRenderer.swift in Sources */,
+				E4A838EB1C46F26000514698 /* NKE_BrowserWindow_IOS.swift in Sources */,
 				E48C5EFE1C3F203C006CEF53 /* NKNodeKit.swift in Sources */,
 				E48C5F021C3F203C006CEF53 /* NKTypeAlias.swift in Sources */,
 				E48C5EB61C3F203C006CEF53 /* NKScriptMessage.swift in Sources */,
@@ -1034,35 +1186,42 @@
 				E48C5EF21C3F203C006CEF53 /* NKSocketUDP.swift in Sources */,
 				E4D8C2D01C416CAC00D07A0F /* NKUIWebViewDelegate.swift in Sources */,
 				E4C253DA1C20AC64001B3388 /* NKMainMobile.swift in Sources */,
-				E4D8C3BF1C45519A00D07A0F /* NKEBrowserWindow_ios.swift in Sources */,
 				E48C5EA21C3F203C006CEF53 /* NKScriptChannel.swift in Sources */,
 				E48C5EEA1C3F203C006CEF53 /* NKFileSystem.swift in Sources */,
+				E4A838B01C46B84600514698 /* NKEMenuProtocol.swift in Sources */,
 				E48C5EBA1C3F203C006CEF53 /* NKScriptMetaObject.swift in Sources */,
 				E48C5F121C3F3EE6006CEF53 /* NKUIContextFactory.swift in Sources */,
-				E4D8C3AB1C45519A00D07A0F /* NKEAppConstants.swift in Sources */,
 				E48C5EC21C3F203C006CEF53 /* NKScriptPlugin.swift in Sources */,
-				E4D8C3C31C45519A00D07A0F /* NKEBW_UIWebView_ios.swift in Sources */,
-				E4D8C3A71C45519A00D07A0F /* NKEApp.swift in Sources */,
 				E48C5E9E1C3F203C006CEF53 /* NKScriptBindingObject.swift in Sources */,
+				E4A838DF1C46F26000514698 /* NKE_WebContentsProtocol.swift in Sources */,
+				E4A8389C1C46B81C00514698 /* NKEDialog-ios.swift in Sources */,
 				E48C5E8E1C3F203C006CEF53 /* GCDAsyncUdpSocket.m in Sources */,
 				E48C5E961C3F203C006CEF53 /* NKJSContext.swift in Sources */,
-				E4D8C3C71C45519A00D07A0F /* NKEBW_WKWebView_ios.swift in Sources */,
 				E48C5E9A1C3F203C006CEF53 /* NKJSCScript.swift in Sources */,
 				E48C5EB21C3F203C006CEF53 /* NKScriptLogging.swift in Sources */,
 				E48C5EE61C3F203C006CEF53 /* NKCrypto.swift in Sources */,
+				E4A8389E1C46B81C00514698 /* NKEDialogProtocol.swift in Sources */,
+				E4A839241C47027D00514698 /* NKE_WebContentsWK_IOS.swift in Sources */,
 				E4C253DB1C20ACA3001B3388 /* NKUIAppDelegate.swift in Sources */,
 				E48C5F151C3F4031006CEF53 /* NKJSCContextFactory.swift in Sources */,
+				E4A838781C46B80300514698 /* NKEApp.swift in Sources */,
+				E4A838E31C46F26000514698 /* NKE_BrowserWindow_UI_IOS.swift in Sources */,
 				E48C5F0C1C3F3758006CEF53 /* NKUIWebView.swift in Sources */,
+				E4A8393C1C47446C00514698 /* NKE_BootMain.swift in Sources */,
+				E4A838D71C46F26000514698 /* NKE_BrowserWindowProtocol.swift in Sources */,
+				E4A838AB1C46B83A00514698 /* NKEMenu-ios.swift in Sources */,
 				E48C5E4F1C3DC397006CEF53 /* NKJSMobile.swift in Sources */,
 				E4D8C32C1C45463A00D07A0F /* NKWKContextFactory.swift in Sources */,
 				E48C5ECE1C3F203C006CEF53 /* NKWKMessageHandler.swift in Sources */,
 				E48C5F071C3F2189006CEF53 /* NKJSContextFactory.swift in Sources */,
-				E4D8C3B31C45519A00D07A0F /* NKEBrowserWindow.swift in Sources */,
-				E4D8C3B71C45519A00D07A0F /* NKEBWConstants.swift in Sources */,
+				E4A839441C47511700514698 /* NKE_IpcRendererProtocol.swift in Sources */,
 				E48C5ED21C3F203C006CEF53 /* NKWKUserScript.swift in Sources */,
 				E48C5EDA1C3F203C006CEF53 /* NKUrlFileDecode.swift in Sources */,
+				E4A838A61C46B83100514698 /* NKE_IpcMain.swift in Sources */,
+				E4A839461C47511F00514698 /* NKE_IpcEvents.swift in Sources */,
 				E48C5EC61C3F203C006CEF53 /* NKScriptSource.swift in Sources */,
 				E48C5ECA1C3F203C006CEF53 /* NKWKWebView.swift in Sources */,
+				E4A838E71C46F26000514698 /* NKE_BrowserWindow_WK_IOS.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1071,55 +1230,69 @@
 			buildActionMask = 2147483647;
 			files = (
 				E4D8C2E21C418DDC00D07A0F /* NKWKWebViewDelegate.swift in Sources */,
-				E4D8C3B81C45519A00D07A0F /* NKEBWConstants.swift in Sources */,
+				E4A838DC1C46F26000514698 /* NKE_WebContentsBase.swift in Sources */,
 				E48C5EC31C3F203C006CEF53 /* NKScriptPlugin.swift in Sources */,
+				E4A8393D1C47446C00514698 /* NKE_BootMain.swift in Sources */,
 				E4D8C2DE1C418D4C00D07A0F /* NKWVWebViewDelegate.swift in Sources */,
+				E4A838D41C46F26000514698 /* NKE_BrowserWindow.swift in Sources */,
+				E4A838D81C46F26000514698 /* NKE_BrowserWindowProtocol.swift in Sources */,
+				E4A838F01C46F26000514698 /* NKE_BrowserWindow_UI_OSX.swift in Sources */,
 				E48C5ED31C3F203C006CEF53 /* NKWKUserScript.swift in Sources */,
 				E48C5EF71C3F203C006CEF53 /* NKTimer.swift in Sources */,
+				E4A838AD1C46B83E00514698 /* NKEMenu-osx.swift in Sources */,
+				E4A838A81C46B83100514698 /* NKE_IpcMain.swift in Sources */,
 				E4D8C2E41C418DE200D07A0F /* NKJSCContextFactory.swift in Sources */,
 				E48C5E9B1C3F203C006CEF53 /* NKJSCScript.swift in Sources */,
 				E48C5EA31C3F203C006CEF53 /* NKScriptChannel.swift in Sources */,
 				E4AD89F51C1F85230043F630 /* NKNSAppDelegate.swift in Sources */,
+				E4A8392A1C47028B00514698 /* NKE_WebContentsWK_OSX.swift in Sources */,
 				E48C5EFF1C3F203C006CEF53 /* NKNodeKit.swift in Sources */,
 				E48C5EB71C3F203C006CEF53 /* NKScriptMessage.swift in Sources */,
-				E4D8C3B01C45519A00D07A0F /* NKEAppProtocol.swift in Sources */,
-				E4D8C3BC1C45519A00D07A0F /* NKEBWProtocol.swift in Sources */,
 				E48C5EA71C3F203C006CEF53 /* NKScriptContext.swift in Sources */,
 				E48C5EE31C3F203C006CEF53 /* NKUrlProtocolLocalFile.swift in Sources */,
+				E4A838A01C46B81E00514698 /* NKEDialog-osx.swift in Sources */,
 				E48C5EE71C3F203C006CEF53 /* NKCrypto.swift in Sources */,
-				E4D8C3AC1C45519A00D07A0F /* NKEAppConstants.swift in Sources */,
-				E4D8C3DE1C45718500D07A0F /* NKEAppDirectory.swift in Sources */,
 				E48C5E9F1C3F203C006CEF53 /* NKScriptBindingObject.swift in Sources */,
+				E4A838F81C46F26000514698 /* NKEBrowserWindow_OSX.swift in Sources */,
 				E4D8C2DC1C418D4C00D07A0F /* NKWVWebView.swift in Sources */,
 				E48C5F031C3F203C006CEF53 /* NKTypeAlias.swift in Sources */,
 				E48C5EB31C3F203C006CEF53 /* NKScriptLogging.swift in Sources */,
 				E48C5EAF1C3F203C006CEF53 /* NKScriptInvocation.swift in Sources */,
 				E48C5EEB1C3F203C006CEF53 /* NKFileSystem.swift in Sources */,
+				E4A8387D1C46B80300514698 /* NKEAppProtocol.swift in Sources */,
 				E48C5E971C3F203C006CEF53 /* NKJSContext.swift in Sources */,
 				E4D8C32B1C45463900D07A0F /* NKWKContextFactory.swift in Sources */,
+				E4A838A91C46B83100514698 /* NKE_IpcMainProtocol.swift in Sources */,
 				E48C5EFB1C3F203C006CEF53 /* NKJavaScriptBridge.swift in Sources */,
 				E48C5EC71C3F203C006CEF53 /* NKScriptSource.swift in Sources */,
 				E48C5EBB1C3F203C006CEF53 /* NKScriptMetaObject.swift in Sources */,
 				E48C5ECF1C3F203C006CEF53 /* NKWKMessageHandler.swift in Sources */,
+				E4A838F41C46F26000514698 /* NKE_BrowserWindow_WK_OSX.swift in Sources */,
 				E4D8C3D91C455D1900D07A0F /* NKEventEmitter.swift in Sources */,
-				E4D8C3D01C45519A00D07A0F /* NKEBW_UIWebView_osx.swift in Sources */,
-				E4D8C3CC1C45519A00D07A0F /* NKEBrowserWindow_osx.swift in Sources */,
-				E4D8C3D41C45519A00D07A0F /* NKEBW_WKWebView_osx.swift in Sources */,
 				E4C253D31C20A6BC001B3388 /* NKMainDesktop.swift in Sources */,
 				E48C5F081C3F2189006CEF53 /* NKJSContextFactory.swift in Sources */,
+				E4A839281C47028B00514698 /* NKE_WebContentsUI_OSX.swift in Sources */,
 				E48C5EDB1C3F203C006CEF53 /* NKUrlFileDecode.swift in Sources */,
-				E4D8C3B41C45519A00D07A0F /* NKEBrowserWindow.swift in Sources */,
 				E48C5E8F1C3F203C006CEF53 /* GCDAsyncUdpSocket.m in Sources */,
+				E4A839331C4741A400514698 /* NKE_IpcRendererProtocol.swift in Sources */,
 				E4D8C2DA1C418D4C00D07A0F /* NKWVContextFactory.swift in Sources */,
-				E4D8C3A81C45519A00D07A0F /* NKEApp.swift in Sources */,
+				E4A838A11C46B81E00514698 /* NKEDialogProtocol.swift in Sources */,
+				E4A8387B1C46B80300514698 /* NKEApp.swift in Sources */,
+				E4A8387C1C46B80300514698 /* NKEAppDirectory.swift in Sources */,
+				E4A838D01C46F26000514698 /* NKE_BrowserConstants.swift in Sources */,
 				E4D8C2E51C4194FD00D07A0F /* NKJSDesktop.swift in Sources */,
+				E4A838B11C46B84600514698 /* NKEMenuProtocol.swift in Sources */,
+				E4A838E01C46F26000514698 /* NKE_WebContentsProtocol.swift in Sources */,
+				E4A839361C4741E600514698 /* NKE_IpcEvents.swift in Sources */,
 				E48C5EF31C3F203C006CEF53 /* NKSocketUDP.swift in Sources */,
+				E4A839301C47418900514698 /* NKE_IpcRenderer.swift in Sources */,
 				E48C5EDF1C3F203C006CEF53 /* NKUrlProtocolCustom.swift in Sources */,
 				E48C5EEF1C3F203C006CEF53 /* NKSocketTCP.swift in Sources */,
 				E4C253DF1C20AFC0001B3388 /* main.swift in Sources */,
 				E48C5E891C3F203C006CEF53 /* GCDAsyncSocket.m in Sources */,
 				E4AD89F41C1F85230043F630 /* NKMenu.swift in Sources */,
 				E48C5ECB1C3F203C006CEF53 /* NKWKWebView.swift in Sources */,
+				E4A839411C47446C00514698 /* NKE_BootRenderer.swift in Sources */,
 				E48C5EBF1C3F203C006CEF53 /* NKScriptObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

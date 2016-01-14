@@ -20,12 +20,13 @@ import Cocoa
 
 class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate {
    
-    private var splashWindow: NKEBrowserWindow? = NKEBrowserWindow(options: [
+    private var splashWindow: NKE_BrowserWindow? = NKE_BrowserWindow(options: [
         "nk.browserType": "UIWebView",
         "title": "",
         "preloadURL": "http://internal/splash/views/StartupSplash.html",
         "width": 800,
-        "height": 600
+        "height": 600,
+        "nk.InstallElectro": false
         ])
 
     var _nodekit : NKNodeKit;

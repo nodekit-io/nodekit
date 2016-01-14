@@ -23,7 +23,7 @@ import Foundation
 public class NKScriptObject : NSObject {
 
     public let namespace: String
-   private weak var _channel: NKScriptChannel?
+    private weak var _channel: NKScriptChannel?
     public var channel: NKScriptChannel { return _channel!; }
     public var context: NKScriptContext? { return _channel?.context; }
     

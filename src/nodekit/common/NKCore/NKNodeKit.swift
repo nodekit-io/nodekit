@@ -22,10 +22,6 @@ import WebKit
 struct NKGlobals {
     static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
 }
-var dog5: AnyObject? = nil
-var dog7: AnyObject? = nil
-var dog6: AnyObject? = nil
-var dog8: AnyObject? = nil
 
 public class NKNodeKit: NKScriptContextDelegate {
     
@@ -36,7 +32,6 @@ public class NKNodeKit: NKScriptContextDelegate {
     
     var context : NKScriptContext?;
     var scriptContextDelegate: NKScriptContextDelegate?;
-    
     
     public class func start() {
        #if os(iOS)
@@ -51,34 +46,26 @@ public class NKNodeKit: NKScriptContextDelegate {
        NKJSContextFactory().createContext(["Engine": NKEngineType.JavaScriptCore.rawValue], delegate: self)
     }
     
-    var browserPlugin: AnyObject?;
-    var appPlugin: AnyObject?;
-    
-    
     public func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
         
         self.context = context;
         
-        let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
+        // INSTALL JAVASCRIPT ENVIRONMENT ON MAIN CONTEXT
+        NKE_BootMain.bootTo(context)
         
-        let url = _nodeKitBundle.pathForResource("_nk_boot", ofType: "js", inDirectory: "lib")
-        
-       browserPlugin = context.NKloadPlugin(NKEBrowserWindow(), namespace: "io.nodekit.browserWindow", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue]);
-        
-       appPlugin = context.NKloadPlugin(NKEApp(), namespace: "io.nodekit.app", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue]);
+        let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.console", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue])
+        objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script1, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
         
-        let bootstrapper = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding);
-         dog8 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.console", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue])
-        dog7 =  context.NKinjectJavaScript(NKScriptSource(source: bootstrapper! as String, asFilename:"io.nodekit/scripting/nk_boot.js"))
-        let scriptSource = "var init =function(){console.log('FROM JAVA'); \n //io.nodekit.console.alert('hello world'); \n var p = (new io.nodekit.browserWindow({'nk.browserType': 'WKWebView'})) \n ; console.log('FROM JAVA');}\ninit();";
-        dog5 = context.NKinjectJavaScript(NKScriptSource(source: scriptSource, asFilename: "startup.js"))
+        let script2Source = "var p = new io.nodekit.BrowserWindow(); io.nodekit.console.alert('hello'); ";
+        let script2 = context.NKinjectJavaScript(NKScriptSource(source: script2Source, asFilename: "startup.js"))
+        objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script2, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        
         self.scriptContextDelegate?.NKScriptEngineLoaded(context);
-        
-       }
+    }
     
     public func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
-        let seconds = 1.5
+        let seconds = 0.0
         let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
         let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
         

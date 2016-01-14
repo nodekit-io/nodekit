@@ -23,7 +23,6 @@ import Foundation
 public protocol NKScriptContext: class {
     var NKid: Int { get }
     func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject>) -> AnyObject?
-    
     func NKevaluateJavaScript(javaScriptString: String,
         completionHandler: ((AnyObject?,NSError?) -> Void)?)
     func NKevaluateJavaScript(script: String) throws -> AnyObject?

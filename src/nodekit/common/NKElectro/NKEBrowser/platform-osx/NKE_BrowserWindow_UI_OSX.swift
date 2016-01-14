@@ -19,7 +19,12 @@
 import Foundation
 import WebKit
 
-extension NKEBrowserWindow: WebUIDelegate {
+extension NKE_BrowserWindow: WebUIDelegate {
+    
+    internal func UIApplicationReady() -> Void {
+        (self._webView as! WebView).frameLoadDelegate = self;
+    }
+    
     
     internal func createUIWebView(window: AnyObject, options: Dictionary<String, AnyObject>) -> Int {
         guard let window = window as? NSWindow else {return 0}
@@ -32,6 +37,7 @@ extension NKEBrowserWindow: WebUIDelegate {
         
         // create WebView
         let webView:WebView = WebView(frame: viewRect)
+        self._webView = webView;
         
         let webPrefs : WebPreferences = WebPreferences.standardPreferences()
         
@@ -109,4 +115,28 @@ extension NKEBrowserWindow: WebUIDelegate {
             }
         })
     }
+}
+
+
+
+extension NKE_BrowserWindow: WebFrameLoadDelegate {
+    
+    func webView(sender: WebView!, didFinishLoadForFrame frame: WebFrame!) {
+        if (frame !== sender.mainFrame) {return;}
+        self._events.emit("did-finish-load", self._id)
+    }
+    
+    func webView(sender: WebView!,
+        didFailProvisionalLoadWithError error: NSError!,
+        forFrame frame: WebFrame!) {
+                 if (frame !== sender.mainFrame) {return;}
+            self._events.emit("did-fail-loading",  error.description)
+    }
+    
+    func webView(sender: WebView!,
+        didFailLoadWithError error: NSError!,
+        forFrame frame: WebFrame!) {
+            if (frame !== sender.mainFrame) {return;}
+            self._events.emit("did-fail-loading", error.description) 
+    } 
 }

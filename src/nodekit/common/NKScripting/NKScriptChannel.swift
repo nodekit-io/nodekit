@@ -105,7 +105,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         userContentController?.NKaddScriptMessageHandler(self, name: id)
         typeInfo = NKScriptMetaObject(plugin: object.dynamicType)
         principal = NKScriptBindingObject(namespace: namespace, channel: self, object: object)
-        userScript = context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: _stdlib_getDemangledTypeName(object)))
+        userScript = context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: "io.nodekit.scripting/plugins/" + _stdlib_getDemangledTypeName(object) + ".js" ))
         
         log("+E\(context.NKid) Plugin object \(object) is bound to \(namespace) with channel \(id)")
         return principal as NKScriptObject
@@ -210,7 +210,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         return rewriteStub(
             "(function(exports) {\n" +
                 rewriteStub(stubs, forKey: ".local") +
-                "})(NKScripting.createPlugin('\(identifier!)', '\(principal.namespace)', \(base)));\n" + rewriteStub("\n//# sourceURL=io.nodekit.scripting/plugins/\(name).js", forKey: ".sourceURL"),
+                "})(NKScripting.createPlugin('\(identifier!)', '\(principal.namespace)', \(base)));\n" /* + rewriteStub("\n//# sourceURL=io.nodekit.scripting/plugins/\(name).js", forKey: ".sourceURL") */,
             forKey: ".global"
         )
     }

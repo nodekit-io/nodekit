@@ -37,8 +37,8 @@ public class NKScriptSource {
         }
         else if (namespace != nil)
         {
-            self.cleanup = "delete \(namespace)"
-            self.namespace = namespace
+            self.cleanup = "delete \(namespace!)"
+            self.namespace = namespace!
         } else
         {
             self.namespace = nil
@@ -49,7 +49,7 @@ public class NKScriptSource {
         {
             self.source = source;
         } else {
-            self.source = source + "\n\n//# sourceURL=" + filename
+            self.source = source + "\n//# sourceURL=" + filename
         }
 
     }

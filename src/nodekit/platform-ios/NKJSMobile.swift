@@ -35,11 +35,20 @@ import UIKit
     }
     
     private func _alert(title title: String?, message: String?) {
-        let alert = UIAlertView()
-        alert.title = title!
-        alert.message = message
-        alert.addButtonWithTitle("Ok")
-        alert.show()
+        let buttons: [String] = ["Ok"]
+        let title: String = title ?? ""
+        let message: String = message ?? ""
+        
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
+        
+        for var i = 0; i < buttons.count; i++ {
+            let buttonTitle: String = buttons[i] ?? "";
+            
+            let buttonAction = UIAlertAction(title: buttonTitle, style: (buttonTitle == "Cancel" ? .Cancel : .Default), handler: nil)
+            alertController.addAction(buttonAction)
+        }
+        guard let viewController = UIApplication.sharedApplication().delegate!.window!?.rootViewController else {return;}
+        viewController.presentViewController(alertController, animated: true, completion: nil)
     }
 }
 
