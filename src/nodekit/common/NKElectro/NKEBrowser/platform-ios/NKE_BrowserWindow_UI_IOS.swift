@@ -26,25 +26,42 @@ extension NKE_BrowserWindow {
     
     internal func UIApplicationReady() -> Void {
         (self._webView as! UIWebView).delegate = self;
+         self._events.emit("did-finish-load", self._id)
     }
     
-    internal func createUIWebView(window: AnyObject, options: Dictionary<String, AnyObject>) -> Int {
-        guard let window = window as? UIWindow else {return 0}
+    internal func createUIWebView(options: Dictionary<String, AnyObject>) -> Int {
         
-        let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+        let id = NKJSContextFactory.sequenceNumber
         
-          // create WebView
-        let webView:UIWebView = UIWebView(frame: CGRect.zero)
-        self._webView = webView;
+        let createBlock = {() -> Void in
+            
+            let window = self.createWindow(options) as! UIWindow
+            self._window = window;
+            
+            let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+            
+            // create WebView
+            let webView:UIWebView = UIWebView(frame: CGRect.zero)
+            self._webView = webView;
+            
+            window.rootViewController?.view = webView
+            
+            webView.NKgetScriptContext(id, options: [String: AnyObject](), delegate: self)
+            
+            let url = NSURL(string: urlAddress as String)
+            let requestObj: NSURLRequest = NSURLRequest(URL: url!)
+            webView.loadRequest(requestObj)
+            window.rootViewController?.view.backgroundColor = UIColor(netHex: 0x2690F6)
+        }
         
-        window.rootViewController?.view = webView
-        
-        let id = webView.NKgetScriptContext([String: AnyObject](), delegate: self)
-        
-        let url = NSURL(string: urlAddress as String)
-        let requestObj: NSURLRequest = NSURLRequest(URL: url!)
-        webView.loadRequest(requestObj)
-        window.rootViewController?.view.backgroundColor = UIColor(netHex: 0x2690F6)
+        if (NSThread.isMainThread())
+        {
+            createBlock()
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), createBlock)
+        }
         
         return id;
     }

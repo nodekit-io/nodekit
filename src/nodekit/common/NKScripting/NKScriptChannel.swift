@@ -169,7 +169,57 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
             log("-Unknown message: \(message.body)")
         }
     }
-
+    
+    public func userContentControllerSync(didReceiveScriptMessage message: NKScriptMessage) -> AnyObject! {
+        
+        if let body = message.body as? [String: AnyObject], let opcode = body["$opcode"] as? String {
+            let target = (body["$target"] as? NSNumber)?.integerValue ?? 0
+            if let object = instances[target] {
+                if opcode == "-" {
+                    if target == 0 {
+                        // Dispose plugin
+                        unbind()
+                        return true;
+                    } else if let instance = instances.removeValueForKey(target) {
+                        // Dispose instance
+                        log("+E\(context!.NKid) Instance \(target) is unbound from \(instance.namespace)")
+                          return true;
+                    } else {
+                        log("?Invalid instance id: \(target)")
+                          return true;
+                    }
+                } else if let member = typeInfo[opcode] where member.isProperty {
+                    // Update property
+                    object.updateNativeProperty(opcode, withValue: body["$operand"] ?? NSNull())
+                      return true;
+                } else if let member = typeInfo[opcode] where member.isMethod {
+                    // Invoke method
+                    if let args = (body["$operand"] ?? []) as? [AnyObject] {
+                       return object.invokeNativeMethodSync(opcode, withArguments: args)
+                    } // else malformatted operand
+                } else {
+                    log("?Invalid member name: \(opcode)")
+                      return false;
+                }
+            } else if opcode == "+" {
+                // Create instance
+                let args = body["$operand"] as? [AnyObject]
+                let namespace = "\(principal.namespace)[\(target)]"
+                instances[target] = NKScriptBindingObject(namespace: namespace, channel: self, arguments: args)
+                log("+E\(context!.NKid) Instance \(target) is bound to \(namespace)")
+                return true;
+            } // else Unknown opcode
+        } else if let obj = principal.plugin as? NKScriptMessageHandler {
+            // Plugin claims for raw messages
+            return obj.userContentControllerSync(didReceiveScriptMessage: message)
+      } else {
+            // discard unknown message
+            log("-Unknown message: \(message.body)")
+            return false;
+        }
+        return false;
+    }
+    
     private func generateStubs(name: String) -> String {
         func generateMethod(key: String, this: String, prebind: Bool) -> String {
             let stub = "NKScripting.invokeNative.bind(\(this), '\(key)')"

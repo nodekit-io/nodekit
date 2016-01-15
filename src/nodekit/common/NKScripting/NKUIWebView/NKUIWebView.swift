@@ -27,9 +27,9 @@ extension UIWebView: NKScriptContextHost {
     
     public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
     
-    public func NKgetScriptContext(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int{
+    public func NKgetScriptContext(id: Int, options: [String: AnyObject] = Dictionary<String, AnyObject>(),
+        delegate cb: NKScriptContextDelegate) -> Void {
        
-        let id = NKJSContextFactory.sequenceNumber
         log("+NodeKit UIWebView-JavaScriptCore JavaScript Engine E\(id)")
         var item = Dictionary<String, AnyObject>()
         
@@ -39,8 +39,6 @@ extension UIWebView: NKScriptContextHost {
         self.delegate = NKUIWebViewDelegate(id: id, webView: self, delegate: cb);
         
         item["UIWebView"] = self
-        return id
-
     }
 }
 

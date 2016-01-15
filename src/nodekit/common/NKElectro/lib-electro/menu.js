@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-var BrowserWindow, EventEmitter, Menu, MenuItem, applicationMenu, bindings, generateGroupId, indexOfItemById, indexToInsertByPosition, nextGroupId, ref, v8Util;
+var BrowserWindow, Menu, MenuItem, applicationMenu, bindings, generateGroupId, indexOfItemById, indexToInsertByPosition, nextGroupId;
 
-ref = require('electron'), BrowserWindow = ref.BrowserWindow, MenuItem = ref.MenuItem;
+BrowserWindow = io.nodekit.BrowserWindow, MenuItem = io.nodekit.MenuItem;
 
-EventEmitter = require('events').EventEmitter;
-
-v8Util = process.atomBinding('v8_util');
-
-bindings = process.atomBinding('menu');
-
+/* Bindings
+ func setApplicationMenu(menu: [String: AnyObject]) -> Void
+ func sendActionToFirstResponder(action: String) -> Void //OS X
+ */
+bindings = io.nodekit._menu;
 
 /* Automatically generated radio menu item's group id. */
 
 nextGroupId = 0;
+
 
 
 /* Search between seperators to find a radio menu item and return its group id, */
@@ -116,11 +116,7 @@ indexToInsertByPosition = function(items, position) {
   return insertIndex;
 };
 
-Menu = bindings.Menu;
-
-Menu.prototype.__proto__ = EventEmitter.prototype;
-
-Menu.prototype._init = function() {
+Menu = function() {
   this.commandsMap = {};
   this.groupsMap = {};
   this.items = [];
@@ -180,7 +176,7 @@ Menu.prototype._init = function() {
             break;
           }
           if (!checked) {
-            results.push(v8Util.setHiddenValue(group[0], 'checked', true));
+            results.push(group[0].checked = true);
           } else {
             results.push(void 0);
           }
@@ -238,11 +234,10 @@ Menu.prototype.insert = function(pos, item) {
       this.groupsMap[item.groupId].push(item);
 
       /* Setting a radio menu item should flip other items in the group. */
-      v8Util.setHiddenValue(item, 'checked', item.checked);
       Object.defineProperty(item, 'checked', {
         enumerable: true,
         get: function() {
-          return v8Util.getHiddenValue(item, 'checked');
+          return item.checked;
         },
         set: (function(_this) {
           return function(val) {
@@ -251,10 +246,10 @@ Menu.prototype.insert = function(pos, item) {
             for (j = 0, len = ref1.length; j < len; j++) {
               otherItem = ref1[j];
               if (otherItem !== item) {
-                v8Util.setHiddenValue(otherItem, 'checked', false);
+                item.checked = false;
               }
             }
-            return v8Util.setHiddenValue(item, 'checked', true);
+            return item.checked = true;
           };
         })(this)
       });
@@ -312,7 +307,7 @@ Menu.setApplicationMenu = function(menu) {
       return;
     }
     menu._callMenuWillShow();
-    return bindings.setApplicationMenu(menu);
+    return bindings.setApplicationMenu(JSON.stringify(menu));
   } else {
     windows = BrowserWindow.getAllWindows();
     results = [];
@@ -366,4 +361,4 @@ Menu.buildFromTemplate = function(template) {
   return menu;
 };
 
-module.exports = Menu;
+io.nodekit.Menu = Menu;

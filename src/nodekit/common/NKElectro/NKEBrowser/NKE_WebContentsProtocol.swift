@@ -19,7 +19,7 @@
 
 import Foundation
 
-@objc protocol NKE_WebContentsProtocol: NKScriptPlugin {
+@objc protocol NKE_WebContentsProtocol: NKScriptPlugin, NKE_IpcProtocol {
     
     init(id: Int)
     
@@ -32,8 +32,7 @@ import Foundation
     func reloadIgnoringCache() -> Void
     func canGoBack() -> Bool
     func canGoForward() -> Bool
-    func send(channel: String, args: [AnyObject]) -> Void
-    
+     
     func goBack() -> Void
     func goForward() -> Void
 
@@ -41,6 +40,9 @@ import Foundation
     func getUserAgent() -> String
     func executeJavaScript(code: String, userGesture: String) -> Void
     
+    func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void
+    func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void
+
     // Event:  'did-fail-load'
     // Event:  'did-finish-load'
     

@@ -20,11 +20,17 @@
 import Foundation
 import UIKit
 
-@objc class NKEDialog: NSObject, NKEDialogProtocol {
+extension NKE_Dialog: NKScriptPlugin {
     
-    override init(){
-        super.init()
+    static func attachTo(context: NKScriptContext) {
+        let principal = NKE_Dialog()
+        context.NKloadPlugin(principal, namespace: "io.nodekit.dialog", options: [String:AnyObject]());
     }
+    
+}
+
+
+@objc class NKE_Dialog: NSObject, NKE_DialogProtocol {
     
     private static func NotImplemented(functionName: String = __FUNCTION__) -> Void {
         log("!dialog.\(functionName) is not available for iOS");
@@ -32,12 +38,12 @@ import UIKit
     
 
     func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void {
-        NKEDialog.NotImplemented()
+        NKE_Dialog.NotImplemented()
     }
     
     
     func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?)-> Void {
-        NKEDialog.NotImplemented()
+        NKE_Dialog.NotImplemented()
      }
     
     func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void {

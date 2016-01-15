@@ -20,5 +20,13 @@ this.process = this.process || {}
 var process = this.process;
 
 process.platform = "darwin"
-process.type = "renderer"
+process.type = "main"
 process.versions = {}
+
+process.waitFor = function(signal) {
+    window.prompt("nk.Signal", signal);
+}
+
+// process.waitFor("io.nodekit.HelloWorld");
+
+console.log("OK");

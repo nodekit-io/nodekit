@@ -56,12 +56,19 @@ public class NKNodeKit: NKScriptContextDelegate {
         let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.console", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue])
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script1, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
-        
-        let script2Source = "var p = new io.nodekit.BrowserWindow(); io.nodekit.console.alert('hello'); ";
+        let script2Source = "var p = new io.nodekit.BrowserWindow(); var result = io.nodekit.console.alertSync('hello'); io.nodekit.console.logconsole('hello' + result); p.webContents.send('hello world')";
         let script2 = context.NKinjectJavaScript(NKScriptSource(source: script2Source, asFilename: "startup.js"))
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script2, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
         self.scriptContextDelegate?.NKScriptEngineLoaded(context);
+    
+        let seconds = 5.0
+        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
+        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
+        
+        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
+             NKSignalEmitter.global.trigger("io.nodekit.HelloWorld", "OK")
+        })
     }
     
     public func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {

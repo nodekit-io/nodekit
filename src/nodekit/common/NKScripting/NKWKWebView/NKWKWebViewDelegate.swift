@@ -57,3 +57,24 @@ import WebKit
     }
 }
 
+@objc internal class NKWKWebViewUIDelegate: NSObject, WKUIDelegate {
+    
+    init(webView: WKWebView){
+        super.init()
+        objc_setAssociatedObject(webView, unsafeAddressOf(self), self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+    }
+    
+    func webView(webView: WKWebView,
+        runJavaScriptTextInputPanelWithPrompt prompt: String,
+        defaultText: String?,
+        initiatedByFrame frame: WKFrameInfo,
+        completionHandler: (String?) -> Void) {
+            if (prompt == "nk.Signal")
+            {
+                NKSignalEmitter.global.waitFor(defaultText!, handler: completionHandler)
+            } else
+            {
+                completionHandler(nil);
+            }
+    }
+}

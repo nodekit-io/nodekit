@@ -24,18 +24,15 @@ extension JSContext: NKScriptContextHost {
     
     public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
     
-    public func NKgetScriptContext(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Int{
+    public func NKgetScriptContext(id: Int, options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) -> Void {
         let context = self;
-        
-        let id = NKJSContextFactory.sequenceNumber
         
         log("+NodeKit JavaScriptCore JavaScript Engine E\(id)")
           objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
         cb.NKScriptEngineLoaded(context)
         cb.NKApplicationReady(id, context: context)
-        
-        return id;
+
     }
 }
 
@@ -138,7 +135,12 @@ extension JSContext: NKScriptContentController {
             scriptMessageHandler.userContentController(didReceiveScriptMessage: NKScriptMessage(name: name, body: body))
         }
         
+        let postMessageSync: @convention(block) [String: AnyObject] -> AnyObject! = { body in
+            return scriptMessageHandler.userContentControllerSync(didReceiveScriptMessage: NKScriptMessage(name: name, body: body))
+        }
+        
         namedHandler.setObject(unsafeBitCast(postMessage, AnyObject.self), forKeyedSubscript: "postMessage")
+        namedHandler.setObject(unsafeBitCast(postMessageSync, AnyObject.self), forKeyedSubscript: "postMessageSync")
         
     }
     

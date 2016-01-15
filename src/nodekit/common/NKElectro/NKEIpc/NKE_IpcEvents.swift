@@ -20,15 +20,16 @@
 import Foundation
 
 internal struct NKE_IPC_Event {
+    var sender: Int
     var channel: String
-    var event: Dictionary<String, AnyObject>
+    var replyId: String
     var arg: [AnyObject]
     
-    init(channel: String, event: Dictionary<String, AnyObject>, arg: [AnyObject])
+    init(sender: Int, channel: String, replyId: String, arg: [AnyObject])
     {
+        self.sender = sender;
         self.channel = channel;
-        self.event = event;
+        self.replyId = replyId;
         self.arg = arg;
     }
-
 }

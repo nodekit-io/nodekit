@@ -23,3 +23,8 @@ var process = this.process;
 process.platform = "darwin"
 process.type = "renderer"
 process.versions = {}
+
+process.waitFor = function(signal) {
+    console.log(window.prompt("nk.Signal", signal));
+}
+

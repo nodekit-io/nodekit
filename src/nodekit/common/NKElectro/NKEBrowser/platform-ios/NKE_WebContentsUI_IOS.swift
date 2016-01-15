@@ -50,10 +50,29 @@ import JavaScriptCore
         }
         
         webView = _window?._webView as? UIWebView
+        
+        _initIPC()
+        
+        // Complete JavaScript Initialization to load WebContents binding
+        self.NKscriptObject?.callMethod("_init", withArguments: nil, completionHandler: nil)
+        
     }
 }
 
 extension NKE_WebContentsUI: NKE_WebContentsProtocol {
+    
+    
+    // Messages to renderer are sent to the window events queue for that renderer
+    func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
+        let payload = NKE_IPC_Event(sender: 0, channel: channel, replyId: replyId, arg: arg)
+        guard let window = _window else {return;}
+        window._events.emit("nk.IPCtoRenderer", payload)
+    }
+    
+    func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
+        NSException(name: "Illegal function call", reason: "Send only API.  Replies are handled in ipcRenderer and ipcMain that receive message events", userInfo: nil).raise()
+    }
+
     
     func loadURL(url: String, options: [String: AnyObject]) -> Void {
         guard let webView = self.webView else {return;}
@@ -72,11 +91,7 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func canGoForward() -> Bool { return self.webView?.canGoForward ?? false }
     func goBack() -> Void {self.webView?.goBack() }
     func goForward() -> Void { self.webView?.goForward() }
-    
-    func send(channel: String, args: [AnyObject]) -> Void {
-  //      _events.emit("nk.ipcRenderer", NKE_IPC_Event(channel: channel, event: ["sender": _id ], arg: args))
-    }
-    
+     
     func executeJavaScript(code: String, userGesture: String) -> Void {
         guard let context = _window?._context else {return;}
         context.NKevaluateJavaScript(code, completionHandler: nil)

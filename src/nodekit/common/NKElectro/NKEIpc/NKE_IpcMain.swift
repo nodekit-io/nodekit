@@ -20,14 +20,50 @@
 import Foundation
 
 
-@objc class NKE_IpcMain: NSObject, NKE_IpcMainProtocol {
-    private var events: NKEventEmitter = NKEventEmitter.global
+@objc class NKE_IpcMain: NSObject, NKE_IpcProtocol {
+    private var globalEvents: NKEventEmitter = NKEventEmitter.global
     
     override init(){
         super.init()
         
-        events.on("nk.ipcMain") { (item: NKE_IPC_Event) -> Void in
-              self.NKscriptObject?.callMethod("emit", withArguments: [item.channel, item.event, item.arg], completionHandler: nil)
+        globalEvents.on("nk.IPCtoMain") { (item: NKE_IPC_Event) -> Void in
+              self.NKscriptObject?.callMethod("emit", withArguments: ["nk.IPCtoMain", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
         }
+    }
+    
+    func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
+        NSException(name: "Illegal function call", reason: "Event subscription only API.  Sends are handled in WebContents API", userInfo: nil).raise()
+    }
+    
+    // Replies to renderer to the window events queue for that renderer
+    func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
+        let payload = NKE_IPC_Event(sender: 0, channel: channel, replyId: replyId, arg: [result])
+        guard let window = NKE_BrowserWindow.fromId(dest) as? NKE_BrowserWindow else {return;}
+        window._events.emit("nk.IPCReplytoRenderer", payload)
+    }
+    
+}
+
+
+extension NKE_IpcMain: NKScriptPlugin {
+    
+    static func attachTo(context: NKScriptContext) {
+        let principal = NKE_IpcRenderer()
+        context.NKloadPlugin(principal, namespace: "io.nodekit._ipcMain", options: [String:AnyObject]());
+    }
+    
+    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+        switch (forKey) {
+        case ".global":
+            let url = NSBundle(forClass: NKE_IpcMain.self).pathForResource("ipc-main", ofType: "js", inDirectory: "lib-electro")
+            let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
+            return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
+        default:
+            return stub;
+        }
+    }
+    
+    class func scriptNameForSelector(selector: Selector) -> String? {
+        return selector == Selector("initWithOptions:") ? "" : nil
     }
 }

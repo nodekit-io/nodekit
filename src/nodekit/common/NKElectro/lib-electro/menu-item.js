@@ -17,12 +17,9 @@
  * limitations under the License.
  */
 
-var MenuItem, methodInBrowserWindow, nextCommandId, rolesMap, v8Util;
-
-v8Util = process.atomBinding('v8_util');
+var MenuItem, methodInBrowserWindow, nextCommandId, rolesMap;
 
 nextCommandId = 0;
-
 
 /* Maps role to methods of webContents */
 
@@ -124,4 +121,4 @@ MenuItem = (function() {
 
 })();
 
-module.exports = MenuItem;
+io.nodekit.MenuItem = MenuItem;

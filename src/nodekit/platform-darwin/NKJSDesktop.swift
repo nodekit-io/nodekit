@@ -22,12 +22,17 @@ import JavaScriptCore
 import Cocoa
 
 @objc protocol jse : JSExport {
-    func alert(text: AnyObject?) -> String
+    func logconsole(text: AnyObject?) -> Void
+    func alertSync(text: AnyObject?) -> String
 }
 
 
 @objc class HelloWorldTest: NSObject, jse {
-    func alert(text: AnyObject?) -> String  {
+    func logconsole(text: AnyObject?) -> Void  {
+        log(text as? String! ?? "");
+    }
+    
+    func alertSync(text: AnyObject?) -> String  {
         dispatch_async(dispatch_get_main_queue()) {
             self._alert(title: text as? String, message: nil)
         }

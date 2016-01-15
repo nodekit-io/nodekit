@@ -26,7 +26,9 @@ extension NKJSContextFactory {
         dispatch_async(NKScriptChannel.defaultQueue) {
             let vm = JSVirtualMachine()
             let context = JSContext(virtualMachine: vm)
-            let id = context.NKgetScriptContext(options, delegate: cb)
+            
+            let id = NKJSContextFactory.sequenceNumber
+            context.NKgetScriptContext(id, options: options, delegate: cb)
             
             var item = Dictionary<String, AnyObject>()
             NKJSContextFactory._contexts[id] = item;

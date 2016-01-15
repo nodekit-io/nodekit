@@ -20,54 +20,37 @@
 import Foundation
 import UIKit
 
-@objc class NKEMenu: NSObject, NKEMenuProtocol {
+// NKElectro MENU Placeholder code only:  on roadmap but lower priority as not supported on mobile
+
+extension NKE_Menu: NKScriptPlugin {
     
-    override init(){
-        super.init()
+    static func attachTo(context: NKScriptContext) {
+        let principal = NKE_Menu()
+        context.NKloadPlugin(principal, namespace: "io.nodekit._menu", options: [String:AnyObject]());
     }
     
-    static func setApplicationMenu(menu: NKEMenuProtocol) -> Void { NKEMenu.NotImplemented(); }
-    static func sendActionToFirstResponder(action: String) -> Void  { NKEMenu.NotImplemented(); } //OS X
-    static func buildFromTemplate(template: [Dictionary<String, AnyObject>]) -> NKEMenuProtocol  { NKEMenu.NotImplemented(); return NKEMenu() }
+    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+        switch (forKey) {
+        case ".global":
+            let url = NSBundle(forClass: NKE_Menu.self).pathForResource("menu", ofType: "js", inDirectory: "lib-electro")
+            let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
+            let url2 = NSBundle(forClass: NKE_Menu.self).pathForResource("menu-item", ofType: "js", inDirectory: "lib-electro")
+            let appjs2 = try? NSString(contentsOfFile: url2!, encoding: NSUTF8StringEncoding) as String
+            return "function loadplugin1(){\n" + appjs! + "\n}\n" + "\n" + "function loadplugin2(){\n" + appjs2! + "\n}\n" + stub + "\n" + "loadplugin1(); loadplugin2();" + "\n"
+
+        default:
+            return stub;
+        }
+    }
+}
+
+@objc class NKE_Menu: NSObject, NKEMenuProtocol {
     
-    func popup(browserWindow: NKE_BrowserWindow?, x: Int, y: Int) -> Void  { NKEMenu.NotImplemented(); }
-    func append(menuItem: NKEMenuItemProtocol) -> Void  { NKEMenu.NotImplemented(); }
-    func insert(pos: Int, menuItem: NKEMenuItemProtocol) -> Void  { NKEMenu.NotImplemented(); }
-    func items() -> [NKEMenuItemProtocol]  { NKEMenu.NotImplemented(); return [NKEMenuItemProtocol]() }
-    
+    func setApplicationMenu(menu:  [String: AnyObject]) -> Void { NKE_Menu.NotImplemented(); }
+    func sendActionToFirstResponder(action: String) -> Void  { NKE_Menu.NotImplemented(); } //OS X
+   
     private static func NotImplemented(functionName: String = __FUNCTION__) -> Void {
         log("!menu.\(functionName) is not implemented");
     }
    
-}
-
-@objc class NKEMenuItem: NSObject, NKEMenuItemProtocol {
-    
-    override init(){
-        super.init()
-    }
-    
-    
-    // Creates a new BrowserWindow with native properties as set by the options.
-    required init(options: Dictionary<String, AnyObject>) {
-        super.init()
-        
-        let createBlock = {() -> Void in
-            
-            
-        }
-        
-        if (NSThread.isMainThread())
-        {
-            createBlock()
-        }
-        else
-        {
-            dispatch_async(dispatch_get_main_queue(), createBlock)
-        }
-    }
-    
-    class func scriptNameForSelector(selector: Selector) -> String? {
-        return selector == Selector("initWithOptions:") ? "" : nil
-    }
 }

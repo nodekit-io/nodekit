@@ -49,49 +49,27 @@ import JavaScriptCore
         // PARSE & STORE OPTIONS
         self._options["nk.InstallElectro"] = options["nk.InstallElectro"] as? Bool ?? true
         
+        self._browserType = NKEBrowserType(rawValue: (options[NKEBrowserOptions.nkBrowserType] as? String) ?? NKEBrowserDefaults.nkBrowserType)!
         
-        let createBlock = {() -> Void in
-            
-            self._browserType = NKEBrowserType(rawValue: (options[NKEBrowserOptions.nkBrowserType] as? String) ?? NKEBrowserDefaults.nkBrowserType)!
-            
-            let window = self.createWindow(options);
-            self._window = window;
-            
-            switch self._browserType {
-            case .WKWebView:
-                log("+creating Nitro Renderer")
-                self._id = self.createWKWebView(window, options: options)
-                self._type = "Nitro"
-            case .UIWebView:
-                log("+creating JavaScriptCore Renderer")
-                 self._id = self.createUIWebView(window, options: options)
-                 self._type = "JavaScriptCore"
-             }
-            
-            NKE_BrowserWindow._windowArray[self._id] = self;
-            
-            // Complete JavaScript Initialization to load WebContents binding
-            self.NKscriptObject?.callMethod("_init", withArguments: nil, completionHandler: nil)
+        switch self._browserType {
+        case .WKWebView:
+            log("+creating Nitro Renderer")
+            self._id = self.createWKWebView(options)
+            self._type = "Nitro"
+        case .UIWebView:
+            log("+creating JavaScriptCore Renderer")
+            self._id = self.createUIWebView(options)
+            self._type = "JavaScriptCore"
         }
         
-        if (NSThread.isMainThread())
-        {
-            createBlock()
-        }
-        else
-        {
-            dispatch_async(dispatch_get_main_queue(), createBlock)
-        }
+        NKE_BrowserWindow._windowArray[self._id] = self;
+        
+        // Complete JavaScript Initialization to load WebContents binding
+        self.NKscriptObject?.callMethod("_init", withArguments: nil, completionHandler: nil)
     }
  
-    // class functions (for Swift/Objective-C use )
-    static func getAllWindows() -> [NKE_BrowserWindowProtocol] { NotImplemented(); return [NKE_BrowserWindowProtocol]() }
-    static func getFocusedWindow() -> NKE_BrowserWindowProtocol?  { NotImplemented(); return nil }
-    static func fromWebContents(webContents: AnyObject) -> AnyObject?  { NotImplemented(); return nil }
-    static func fromContext(context: AnyObject) -> AnyObject?  { NotImplemented(); return nil }
+    // class functions (for Swift/Objective-C use only, equivalent functions exist in .js helper )
     static func fromId(id: Int) -> NKE_BrowserWindowProtocol?  { return NKE_BrowserWindow._windowArray[id] }
-    static func addDevToolsExtension(path: String)   { NotImplemented(); }
-    static func removeDevToolsExtension(name: String)  { NotImplemented(); }
     
     var id: Int {
         get {
@@ -125,7 +103,7 @@ extension NKE_BrowserWindow: NKScriptPlugin {
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
-            let url = NSBundle(forClass: NKEApp.self).pathForResource("browser-window", ofType: "js", inDirectory: "lib-electro")
+            let url = NSBundle(forClass: NKE_BrowserWindow.self).pathForResource("browser-window", ofType: "js", inDirectory: "lib-electro")
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:

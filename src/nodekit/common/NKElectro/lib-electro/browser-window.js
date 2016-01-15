@@ -19,13 +19,32 @@
 
 var BrowserWindow = io.nodekit.BrowserWindow
 
+var _browserWindows = {}
+
 BrowserWindow.prototype._init = function() {
     this._id = this.id;
+    _browserWindows["w" + this._id] = this;
     
     if (this.type == "Nitro")
-      this.webContents = new io.nodekit.WebContentsNitro(this._id)
+      this.webContents = new io.nodekit.WebContentsWK(this._id)
     else if (this.type == "JavaScriptCore")
-        this.webContents = new io.nodekit.WebContentsJSC(this._id);
+      this.webContents = new io.nodekit.WebContentsUI(this._id);
+};
+
+BrowserWindow.prototype._deinit = function() {
+    delete _browserWindows["w" + this._id];
+    this.webContents._deinit();
+    this.webContents = nil;
+    this._id = nil;
+};
+
+
+BrowserWindow.fromId = function(id) {
+    return _browserWindows["w" + id];
+};
+
+BrowserWindow.getAllWindows = function() {
+    return Object.keys(_browserWindows).map(function (key) {return _browserWindows[key]});
 };
 
 BrowserWindow.getFocusedWindow = function() {

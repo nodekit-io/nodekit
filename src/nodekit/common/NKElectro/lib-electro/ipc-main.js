@@ -17,8 +17,53 @@
  * limitations under the License.
  */
 
-var EventEmitter;
+// Binding Protocol
+// func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void
+// func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void
+// event "nk.IPCtoMain": item.sender, item.channel, item.replyId, item.arg
+// event "nk.IPCReplytoMain": item.sender, item.channel, item.replyId, item.arg[0]
 
-EventEmitter = require('events').EventEmitter;
+var ipcMain = io.nodekit.ipcMain
 
-module.exports = new EventEmitter;
+var ipcEvent = Function(){}
+
+ipcMain.on('nk.IPCtoMain', function(sender, channel, replyId, arg) {
+           var webContents = io.nodeKit.BrowserWindow.fromId(sender).webContents;
+           
+           var event = { 'sender': webContents }
+           
+           if ((replyId) !== "") {
+                event.sendReply = function(result) {
+                   this.sender.ipcReply(0, channel, replyId, JSON.stringify(result));
+                }
+           
+                Object.defineProperty(event, 'returnValue', {
+                                 set: function(result) { this.sendReply(result); },
+                                 enumerable: true,
+                                 configurable: true,
+                                 });
+           }
+           
+           this.emit(channel, event, arg)
+           }));
+
+ipcMain.on('nk.IPCReplytoMain', function(sender, channel, replyId, result) {
+           var webContents = io.nodeKit.BrowserWindow.fromId(sender).webContents;
+           
+           var event = { 'sender': webContents }
+           
+           if ((replyId) !== "") {
+           event.reply = function(result) {
+               this.sender.ipcReply(0, channel, replyId, result);
+           }
+           
+           Object.defineProperty(event, 'returnValue', {
+                                 set: function(newValue) { this.reply(result); },
+                                 enumerable: true,
+                                 configurable: true,
+                                 });
+           }
+           
+           this.emit(channel, event, arg)
+           }))
+

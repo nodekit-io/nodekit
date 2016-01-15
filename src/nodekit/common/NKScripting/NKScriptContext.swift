@@ -33,7 +33,7 @@ public protocol NKScriptContext: class {
 
 public protocol NKScriptContextHost: class {
     var NKid: Int { get }
-    func NKgetScriptContext(options: [String: AnyObject], delegate cb: NKScriptContextDelegate) -> Int
+    func NKgetScriptContext(id: Int, options: [String: AnyObject], delegate cb: NKScriptContextDelegate) -> Void
 }
 
 internal protocol NKScriptContentController: class {

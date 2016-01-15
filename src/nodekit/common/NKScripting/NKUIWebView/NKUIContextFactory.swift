@@ -24,11 +24,21 @@ extension NKJSContextFactory {
     
     public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
     {
-        dispatch_async(NKScriptChannel.defaultQueue) {
-            
+        let createWebView = { () -> Void in
             let webView:UIWebView = UIWebView(frame: CGRectZero)
-            let id = webView.NKgetScriptContext(options, delegate: cb)
+            let id = NKJSContextFactory.sequenceNumber
+            webView.NKgetScriptContext(id, options: options, delegate: cb)
             webView.loadHTMLString("<HTML><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
         }
+        
+        if (NSThread.isMainThread())
+        {
+            createWebView()
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), createWebView)
+        }
+
     }
 }

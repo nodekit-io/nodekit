@@ -25,51 +25,69 @@ extension NKE_BrowserWindow {
     
     internal func WKApplicationReady() -> Void {
           (self._webView as! WKWebView).navigationDelegate = self;
+          self._events.emit("did-finish-load", self._id)
     }
     
-    internal func createWKWebView(window: AnyObject, options: Dictionary<String, AnyObject>) -> Int {
-        guard let window = window as? UIWindow else {return 0;}
+    internal func createWKWebView(options: Dictionary<String, AnyObject>) -> Int {
         
-        let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+        let id = NKJSContextFactory.sequenceNumber
         
-        let url: NSURL?
-        if (urlAddress == "file:///splash/views/StartupSplash.html")
-        {
-            var urlpath = NSBundle.mainBundle().pathForResource("StartupSplash", ofType: "html", inDirectory: "splash/views/")
+        let createBlock = {() -> Void in
             
-            if (urlpath == nil)
+            let window = self.createWindow(options) as! UIWindow
+            self._window = window;
+            
+            let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+            
+            let url: NSURL?
+            if (urlAddress == "file:///splash/views/StartupSplash.html")
             {
-                urlpath = NSBundle(forClass: NKNodeKit.self).pathForResource("StartupSplash", ofType: "html", inDirectory: "splash/views/")
+                var urlpath = NSBundle.mainBundle().pathForResource("StartupSplash", ofType: "html", inDirectory: "splash/views/")
+                
+                if (urlpath == nil)
+                {
+                    urlpath = NSBundle(forClass: NKNodeKit.self).pathForResource("StartupSplash", ofType: "html", inDirectory: "splash/views/")
+                }
+                
+                
+                url = NSURL.fileURLWithPath(urlpath!)
+            } else
+            {
+                url = NSURL(string: urlAddress)
             }
             
+            let config = WKWebViewConfiguration()
+            let webPrefs = WKPreferences()
             
-            url = NSURL.fileURLWithPath(urlpath!)
-        } else
-        {
-            url = NSURL(string: urlAddress)
+            webPrefs.javaScriptEnabled = true
+            webPrefs.javaScriptCanOpenWindowsAutomatically = false
+            config.preferences = webPrefs
+            
+            let webView = WKWebView(frame: CGRect.zero, configuration: config)
+            self._webView = webView;
+            
+            // webView.opaque = false;
+            // webView.backgroundColor = UIColor.clearColor()
+            
+            window.rootViewController?.view = webView
+            
+            webView.NKgetScriptContext(id, options: [String: AnyObject](), delegate: self)
+            
+            let requestObj: NSURLRequest = NSURLRequest(URL: url!)
+            
+            webView.loadRequest(requestObj)
+            window.rootViewController?.view.backgroundColor = UIColor(netHex: 0x2690F6)
         }
         
-        let config = WKWebViewConfiguration()
-        let webPrefs = WKPreferences()
+        if (NSThread.isMainThread())
+        {
+            createBlock()
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), createBlock)
+        }
         
-        webPrefs.javaScriptEnabled = true
-        webPrefs.javaScriptCanOpenWindowsAutomatically = false
-        config.preferences = webPrefs
-        
-        let webView = WKWebView(frame: CGRect.zero, configuration: config)
-        self._webView = webView;
-        
-        // webView.opaque = false;
-        // webView.backgroundColor = UIColor.clearColor()
-
-        window.rootViewController?.view = webView
-        
-        let id = webView.NKgetScriptContext([String: AnyObject](), delegate: self)
-        
-         let requestObj: NSURLRequest = NSURLRequest(URL: url!)
-       
-        webView.loadRequest(requestObj)
-        window.rootViewController?.view.backgroundColor = UIColor(netHex: 0x2690F6)
         return id;
     }
 }

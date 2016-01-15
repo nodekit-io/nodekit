@@ -17,9 +17,78 @@
  * limitations under the License.
  */
 
-var ipcRenderer = io.nodekit.ipcRenderer;
+// Bindings
+// func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
+// func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
+// event "emit", withArguments: ["nk.IPCtoRenderer", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
+// evet "emit", withArguments: ["nk.IPCReplytoRenderer", item.sender, item.channel, item.replyId, item.arg[0]],
 
-ipcRenderer.prototype._init = function() {
-    this._id = this.id;
+var ipcRenderer = io.nodekit.ipcRenderer
+
+ipcRenderer._init = function() {
     
+    this.callbacks = {};
+    this.counter = 0;
+    
+    this.on('nk.IPCReplytoRenderer', function(sender, channel, replyId, result) {
+            callbacks[replyId].call(self, result);
+            delete callbacks[replyId];
+            });
+    
+    this.on('nk.IPCtoRenderer', function(sender, channel, replyId, result) {
+            var event = { 'sender': this }
+            
+            if ((replyId) !== "") {
+            event.sendReply = function(result) {
+               this.sender.ipcReply(0, channel, replyId, JSON.stringify(result));
+            }
+            
+            Object.defineProperty(event, 'returnValue', {
+                                  set: function(result) { this.sendReply(result); },
+                                  enumerable: true,
+                                  configurable: true,
+                                  });
+            }
+            
+            this.emit(channel, event, arg)
+
+            });
+}
+
+//send(channel [[,arg]...] [,callback])
+ipcRenderer.send = function() {
+    var args, channel;
+    channel = arguments[0]
+    
+    if (arguments.length < 2)
+    {
+        args = []
+        callback = null;
+    }
+    else
+    {
+        args = slice.call(arguments, 1)
+        if (typeof (args[args.length -1]) === "function")
+        {
+            callback = args[args.length -1]
+            if (args.length > 1)
+                args = slice.call(args, 0, args.length - 1)
+                else
+                    args = []
+                    } else
+                        callback = null;
+        
+    }
+    
+    var replyId;
+    
+    if (callback) {
+        replyId = "i" + this.counter++;
+        this.callbacks[replyId] = callback;
+    } else
+        replyId = "";
+    
+    this.ipcSend(channel, replyId, args)
+    
+    // TO DO: expire callback table entry in case of non response
 };

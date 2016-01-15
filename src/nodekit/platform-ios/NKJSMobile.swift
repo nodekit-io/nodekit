@@ -22,17 +22,32 @@ import JavaScriptCore
 import UIKit
 
 @objc protocol jse : JSExport {
-       func alert(text: AnyObject?) -> String
+       func logconsole(text: AnyObject?) -> Void
+    func alertSync(text: AnyObject?) -> String
 }
 
-
 @objc class HelloWorldTest: NSObject, jse {
-     func alert(text: AnyObject?) -> String  {
-        dispatch_async(dispatch_get_main_queue()) {
+    
+    func logconsole(text: AnyObject?) -> Void  {
+        log(text as? String! ?? "");
+    }
+    
+    func alertSync(text: AnyObject?) -> String  {
+        let alertBlock = { () -> Void in
             self._alert(title: text as? String, message: nil)
+        }
+        
+        if (NSThread.isMainThread())
+        {
+            alertBlock()
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), alertBlock)
         }
         return "OK"
     }
+
     
     private func _alert(title title: String?, message: String?) {
         let buttons: [String] = ["Ok"]

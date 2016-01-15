@@ -119,6 +119,17 @@ class NKScriptBindingObject : NKScriptObject {
             proxy.asyncCall(selector, withObjects: args)
         }
     }
+    
+    func invokeNativeMethodSync(name: String, withArguments arguments: [AnyObject]) -> AnyObject! {
+        if let selector = channel.typeInfo[name]?.selector {
+            var args = arguments.map(wrapScriptObject)
+            if plugin is NKScriptPlugin && name.isEmpty && selector == Selector("invokeDefaultMethodWithArguments:") {
+                args = [args];
+            }
+            return proxy.call(selector, withObjects: args)
+        }
+        return nil;
+    }
     func updateNativeProperty(name: String, withValue value: AnyObject) {
         if let setter = channel.typeInfo[name]?.setter {
             let val: AnyObject = wrapScriptObject(value)

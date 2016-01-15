@@ -22,18 +22,18 @@ import Foundation
 class NKE_BootMain: NSObject {
     
     static func bootTo(context: NKScriptContext) {
-        let url = NSBundle(forClass: NKEApp.self).pathForResource("_nke_main", ofType: "js", inDirectory: "lib-electro")
+        let url = NSBundle(forClass: NKE_App.self).pathForResource("_nke_main", ofType: "js", inDirectory: "lib-electro")
         let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
         let script = "function loadbootstrap(){\n" + appjs! + "\n}\n" + "loadbootstrap();" + "\n"
         let item = context.NKinjectJavaScript(NKScriptSource(source: script, asFilename: "io.nodekit.scripting/plugins/_nke_main.js", namespace: "io.nodekit.electro"))
         
         objc_setAssociatedObject(context, unsafeAddressOf(NKE_BootMain), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
-        NKEApp.attachTo(context);
+        NKE_App.attachTo(context);
         NKE_BrowserWindow.attachTo(context);
         NKE_WebContentsBase.attachTo(context);
-        
-        context.NKloadPlugin(NKEDialog(), namespace: "io.nodekit.dialog", options: ["MainThread": true, "PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue]);
+        NKE_Dialog.attachTo(context);
+        NKE_Menu.attachTo(context);
         
         //   menuPlugin = context.NKloadPlugin(NKEMenu(), namespace: "io.nodekit.menu", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue]);
         

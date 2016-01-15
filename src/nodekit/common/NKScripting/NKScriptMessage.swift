@@ -28,4 +28,5 @@ public class NKScriptMessage : NSObject {
 
 public protocol NKScriptMessageHandler {
     func userContentController(didReceiveScriptMessage message: NKScriptMessage)
+    func userContentControllerSync(didReceiveScriptMessage message: NKScriptMessage) -> AnyObject!
 }

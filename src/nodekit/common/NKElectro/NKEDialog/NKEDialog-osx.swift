@@ -21,11 +21,16 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc class NKEDialog: NSObject, NKEDialogProtocol {
+extension NKE_Dialog: NKScriptPlugin {
     
-    override init(){
-        super.init()
-       }
+    static func attachTo(context: NKScriptContext) {
+        let principal = NKE_Dialog()
+        context.NKloadPlugin(principal, namespace: "io.nodekit.dialog", options: [String:AnyObject]());
+    }
+    
+}
+
+@objc class NKE_Dialog: NSObject, NKE_DialogProtocol {
 
     func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void {
         let fileManager = NSFileManager.defaultManager()

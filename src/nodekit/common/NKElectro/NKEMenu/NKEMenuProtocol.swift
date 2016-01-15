@@ -23,16 +23,6 @@ import JavaScriptCore
 
 @objc protocol NKEMenuProtocol: NKScriptPlugin {
     
-    static func setApplicationMenu(menu: NKEMenuProtocol) -> Void
-    static func sendActionToFirstResponder(action: String) -> Void //OS X
-    static func buildFromTemplate(template: [Dictionary<String, AnyObject>]) -> NKEMenuProtocol
-    
-    func popup(browserWindow: NKE_BrowserWindow?, x: Int, y: Int) -> Void
-    func append(menuItem: NKEMenuItemProtocol) -> Void
-    func insert(pos: Int, menuItem: NKEMenuItemProtocol) -> Void
-    func items() -> [NKEMenuItemProtocol]
-}
-
-@objc protocol NKEMenuItemProtocol: NKScriptPlugin {
-    init(options: Dictionary<String, AnyObject>)
-}
+    func setApplicationMenu(menu: [String: AnyObject]) -> Void
+    func sendActionToFirstResponder(action: String) -> Void //OS X
+   }

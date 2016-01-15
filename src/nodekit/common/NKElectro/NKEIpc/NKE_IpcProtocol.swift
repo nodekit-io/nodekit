@@ -19,14 +19,13 @@
 
 import Foundation
 
-
-@objc protocol NKE_IpcRendererProtocol: NKScriptPlugin {
-    func send(channel: String, arg: [AnyObject]) -> Void
-    func sendSync(channel: String, arg: [AnyObject]) -> AnyObject
-    func sendToHost(channel: String, arg: [AnyObject]) -> Void
+@objc protocol NKE_IpcProtocol: NKScriptPlugin {
+    func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void
+    func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void
 }
 
 // .on(channel, (event, arg)-> () {} )
+// where event = {"returnValue": , "sender": }
 
 
 /* EXAMPLE USAGE

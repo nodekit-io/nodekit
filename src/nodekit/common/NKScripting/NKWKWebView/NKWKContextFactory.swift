@@ -22,7 +22,7 @@ import WebKit
 extension NKJSContextFactory {
     func createContextWKWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
     {
-        dispatch_async(NKScriptChannel.defaultQueue) {
+    //    dispatch_async(NKScriptChannel.defaultQueue) {
             
             let config = WKWebViewConfiguration()
             let webPrefs = WKPreferences()
@@ -30,13 +30,14 @@ extension NKJSContextFactory {
             webPrefs.javaScriptCanOpenWindowsAutomatically = true
             config.preferences = webPrefs
             let webView = WKWebView(frame: CGRectZero, configuration: config)
-            let id = webView.NKgetScriptContext(options, delegate: cb)
+            let id = NKJSContextFactory.sequenceNumber
+             webView.NKgetScriptContext(id, options: options, delegate: cb)
             
             var item = Dictionary<String, AnyObject>()
             NKJSContextFactory._contexts[id] = item;
             item["WKWebView"] = self
             
             webView.loadHTMLString("<HTML><BODY>NodeKit WKWebView: VM \(id)</BODY></HTML>", baseURL: NSURL(string: "about: blank"))
-        }
+  //      }
     }
 }

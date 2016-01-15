@@ -19,12 +19,12 @@
 
 import Foundation
 
-@objc class NKE_IpcRenderer: NSObject, NKE_IpcRendererProtocol {
+@objc class NKE_IpcRenderer: NSObject, NKE_IpcProtocol {
     
     internal weak var _window: NKE_BrowserWindow? = nil
     internal var _id : Int = 0
-    internal var _type : String = ""
-   
+    private var globalEvents: NKEventEmitter = NKEventEmitter.global
+    
     override init() {
         super.init()
     }
@@ -33,39 +33,29 @@ import Foundation
         super.init()
         
         _id = id;
-        guard let window = NKE_BrowserWindow.fromId(_id) else {return;}
-        _window = window as? NKE_BrowserWindow;
+        guard let window = NKE_BrowserWindow.fromId(_id) as? NKE_BrowserWindow else {return;}
+        _window = window;
         
-        
-        // Event:  'did-fail-load'
-        // Event:  'did-finish-load'
-        
-        _window?._events.on("did-finish-load") { (id: Int) in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
+         window._events.on("nk.IPCtoRenderer") { (item: NKE_IPC_Event) -> Void in
+            self.NKscriptObject?.callMethod("emit", withArguments: ["nk.IPCtoRenderer", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
         }
         
-        _window?._events.on("did-fail-loading") { (error: String) in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
+         window._events.on("nk.IPCReplytoRenderer") { (item: NKE_IPC_Event) -> Void in
+            self.NKscriptObject?.callMethod("emit", withArguments: ["nk.IPCReplytoRenderer", item.sender, item.channel, item.replyId, item.arg[0]], completionHandler: nil)
         }
     }
     
-    func send(channel: String, arg: [AnyObject]) -> Void {
-
-        let event: Dictionary<String, AnyObject?>  = ["returnValue": nil, "sender": nil ]
-     //   events.emit("nk.ipcMain", (channel, event, arg));
+    // Messages to main are sent to the global events queue
+    func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
+        let payload = NKE_IPC_Event(sender: _id, channel: channel, replyId: replyId, arg: arg)
+        globalEvents.emit("nk.IPCtoMain", payload)
     }
     
-    func sendAsync(channel: String, arg: [AnyObject], callback: NKScriptObject) -> Void {
-        let event: Dictionary<String, AnyObject?>  = ["sender": nil, "callback": callback ]
-     //   events.emit("nk.ipcMain", (channel, event, arg));
-    }
-    
-    func sendSync(channel: String, arg: [AnyObject]) -> AnyObject {
-        return ""
-    }
-    
-    func sendToHost(channel: String, arg: [AnyObject]) -> Void {
-        
+    // Replies to main are sent directly to the webContents window that sent the original message
+    func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
+        guard let window = _window else {return;}
+        let payload = NKE_IPC_Event(sender: _id, channel: channel, replyId: replyId, arg: [result])
+        window._events.emit("nk.IPCReplytoMain", payload)
     }
 }
 
@@ -73,13 +63,13 @@ extension NKE_IpcRenderer: NKScriptPlugin {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_IpcRenderer()
-        context.NKloadPlugin(principal, namespace: "io.nodekit.ipcRenderer", options: [String:AnyObject]());
+        context.NKloadPlugin(principal, namespace: "io.nodekit._ipcRenderer", options: [String:AnyObject]());
     }
     
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
-            let url = NSBundle(forClass: NKEApp.self).pathForResource("ipc-renderer", ofType: "js", inDirectory: "lib-electro")
+            let url = NSBundle(forClass: NKE_IpcRenderer.self).pathForResource("ipc-renderer", ofType: "js", inDirectory: "lib-electro")
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
@@ -90,6 +80,4 @@ extension NKE_IpcRenderer: NKScriptPlugin {
     class func scriptNameForSelector(selector: Selector) -> String? {
         return selector == Selector("initWithOptions:") ? "" : nil
     }
-    
-
 }

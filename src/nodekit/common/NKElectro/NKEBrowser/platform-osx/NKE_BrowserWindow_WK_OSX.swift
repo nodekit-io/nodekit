@@ -24,53 +24,71 @@ extension NKE_BrowserWindow {
     
     internal func WKApplicationReady() -> Void {
         (self._webView as! WKWebView).navigationDelegate = self;
+         self._events.emit("did-finish-load", self._id)
     }
     
-    internal func createWKWebView(window: AnyObject, options: Dictionary<String, AnyObject>) -> Int {
-        guard let window = window as? NSWindow else {return 0;}
+    internal func createWKWebView(options: Dictionary<String, AnyObject>) -> Int {
         
-        let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+        let id = NKJSContextFactory.sequenceNumber
         
-        let width: CGFloat = CGFloat((options[NKEBrowserOptions.kWidth] as? Int) ?? 800)
-        let height: CGFloat = CGFloat((options[NKEBrowserOptions.kHeight] as? Int) ?? 600)
-        let viewRect : NSRect = NSMakeRect(0,0,width, height);
+        let createBlock = {() -> Void in
+            
+            let window = self.createWindow(options) as! NSWindow
+            self._window = window;
+            
+            let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+            
+            let width: CGFloat = CGFloat((options[NKEBrowserOptions.kWidth] as? Int) ?? 800)
+            let height: CGFloat = CGFloat((options[NKEBrowserOptions.kHeight] as? Int) ?? 600)
+            let viewRect : NSRect = NSMakeRect(0,0,width, height);
+            
+            let config = WKWebViewConfiguration()
+            let webPrefs = WKPreferences()
+            
+            webPrefs.javaEnabled = false
+            webPrefs.plugInsEnabled = false
+            webPrefs.javaScriptEnabled = true
+            webPrefs.javaScriptCanOpenWindowsAutomatically = false
+            config.preferences = webPrefs
+            
+            let webView = WKWebView(frame: viewRect, configuration: config)
+            self._webView = webView;
+            
+            webView.autoresizingMask = [NSAutoresizingMaskOptions.ViewWidthSizable, NSAutoresizingMaskOptions.ViewHeightSizable]
+            window.contentView = webView
+            
+            webView.NKgetScriptContext(id, options: [String: AnyObject](), delegate: self)
+            
+            //  NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
+            //  NSURLProtocol.registerClass(NKUrlProtocolCustom)
+            
+            /*     NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
+            webview.loadHTMLString(msg!, baseURL: NSURL(string: "about:blank"))
+            return
+            })
+            
+            NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
+            let requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
+            self.mainWindow.title = title!
+            webview.loadRequest(requestObj)
+            return
+            }) */
+            
+            let url = NSURL(string: urlAddress)
+            let requestObj: NSURLRequest = NSURLRequest(URL: url!)
+            
+            webView.loadRequest(requestObj)
+        }
         
-        let config = WKWebViewConfiguration()
-        let webPrefs = WKPreferences()
         
-        webPrefs.javaEnabled = false
-        webPrefs.plugInsEnabled = false
-        webPrefs.javaScriptEnabled = true
-        webPrefs.javaScriptCanOpenWindowsAutomatically = false
-        config.preferences = webPrefs
-        
-        let webView = WKWebView(frame: viewRect, configuration: config)
-        self._webView = webView;
-        
-        webView.autoresizingMask = [NSAutoresizingMaskOptions.ViewWidthSizable, NSAutoresizingMaskOptions.ViewHeightSizable]
-        window.contentView = webView
-        
-        let id = webView.NKgetScriptContext( [String: AnyObject](), delegate: self)
-        
-        //  NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
-        //  NSURLProtocol.registerClass(NKUrlProtocolCustom)
-        
-        /*     NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
-        webview.loadHTMLString(msg!, baseURL: NSURL(string: "about:blank"))
-        return
-        })
-        
-        NKJavascriptBridge.registerNavigator ({ (uri: String?, title: String?) -> () in
-        let requestObj: NSURLRequest = NSURLRequest(URL: NSURL(string: uri!)!)
-        self.mainWindow.title = title!
-        webview.loadRequest(requestObj)
-        return
-        }) */
-        
-        let url = NSURL(string: urlAddress)
-        let requestObj: NSURLRequest = NSURLRequest(URL: url!)
-       
-        webView.loadRequest(requestObj)
+        if (NSThread.isMainThread())
+        {
+            createBlock()
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), createBlock)
+        }
         
         return id;
     }

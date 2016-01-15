@@ -21,7 +21,7 @@ var exports;
 
 var NKScripting = (function NKScriptingRunOnce(exports) {
     var global = this;
-  
+    
     global.onerror = function(msg, url, line, col, err) {
 
         console.error(err.stack || err.toString())
@@ -32,12 +32,27 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
     this.FileList = (typeof FileList === 'undefined') ? {} : FileList;
     this.ImageData = (typeof ImageData === 'undefined') ? {} : ImageData;
     this.MessagePort = (typeof MessagePort === 'undefined') ? {} : MessagePort;
-
+                   var syncRef = 0;
     var NKScripting = function(channelName) {
 
         var channel = webkit.messageHandlers[channelName];
         if (!channel) throw 'channel has not established';
 
+        if (!channel.postMessageSync)
+                   {
+                   channel.postMessageSync = function(){
+                   var args = arguments;
+                   var obj = args[0]
+                   if (!obj['$opcode'])
+                     return channel.postMessage.apply(this, args);
+                    var id = "s" + syncRef++
+                   obj["$nk.sync"] = true;
+                   obj["$id"] = id;
+                   channel.postMessage.apply(this, args);
+                   return JSON.parse(window.prompt("nk.Signal", id));
+                   }
+                   }
+                   
         Object.defineProperty(this, '$channel', {
             'configurable': true,
             'value': channel
@@ -119,7 +134,9 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
                 'configurable': true,
                 'value': {}
             });
-            return NKScripting.invokeNative.apply(this, arguments);
+            NKScripting.invokeNative.apply(this, arguments);
+            if (this._init)
+                   this._init();
         }
 
         // Principal instance (which id is 0) is the prototype object.
@@ -206,6 +223,13 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
             if (operand.length < args.length)
                 operand.fill(null, operand.length, args.length);
         }
+        if ((name == "+") || (name.indexOf("Sync", operand.length - "Sync".length) !== -1))
+                 return this.$channel.postMessageSync({
+                                             '$opcode': name,
+                                             '$operand': operand,
+                                             '$target': this.$instanceID
+                                             })
+                   else
         this.$channel.postMessage({
             '$opcode': name,
             '$operand': operand,

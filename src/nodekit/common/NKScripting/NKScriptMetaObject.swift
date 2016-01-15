@@ -74,7 +74,7 @@ class NKScriptMetaObject: CollectionType {
                           selector.description.hasSuffix("PromiseObject:")
                 arity = a
             case let .Initializer(_, a):
-                promise = true
+                promise = false // Initializers no longer default to promise
                 arity = a < 0 ? a: a + 1
             default:
                 promise = false

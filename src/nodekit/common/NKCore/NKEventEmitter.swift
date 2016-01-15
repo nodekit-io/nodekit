@@ -109,3 +109,106 @@ class NKEventEmitter {
         }
     }
 }
+
+
+// Static variables (class variables not allowed for generics)
+private var seq2: Int = 1
+
+class NKSignalSubscription {
+    
+    typealias NKHandler = (String?) -> Void
+    
+    let handler: NKHandler
+    
+    private let emitter: NKSignalEmitter
+    private let signal: String
+    private let id: Int
+    
+    init(emitter: NKSignalEmitter, signal: String,  handler: NKHandler) {
+        id = seq2++
+        self.signal = signal
+        self.emitter = emitter
+        self.handler = handler
+    }
+    
+    func remove() {
+        emitter.subscriptions[signal]?.removeValueForKey(id)
+    }
+}
+
+class NKSignalEmitter {
+    
+    internal static var global: NKSignalEmitter = NKSignalEmitter()
+    
+    private var currentSubscription: NKSignalSubscription?
+    private var subscriptions: [String: [Int:NKSignalSubscription]] = [:]
+    private var earlyTriggers: [String: String?] = [:]
+    
+    private func on(signal: String, handler: (String?) -> Void) -> NKSignalSubscription {
+        var eventSubscriptions: [Int:NKSignalSubscription]
+        
+        if let values = subscriptions[signal] {
+            eventSubscriptions = values
+        } else {
+            eventSubscriptions = [:]
+        }
+        
+        let subscription = NKSignalSubscription(
+            emitter: self,
+            signal: signal,
+            handler: handler
+        )
+        
+        eventSubscriptions[subscription.id] = subscription
+        subscriptions[signal] = eventSubscriptions
+        return subscription
+    }
+    
+    func waitFor(event: String, handler: (String?) -> Void) {
+         let registerBlock = { () -> Void in
+            if let data = self.earlyTriggers[event] {
+              self.earlyTriggers.removeValueForKey(event)
+                handler(data);
+                return;
+            }
+            self.on(event) { (data: String?) -> Void in
+                self.currentSubscription?.remove()
+                handler(data)
+            }
+            
+        }
+        if (NSThread.isMainThread())
+        {
+            registerBlock()
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), registerBlock)
+        }
+    }
+    
+    func trigger(event: String, _ data: String?) {
+        
+        let triggerBlock = { () -> Void in
+            if let subscriptions = self.subscriptions[event] {
+                for (_, subscription) in subscriptions {
+                    self.currentSubscription = subscription
+                    subscription.handler(data)
+                }
+            } else
+            {
+                self.earlyTriggers[event] = data;
+            }
+        }
+        if (NSThread.isMainThread())
+        {
+            triggerBlock()
+        }
+        else
+        {
+            dispatch_async(dispatch_get_main_queue(), triggerBlock)
+        }
+        
+        
+    }
+}

@@ -21,17 +21,17 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-extension NKEApp: NKScriptPlugin {
+extension NKE_App: NKScriptPlugin {
     
     static func attachTo(context: NKScriptContext) {
-        let principal = NKEApp()
+        let principal = NKE_App()
         context.NKloadPlugin(principal, namespace: "io.nodekit.app", options: [String:AnyObject]());
     }
     
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
-            let url = NSBundle(forClass: NKEApp.self).pathForResource("app", ofType: "js", inDirectory: "lib-electro")
+            let url = NSBundle(forClass: NKE_App.self).pathForResource("app", ofType: "js", inDirectory: "lib-electro")
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
@@ -40,7 +40,7 @@ extension NKEApp: NKScriptPlugin {
     }
 }
 
-@objc class NKEApp: NSObject, NKEAppProtocol {
+@objc class NKE_App: NSObject, NKEAppProtocol {
     
     private var events: NKEventEmitter = NKEventEmitter.global
     
