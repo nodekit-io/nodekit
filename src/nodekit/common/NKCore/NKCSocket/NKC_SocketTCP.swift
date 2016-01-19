@@ -62,37 +62,22 @@
     {
         self._socket = socket
         self._server = server
-        let tcp = NKJavascriptBridge.createNativeStream()
-        self._tcp = tcp
-        
         super.init()
-    }
-    
-    func TCP() -> JSValue!
-    {
-        return self._tcp!
     }
     
     private func emitData(data: NSData!)
     {
-        
         dispatch_sync(NKGlobals.NKeventQueue, {
             let str : NSString! = data.base64EncodedStringWithOptions([])
-            self._tcp!.invokeMethod( "emit", withArguments:["data", str])
+                self.NKscriptObject?.invokeMethod("emit", withArguments: ["data", str], completionHandler: nil)
         });
-        
     }
     
     private func emitEnd()
     {
-        if (self._tcp != nil)
-        {
-            let tcp = self._tcp!;
-            dispatch_sync(NKGlobals.NKeventQueue, {
-                tcp.invokeMethod( "emit", withArguments:["end", ""])
-                return
-            });
-        }
+        dispatch_sync(NKGlobals.NKeventQueue, {
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["end", ""], completionHandler: nil)
+        });
     }
  }
  

@@ -34,12 +34,19 @@
  */
 
 @objc protocol NKC_SocketTCP_Protocol: NKScriptExport {
+    // EVENTS EMITTED:
+    // connection, NKC_SocketTCPConnection_Protocol
+    // afterConnect, NKC_SocketTCPConnection_Protocol
+    
     func bind(address: String, port: Int) -> Void
     func connect(address: String, port: Int) -> Void
     func listen(backlog: Int) -> Void
 }
  
 @objc protocol NKC_SocketTCPConnection_Protocol: NKScriptExport {
+    // EVENTS EMITTED:
+    // data:  String   (BASE64 representation of data)
+    // end
     func fd() -> Int
     func remoteAddress() -> Dictionary<String, AnyObject>
     func localAddress() -> Dictionary<String, AnyObject>

@@ -153,24 +153,6 @@ TCP.prototype.connect = function(req, addr, port) {
 
 module.exports.TCP = TCP;
 
-io.nodekit.createNativeSocket = function() {
-    return new EventEmitter();
-};
-
-/* CONVERT native _tcp to node Stream
- *
- * Dependencies:
- * source.writeString(data)
- * source.on('end')
- * source.on('data', function(chunk))
- *
- */
-
-io.nodekit.createNativeStream = function() {
-    var source = io.nodekit.createNativeSocket();
-    source.stream =  new NativeStream(source);
-    return source;
-};
 
 function NativeStream(source) {
     Duplex.call( this, { encoding: 'base64'});
@@ -230,3 +212,5 @@ NativeStream.prototype._write = function NativeStreamWrite(chunk, enc, cb) {
     
     cb();
 };
+
+io.nodekit.NativeStream = NativeStream;

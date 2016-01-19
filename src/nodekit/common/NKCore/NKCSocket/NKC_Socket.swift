@@ -29,7 +29,7 @@ import Foundation
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
-            let url = NSBundle(forClass: NKE_IpcMain.self).pathForResource("socket", ofType: "js", inDirectory: "lib/nkcore")
+            let url = NSBundle(forClass: NKE_IpcMain.self).pathForResource("socket", ofType: "js", inDirectory: "lib/core")
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
