@@ -19,7 +19,7 @@
 
 import Foundation
 
-@objc protocol NKE_IpcProtocol: NKScriptPlugin {
+@objc protocol NKE_IpcProtocol: NKScriptExport {
     func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void
     func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void
 }

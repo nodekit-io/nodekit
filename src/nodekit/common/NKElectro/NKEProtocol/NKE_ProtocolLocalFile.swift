@@ -18,7 +18,7 @@
 
 import Foundation
 
-class NKUrlProtocolLocalFile: NSURLProtocol {
+class NKE_ProtocolLocalFile: NSURLProtocol {
     
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
         
@@ -57,7 +57,7 @@ class NKUrlProtocolLocalFile: NSURLProtocol {
         }
         log(request.URL!.absoluteString)
    
-        let urlDecode = NKUrlFileDecode(request: request)
+        let urlDecode = NKE_ProtocolFileDecode(request: request)
         
         if (urlDecode.exists())
         {

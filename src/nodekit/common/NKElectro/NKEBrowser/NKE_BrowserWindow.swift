@@ -37,6 +37,7 @@ import JavaScriptCore
     private var _type: String = "";
     internal var _options: Dictionary <String, AnyObject> =  Dictionary <String, AnyObject>()
     private var _nke_renderer: AnyObject?
+    internal var _webContents: NKE_WebContentsBase? = nil;
     
     override init(){
         super.init()
@@ -56,16 +57,17 @@ import JavaScriptCore
             log("+creating Nitro Renderer")
             self._id = self.createWKWebView(options)
             self._type = "Nitro"
+            let webContents: NKE_WebContentsUI = NKE_WebContentsUI(window: self);
+            self._webContents = webContents;
         case .UIWebView:
             log("+creating JavaScriptCore Renderer")
             self._id = self.createUIWebView(options)
             self._type = "JavaScriptCore"
+            let webContents: NKE_WebContentsUI = NKE_WebContentsUI(window: self);
+            self._webContents = webContents;
         }
         
         NKE_BrowserWindow._windowArray[self._id] = self;
-        
-        // Complete JavaScript Initialization to load WebContents binding
-        self.NKscriptObject?.callMethod("_init", withArguments: nil, completionHandler: nil)
     }
  
     // class functions (for Swift/Objective-C use only, equivalent functions exist in .js helper )
@@ -82,7 +84,13 @@ import JavaScriptCore
             return _type
         }
     }
-      
+    
+    var webContents: NKE_WebContentsBase {
+        get {
+            return _webContents!
+        }
+    }
+    
     private static func NotImplemented(functionName: String = __FUNCTION__) -> Void {
         log("!browserWindow.\(functionName) is not implemented");
     }
@@ -93,14 +101,14 @@ import JavaScriptCore
 }
 
 
-extension NKE_BrowserWindow: NKScriptPlugin {
+extension NKE_BrowserWindow: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
-        let principal = NKE_BrowserWindow()
+        let principal = NKE_BrowserWindow.self
         context.NKloadPlugin(principal, namespace: "io.nodekit.BrowserWindow", options: [String:AnyObject]());
     }
     
-    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+    class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
             let url = NSBundle(forClass: NKE_BrowserWindow.self).pathForResource("browser-window", ofType: "js", inDirectory: "lib-electro")

@@ -19,7 +19,7 @@
 import Foundation
 import JavaScriptCore
 
-extension NKJSContextFactory {
+extension NKScriptContextFactory {
     
     func createContextJavaScriptCore(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
     {
@@ -27,11 +27,11 @@ extension NKJSContextFactory {
             let vm = JSVirtualMachine()
             let context = JSContext(virtualMachine: vm)
             
-            let id = NKJSContextFactory.sequenceNumber
+            let id = NKScriptContextFactory.sequenceNumber
             context.NKgetScriptContext(id, options: options, delegate: cb)
             
             var item = Dictionary<String, AnyObject>()
-            NKJSContextFactory._contexts[id] = item;
+            NKScriptContextFactory._contexts[id] = item;
             item["JSVirtualMachine"] = vm
             item["context"] = context
         }

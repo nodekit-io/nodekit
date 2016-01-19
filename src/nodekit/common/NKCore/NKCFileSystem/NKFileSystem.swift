@@ -18,7 +18,7 @@
 
 import Foundation
 
-internal class NKFileSystem: NSObject {
+internal class NKC_FileSystem: NSObject {
     
     class func exists (path: String) -> Bool {
         return NSFileManager().fileExistsAtPath(path)

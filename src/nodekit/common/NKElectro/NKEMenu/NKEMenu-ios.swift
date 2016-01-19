@@ -22,7 +22,7 @@ import UIKit
 
 // NKElectro MENU Placeholder code only:  on roadmap but lower priority as not supported on mobile
 
-extension NKE_Menu: NKScriptPlugin {
+extension NKE_Menu: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_Menu()

@@ -22,13 +22,29 @@ import Foundation
 
 public protocol NKScriptContext: class {
     var NKid: Int { get }
+    
     func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject>) -> AnyObject?
-    func NKevaluateJavaScript(javaScriptString: String,
-        completionHandler: ((AnyObject?,NSError?) -> Void)?)
+    func NKinjectJavaScript(script: NKScriptSource) -> AnyObject?
+    
+    func NKevaluateJavaScript(javaScriptString: String, completionHandler: ((AnyObject?,NSError?) -> Void)?)
     func NKevaluateJavaScript(script: String) throws -> AnyObject?
     func NKevaluateJavaScript(script: String, error: NSErrorPointer) -> AnyObject?
     
-    func NKinjectJavaScript(script: NKScriptSource) -> AnyObject?
+    static func NKcurrentContext() -> NKScriptContext!
+ //   static func NKcurrentArguments() -> [AnyObject]!
+    
+ //   var NKglobalObject: AnyObject! { get }
+ //   var NKexception: AnyObject! { get set }
+ //   var NKexceptionHandler: ((NKScriptContext!, NKScriptValue!) -> Void)! { get set }
+ //   var NKname: String! {get  set}
+    
+    // func NKevaluateScript(script: String!) -> NKScriptValue!
+    // func NKevaluateScript(script: String!, withSourceURL sourceURL: NSURL!) -> NKScriptValue!
+    // static func NKcurrentCallee() -> NKScriptValue!
+    // static func NKcurrentThis() -> NKScriptValue!
+
+    // func NKobjectForKeyedSubscript(key: AnyObject!) -> NKScriptValue!
+   // func NKsetObject(object: AnyObject!, forKeyedSubscript key: protocol<NSCopying, NSObjectProtocol>!)
 }
 
 public protocol NKScriptContextHost: class {

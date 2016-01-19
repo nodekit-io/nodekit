@@ -43,7 +43,7 @@ extension JSContext: NKScriptContext {
     public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {
         let mainThread: Bool = (options["MainThread"] as? Bool) ?? false
         
-        let bridge: NKScriptPluginType = NKScriptPluginType(rawValue: ((options["PluginBridge"] as? Int) ?? NKScriptPluginType.NKScriptPlugin.rawValue))!
+        let bridge: NKScriptExportType = NKScriptExportType(rawValue: ((options["PluginBridge"] as? Int) ?? NKScriptExportType.NKScriptExport.rawValue))!
         switch bridge {
         case .JSExport:
             self.setObjectForNamespace(object, namespace: namespace);
@@ -90,6 +90,46 @@ extension JSContext: NKScriptContext {
         if error != nil { error.memory = err }
         return result
     }
+    
+    public static func NKcurrentContext() -> NKScriptContext! {
+        let currentContext = NSThread.currentThread().threadDictionary.objectForKey("nk.CurrentContext") as? NKScriptContext
+        if (currentContext != nil)
+            {
+          return currentContext
+            }
+            else
+            {
+          return JSContext.currentContext()
+        }
+    }
+    
+ /*   public static func NKcurrentArguments() -> [AnyObject]! {
+        let currentArgs = NSThread.currentThread().threadDictionary.objectForKey("nk.CurrentArguments") as? [AnyObject]!
+        if (currentArgs != nil)
+        {
+            return currentArgs
+        }
+        else
+        {
+            return JSContext.currentArguments()
+        }
+    }
+    
+    public var NKglobalObject: AnyObject! { get {return self.globalObject } }
+    
+    public var NKexception: AnyObject! {
+        get {return self.exception}
+        set(value) {self.exception = value as? JSValue! }
+        }
+    
+    public var NKexceptionHandler: ((NKScriptContext!, NKScriptValue!) -> Void)! {
+        get {return self.NKexceptionHandler}
+        set(value) { self.NKexceptionHandler = value }
+        }
+    public var NKname: String! {
+        get {return self.name}
+        set(value) {self.name = value}
+        } */
     
     // private methods
     private func setObjectForNamespace(object: AnyObject, namespace: String) -> Void {

@@ -33,7 +33,7 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
     this.ImageData = (typeof ImageData === 'undefined') ? {} : ImageData;
     this.MessagePort = (typeof MessagePort === 'undefined') ? {} : MessagePort;
                    var syncRef = 0;
-    var NKScripting = function(channelName) {
+    var NKScripting = function NKScriptingObject(channelName) {
 
         var channel = webkit.messageHandlers[channelName];
         if (!channel) throw 'channel has not established';
@@ -122,21 +122,12 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
             var ctor = this.constructor;
             while (ctor[ctor.$lastInstID] != undefined)
                 ++ctor.$lastInstID;
-            Object.defineProperty(this, '$instanceID', {
-                'configurable': true,
-                'value': ctor.$lastInstID
-            });
+            Object.defineProperty(this, '$instanceID', {'configurable': true,'value': ctor.$lastInstID});
+            Object.defineProperty(this, '$properties', {'configurable': true, 'value': {}});
             ctor[this.$instanceID] = this;
-
-            // Create and initialize native object asynchronously.
-            // So constructor should always return a Promise object.
-            Object.defineProperty(this, '$properties', {
-                'configurable': true,
-                'value': {}
-            });
             NKScripting.invokeNative.apply(this, arguments);
-            if (this._init)
-                   this._init();
+                   
+            if (this._init) this._init();
         }
 
         // Principal instance (which id is 0) is the prototype object.
@@ -154,6 +145,17 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
             proto.dispose();
             delete this.$lastInstID;
         }
+     ctor.NKcreateForNative = function(idString) {
+        var id = idString + 0;
+        var instance = Object.create(proto, {
+                '$instanceID': {'configurable': true,'value': id},
+                '$properties': {'configurable': true,'value': {} }
+              });
+             this[instance.$instanceID] = instance;
+             if (instance._init)  instance._init();
+             return instance;
+        }
+                   
         NKScripting.createNamespace(namespace, ctor);
         return proto;
     }

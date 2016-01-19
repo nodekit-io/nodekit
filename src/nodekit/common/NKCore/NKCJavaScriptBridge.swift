@@ -25,9 +25,7 @@ var urlNavigator: NKUrlNavigator? = nil
 
 class NKJavascriptBridge: NSObject {
     
-    
     class func attachToContext(context: JSContext) {
-
         #if os(iOS)
             let PLATFORM: String = "ios";
         #elseif os(OSX)
@@ -54,24 +52,7 @@ class NKJavascriptBridge: NSObject {
         
         let console: JSValue = JSValue(object:["platform": PLATFORM], inContext: context)
         let fs: JSValue = JSValue(object:["platform": PLATFORM], inContext: context)
-        let socket: JSValue = JSValue(object:["platform": PLATFORM], inContext: context)
         let crypto: JSValue = JSValue(object:["crypto": PLATFORM], inContext: context)
-        
-        let socket_createTcp : @convention(block) () -> JSValue = {
-            let server: NKSocketTCP = NKSocketTCP()
-            return server.TCP()
-        }
-        
-        socket.setObject(unsafeBitCast(socket_createTcp, AnyObject.self), forKeyedSubscript: "createTcp")
-        
-        let socket_createUdp : @convention(block) () -> JSValue = {
-            let socket: NKSocketUDP = NKSocketUDP()
-            return socket.UDP()
-        }
-        
-        socket.setObject(unsafeBitCast(socket_createUdp, AnyObject.self), forKeyedSubscript: "createUdp")
-        
-        
         
         let fs_getTempDirectory: @convention(block) () -> String? = {
                let fileURL: NSURL = NSURL.fileURLWithPath(NSTemporaryDirectory())
@@ -83,7 +64,7 @@ class NKJavascriptBridge: NSObject {
         
         
         let fs_stat: @convention(block) String -> Dictionary<String, NSObject>? = { path in
-            return NKFileSystem.stat(path)
+            return NKC_FileSystem.stat(path)
         }
         
         fs.setObject(unsafeBitCast(fs_stat, AnyObject.self), forKeyedSubscript: "stat")
@@ -94,7 +75,7 @@ class NKJavascriptBridge: NSObject {
                   callBack.callWithArguments([error, value]);
             };
             
-            NKFileSystem.statAsync(path, completionHandler: done);
+            NKC_FileSystem.statAsync(path, completionHandler: done);
         
         }
         
@@ -103,14 +84,14 @@ class NKJavascriptBridge: NSObject {
         
         
         let fs_mkdir: @convention(block) String -> Bool = { path in
-            return NKFileSystem.mkdir(path)
+            return NKC_FileSystem.mkdir(path)
         }
         
         
         fs.setObject(unsafeBitCast(fs_mkdir, AnyObject.self), forKeyedSubscript: "mkdir")
         
         let fs_rmdir: @convention(block) String -> Bool = { path in
-            return NKFileSystem.rmdir(path)
+            return NKC_FileSystem.rmdir(path)
         }
         
         
@@ -118,14 +99,14 @@ class NKJavascriptBridge: NSObject {
       
         
        let fs_move: @convention(block) (String, String) -> Bool = { path, path2 in
-             return NKFileSystem.move(path, path2: path2)
+             return NKC_FileSystem.move(path, path2: path2)
         }
         
         fs.setObject(unsafeBitCast(fs_move, AnyObject.self), forKeyedSubscript: "move")
         
         
         let fs_unlink: @convention(block) String -> Bool = { path in
-            return NKFileSystem.unlink(path)
+            return NKC_FileSystem.unlink(path)
         }
         
         fs.setObject(unsafeBitCast(fs_unlink, AnyObject.self), forKeyedSubscript: "unlink")
@@ -139,7 +120,7 @@ class NKJavascriptBridge: NSObject {
          * @return {String}  The item (or null if not found).
          */
         let fs_getFullPath: @convention(block) (String, String) -> String = { path, module in
-            return NKFileSystem.getFullPath(path, module: module)
+            return NKC_FileSystem.getFullPath(path, module: module)
         }
         
         fs.setObject(unsafeBitCast(fs_getFullPath, AnyObject.self), forKeyedSubscript: "getFullPath")
@@ -153,7 +134,7 @@ class NKJavascriptBridge: NSObject {
         * @return {[string]} The array of item names (or error if not found or not a directory).
         */
         let fs_getgetDirectoryAsync: @convention(block) (String, NKNodeCallBack) -> Void = { path, callBack in
-            return NKFileSystem.getDirectoryAsync(path, completionHandler: callBack)
+            return NKC_FileSystem.getDirectoryAsync(path, completionHandler: callBack)
         }
         
         fs.setObject(unsafeBitCast(fs_getgetDirectoryAsync, AnyObject.self), forKeyedSubscript: "getDirectoryAsync")
@@ -166,7 +147,7 @@ class NKJavascriptBridge: NSObject {
         * @return {[string]} The array of item names (or error if not found or not a directory).
         */
         let fs_getDirectory: @convention(block) (String) -> NSArray = { path in
-            return NKFileSystem.getDirectory(path)
+            return NKC_FileSystem.getDirectory(path)
         }
         
         fs.setObject(unsafeBitCast(fs_getDirectory, AnyObject.self), forKeyedSubscript: "getDirectory")
@@ -177,7 +158,7 @@ class NKJavascriptBridge: NSObject {
         * @return {String}  The file content
         */
         let fs_getSource: @convention(block) (String) -> String = { path in
-             return NKFileSystem.getSource(path)
+             return NKC_FileSystem.getSource(path)
         }
         
         fs.setObject(unsafeBitCast(fs_getSource, AnyObject.self), forKeyedSubscript: "getSource")
@@ -189,7 +170,7 @@ class NKJavascriptBridge: NSObject {
         * @return {string} The file content
         */
         let fs_getContent: @convention(block)  NSDictionary! -> NSString = { storageItem in
-            return NKFileSystem.getContent(storageItem)
+            return NKC_FileSystem.getContent(storageItem)
         }
         
         fs.setObject(unsafeBitCast(fs_getContent, AnyObject.self), forKeyedSubscript: "getContent")
@@ -206,7 +187,7 @@ class NKJavascriptBridge: NSObject {
                 callBack.callWithArguments([error, value]);
             };
             
-            NKFileSystem.getContentAsync(storageItem, completionHandler: done)
+            NKC_FileSystem.getContentAsync(storageItem, completionHandler: done)
         }
         
         fs.setObject(unsafeBitCast(fs_getContentAsync, AnyObject.self), forKeyedSubscript: "getContentAsync")
@@ -219,7 +200,7 @@ class NKJavascriptBridge: NSObject {
         */
         let fs_writeContent: @convention(block)  (NSDictionary!, String!) -> Bool = { storageItem, content in
             
-            return NKFileSystem.writeContent(storageItem, str: content)
+            return NKC_FileSystem.writeContent(storageItem, str: content)
         }
         
         fs.setObject(unsafeBitCast(fs_writeContent, AnyObject.self), forKeyedSubscript: "writeContent")
@@ -238,7 +219,7 @@ class NKJavascriptBridge: NSObject {
                 callBack.callWithArguments([error, value]);
             };
             
-            NKFileSystem.writeContentAsync(storageItem, str: content, completionHandler: done)
+            NKC_FileSystem.writeContentAsync(storageItem, str: content, completionHandler: done)
         }
         
         fs.setObject(unsafeBitCast(fs_writeContentAsync, AnyObject.self), forKeyedSubscript: "writeContentAsync")
@@ -271,7 +252,7 @@ class NKJavascriptBridge: NSObject {
         console.setObject(unsafeBitCast(console_nextTick, AnyObject.self), forKeyedSubscript: "nextTick")
         
         let console_timer: @convention(block)  () -> JSValue! = {
-            let timer: NKTimer = NKTimer()
+            let timer: NKC_Timer = NKC_Timer()
             return timer.Timer()
         }
         
@@ -319,7 +300,7 @@ class NKJavascriptBridge: NSObject {
          */
         let crypyo_getRandomBytes: @convention(block)  (JSValue) -> NSArray = { blockSize in
             
-            return NKCrypto.getRandomBytes(blockSize.toUInt32())
+            return NKC_Crypto.getRandomBytes(blockSize.toUInt32())
         }
         
         crypto.setObject(unsafeBitCast(crypyo_getRandomBytes, AnyObject.self), forKeyedSubscript: "getRandomBytes")
@@ -329,7 +310,6 @@ class NKJavascriptBridge: NSObject {
         
         io_nodekit.setObject(fs, forKeyedSubscript: "fs");
         io_nodekit.setObject(console, forKeyedSubscript: "console");
-        io_nodekit.setObject(socket, forKeyedSubscript: "socket");
         io_nodekit.setObject(crypto, forKeyedSubscript: "crypto");
         
         let io: JSValue = JSValue(object: Dictionary<String, AnyObject>(), inContext: context)

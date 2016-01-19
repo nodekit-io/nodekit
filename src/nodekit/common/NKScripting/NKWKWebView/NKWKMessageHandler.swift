@@ -52,7 +52,7 @@ public class NKWKMessageHandler : NSObject, WKScriptMessageHandler {
             obj = val as? NSNumber ?? val.nonretainedObjectValue
         }
         
-        if let o = obj as? NKScriptObject {
+        if let o = obj as? NKScriptValueObject {
             return o.namespace
         } else if let s = obj as? String {
             let d = try? NSJSONSerialization.dataWithJSONObject([s], options: NSJSONWritingOptions(rawValue: 0))

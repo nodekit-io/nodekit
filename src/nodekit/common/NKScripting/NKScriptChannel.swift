@@ -26,12 +26,13 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
     public let queue: dispatch_queue_t?
     private(set) public weak var context: NKScriptContext?
     internal weak var userContentController: NKScriptContentController?
+    private var isFactory = false;
     
     var typeInfo: NKScriptMetaObject!
 
-    private var instances = [Int: NKScriptBindingObject]()
+    private var instances = [Int: NKScriptValueObjectNative]()
     private var userScript: AnyObject?
-    private(set) var principal: NKScriptBindingObject {
+    private(set) var principal: NKScriptValueObjectNative {
         get { return instances[0]! }
         set { instances[0] = newValue }
     }
@@ -41,6 +42,14 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
             static var number: Int = 0
         }
         return ++sequence.number
+    }
+    
+    internal var nativeFirstSequence: Int {
+        struct sequence{
+            static var number: Int = Int(Int32.max)
+            
+        }
+        return --sequence.number
     }
 
     internal static var defaultQueue: dispatch_queue_t = {
@@ -72,6 +81,11 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         guard let id = identifier else {return}
         log("channel deinit" + id);
     }
+    
+    public static func currentContext() -> NKScriptContext! {
+        return NSThread.currentThread().threadDictionary.objectForKey("nk.CurrentContext") as? NKScriptContext
+    }
+    
     private func prepareForPlugin() {
         let key = unsafeAddressOf(NKScriptChannel)
         if objc_getAssociatedObject(context, key) != nil { return }
@@ -97,18 +111,30 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         log("E\(context!.NKid) JavaScript Engine is ready for loading plugins")
     }
 
-    public func bindPlugin(object: AnyObject, toNamespace namespace: String) -> NKScriptObject? {
+    public func bindPlugin(object: AnyObject, toNamespace namespace: String) -> NKScriptValueObject? {
         guard identifier == nil, let context = context else { return nil }
 
-        let id = (object as? NKScriptPlugin)?.channelIdentifier ?? String(NKScriptChannel.sequenceNumber)
+        let id = (object as? NKScriptExport)?.channelIdentifier ?? String(NKScriptChannel.sequenceNumber)
         identifier = id
         userContentController?.NKaddScriptMessageHandler(self, name: id)
-        typeInfo = NKScriptMetaObject(plugin: object.dynamicType)
-        principal = NKScriptBindingObject(namespace: namespace, channel: self, object: object)
-        userScript = context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: "io.nodekit.scripting/plugins/" + _stdlib_getDemangledTypeName(object) + ".js" ))
+        
+        if (object is AnyClass)
+        {
+            isFactory = true;
+            typeInfo = NKScriptMetaObject(plugin: object as! AnyClass)
+            objc_setAssociatedObject(typeInfo.plugin, unsafeAddressOf(NKScriptChannel), self, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+        } else
+        {
+            isFactory = false;
+            typeInfo = NKScriptMetaObject(plugin: object.dynamicType)
+        }
+        
+         principal = NKScriptValueObjectNative(namespace: namespace, channel: self, object: object)
+        
+         userScript = context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: "io.nodekit.scripting/plugins/" + _stdlib_getDemangledTypeName(object) + ".js" ))
         
         log("+E\(context.NKid) Plugin object \(object) is bound to \(namespace) with channel \(id)")
-        return principal as NKScriptObject
+        return principal as NKScriptValueObject
     }
     
     public func unbind() {
@@ -129,7 +155,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
     public func userContentController(didReceiveScriptMessage message: NKScriptMessage) {
         // A workaround for crash when postMessage(undefined)
         guard unsafeBitCast(message.body, COpaquePointer.self) != nil else { return }
-
+        NSThread.currentThread().threadDictionary.setObject(self.context!, forKey: "nk.CurrentContext")
         if let body = message.body as? [String: AnyObject], let opcode = body["$opcode"] as? String {
             let target = (body["$target"] as? NSNumber)?.integerValue ?? 0
             if let object = instances[target] {
@@ -158,7 +184,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
                 // Create instance
                 let args = body["$operand"] as? [AnyObject]
                 let namespace = "\(principal.namespace)[\(target)]"
-                instances[target] = NKScriptBindingObject(namespace: namespace, channel: self, arguments: args)
+                instances[target] = NKScriptValueObjectNative(namespace: namespace, channel: self, arguments: args)
                 log("+E\(context!.NKid) Instance \(target) is bound to \(namespace)")
             } // else Unknown opcode
         } else if let obj = principal.plugin as? NKScriptMessageHandler {
@@ -168,10 +194,13 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
             // discard unknown message
             log("-Unknown message: \(message.body)")
         }
+        NSThread.currentThread().threadDictionary.removeObjectForKey( "nk.CurrentContext")
+        
     }
     
     public func userContentControllerSync(didReceiveScriptMessage message: NKScriptMessage) -> AnyObject! {
-        
+        NSThread.currentThread().threadDictionary.setObject(self.context!, forKey: "nk.CurrentContext")
+        var result: AnyObject!
         if let body = message.body as? [String: AnyObject], let opcode = body["$opcode"] as? String {
             let target = (body["$target"] as? NSNumber)?.integerValue ?? 0
             if let object = instances[target] {
@@ -179,45 +208,46 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
                     if target == 0 {
                         // Dispose plugin
                         unbind()
-                        return true;
+                        result = true;
                     } else if let instance = instances.removeValueForKey(target) {
                         // Dispose instance
                         log("+E\(context!.NKid) Instance \(target) is unbound from \(instance.namespace)")
-                          return true;
+                        result = true;
                     } else {
                         log("?Invalid instance id: \(target)")
-                          return true;
+                        result = true;
                     }
                 } else if let member = typeInfo[opcode] where member.isProperty {
                     // Update property
                     object.updateNativeProperty(opcode, withValue: body["$operand"] ?? NSNull())
-                      return true;
+                    result = true;
                 } else if let member = typeInfo[opcode] where member.isMethod {
                     // Invoke method
                     if let args = (body["$operand"] ?? []) as? [AnyObject] {
-                       return object.invokeNativeMethodSync(opcode, withArguments: args)
+                       result = object.invokeNativeMethodSync(opcode, withArguments: args)
                     } // else malformatted operand
                 } else {
                     log("?Invalid member name: \(opcode)")
-                      return false;
+                      result = false;
                 }
             } else if opcode == "+" {
                 // Create instance
                 let args = body["$operand"] as? [AnyObject]
                 let namespace = "\(principal.namespace)[\(target)]"
-                instances[target] = NKScriptBindingObject(namespace: namespace, channel: self, arguments: args)
+                instances[target] = NKScriptValueObjectNative(namespace: namespace, channel: self, arguments: args)
                 log("+E\(context!.NKid) Instance \(target) is bound to \(namespace)")
-                return true;
+                result = true;
             } // else Unknown opcode
         } else if let obj = principal.plugin as? NKScriptMessageHandler {
             // Plugin claims for raw messages
-            return obj.userContentControllerSync(didReceiveScriptMessage: message)
+            result = obj.userContentControllerSync(didReceiveScriptMessage: message)
       } else {
             // discard unknown message
             log("-Unknown message: \(message.body)")
-            return false;
+            result = false;
         }
-        return false;
+        NSThread.currentThread().threadDictionary.removeObjectForKey( "nk.CurrentContext")
+        return result;
     }
     
     private func generateStubs(name: String) -> String {
@@ -226,7 +256,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
             return prebind ? "\(stub);" : "function(){return \(stub).apply(null, arguments);}"
         }
         func rewriteStub(stub: String, forKey key: String) -> String {
-            return (principal.plugin as? NKScriptPlugin)?.rewriteGeneratedStub?(stub, forKey: key) ?? stub
+            return (principal.plugin as? NKScriptExport)?.rewriteGeneratedStub?(stub, forKey: key) ?? stub
         }
 
         let prebind = !(typeInfo[""]?.isInitializer ?? false)
@@ -238,8 +268,11 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
                 let method = generateMethod("\(key)\(member.type)", this: prebind ? "exports" : "this", prebind: prebind)
                 stub = "exports.\(key) = \(method)"
             } else if member.isProperty {
-                let value = principal.serialize(principal[key])
-                stub = "NKScripting.defineProperty(exports, '\(key)', \(value), \(member.setter != nil));"
+                if (isFactory) {  stub = "NKScripting.defineProperty(exports, '\(key)', null, \(member.setter != nil));" }
+                else {
+                    let value = principal.serialize(principal[key])
+                    stub = "NKScripting.defineProperty(exports, '\(key)', \(value), \(member.setter != nil));"
+                }
             } else {
                 return $0
             }

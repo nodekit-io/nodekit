@@ -20,12 +20,12 @@
 
 import Foundation
 
-public enum NKScriptPluginType : Int {
-    case NKScriptPlugin = 0
+public enum NKScriptExportType : Int {
+    case NKScriptExport = 0
     case JSExport
 }
 
-@objc public protocol NKScriptPlugin : class {
+@objc public protocol NKScriptExport : class {
     optional var channelIdentifier: String { get }
     optional func rewriteGeneratedStub(stub: String, forKey: String) -> String
     optional func invokeDefaultMethodWithArguments(args: [AnyObject]!) -> AnyObject!

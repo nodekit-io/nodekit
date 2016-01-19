@@ -37,11 +37,11 @@ import Foundation
         _window = window;
         
          window._events.on("nk.IPCtoRenderer") { (item: NKE_IPC_Event) -> Void in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["nk.IPCtoRenderer", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["nk.IPCtoRenderer", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
         }
         
          window._events.on("nk.IPCReplytoRenderer") { (item: NKE_IPC_Event) -> Void in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["nk.IPCReplytoRenderer", item.sender, item.channel, item.replyId, item.arg[0]], completionHandler: nil)
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["nk.IPCReplytoRenderer", item.sender, item.channel, item.replyId, item.arg[0]], completionHandler: nil)
         }
     }
     
@@ -59,7 +59,7 @@ import Foundation
     }
 }
 
-extension NKE_IpcRenderer: NKScriptPlugin {
+extension NKE_IpcRenderer: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_IpcRenderer()

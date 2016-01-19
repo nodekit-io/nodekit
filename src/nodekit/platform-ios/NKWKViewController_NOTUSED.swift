@@ -84,7 +84,7 @@ import WebKit
         view = webView
    
         
-  /*      let id = NKJSContextFactory.sequenceNumber
+  /*      let id = NKScriptContextFactory.sequenceNumber
         log("+Starting NodeKit UIWebView-JavaScriptCore JavaScript Engine \(id)")
         let webView:UIWebView = UIWebView(frame: CGRectZero)
         var item = Dictionary<String, AnyObject>()
@@ -92,7 +92,7 @@ import WebKit
         webView.opaque = false;
         webView.backgroundColor = UIColor.clearColor()
 
-        NKJSContextFactory._contexts[id] = item;
+        NKScriptContextFactory._contexts[id] = item;
         webView.delegate = NKUIWebViewDelegate(webView: webView, delegate: self);
         
          webView.loadHTMLString("<HTML><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))

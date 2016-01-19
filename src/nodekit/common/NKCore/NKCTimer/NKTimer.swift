@@ -17,7 +17,7 @@
 */
 import JavaScriptCore
  
- public class NKTimer : NSObject {
+ public class NKC_Timer : NSObject {
     
     /* NKTimer
     * Creates _timer JSValue

@@ -27,7 +27,7 @@ import Foundation
         super.init()
         
         globalEvents.on("nk.IPCtoMain") { (item: NKE_IPC_Event) -> Void in
-              self.NKscriptObject?.callMethod("emit", withArguments: ["nk.IPCtoMain", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
+              self.NKscriptObject?.invokeMethod("emit", withArguments: ["nk.IPCtoMain", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
         }
     }
     
@@ -45,7 +45,7 @@ import Foundation
 }
 
 
-extension NKE_IpcMain: NKScriptPlugin {
+extension NKE_IpcMain: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_IpcRenderer()

@@ -21,7 +21,7 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-extension NKE_Dialog: NKScriptPlugin {
+extension NKE_Dialog: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_Dialog()
@@ -32,7 +32,7 @@ extension NKE_Dialog: NKScriptPlugin {
 
 @objc class NKE_Dialog: NSObject, NKE_DialogProtocol {
 
-    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void {
+    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void {
         let fileManager = NSFileManager.defaultManager()
         
         let title: String = (options?["title"] as? String) ?? ""
@@ -102,18 +102,18 @@ extension NKE_Dialog: NKScriptPlugin {
                         paths.append(url.path!)
                     }
                 }
-                callback?.call(arguments: [true, paths], completionHandler: nil)
+                callback?.callWithArguments(arguments: [true, paths], completionHandler: nil)
             }
             else
             {
-                callback?.call(arguments: [false, ""], completionHandler: nil)
+                callback?.callWithArguments(arguments: [false, ""], completionHandler: nil)
             }
         })
         
     }
     
     
-    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?)-> Void {
+    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?)-> Void {
         
         let fileManager = NSFileManager.defaultManager()
         
@@ -173,16 +173,16 @@ extension NKE_Dialog: NKScriptPlugin {
             if(result == NSFileHandlingPanelOKButton)
             {
                  let url = savePanel.URL!
-                callback?.call(arguments: [true, url.path!], completionHandler: nil)
+                callback?.callWithArguments(arguments: [true, url.path!], completionHandler: nil)
             }
             else
             {
-                callback?.call(arguments: [false, ""], completionHandler: nil)
+                callback?.callWithArguments(arguments: [false, ""], completionHandler: nil)
             }
         })
     }
     
-    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void {
+    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void {
         let type: String = (options?["type"] as? String) ?? "none"
         let buttons: [String] = (options?["buttons"] as? [String]) ?? [String]()
     //    let title: String = (options?["title"] as? String) ?? ""
@@ -219,7 +219,7 @@ extension NKE_Dialog: NKScriptPlugin {
         
         let result:Int = msgBox.runModal()
         
-        callback?.call(arguments: [result], completionHandler: nil)
+        callback?.callWithArguments(arguments: [result], completionHandler: nil)
 
     }
 

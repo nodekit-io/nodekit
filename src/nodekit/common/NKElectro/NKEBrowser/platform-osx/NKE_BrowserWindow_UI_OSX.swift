@@ -29,7 +29,7 @@ extension NKE_BrowserWindow: WebUIDelegate {
     
     internal func createUIWebView(options: Dictionary<String, AnyObject>) -> Int {
        
-        let id = NKJSContextFactory.sequenceNumber
+        let id = NKScriptContextFactory.sequenceNumber
         
         let createBlock = {() -> Void in
             
@@ -69,8 +69,8 @@ extension NKE_BrowserWindow: WebUIDelegate {
             window.contentView = webView
             webView.NKgetScriptContext(id, options: [String: AnyObject](), delegate: self)
             
-            NSURLProtocol.registerClass(NKUrlProtocolLocalFile)
-            //  NSURLProtocol.registerClass(NKUrlProtocolCustom)
+            NSURLProtocol.registerClass(NKE_ProtocolLocalFile)
+            //  NSURLProtocol.registerClass(NKE_ProtocolCustom)
             
             /*     NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
             webview.loadHTMLString(msg!, baseURL: NSURL(string: "about:blank"))

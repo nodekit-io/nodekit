@@ -23,6 +23,7 @@ import ObjectiveC
 
 public class NKScriptInvocation {
     public final let target: AnyObject
+  //  public final let targetClass: AnyClass
     private let queue: dispatch_queue_t?
     private let thread: NSThread?
 
@@ -34,6 +35,8 @@ public class NKScriptInvocation {
 
     public init(target: AnyObject, option: Option = .None) {
         self.target = target
+    //    if (target is AnyClass) {self.targetClass = target} else {self.targetClass = target.dynamicType }
+        
         switch option {
         case .None:
             self.queue = nil

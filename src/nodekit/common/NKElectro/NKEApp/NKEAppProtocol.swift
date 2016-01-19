@@ -21,7 +21,7 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc protocol NKEAppProtocol: NKScriptPlugin {
+@objc protocol NKEAppProtocol: NKScriptExport {
     func quit() -> Void
     func exit(exitCode: Int) -> Void
     func getAppPath() -> String

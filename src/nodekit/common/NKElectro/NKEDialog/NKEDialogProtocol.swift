@@ -21,10 +21,10 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc protocol NKE_DialogProtocol: NKScriptPlugin {
+@objc protocol NKE_DialogProtocol: NKScriptExport {
     
-    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void
-    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?)-> Void
-    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void
+    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void
+    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?)-> Void
+    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void
     func showErrorBox(title: String, content: String) -> Void
 }

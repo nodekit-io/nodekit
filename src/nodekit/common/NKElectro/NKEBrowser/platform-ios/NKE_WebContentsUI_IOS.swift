@@ -30,33 +30,27 @@ import JavaScriptCore
         super.init()
     }
     
-    required init(id: Int) {
+    required init(window: NKE_BrowserWindow) {
         super.init()
         
-        _id = id;
-        guard let window = NKE_BrowserWindow.fromId(_id) else {return;}
-        _window = window as? NKE_BrowserWindow;
-        
+         _window = window;
+        _id = window.id;
         
         // Event:  'did-fail-load'
         // Event:  'did-finish-load'
         
         _window?._events.on("did-finish-load") { (id: Int) in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
+     //       self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
         
         _window?._events.on("did-fail-loading") { (error: String) in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
+      //      self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
         
         webView = _window?._webView as? UIWebView
         
         _initIPC()
-        
-        // Complete JavaScript Initialization to load WebContents binding
-        self.NKscriptObject?.callMethod("_init", withArguments: nil, completionHandler: nil)
-        
-    }
+       }
 }
 
 extension NKE_WebContentsUI: NKE_WebContentsProtocol {
@@ -122,10 +116,10 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func isAudioMuted()  -> Bool { NKE_WebContentsBase.NotImplemented(); return false }
     func unselect() -> Void { NKE_WebContentsBase.NotImplemented() }
     func replaceMisspelling(text: String) -> Void { NKE_WebContentsBase.NotImplemented() }
-    func hasServiceWorker(callback: NKScriptObject) -> Void { NKE_WebContentsBase.NotImplemented() }
-    func unregisterServiceWorker(callback: NKScriptObject) -> Void { NKE_WebContentsBase.NotImplemented() }
+    func hasServiceWorker(callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
+    func unregisterServiceWorker(callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
     func print(options: [String: AnyObject]) -> Void { NKE_WebContentsBase.NotImplemented() }
-    func printToPDF(options: [String: AnyObject], callback: NKScriptObject) -> Void { NKE_WebContentsBase.NotImplemented() }
+    func printToPDF(options: [String: AnyObject], callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
     func addWorkSpace(path: String) -> Void { NKE_WebContentsBase.NotImplemented() }
     func removeWorkSpace(path: String) -> Void { NKE_WebContentsBase.NotImplemented() }
     func openDevTools(options: [String: AnyObject]) -> Void { NKE_WebContentsBase.NotImplemented() }
@@ -138,10 +132,10 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func enableDeviceEmulation(parameters: [String: AnyObject]) -> Void { NKE_WebContentsBase.NotImplemented() }
     func disableDeviceEmulation() -> Void { NKE_WebContentsBase.NotImplemented() }
     func sendInputEvent(event: [String: AnyObject]) -> Void { NKE_WebContentsBase.NotImplemented() }
-    func beginFrameSubscription(callback: NKScriptObject) -> Void { NKE_WebContentsBase.NotImplemented() }
+    func beginFrameSubscription(callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
     func endFrameSubscription() -> Void { NKE_WebContentsBase.NotImplemented() }
-    func savePage(fullPath: String, saveType: String, callback: NKScriptObject) -> Void { NKE_WebContentsBase.NotImplemented() }
-    var session: NKScriptObject? { get { return nil } }
+    func savePage(fullPath: String, saveType: String, callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
+    var session: NKScriptValueObject? { get { return nil } }
     var devToolsWebContents: NKE_WebContentProtocol { get } */
     
     

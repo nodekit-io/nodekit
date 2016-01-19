@@ -21,7 +21,7 @@
 
 import Foundation
 import Cocoa
-extension NKE_Menu: NKScriptPlugin {
+extension NKE_Menu: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_Menu()

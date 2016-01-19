@@ -35,9 +35,9 @@ class NKE_BootMain: NSObject {
         NKE_Dialog.attachTo(context);
         NKE_Menu.attachTo(context);
         
-        //   menuPlugin = context.NKloadPlugin(NKEMenu(), namespace: "io.nodekit.menu", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue]);
+        //   menuPlugin = context.NKloadPlugin(NKEMenu(), namespace: "io.nodekit.menu", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue]);
         
-        //   menuItemPlugin = context.NKloadPlugin(NKEMenuItem(), namespace: "io.nodekit.menuItem", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue]);
+        //   menuItemPlugin = context.NKloadPlugin(NKEMenuItem(), namespace: "io.nodekit.menuItem", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue]);
         
         
     }

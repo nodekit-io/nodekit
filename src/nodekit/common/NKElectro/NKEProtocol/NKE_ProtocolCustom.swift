@@ -19,7 +19,7 @@
 import Foundation
 import JavaScriptCore
 
-class NKUrlProtocolCustom: NSURLProtocol {
+class NKE_ProtocolCustom: NSURLProtocol {
     
     
     var httpContext : JSValue? = nil;

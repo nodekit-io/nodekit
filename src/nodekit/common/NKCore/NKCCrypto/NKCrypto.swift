@@ -18,7 +18,7 @@
  
 import Darwin
 
-public class NKCrypto : NSObject {
+public class NKC_Crypto : NSObject {
     public class func getRandomBytes(blockSize:UInt32) -> [UInt] {
         var randomIV:[UInt] = [UInt]();
         for _ in 0..<blockSize {

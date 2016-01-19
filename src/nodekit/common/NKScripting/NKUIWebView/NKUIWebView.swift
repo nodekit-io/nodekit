@@ -35,7 +35,7 @@ extension UIWebView: NKScriptContextHost {
         
         objc_setAssociatedObject(self, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-        NKJSContextFactory._contexts[id] = item;
+        NKScriptContextFactory._contexts[id] = item;
         self.delegate = NKUIWebViewDelegate(id: id, webView: self, delegate: cb);
         
         item["UIWebView"] = self

@@ -19,7 +19,7 @@
 import Foundation
 import WebKit
 
-extension NKJSContextFactory {
+extension NKScriptContextFactory {
    public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
     {
         let createWebView = { () -> Void in
@@ -40,12 +40,12 @@ extension NKJSContextFactory {
             webView.applicationNameForUserAgent = "nodeKit"
             webView.drawsBackground = false
             webView.preferences = webPrefs
-            let id = NKJSContextFactory.sequenceNumber
+            let id = NKScriptContextFactory.sequenceNumber
             webView.NKgetScriptContext(id, options: options, delegate: cb)
             
             var item = Dictionary<String, AnyObject>()
             item["WebView"] = webView
-            NKJSContextFactory._contexts[id] = item;
+            NKScriptContextFactory._contexts[id] = item;
             
             webView.mainFrame.loadHTMLString("<HTML><HEAD><script>// nodekit</script></HEAD><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
         }

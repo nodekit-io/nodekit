@@ -19,9 +19,7 @@
 
 import Foundation
 
-@objc protocol NKE_WebContentsProtocol: NKScriptPlugin, NKE_IpcProtocol {
-    
-    init(id: Int)
+@objc protocol NKE_WebContentsProtocol: NKScriptExport, NKE_IpcProtocol {
     
     func loadURL(url: String, options: [String: AnyObject]) -> Void
     func getURL() -> String
@@ -69,10 +67,10 @@ import Foundation
     func unselect() -> Void
     func replace(text: String) -> Void
     func replaceMisspelling(text: String) -> Void
-    func hasServiceWorker(callback: NKScriptObject) -> Void
-    func unregisterServiceWorker(callback: NKScriptObject) -> Void
+    func hasServiceWorker(callback: NKScriptValueObject) -> Void
+    func unregisterServiceWorker(callback: NKScriptValueObject) -> Void
     func print(options: [String: AnyObject]) -> Void
-    func printToPDF(options: [String: AnyObject], callback: NKScriptObject) -> Void
+    func printToPDF(options: [String: AnyObject], callback: NKScriptValueObject) -> Void
     func addWorkSpace(path: String) -> Void
     func removeWorkSpace(path: String) -> Void
     func openDevTools(options: [String: AnyObject]) -> Void
@@ -85,10 +83,10 @@ import Foundation
     func enableDeviceEmulation(parameters: [String: AnyObject]) -> Void
     func disableDeviceEmulation() -> Void
     func sendInputEvent(event: [String: AnyObject]) -> Void
-    func beginFrameSubscription(callback: NKScriptObject) -> Void
+    func beginFrameSubscription(callback: NKScriptValueObject) -> Void
     func endFrameSubscription() -> Void
-    func savePage(fullPath: String, saveType: String, callback: NKScriptObject) -> Void
-    var session: NKScriptObject? { get }
+    func savePage(fullPath: String, saveType: String, callback: NKScriptValueObject) -> Void
+    var session: NKScriptValueObject? { get }
     var devToolsWebContents: NKE_WebContentProtocol { get } */
     // Event:  'certificate-error'
     // Event:  'crashed'

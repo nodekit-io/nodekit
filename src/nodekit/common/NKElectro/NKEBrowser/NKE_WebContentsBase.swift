@@ -28,18 +28,18 @@ import WebKit
     internal var globalEvents: NKEventEmitter = NKEventEmitter.global
 }
 
-extension NKE_WebContentsBase: NKScriptPlugin {
+extension NKE_WebContentsBase: NKScriptExport {
     
     private static var loaded: Int = 0;
     
     static func attachTo(context: NKScriptContext) {
-        let principal = NKE_WebContentsUI()
+        let principal = NKE_WebContentsUI.self
         context.NKloadPlugin(principal, namespace: "io.nodekit.WebContentsUI", options: [String:AnyObject]());
-        let principal2 = NKE_WebContentsWK()
+        let principal2 = NKE_WebContentsWK.self
         context.NKloadPlugin(principal2, namespace: "io.nodekit.WebContentsWK", options: [String:AnyObject]());
     }
     
-    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+    class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
             if ((NKE_WebContentsBase.loaded++) < 1 ) { return stub; }
@@ -52,7 +52,7 @@ extension NKE_WebContentsBase: NKScriptPlugin {
     }
     
     class func scriptNameForSelector(selector: Selector) -> String? {
-        return selector == Selector("initWithId:") ? "" : nil
+        return selector == Selector("initWithWindow:") ? "" : nil
     }
     
     internal class func NotImplemented(functionName: String = __FUNCTION__) -> Void {
@@ -91,7 +91,7 @@ extension NKE_WebContentsBase {
        // Replies to main are subscribed to in the window events queue for the WebContents renderer proxy that executes in main process
     func _initIPC() {
         self._window?._events.on("nk.IPCReplytoMain") { (item: NKE_IPC_Event) -> Void in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["nk.IPCReplytoMain", item.sender, item.channel, item.replyId, item.arg[0]], completionHandler: nil)
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["nk.IPCReplytoMain", item.sender, item.channel, item.replyId, item.arg[0]], completionHandler: nil)
         }
     }
 }

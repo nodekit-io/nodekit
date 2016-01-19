@@ -42,13 +42,13 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         
         let mainThread: Bool = (options["MainThread"] as? Bool) ?? false
         
-        let bridge = options["PluginBridge"] as? NKScriptPluginType ?? NKScriptPluginType.NKScriptPlugin
+        let bridge = options["PluginBridge"] as? NKScriptExportType ?? NKScriptExportType.NKScriptExport
         
         switch bridge {
         case .JSExport:
             NSException(name: "Not Supported", reason: "WKWebView does not support JSExport protocol", userInfo: nil).raise()
             return nil;
-        case .NKScriptPlugin:
+        case .NKScriptExport:
             let channel: NKScriptChannel
             if (mainThread)
             {
@@ -132,6 +132,11 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         }
         if error != nil { error.memory = err }
         return result
+    }
+    
+    
+    public static func NKcurrentContext() -> NKScriptContext! {
+        return NSThread.currentThread().threadDictionary.objectForKey("nk.CurrentContext") as? NKScriptContext
     }
 }
 

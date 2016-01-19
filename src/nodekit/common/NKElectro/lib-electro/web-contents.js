@@ -25,7 +25,7 @@ var WebContentsUI = io.nodekit.WebContentsUI
 var WebContentsWK = io.nodekit.WebContentsWK
 
 WebContentsWK.prototype._init = WebContentsUI.prototype._init = function() {
-    
+    this.emit = function(event){ console.log("EVENT" + event); }
     this.callbacks = {};
     this.counter = 0;
     

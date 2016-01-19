@@ -43,7 +43,7 @@ public class NKNodeKit: NKScriptContextDelegate {
     
     public func run(delegate: NKScriptContextDelegate? = nil) {
         self.scriptContextDelegate = delegate;
-       NKJSContextFactory().createContext(["Engine": NKEngineType.JavaScriptCore.rawValue], delegate: self)
+       NKScriptContextFactory().createContext(["Engine": NKEngineType.JavaScriptCore.rawValue], delegate: self)
     }
     
     public func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
@@ -53,10 +53,10 @@ public class NKNodeKit: NKScriptContextDelegate {
         // INSTALL JAVASCRIPT ENVIRONMENT ON MAIN CONTEXT
         NKE_BootMain.bootTo(context)
         
-        let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.console", options: ["PluginBridge": NKScriptPluginType.NKScriptPlugin.rawValue])
+        let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.console", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue])
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script1, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
-        let script2Source = "var p = new io.nodekit.BrowserWindow(); var result = io.nodekit.console.alertSync('hello'); io.nodekit.console.logconsole('hello' + result); p.webContents.send('hello world')";
+        let script2Source = "var p = new io.nodekit.BrowserWindow();\n var result = io.nodekit.console.alertSync('hello'); \nio.nodekit.console.logconsole('hello' + result);\n p.webContents.send('hello world')\n";
         let script2 = context.NKinjectJavaScript(NKScriptSource(source: script2Source, asFilename: "startup.js"))
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script2, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         

@@ -90,7 +90,7 @@ class NKScriptMetaObject: CollectionType {
     let plugin: AnyClass
     private var members = [String: Member]()
     private static let exclusion: Set<Selector> = {
-        var methods = instanceMethods(forProtocol: NKScriptPlugin.self)
+        var methods = instanceMethods(forProtocol: NKScriptExport.self)
         methods.remove(Selector("invokeDefaultMethodWithArguments:"))
         return methods.union([
             Selector(".cxx_construct"),
@@ -111,7 +111,7 @@ class NKScriptMetaObject: CollectionType {
                 }
                 if name.characters.first == "_" {
                     return true
-                } else if let cls = plugin as? NKScriptPlugin.Type {
+                } else if let cls = plugin as? NKScriptExport.Type {
                     if cls.isSelectorExcludedFromScript?(selector) ?? false {
                         return true
                     }
@@ -125,7 +125,7 @@ class NKScriptMetaObject: CollectionType {
             case .Property(_, _):
                 if name.characters.first == "_" {
                     return true
-                } else if let cls = plugin as? NKScriptPlugin.Type {
+                } else if let cls = plugin as? NKScriptExport.Type {
                     if let isExcluded = cls.isKeyExcludedFromScript where name.withCString(isExcluded) {
                         return true
                     }
@@ -137,7 +137,7 @@ class NKScriptMetaObject: CollectionType {
                 if selector == Selector("initByScriptWithArguments:") {
                     member = .Initializer(selector: selector, arity: -1)
                     name = ""
-                } else if let cls = plugin as? NKScriptPlugin.Type {
+                } else if let cls = plugin as? NKScriptExport.Type {
                     name = cls.scriptNameForSelector?(selector) ?? name
                 }
                 if !name.isEmpty {

@@ -21,10 +21,29 @@
 import Foundation
 import ObjectiveC
 
-class NKScriptBindingObject : NKScriptObject {
-    private let key = unsafeAddressOf(NKScriptObject)
+public class NKScriptValueObjectNative : NKScriptValueObject {
+    private let key = unsafeAddressOf(NKScriptValueObject)
     private var proxy: NKScriptInvocation!
     final var plugin: AnyObject { return proxy.target }
+    
+    // Create from, Convert to and Compare with Native Objects
+    //  init!(object value: AnyObject!, inContext context: NKScriptContext!)
+    //  func toObject() -> AnyObject!
+    //  func toObjectOfClass(expectedClass: AnyClass!) -> AnyObject!
+    //  func isEqualToObject(value: AnyObject!) -> Bool
+    //  func isEqualWithTypeCoercionToObject(value: AnyObject!) -> Bool
+    //  func isInstanceOf(value: AnyObject!) -> Bool
+    
+   init(object value: AnyObject, inContext context: NKScriptContext!) {
+        let plugin: AnyClass = value.dynamicType
+        let channel = objc_getAssociatedObject(plugin, unsafeAddressOf(NKScriptChannel)) as! NKScriptChannel
+        let pluginNamespace = channel.principal.namespace
+        let id = channel.nativeFirstSequence
+        let namespace = pluginNamespace + "[" + String(id) + "]"
+        super.init(namespace: namespace, channel: channel, origin: nil)
+        proxy = bindObject(value)
+        syncCreationWithProperties()
+    }
    
     init(namespace: String, channel: NKScriptChannel, object: AnyObject) {
         super.init(namespace: namespace, channel: channel, origin: nil)
@@ -42,9 +61,9 @@ class NKScriptBindingObject : NKScriptObject {
         }
 
         var arguments = arguments?.map(wrapScriptObject) ?? []
-        var promise: NKScriptObject?
+        var promise: NKScriptValueObject?
         if arity == Int32(arguments.count) - 1 || arity < 0 {
-            promise = arguments.last as? NKScriptObject
+            promise = arguments.last as? NKScriptValueObject
             arguments.removeLast()
         }
         if selector == "initByScriptWithArguments:" {
@@ -59,11 +78,11 @@ class NKScriptBindingObject : NKScriptObject {
 
         proxy = bindObject(instance)
         syncProperties()
-        promise?.callMethod("resolve", withArguments: [self], completionHandler: nil)
+        promise?.invokeMethod("resolve", withArguments: [self], completionHandler: nil)
     }
 
     deinit {
-        (plugin as? NKScriptPlugin)?.finalizeForScript?()
+        (plugin as? NKScriptExport)?.finalizeForScript?()
         unbindObject(plugin)
     }
 
@@ -108,70 +127,95 @@ class NKScriptBindingObject : NKScriptObject {
         }
         context?.NKevaluateJavaScript(script, completionHandler: nil)
     }
+    
+    private func syncCreationWithProperties() {
+        let namespaceComponents = namespace.componentsSeparatedByString("[")
+        let namespacePlugin = namespaceComponents[0]
+        let id = namespaceComponents[1].componentsSeparatedByString("]")[0]
+        
+        var script = ""
+        
+        script += "var instance = \(namespacePlugin).NKcreateForNative(\(id));\n"
+
+        for (name, member) in channel.typeInfo.filter({ $1.isProperty }) {
+            let val: AnyObject! = proxy.call(member.getter!, withObjects: nil)
+            script += "instance.$properties['\(name)'] = \(serialize(val));\n"
+        }
+        context?.NKevaluateJavaScript(script, completionHandler: nil)
+    }
 
     // Dispatch operation to plugin object
-    func invokeNativeMethod(name: String, withArguments arguments: [AnyObject]) {
+    internal func invokeNativeMethod(name: String, withArguments arguments: [AnyObject]) {
         if let selector = channel.typeInfo[name]?.selector {
             var args = arguments.map(wrapScriptObject)
-            if plugin is NKScriptPlugin && name.isEmpty && selector == Selector("invokeDefaultMethodWithArguments:") {
+            if plugin is NKScriptExport && name.isEmpty && selector == Selector("invokeDefaultMethodWithArguments:") {
                 args = [args];
             }
             proxy.asyncCall(selector, withObjects: args)
         }
     }
     
-    func invokeNativeMethodSync(name: String, withArguments arguments: [AnyObject]) -> AnyObject! {
+    internal func invokeNativeMethodSync(name: String, withArguments arguments: [AnyObject]) -> AnyObject! {
         if let selector = channel.typeInfo[name]?.selector {
             var args = arguments.map(wrapScriptObject)
-            if plugin is NKScriptPlugin && name.isEmpty && selector == Selector("invokeDefaultMethodWithArguments:") {
+            if plugin is NKScriptExport && name.isEmpty && selector == Selector("invokeDefaultMethodWithArguments:") {
                 args = [args];
             }
             return proxy.call(selector, withObjects: args)
         }
         return nil;
     }
-    func updateNativeProperty(name: String, withValue value: AnyObject) {
+    internal func updateNativeProperty(name: String, withValue value: AnyObject) {
         if let setter = channel.typeInfo[name]?.setter {
             let val: AnyObject = wrapScriptObject(value)
             proxy.asyncCall(setter, withObjects: [val])
         }
     }
 
-    // override methods of NKScriptObject
-    override func callMethod(name: String, withArguments arguments: [AnyObject]?, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
-        if let selector = channel.typeInfo[name]?.selector {
+    // override methods of NKScriptValueObject
+    override public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+        if let selector = channel.typeInfo[method]?.selector {
             let result: AnyObject! = proxy.call(selector, withObjects: arguments)
             completionHandler?(result, nil)
         } else {
-            super.callMethod(name, withArguments: arguments, completionHandler: completionHandler)
+            super.invokeMethod(method, withArguments: arguments, completionHandler: completionHandler)
         }
     }
-    override func callMethod(name: String, withArguments arguments: [AnyObject]?) throws -> AnyObject! {
-        if let selector = channel.typeInfo[name]?.selector {
+    
+    override public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!) throws -> AnyObject! {
+        if let selector = channel.typeInfo[method]?.selector {
             return proxy.call(selector, withObjects: arguments)
         }
-        return try super.callMethod(name, withArguments: arguments)
+        return try super.invokeMethod(method, withArguments: arguments)
     }
-    override func value(forProperty name: String) -> AnyObject? {
-        if let getter = channel.typeInfo[name]?.getter {
+    
+     override public func  invokeMethod(method: String!, withArguments arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject! {
+        if let selector = channel.typeInfo[method]?.selector {
+            return proxy.call(selector, withObjects: arguments)
+        }
+        return super.invokeMethod(method, withArguments: arguments, error: error)
+    }
+    
+    override public func valueForProperty(property: String!) -> AnyObject? {
+        if let getter = channel.typeInfo[property]?.getter {
             return proxy.call(getter, withObjects: nil)
         }
-        return super.value(forProperty: name)
+        return super.valueForProperty(property)
     }
-    override func setValue(value: AnyObject?, forProperty name: String) {
-        if channel.typeInfo[name]?.setter != nil {
-            proxy[name] = value
+    override public func setValue(value: AnyObject!, forProperty property: String!) {
+        if channel.typeInfo[property]?.setter != nil {
+            proxy[property] = value
         } else {
-            assert(channel.typeInfo[name] == nil, "Property '\(name)' is readonly")
-            super.setValue(value, forProperty: name)
+            assert(channel.typeInfo[property] == nil, "Property '\(property)' is readonly")
+            super.setValue(value, forProperty: property)
         }
     }
 
     // KVO for syncing properties
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+    override public func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         guard let scriptContext = self.context, var prop = keyPath else { return }
         if channel.typeInfo[prop] == nil {
-            if let scriptNameForKey = (object.dynamicType as? NKScriptPlugin.Type)?.scriptNameForKey {
+            if let scriptNameForKey = (object.dynamicType as? NKScriptExport.Type)?.scriptNameForKey {
                 prop = prop.withCString(scriptNameForKey) ?? prop
             }
             assert(channel.typeInfo[prop] != nil)
@@ -182,7 +226,7 @@ class NKScriptBindingObject : NKScriptObject {
 }
 
 public extension NSObject {
-    var NKscriptObject: NKScriptObject? {
-        return objc_getAssociatedObject(self, unsafeAddressOf(NKScriptObject)) as? NKScriptObject
+    var NKscriptObject: NKScriptValueObject? {
+        return objc_getAssociatedObject(self, unsafeAddressOf(NKScriptValueObject)) as? NKScriptValueObject
     }
 }

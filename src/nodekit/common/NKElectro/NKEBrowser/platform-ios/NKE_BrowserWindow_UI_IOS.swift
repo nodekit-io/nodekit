@@ -31,7 +31,7 @@ extension NKE_BrowserWindow {
     
     internal func createUIWebView(options: Dictionary<String, AnyObject>) -> Int {
         
-        let id = NKJSContextFactory.sequenceNumber
+        let id = NKScriptContextFactory.sequenceNumber
         
         let createBlock = {() -> Void in
             

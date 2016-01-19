@@ -18,7 +18,7 @@
 
 import Foundation
 
-class NKUrlFileDecode: NSObject {
+class NKE_ProtocolFileDecode: NSObject {
 
     var resourcePath : NSString?   // The path to the bundle resource
     var urlPath : NSString  // The relative path from root

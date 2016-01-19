@@ -20,7 +20,7 @@
 import Foundation
 import UIKit
 
-extension NKE_Dialog: NKScriptPlugin {
+extension NKE_Dialog: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_Dialog()
@@ -37,16 +37,16 @@ extension NKE_Dialog: NKScriptPlugin {
     }
     
 
-    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void {
+    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void {
         NKE_Dialog.NotImplemented()
     }
     
     
-    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?)-> Void {
+    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?)-> Void {
         NKE_Dialog.NotImplemented()
      }
     
-    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptObject?) -> Void {
+    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void {
    //     let type: String = (options?["type"] as? String) ?? "none"
         let buttons: [String] = (options?["buttons"] as? [String]) ?? ["Ok"]
         let title: String = (options?["title"] as? String) ?? ""
@@ -63,7 +63,7 @@ extension NKE_Dialog: NKScriptPlugin {
             let buttonTitle: String = buttons[i] ?? "";
      
             let buttonAction = UIAlertAction(title: buttonTitle, style: (buttonTitle == "Cancel" ? .Cancel : .Default)) { (action) in
-                callback?.call(arguments: [i], completionHandler: nil)
+                callback?.callWithArguments(arguments: [i], completionHandler: nil)
                 };
             
             alertController.addAction(buttonAction)

@@ -21,7 +21,7 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-extension NKE_App: NKScriptPlugin {
+extension NKE_App: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_App()
@@ -82,16 +82,16 @@ extension NKE_App: NKScriptPlugin {
     private func initializeEvents() {
     // Event: 'ready'
         events.once("nk.ApplicationReady") { () -> Void in
-             self.NKscriptObject?.callMethod("emit", withArguments: ["ready"], completionHandler: nil)
+             self.NKscriptObject?.invokeMethod("emit", withArguments: ["ready"], completionHandler: nil)
         }
         
         events.once("nk.ApplicationDidFinishLaunching") { () -> Void in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["will-finish-launching"], completionHandler: nil)
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["will-finish-launching"], completionHandler: nil)
         }
         
         events.once("nk.ApplicationWillTerminate") { () -> Void in
-            self.NKscriptObject?.callMethod("emit", withArguments: ["will-quit"], completionHandler: nil)
-            self.NKscriptObject?.callMethod("emit", withArguments: ["quit"], completionHandler: nil)
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["will-quit"], completionHandler: nil)
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["quit"], completionHandler: nil)
       }
         
     // Event: 'window-all-closed'
