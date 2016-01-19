@@ -40,11 +40,11 @@ import JavaScriptCore
         // Event:  'did-finish-load'
         
         _window?._events.on("did-finish-load") { (id: Int) in
-     //       self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
+          self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
         
         _window?._events.on("did-fail-loading") { (error: String) in
-      //      self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
+          self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
         
         webView = _window?._webView as? UIWebView
