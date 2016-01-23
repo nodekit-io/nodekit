@@ -19,15 +19,15 @@
 
 import Foundation
 
-class NKE_BootRenderer: NSObject {
+class NKE_BootElectroRenderer: NSObject {
     
     static func bootTo(context: NKScriptContext) {
-        let url = NSBundle(forClass: NKE_BootRenderer.self).pathForResource("_nke_renderer", ofType: "js", inDirectory: "lib-electro")
+        let url = NSBundle(forClass: NKE_BootElectroRenderer.self).pathForResource("_nke_renderer", ofType: "js", inDirectory: "lib-electro")
         let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
         let script = "function loadbootstrap(){\n" + appjs! + "\n}\n" + "loadbootstrap();" + "\n"
         let item = context.NKinjectJavaScript(NKScriptSource(source: script, asFilename: "io.nodekit.scripting/plugins/_nke_renderer.js", namespace: "io.nodekit.electro"))
         
-        objc_setAssociatedObject(context, unsafeAddressOf(NKE_BootRenderer), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        objc_setAssociatedObject(context, unsafeAddressOf(NKE_BootElectroRenderer), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
         NKE_IpcRenderer.attachTo(context);
         

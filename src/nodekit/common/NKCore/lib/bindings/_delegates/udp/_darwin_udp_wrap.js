@@ -24,7 +24,7 @@ var Buffer = require('buffer').Buffer;
  * Behaves like a EventEmitter and inherits handle_wrap
  *
  * Dependencies:
- * io.nodekit.socket.createUdp() that returns _udp EventEmitter
+ * io.nodekit.socket.Udp() that inherits EventEmitter
  * _udp.bind(ip, port, flags)
  * _udp.recvStart()
  * _udp.send(buffer, offset, length, port, address)
@@ -38,7 +38,7 @@ var Buffer = require('buffer').Buffer;
  * _udp.setBroadcast(flag);
  * _udp.setTTL(ttl);
  *
- * emits 'recv'  (base64 chunk)
+ * emits 'recv'  (base64 chunk, host, port)
  *
  */
 
@@ -47,7 +47,7 @@ var UDP = function() {
     {
         return new UDP();
     }
-     this._udp = io.nodekit.socket.createUdp();
+     this._udp = new io.nodekit.socket.Udp();
     
     Handle.call(this, this._udp);
     this._handle.on('recv', UDP.prototype._onRecv.bind(this));
@@ -59,15 +59,12 @@ module.exports.UDP = UDP;
 UDP.prototype._onRecv =function UDP_onReceive(chunk, host, port) {
     
     if (typeof this.onmessage === 'function') {
-        
-        
         var buf = new Buffer( chunk, 'base64');
         rinfo = {};
             rinfo.address = host;
             rinfo.port = port;
         
         this.onmessage(buf.length, this, buf, rinfo);
-
     }
 };
 
@@ -132,13 +129,4 @@ UDP.prototype.setBroadcast = function(flag) {
 UDP.prototype.setTTL = function(ttl) {
     this._udp.setTTL(ttl);
 };
-
-/* CONVERT native _udp to node Stream
- *
- * Dependencies:
- * source.writeString(data)
- * source.on('end')
- * source.on('data', function(chunk))
- *
- */
 

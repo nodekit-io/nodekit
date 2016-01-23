@@ -54,7 +54,7 @@ public class NKScriptValueObject : NSObject, NKScriptValue {
             assertionFailure()
             return
         }
-         context?.NKevaluateJavaScript(script, completionHandler: nil)
+        context?.NKevaluateJavaScript(script, completionHandler: nil)
     }
     
     // Create from, Convert to and Compare with Native Objects
@@ -67,11 +67,11 @@ public class NKScriptValueObject : NSObject, NKScriptValue {
     
     
      // JavaScript object operations
-    public func constructWithArguments(arguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+    public func constructWithArguments(arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         let exp = "new " + scriptForCallingMethod(nil, arguments: arguments)
         evaluateExpression(exp, completionHandler: completionHandler)
     }
-    public func constructWithArguments(arguments arguments: [AnyObject]!) throws -> AnyObject {
+    public func constructWithArguments(arguments: [AnyObject]!) throws -> AnyObject {
         let exp = "new \(scriptForCallingMethod(nil, arguments: arguments))"
         guard let result = try evaluateExpression(exp) else {
             NSException(name: "JavaScriptExceptionOccurred", reason: "NKScriptValueObject.construct", userInfo: nil).raise()
@@ -79,14 +79,14 @@ public class NKScriptValueObject : NSObject, NKScriptValue {
         }
         return result
     }
-    public func callWithArguments(arguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+    public func callWithArguments(arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         let exp = scriptForCallingMethod(nil, arguments: arguments)
         evaluateExpression(exp, completionHandler: completionHandler)
     }
-    public func callWithArguments(arguments arguments: [AnyObject]!) throws -> AnyObject! {
+    public func callWithArguments(arguments: [AnyObject]!) throws -> AnyObject! {
         return try evaluateExpression(scriptForCallingMethod(nil, arguments: arguments))
     }
-     public func callWithArguments(arguments arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject! {
+     public func callWithArguments(arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject! {
         return evaluateExpression(scriptForCallingMethod(nil, arguments: arguments), error: error)
     }
     
@@ -103,7 +103,7 @@ public class NKScriptValueObject : NSObject, NKScriptValue {
 
 
     public func defineProperty(property: String!, descriptor: AnyObject!) {
-        let exp = "Object.defineProperty(\(namespace), \(property), \(serialize(descriptor)))"
+        let exp = "Object.defineProperty(\(namespace), \(property), \(self.context.NKserialize(descriptor)))"
         _ = try! evaluateExpression(exp)
     }
     public func deleteProperty(property: String!) -> Bool {
@@ -124,7 +124,7 @@ public class NKScriptValueObject : NSObject, NKScriptValue {
         return try! evaluateExpression("\(namespace)[\(index)]")
     }
     public func setValue(value: AnyObject!, atIndex index: Int) {
-        context?.NKevaluateJavaScript("\(namespace)[\(index)] = \(serialize(value))", completionHandler: nil)
+        context?.NKevaluateJavaScript("\(namespace)[\(index)] = \(self.context.NKserialize(value))", completionHandler: nil)
     }
 
     private func scriptForFetchingProperty(name: String!) -> String {
@@ -139,10 +139,10 @@ public class NKScriptValueObject : NSObject, NKScriptValue {
         }
     }
     private func scriptForUpdatingProperty(name: String!, value: AnyObject?) -> String {
-        return scriptForFetchingProperty(name) + " = " + serialize(value)
+        return scriptForFetchingProperty(name) + " = " + self.context.NKserialize(value)
     }
     private func scriptForCallingMethod(name: String!, arguments: [AnyObject]?) -> String {
-        let args = arguments?.map(serialize) ?? []
+        let args = arguments?.map(self.context.NKserialize) ?? []
         return scriptForFetchingProperty(name) + "(" + args.joinWithSeparator(", ") + ")"
     }
 }
@@ -213,49 +213,5 @@ extension NKScriptValueObject {
         }
         return object
     }
-    
-    internal func serialize(object: AnyObject?) -> String {
-        var obj: AnyObject? = object
-        if let val = obj as? NSValue {
-            obj = val as? NSNumber ?? val.nonretainedObjectValue
-        }
-        
-        if let o = obj as? NKScriptValueObject {
-            return o.namespace
-        } else if let o1 = obj as? NKScriptExport {
-            if let o2 = o1 as? NSObject {
-                if let scriptObject = o2.NKscriptObject {
-                    return scriptObject.namespace
-                } else {
-                    let scriptObject = NKScriptValueObjectNative(object: o2, inContext: context)
-                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValueObjectNative), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN);
-                    return scriptObject.namespace
-                }
-            }
-        } else if let s = obj as? String {
-            let d = try? NSJSONSerialization.dataWithJSONObject([s], options: NSJSONWritingOptions(rawValue: 0))
-            let json = NSString(data: d!, encoding: NSUTF8StringEncoding)!
-            return json.substringWithRange(NSMakeRange(1, json.length - 2))
-        } else if let n = obj as? NSNumber {
-            if CFGetTypeID(n) == CFBooleanGetTypeID() {
-                return n.boolValue.description
-            }
-            return n.stringValue
-        } else if let date = obj as? NSDate {
-            return "(new Date(\(date.timeIntervalSince1970 * 1000)))"
-        } else if let _ = obj as? NSData {
-            // TODO: map to Uint8Array object
-        } else if let a = obj as? [AnyObject] {
-            return "[" + a.map(serialize).joinWithSeparator(", ") + "]"
-        } else if let d = obj as? [String: AnyObject] {
-            return "{" + d.keys.map{"'\($0)': \(self.serialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
-        } else if obj === NSNull() {
-            return "null"
-        } else if obj == nil {
-            return "undefined"
-        }
-        return "'\(obj!.description)'"
-    }
-    
 }
 

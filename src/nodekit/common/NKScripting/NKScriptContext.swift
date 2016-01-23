@@ -29,6 +29,7 @@ public protocol NKScriptContext: class {
     func NKevaluateJavaScript(javaScriptString: String, completionHandler: ((AnyObject?,NSError?) -> Void)?)
     func NKevaluateJavaScript(script: String) throws -> AnyObject?
     func NKevaluateJavaScript(script: String, error: NSErrorPointer) -> AnyObject?
+    func NKserialize(object: AnyObject?) -> String
     
     static func NKcurrentContext() -> NKScriptContext!
  //   static func NKcurrentArguments() -> [AnyObject]!

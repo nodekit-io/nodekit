@@ -4,14 +4,14 @@ public protocol NKScriptValue {
     var namespace: String {get}
     var channel: NKScriptChannel { get }
   
-    func callWithArguments(arguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?)
+    func callWithArguments(arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?)
     func invokeMethod(method: String!, withArguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?)
-    func callWithArguments(arguments arguments: [AnyObject]!) throws -> AnyObject!
+    func callWithArguments(arguments: [AnyObject]!) throws -> AnyObject!
     func invokeMethod(method: String!, withArguments arguments: [AnyObject]!) throws -> AnyObject!
-    func callWithArguments(arguments arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject!
+    func callWithArguments(arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject!
     func invokeMethod(method: String!, withArguments arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject!
-    func constructWithArguments(arguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?)
-    func constructWithArguments(arguments arguments: [AnyObject]!) throws -> AnyObject
+    func constructWithArguments(arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?)
+    func constructWithArguments(arguments: [AnyObject]!) throws -> AnyObject
     
     func defineProperty(property: String!, descriptor: AnyObject!)
     func deleteProperty(property: String!) -> Bool

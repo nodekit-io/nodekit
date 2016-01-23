@@ -35,54 +35,90 @@
  
  import JavaScriptCore
  
- class NKC_SocketTCPConnection: NSObject {
+ 
+ class NKC_SocketTCP: NSObject, NKScriptExport {
+    
+    // NKScripting
     
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_SocketTCPConnection.self, namespace: "io.nodekit.socket._TcpConnection", options: [String:AnyObject]());
+        context.NKloadPlugin(NKC_SocketTCP.self, namespace: "io.nodekit.socket.Tcp", options: [String:AnyObject]());
+    }
+    
+    class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+        switch (forKey) {
+        case ".global":
+            let url = NSBundle(forClass: NKC_SocketTCP.self).pathForResource("socket-tcp", ofType: "js", inDirectory: "lib/platform")
+            let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
+            return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
+        default:
+            return stub;
+        }
+    }
+    
+    private static let exclusion: Set<Selector> = {
+        var methods = instanceMethods(forProtocol: GCDAsyncSocketDelegate.self)
+        //    methods.remove(Selector("invokeDefaultMethodWithArguments:"))
+        return methods.union([
+            //       Selector(".cxx_construct"),
+            ])
+    }()
+    
+    class func  isSelectorExcludedFromScript(selector: Selector) -> Bool {
+        return exclusion.contains(selector);
     }
     
     class func scriptNameForSelector(selector: Selector) -> String? {
-        return selector == Selector("initWithId:") ? "" : nil
+        log(selector.description)
+        return selector == Selector("init") ? "" : nil
     }
     
-    private var _tcp : JSValue?
+    // local variables and init
+    
+    let connections: NSMutableSet = NSMutableSet()
+    private var _addr: String!;
+    private var _port: Int;
     private var _socket: GCDAsyncSocket?
     private var _server: NKC_SocketTCP?
     
     override init()
     {
+        self._port = 0
+        self._addr = nil
+        self._socket = GCDAsyncSocket()
+        super.init()
+        self._socket!.setDelegate(self, delegateQueue: dispatch_get_main_queue())
     }
     
-    init(id: Int)
-    {
-        
-    }
     
     init(socket: GCDAsyncSocket, server: NKC_SocketTCP?)
     {
         self._socket = socket
         self._server = server
+        self._port = 0
+        self._addr = nil
         super.init()
     }
     
-    private func emitData(data: NSData!)
-    {
-        dispatch_sync(NKGlobals.NKeventQueue, {
-            let str : NSString! = data.base64EncodedStringWithOptions([])
-                self.NKscriptObject?.invokeMethod("emit", withArguments: ["data", str], completionHandler: nil)
-        });
+    // public methods
+    func bind(address: String, port: Int) -> Void {
+        self._addr = address as String!;
+        self._port = port
     }
     
-    private func emitEnd()
-    {
-        dispatch_sync(NKGlobals.NKeventQueue, {
-            self.NKscriptObject?.invokeMethod("emit", withArguments: ["end", ""], completionHandler: nil)
-        });
+    func connect(address: String, port: Int) -> Void {
+        _ = try? self._socket!.connectToHost(address, onPort: UInt16(port))
     }
- }
- 
- // METHODS EXPOSED TO JAVASCRIPT
- extension NKC_SocketTCPConnection: NKC_SocketTCPConnection_Protocol {
+    
+    func listen(backlog: Int) -> Void {
+        if (self._addr != "0.0.0.0")
+        {
+            _ = try? self._socket!.acceptOnInterface(self._addr, port: UInt16(self._port))
+        } else
+        {
+            _ = try? self._socket!.acceptOnPort( UInt16(self._port))
+        }
+    }
+    
     func fd() -> Int {
         return self._socket!.hash
     }
@@ -110,126 +146,23 @@
         let data = NSData(base64EncodedString: string, options: NSDataBase64DecodingOptions(rawValue: 0))
         self._socket!.writeData(data, withTimeout: 10, tag: 1)
     }
+    
     func disconnect() -> Void {
         if (self._socket !== nil)
         {
             self._socket!.disconnect()
         }
-        
     }
  }
  
  // DELEGATE METHODS FOR GCDAsyncSocket
- extension NKC_SocketTCPConnection: GCDAsyncSocketDelegate {
-    func socket(socket: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int){
-        self.emitData(data)
-        socket.readDataWithTimeout(30, tag: 0)
-    }
-    
-    func socketDidDisconnect(socket: GCDAsyncSocket, withError err: NSError){
-        self._socket = nil
-        self.emitEnd()
-        if (self._tcp != nil )
-        {
-            self._tcp!.setObject(nil, forKeyedSubscript:"writeString")
-            self._tcp!.setObject(nil, forKeyedSubscript:"fd")
-            self._tcp!.setObject(nil, forKeyedSubscript:"remoteAddress")
-            self._tcp!.setObject(nil, forKeyedSubscript:"localAddress")
-            self._tcp!.setObject(nil, forKeyedSubscript:"disconnect")
-        }
-        
-        if (self._server != nil) {
-            self._server!.connectionDidClose(self)
-        } else
-        {
-            if (self._tcp != nil )
-            {
-                self._tcp!.setObject(nil, forKeyedSubscript:"bind")
-                self._tcp!.setObject(nil, forKeyedSubscript:"listen")
-                self._tcp!.setObject(nil, forKeyedSubscript:"connect")
-            }
-        }
-        
-        self._tcp = nil;
-        self._server = nil;
-    }
- }
- 
- class NKC_SocketTCP: NKC_SocketTCPConnection, NKC_SocketTCP_Protocol {
-    
-    override class func attachTo(context: NKScriptContext) {
-        let principal = NKC_SocketTCP()
-        context.NKloadPlugin(principal, namespace: "io.nodekit.socket._Tcp", options: [String:AnyObject]());
-    }
-    
-    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
-        switch (forKey) {
-        case ".global":
-            let url = NSBundle(forClass: NKE_WebContentsBase.self).pathForResource("socket-tcp", ofType: "js", inDirectory: "lib/nk-core")
-            let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
-            return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
-        default:
-            return stub;
-        }
-    }
-    
-    override class func scriptNameForSelector(selector: Selector) -> String? {
-        return selector == Selector("init:") ? "" : nil
-    }
-
-    let connections: NSMutableSet = NSMutableSet()
-    
-    override init()
-    {
-        self._port = 0
-        self._addr = nil
-        let socket = GCDAsyncSocket()
-        
-        super.init(socket: socket, server: nil)
-        
-        socket.setDelegate(self, delegateQueue: dispatch_get_main_queue())
-    }
-    
-    private func emitConnection(tcp: JSValue!) -> Void
-    {
-        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["connection", tcp]);
-    }
-    
-    private func emitAfterConnect()
-    {
-        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["afterConnect", self._tcp!])
-    }
-    
-    private var _addr: String!;
-    private var _port: Int;
-    
-    func bind(address: String, port: Int) -> Void {
-        self._addr = address as String!;
-        self._port = port
-    }
-    
-    func connect(address: String, port: Int) -> Void {
-        _ = try? self._socket!.connectToHost(address, onPort: UInt16(port))
-    }
-    
-    func listen(backlog: Int) -> Void {
-        if (self._addr != "0.0.0.0")
-        {
-            _ = try? self._socket!.acceptOnInterface(self._addr, port: UInt16(self._port))
-        } else
-        {
-            _ = try? self._socket!.acceptOnPort( UInt16(self._port))
-        }
-    }
- }
- 
- // DELEGATE METHODS FOR GCDAsyncSocket (protocol conformance already declared in base class below)
  extension NKC_SocketTCP {
-   func socket(socket: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket){
-        let socketConnection = NKC_SocketTCPConnection(socket: newSocket, server: self)
+    func socket(socket: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket){
+        let socketConnection = NKC_SocketTCP(socket: newSocket, server: self)
         connections.addObject(socketConnection)
         newSocket.setDelegate(socketConnection, delegateQueue: dispatch_get_main_queue())
-        self.emitConnection(socketConnection.TCP())
+        
+        self.emitConnection(socketConnection)
         newSocket.readDataWithTimeout(30, tag: 1)
     }
     
@@ -238,8 +171,51 @@
         sock.readDataWithTimeout(30, tag: 1)
     }
     
-    func connectionDidClose(socketConnection: NKC_SocketTCPConnection) {
+    func socket(socket: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int){
+        self.emitData(data)
+        socket.readDataWithTimeout(30, tag: 0)
+    }
+    
+    func socketDidDisconnect(socket: GCDAsyncSocket, withError err: NSError){
+        self._socket = nil
+        self.emitEnd()
+        
+        if (self._server != nil) {
+            self._server!.connectionDidClose(self)
+        }
+        
+        self._server = nil;
+    }
+    
+    // private methods
+    
+    private func connectionDidClose(socketConnection: NKC_SocketTCP) {
         connections.removeObject(socketConnection)
+    }
+    
+    private func emitConnection(tcp: NKC_SocketTCP) -> Void
+    {
+        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["connection", tcp]);
+    }
+    
+    private func emitAfterConnect()
+    {
+        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["afterConnect", ""])
+    }
+    
+    private func emitData(data: NSData!)
+    {
+        dispatch_sync(NKGlobals.NKeventQueue, {
+            let str : NSString! = data.base64EncodedStringWithOptions([])
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["data", str], completionHandler: nil)
+        });
+    }
+    
+    private func emitEnd()
+    {
+        dispatch_sync(NKGlobals.NKeventQueue, {
+            self.NKscriptObject?.invokeMethod("emit", withArguments: ["end", ""], completionHandler: nil)
+        });
     }
  }
  

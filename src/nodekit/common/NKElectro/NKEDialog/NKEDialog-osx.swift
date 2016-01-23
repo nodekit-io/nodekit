@@ -102,11 +102,11 @@ extension NKE_Dialog: NKScriptExport {
                         paths.append(url.path!)
                     }
                 }
-                callback?.callWithArguments(arguments: [true, paths], completionHandler: nil)
+                callback?.callWithArguments( [true, paths], completionHandler: nil)
             }
             else
             {
-                callback?.callWithArguments(arguments: [false, ""], completionHandler: nil)
+                callback?.callWithArguments([false, ""], completionHandler: nil)
             }
         })
         
@@ -173,11 +173,11 @@ extension NKE_Dialog: NKScriptExport {
             if(result == NSFileHandlingPanelOKButton)
             {
                  let url = savePanel.URL!
-                callback?.callWithArguments(arguments: [true, url.path!], completionHandler: nil)
+                callback?.callWithArguments([true, url.path!], error: nil)
             }
             else
             {
-                callback?.callWithArguments(arguments: [false, ""], completionHandler: nil)
+                callback?.callWithArguments([false, ""], error: nil)
             }
         })
     }
@@ -219,7 +219,7 @@ extension NKE_Dialog: NKScriptExport {
         
         let result:Int = msgBox.runModal()
         
-        callback?.callWithArguments(arguments: [result], completionHandler: nil)
+        callback?.callWithArguments([result], error: nil)
 
     }
 

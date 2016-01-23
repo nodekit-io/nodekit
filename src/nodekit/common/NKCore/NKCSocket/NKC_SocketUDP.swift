@@ -18,22 +18,34 @@
  
  import JavaScriptCore
  
- @objc class NKC_SocketUDP: NSObject {
+ @objc class NKC_SocketUDP: NSObject, NKScriptExport {
     
     class func attachTo(context: NKScriptContext) {
         let principal = NKC_SocketUDP()
         context.NKloadPlugin(principal, namespace: "io.nodekit.socket.Udp", options: [String:AnyObject]());
     }
     
-    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+    class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
-            let url = NSBundle(forClass: NKE_WebContentsBase.self).pathForResource("socket-udp", ofType: "js", inDirectory: "lib/nk-core")
+            let url = NSBundle(forClass: NKC_SocketUDP.self).pathForResource("socket-udp", ofType: "js", inDirectory: "lib/nk-core")
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
             return stub;
         }
+    }
+    
+    private static let exclusion: Set<Selector> = {
+        var methods = instanceMethods(forProtocol: GCDAsyncSocketDelegate.self)
+        //    methods.remove(Selector("invokeDefaultMethodWithArguments:"))
+        return methods.union([
+            //       Selector(".cxx_construct"),
+            ])
+    }()
+    
+    class func  isSelectorExcludedFromScript(selector: Selector) -> Bool {
+        return exclusion.contains(selector);
     }
     
     class func scriptNameForSelector(selector: Selector) -> String? {
@@ -59,9 +71,7 @@
     *
     */
     
-    private var _udp : JSValue?
     private var _socket: GCDAsyncUdpSocket?
-    
     private var _addr: String!;
     private var _port: UInt16;
     
@@ -71,53 +81,10 @@
         self._addr = nil
         self._socket = GCDAsyncUdpSocket()
         
-        self._udp  = NKJavascriptBridge.createNativeSocket()
-        
         super.init()
         
         self._socket?.setDelegate(self, delegateQueue: dispatch_get_main_queue())
     }
-    
-    init(id: Int)
-    {
-        self._port = 0
-        self._addr = nil
-        self._socket = GCDAsyncUdpSocket()
-        
-        self._udp  = NKJavascriptBridge.createNativeSocket()
-        
-        super.init()
-        
-        self._socket?.setDelegate(self, delegateQueue: dispatch_get_main_queue())
-    }
-    
-    private func emitRecv(data: NSData!, host: String?, port: Int)
-    {
-        guard let host: String = host! else {return; }
-        let str : String = data.base64EncodedStringWithOptions([])
-        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["recv", str, host, port ])
-    }
-    
-    private func setSocketIPOptions(option: Int32, setting: Int) -> Void
-    {
-        guard let socket : GCDAsyncUdpSocket = self._socket! else {return;}
-        var value : Int32 = Int32(setting)
-        
-        socket.performBlock({
-            if (socket.isIPv4())
-            {
-                setsockopt(socket.socketFD(), IPPROTO_IP, option, &value, socklen_t(sizeof(Int32)))
-            }
-            else
-            {
-                setsockopt(socket.socketFD(), IPPROTO_IPV6, option, &value, socklen_t(sizeof(Int32)))
-            }
-            
-        })
-    }
- }
- 
- extension NKC_SocketUDP : NKC_SocketUDPProtocol {
  
     func bind (address: String, port: Int, flags: Int) -> String {
         self._addr = address as String;
@@ -229,6 +196,32 @@
             self._socket = nil;
         }
     }
+    
+    private func emitRecv(data: NSData!, host: String?, port: Int)
+    {
+        guard let host: String = host! else {return; }
+        let str : String = data.base64EncodedStringWithOptions([])
+        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["recv", str, host, port ])
+    }
+    
+    private func setSocketIPOptions(option: Int32, setting: Int) -> Void
+    {
+        guard let socket : GCDAsyncUdpSocket = self._socket! else {return;}
+        var value : Int32 = Int32(setting)
+        
+        socket.performBlock({
+            if (socket.isIPv4())
+            {
+                setsockopt(socket.socketFD(), IPPROTO_IP, option, &value, socklen_t(sizeof(Int32)))
+            }
+            else
+            {
+                setsockopt(socket.socketFD(), IPPROTO_IPV6, option, &value, socklen_t(sizeof(Int32)))
+            }
+            
+        })
+    }
+
  }
  
  // GCDAsyncUdpSocket Delegate Methods

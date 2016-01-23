@@ -51,7 +51,8 @@ public class NKNodeKit: NKScriptContextDelegate {
         self.context = context;
         
         // INSTALL JAVASCRIPT ENVIRONMENT ON MAIN CONTEXT
-        NKE_BootMain.bootTo(context)
+        NKE_BootElectroMain.bootTo(context)
+        NKC_BootNodeCore.bootTo(context)
         
         let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.console", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue])
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script1, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)

@@ -27,7 +27,7 @@ var Buffer = require('buffer').Buffer;
  * Behaves like a stream and inherits stream_wrap
  *
  * Dependencies:
- * io.nodekit.socket.createTcp() that returns _tcp EventEmitter and NativeStream
+ * io.nodekit.socket.Tcp() that inherits _tcp EventEmitter and NativeStream
  * _tcp.on("connection", function(_tcp))
  * _tcp.on("afterConnect", function())
  * _tcp.on('data', function(chunk))
@@ -52,7 +52,7 @@ function TCP(tcp) {
     } else
     {
         this._remoteAddress = null;
-        this._tcp = io.nodekit.socket.createTcp();
+        this._tcp = new io.nodekit.socket.Tcp();
         this._onConnection = TCP.prototype._onConnection.bind(this);
         this._onAfterConnect = TCP.prototype._onAfterConnect.bind(this);
         this._onEnd = TCP.prototype._onEnd.bind(this);

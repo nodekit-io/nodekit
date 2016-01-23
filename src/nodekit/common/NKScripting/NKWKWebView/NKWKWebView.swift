@@ -138,12 +138,55 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
     public static func NKcurrentContext() -> NKScriptContext! {
         return NSThread.currentThread().threadDictionary.objectForKey("nk.CurrentContext") as? NKScriptContext
     }
+    
+    public func NKserialize(object: AnyObject?) -> String {
+        var obj: AnyObject? = object
+        if let val = obj as? NSValue {
+            obj = val as? NSNumber ?? val.nonretainedObjectValue
+        }
+        
+        if let o = obj as? NKScriptValueObject {
+            return o.namespace
+        } else if let o1 = obj as? NKScriptExport {
+            if let o2 = o1 as? NSObject {
+                if let scriptObject = o2.NKscriptObject {
+                    return scriptObject.namespace
+                } else {
+                    let scriptObject = NKScriptValueObjectNative(object: o2, inContext: self)
+                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValueObject), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN);
+                    return scriptObject.namespace
+                }
+            }
+        } else if let s = obj as? String {
+            let d = try? NSJSONSerialization.dataWithJSONObject([s], options: NSJSONWritingOptions(rawValue: 0))
+            let json = NSString(data: d!, encoding: NSUTF8StringEncoding)!
+            return json.substringWithRange(NSMakeRange(1, json.length - 2))
+        } else if let n = obj as? NSNumber {
+            if CFGetTypeID(n) == CFBooleanGetTypeID() {
+                return n.boolValue.description
+            }
+            return n.stringValue
+        } else if let date = obj as? NSDate {
+            return "(new Date(\(date.timeIntervalSince1970 * 1000)))"
+        } else if let _ = obj as? NSData {
+            // TODO: map to Uint8Array object
+        } else if let a = obj as? [AnyObject] {
+            return "[" + a.map(self.NKserialize).joinWithSeparator(", ") + "]"
+        } else if let d = obj as? [String: AnyObject] {
+            return "{" + d.keys.map{"'\($0)': \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
+        } else if obj === NSNull() {
+            return "null"
+        } else if obj == nil {
+            return "undefined"
+        }
+        return "'\(obj!.description)'"
+    }
 }
 
 extension WKWebView: NKScriptContentController {
     internal func NKaddScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
     {
-        let handler : WKScriptMessageHandler = NKWKMessageHandler(name: name, messageHandler: scriptMessageHandler)
+        let handler : WKScriptMessageHandler = NKWKMessageHandler(name: name, messageHandler: scriptMessageHandler, context: self)
         self.configuration.userContentController.addScriptMessageHandler(handler, name: name)
     }
     
@@ -151,5 +194,7 @@ extension WKWebView: NKScriptContentController {
     {
         self.configuration.userContentController.removeScriptMessageHandlerForName(name)
     }
+    
+ 
 }
 

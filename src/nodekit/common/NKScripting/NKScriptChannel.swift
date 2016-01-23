@@ -270,7 +270,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
             } else if member.isProperty {
                 if (isFactory) {  stub = "NKScripting.defineProperty(exports, '\(key)', null, \(member.setter != nil));" }
                 else {
-                    let value = principal.serialize(principal[key])
+                    let value = self.context?.NKserialize(principal[key])
                     stub = "NKScripting.defineProperty(exports, '\(key)', \(value), \(member.setter != nil));"
                 }
             } else {

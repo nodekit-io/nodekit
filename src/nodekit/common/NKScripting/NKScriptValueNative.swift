@@ -118,12 +118,14 @@ public class NKScriptValueObjectNative : NKScriptValueObject {
                 object.removeObserver(self, forKeyPath: key, context: nil)
             }
         }
+        
+        proxy = nil;
     }
     private func syncProperties() {
         var script = ""
         for (name, member) in channel.typeInfo.filter({ $1.isProperty }) {
             let val: AnyObject! = proxy.call(member.getter!, withObjects: nil)
-            script += "\(namespace).$properties['\(name)'] = \(serialize(val));\n"
+            script += "\(namespace).$properties['\(name)'] = \(self.context.NKserialize(val));\n"
         }
         context?.NKevaluateJavaScript(script, completionHandler: nil)
     }
@@ -139,7 +141,7 @@ public class NKScriptValueObjectNative : NKScriptValueObject {
 
         for (name, member) in channel.typeInfo.filter({ $1.isProperty }) {
             let val: AnyObject! = proxy.call(member.getter!, withObjects: nil)
-            script += "instance.$properties['\(name)'] = \(serialize(val));\n"
+            script += "instance.$properties['\(name)'] = \(self.context.NKserialize(val));\n"
         }
         context?.NKevaluateJavaScript(script, completionHandler: nil)
     }
@@ -220,7 +222,7 @@ public class NKScriptValueObjectNative : NKScriptValueObject {
             }
             assert(channel.typeInfo[prop] != nil)
         }
-        let script = "\(namespace).$properties['\(prop)'] = \(serialize(change?[NSKeyValueChangeNewKey]))"
+        let script = "\(namespace).$properties['\(prop)'] = \(self.context.NKserialize(change?[NSKeyValueChangeNewKey]))"
         scriptContext.NKevaluateJavaScript(script, completionHandler: nil)
     }
 }

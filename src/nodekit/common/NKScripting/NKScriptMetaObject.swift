@@ -242,7 +242,7 @@ extension NKScriptMetaObject {
     }
 }
 
-private func instanceMethods(forProtocol aProtocol: Protocol) -> Set<Selector> {
+internal func instanceMethods(forProtocol aProtocol: Protocol) -> Set<Selector> {
     var selectors = Set<Selector>()
     for (req, inst) in [(true, true), (false, true)] {
         let methodList = protocol_copyMethodDescriptionList(aProtocol.self, req, inst, nil)

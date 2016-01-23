@@ -137,7 +137,7 @@ extension NKE_BrowserWindow: NKScriptContextDelegate {
         self._context = context;
         
         // INSTALL JAVASCRIPT ENVIRONMENT ON RENDERER CONTEXT
-        NKE_BootRenderer.bootTo(context)
+        NKE_BootElectroRenderer.bootTo(context)
     }
     
     internal func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
