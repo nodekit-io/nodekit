@@ -44,7 +44,7 @@ extension NKE_Menu: NKScriptExport {
     }
 }
 
-@objc class NKE_Menu: NSObject, NKEMenuProtocol {
+class NKE_Menu: NSObject, NKEMenuProtocol {
     
     func setApplicationMenu(menu:  [String: AnyObject]) -> Void { NKE_Menu.NotImplemented(); }
     func sendActionToFirstResponder(action: String) -> Void  { NKE_Menu.NotImplemented(); } //OS X

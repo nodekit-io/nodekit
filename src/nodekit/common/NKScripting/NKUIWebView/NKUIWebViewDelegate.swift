@@ -20,7 +20,7 @@ import Foundation
 import UIKit
 import JavaScriptCore
 
-@objc internal class NKUIWebViewDelegate: NSObject, UIWebViewDelegate {
+internal class NKUIWebViewDelegate: NSObject, UIWebViewDelegate {
     
     weak var delegate: NKScriptContextDelegate?
     weak var webView: UIWebView?
@@ -78,7 +78,7 @@ import JavaScriptCore
 
 extension NSObject
 {
-    @objc func webView(webView: UIWebView!, didCreateJavaScriptContext context: JSContext!, forFrame frame: AnyObject!)
+    func webView(webView: UIWebView!, didCreateJavaScriptContext context: JSContext!, forFrame frame: AnyObject!)
     {
         let didCreateJavaScriptContext = {() -> Void in
             // thread-safe on main thread

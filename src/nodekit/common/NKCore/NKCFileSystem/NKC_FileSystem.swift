@@ -18,7 +18,7 @@
 
 import Foundation
 
-internal class NKC_FileSystem: NSObject {
+class NKC_FileSystem: NSObject, NKScriptExport {
     
     class func attachTo(context: NKScriptContext) {
         context.NKloadPlugin(NKC_FileSystem(), namespace: "io.nodekit.fs", options: [String:AnyObject]());
@@ -35,45 +35,7 @@ internal class NKC_FileSystem: NSObject {
         }
     }
     
-    func exists (path: String) -> Bool {
-        return NSFileManager().fileExistsAtPath(path)
-    }
-    
-    func getDirectoryAsync(module: String, completionHandler: NKNodeCallBack) {
-       
-        dispatch_async(NKGlobals.NKeventQueue,{
-            completionHandler(error: NSNull(), value: self.getDirectory(module))
-        });
-    }
-    
-    func getDirectory(module: String) -> NSArray {
-           let path=module; //self.getPath(module)
-        
-            let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) as NSArray!
-        
-            return dirContents
-    }
-    
-    func getTempDirectory() -> String? {
-        let fileURL: NSURL = NSURL.fileURLWithPath(NSTemporaryDirectory())
-        return fileURL.path
-    }
-
-    
-    func statAsync(module: String, completionHandler: NKNodeCallBack) {
-        
-        let ret = self.stat(module)
-        if (ret != nil)
-        {
-            completionHandler(error: NSNull(), value: ret!)
-            
-        } else
-        {
-            completionHandler(error: "stat error", value: NSNull())
-        }
-    }
-    
-    func stat(module: String) -> Dictionary<String, NSObject>? {
+     func stat(module: String) -> Dictionary<String, AnyObject>  {
         
         let path=module; //self.getPath(module)
         var storageItem  = Dictionary<String, NSObject>()
@@ -81,11 +43,11 @@ internal class NKC_FileSystem: NSObject {
         let attr: NSDictionary!
         do
         {
-             attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
+            attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
             
         } catch _
         {
-            return nil
+            return storageItem
         }
         
         storageItem["birthtime"] = attr[NSFileCreationDate] as! NSDate!
@@ -112,22 +74,52 @@ internal class NKC_FileSystem: NSObject {
         return storageItem
     }
     
-    func getContentAsync(storageItem: NSDictionary! , completionHandler: NKNodeCallBack) {
-        dispatch_async(NKGlobals.NKeventQueue, {
-            completionHandler(error: NSNull(), value: self.getContent(storageItem))
-        });
+    func statAsync(module: String, completionHandler: NKScriptValue) -> Void {
+        let ret = self.stat(module)
+        if (ret.count > 0)
+        {
+            completionHandler.callWithArguments([NSNull(), ret])
+        } else
+        {
+            completionHandler.callWithArguments(["stat error"])
+        }
+    }
+    
+    
+    func exists (path: String) -> Bool {
+        return NSFileManager().fileExistsAtPath(path)
+    }
+    
+    func getDirectoryAsync(module: String, completionHandler: NKScriptValue) -> Void  {
+        completionHandler.callWithArguments([NSNull(), self.getDirectory(module)])
+    }
+    
+    func getDirectory(module: String) -> NSArray {
+           let path=module; //self.getPath(module)
+        
+            let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) as NSArray!
+        
+            return dirContents
+    }
+    
+    func getTempDirectory() -> String? {
+        let fileURL: NSURL = NSURL.fileURLWithPath(NSTemporaryDirectory())
+        return fileURL.path
+    }
+
+    
+    func getContentAsync(storageItem: NSDictionary! , completionHandler: NKScriptValue) -> Void {
+          completionHandler.callWithArguments([NSNull(), self.getContent(storageItem)])
     }
     
     func getContent(storageItem: NSDictionary!) -> NSString {
-        
-        
         let path = storageItem["path"] as! NSString!;
         var data: NSData?
         do {
           data = try NSData(contentsOfFile: path as String, options: NSDataReadingOptions(rawValue: 0))
         }
         catch _ {
-            log("ERROR reading file");
+            log("!ERROR reading file");
             
             return ""
         }
@@ -138,7 +130,6 @@ internal class NKC_FileSystem: NSObject {
          return content!
     }
     
-    
     func writeContent(storageItem: NSDictionary!, str: NSString!) -> Bool {
         
         let path = storageItem["path"] as! NSString!
@@ -146,11 +137,8 @@ internal class NKC_FileSystem: NSObject {
         return data!.writeToFile(path as String, atomically: false)
         }
     
-    func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: NKNodeCallBack)  {
-        dispatch_async(NKGlobals.NKeventQueue, {
-      
-            completionHandler(error: NSNull(), value: self.writeContent(storageItem, str: str))
-        });
+    func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: NKScriptValue)  {
+        completionHandler.callWithArguments([ NSNull(),  self.writeContent(storageItem, str: str)])
     }
 
 
@@ -248,7 +236,7 @@ internal class NKC_FileSystem: NSObject {
             if (path == nil)
             {
                 
-            NSLog("Error - source file not found: %@", directory + "/" + fileName + "." + fileExtension)
+            log("!Error - source file not found: \(directory + "/" + fileName + "." + fileExtension)")
             return ""
             }
         }

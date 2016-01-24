@@ -21,12 +21,12 @@ import WebKit
 import JavaScriptCore
 import UIKit
 
-@objc protocol jse : JSExport {
+protocol jse : JSExport {
        func logconsole(text: AnyObject?) -> Void
     func alertSync(text: AnyObject?) -> String
 }
 
-@objc class HelloWorldTest: NSObject, jse {
+class HelloWorldTest: NSObject, jse {
     
     func logconsole(text: AnyObject?) -> Void  {
         log(text as? String! ?? "");

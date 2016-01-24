@@ -22,7 +22,7 @@ import WebKit
 import JavaScriptCore
 
 
-@objc class NKE_BrowserWindow: NSObject  {
+class NKE_BrowserWindow: NSObject  {
     
     internal var _events: NKEventEmitter = NKEventEmitter()
     
@@ -147,7 +147,7 @@ extension NKE_BrowserWindow: NKScriptContextDelegate {
          case .UIWebView:
             UIApplicationReady()
         }
-        log("E\(id) APPLICATION READY");
+        log("+E\(id) Application Ready");
         
     }
 }

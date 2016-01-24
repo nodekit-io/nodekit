@@ -30,9 +30,9 @@ extension NKE_Dialog: NKScriptExport {
     
 }
 
-@objc class NKE_Dialog: NSObject, NKE_DialogProtocol {
+class NKE_Dialog: NSObject, NKE_DialogProtocol {
 
-    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void {
+    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?) -> Void {
         let fileManager = NSFileManager.defaultManager()
         
         let title: String = (options?["title"] as? String) ?? ""
@@ -70,7 +70,7 @@ extension NKE_Dialog: NKScriptExport {
             
             let file_type_set: NSMutableSet = NSMutableSet()
             for var i = 0; i < filters.count; ++i {
-                let filter: [String: AnyObject!]! = filters[i]
+                let filter: [String: AnyObject]! = filters[i]
                 
               //  let name: String = filter["name"] as! String
                 let extensions: [String] = filter["extensions"] as! [String]
@@ -113,7 +113,7 @@ extension NKE_Dialog: NKScriptExport {
     }
     
     
-    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?)-> Void {
+    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?)-> Void {
         
         let fileManager = NSFileManager.defaultManager()
         
@@ -148,7 +148,7 @@ extension NKE_Dialog: NKScriptExport {
             
             let file_type_set: NSMutableSet = NSMutableSet()
             for var i = 0; i < filters.count; ++i {
-                let filter: [String: AnyObject!]! = filters[i]
+                let filter: [String: AnyObject]! = filters[i]
                 
                 //  let name: String = filter["name"] as! String
                 let extensions: [String] = filter["extensions"] as! [String]
@@ -182,7 +182,7 @@ extension NKE_Dialog: NKScriptExport {
         })
     }
     
-    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void {
+    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?) -> Void {
         let type: String = (options?["type"] as? String) ?? "none"
         let buttons: [String] = (options?["buttons"] as? [String]) ?? [String]()
     //    let title: String = (options?["title"] as? String) ?? ""

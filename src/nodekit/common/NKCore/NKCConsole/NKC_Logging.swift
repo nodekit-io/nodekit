@@ -28,7 +28,7 @@ public typealias asl_object_t = COpaquePointer
 @asmname("asl_add_output_file") func asl_add_output_file(client: asl_object_t, _ descriptor: Int32, _ msg_fmt: UnsafePointer<Int8>, _ time_fmt: UnsafePointer<Int8>, _ filter: Int32, _ text_encoding: Int32) -> Int32;
 @asmname("asl_set_output_file_filter") func asl_set_output_file_filter(asl: asl_object_t, _ descriptor: Int32, _ filter: Int32) -> Int32;
 
-public class NKConsoleLogging : NKScriptExport {
+public class NKC_Logging : NKScriptExport {
     public enum Level : Int32 {
         case Emergency = 0
         case Alert     = 1
@@ -128,10 +128,14 @@ public class NKConsoleLogging : NKScriptExport {
     }
 }
 
-private let logger = NKConsoleLogging(facility: "io.nodekit.core.consolelog")
-func log(message: String, level: NKConsoleLogging.Level? = nil) {
+private let logger = NKC_Logging(facility: "io.nodekit.core.consolelog")
+func log(message: String, level: NKC_Logging.Level? = nil) {
     logger.log(message, level: level)
     print(message);
+}
+
+func nklog(message: String, level: NKC_Logging.Level? = nil) {
+    log(message, level: level);
 }
 
 @noreturn func die(@autoclosure message: ()->String, file: StaticString = __FILE__, line: UInt = __LINE__) {

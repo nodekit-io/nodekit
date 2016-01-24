@@ -20,7 +20,7 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc public class NKWVWebViewDelegate: NSObject, WebFrameLoadDelegate {
+public class NKWVWebViewDelegate: NSObject, WebFrameLoadDelegate {
     
     weak var delegate: NKScriptContextDelegate?
     weak var webView: WebView?

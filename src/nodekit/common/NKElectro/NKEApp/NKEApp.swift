@@ -40,7 +40,7 @@ extension NKE_App: NKScriptExport {
     }
 }
 
-@objc class NKE_App: NSObject, NKEAppProtocol {
+class NKE_App: NSObject, NKEAppProtocol {
     
     private var events: NKEventEmitter = NKEventEmitter.global
     

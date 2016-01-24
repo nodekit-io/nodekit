@@ -21,7 +21,7 @@ import Foundation
 import WebKit
 
 // MUST INHERIT
-@objc class NKE_WebContentsBase: NSObject {
+class NKE_WebContentsBase: NSObject {
     internal weak var _window: NKE_BrowserWindow? = nil
     internal var _id : Int = 0
     internal var _type : String = ""

@@ -21,7 +21,7 @@ import Foundation
 import WebKit
 import JavaScriptCore
 
-@objc protocol NKE_BrowserWindowProtocol: NKScriptExport {
+protocol NKE_BrowserWindowProtocol: NKScriptExport {
     
     // Creates a new BrowserWindow with native properties as set by the options.
     init(options: Dictionary<String, AnyObject>)

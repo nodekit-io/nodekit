@@ -19,7 +19,7 @@
 import Foundation
 import WebKit
 
-@objc internal class NKWKWebViewDelegate: NSObject, WKNavigationDelegate {
+internal class NKWKWebViewDelegate: NSObject, WKNavigationDelegate {
     
     weak var delegate: NKScriptContextDelegate?
     var id: Int
@@ -57,7 +57,7 @@ import WebKit
     }
 }
 
-@objc internal class NKWKWebViewUIDelegate: NSObject, WKUIDelegate {
+internal class NKWKWebViewUIDelegate: NSObject, WKUIDelegate {
     
     init(webView: WKWebView){
         super.init()

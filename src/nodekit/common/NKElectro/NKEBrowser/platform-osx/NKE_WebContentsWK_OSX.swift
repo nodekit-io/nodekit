@@ -20,7 +20,7 @@
 import Foundation
 import WebKit
 
-@objc class NKE_WebContentsWK: NKE_WebContentsBase {
+class NKE_WebContentsWK: NKE_WebContentsBase {
     
     internal weak var webView: WKWebView? = nil
     
@@ -108,10 +108,10 @@ extension NKE_WebContentsWK: NKE_WebContentsProtocol {
     func unselect() -> Void { NKE_WebContentsBase.NotImplemented() }
     func replace(text: String) -> Void { NKE_WebContentsBase.NotImplemented() }
     func replaceMisspelling(text: String) -> Void { NKE_WebContentsBase.NotImplemented() }
-    func hasServiceWorker(callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
-    func unregisterServiceWorker(callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
+    func hasServiceWorker(callback: NKScriptValue) -> Void { NKE_WebContentsBase.NotImplemented() }
+    func unregisterServiceWorker(callback: NKScriptValue) -> Void { NKE_WebContentsBase.NotImplemented() }
     func print(options: [String: AnyObject]) -> Void { NKE_WebContentsBase.NotImplemented() }
-    func printToPDF(options: [String: AnyObject], callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
+    func printToPDF(options: [String: AnyObject], callback: NKScriptValue) -> Void { NKE_WebContentsBase.NotImplemented() }
     func addWorkSpace(path: String) -> Void { NKE_WebContentsBase.NotImplemented() }
     func removeWorkSpace(path: String) -> Void { NKE_WebContentsBase.NotImplemented() }
     func openDevTools(options: [String: AnyObject]) -> Void { NKE_WebContentsBase.NotImplemented() }
@@ -124,10 +124,10 @@ extension NKE_WebContentsWK: NKE_WebContentsProtocol {
     func enableDeviceEmulation(parameters: [String: AnyObject]) -> Void { NKE_WebContentsBase.NotImplemented() }
     func disableDeviceEmulation() -> Void { NKE_WebContentsBase.NotImplemented() }
     func sendInputEvent(event: [String: AnyObject]) -> Void { NKE_WebContentsBase.NotImplemented() }
-    func beginFrameSubscription(callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
+    func beginFrameSubscription(callback: NKScriptValue) -> Void { NKE_WebContentsBase.NotImplemented() }
     func endFrameSubscription() -> Void { NKE_WebContentsBase.NotImplemented() }
-    func savePage(fullPath: String, saveType: String, callback: NKScriptValueObject) -> Void { NKE_WebContentsBase.NotImplemented() }
-    var session: NKScriptValueObject? { get { return nil } }
+    func savePage(fullPath: String, saveType: String, callback: NKScriptValue) -> Void { NKE_WebContentsBase.NotImplemented() }
+    var session: NKScriptValue? { get { return nil } }
     var devToolsWebContents: NKE_WebContentProtocol { get } */
     
     // EVENT EMITTER

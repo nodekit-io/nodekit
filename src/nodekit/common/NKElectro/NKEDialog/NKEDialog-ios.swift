@@ -30,23 +30,23 @@ extension NKE_Dialog: NKScriptExport {
 }
 
 
-@objc class NKE_Dialog: NSObject, NKE_DialogProtocol {
+class NKE_Dialog: NSObject, NKE_DialogProtocol {
     
     private static func NotImplemented(functionName: String = __FUNCTION__) -> Void {
         log("!dialog.\(functionName) is not available for iOS");
     }
     
 
-    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void {
+    func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?) -> Void {
         NKE_Dialog.NotImplemented()
     }
     
     
-    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?)-> Void {
+    func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?)-> Void {
         NKE_Dialog.NotImplemented()
      }
     
-    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValueObject?) -> Void {
+    func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?) -> Void {
    //     let type: String = (options?["type"] as? String) ?? "none"
         let buttons: [String] = (options?["buttons"] as? [String]) ?? ["Ok"]
         let title: String = (options?["title"] as? String) ?? ""

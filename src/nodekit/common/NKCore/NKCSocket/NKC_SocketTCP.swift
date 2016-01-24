@@ -68,7 +68,6 @@
     }
     
     class func scriptNameForSelector(selector: Selector) -> String? {
-        log(selector.description)
         return selector == Selector("init") ? "" : nil
     }
     
@@ -195,7 +194,7 @@
     
     private func emitConnection(tcp: NKC_SocketTCP) -> Void
     {
-        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["connection", tcp]);
+       _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments: ["connection", tcp])
     }
     
     private func emitAfterConnect()
@@ -205,17 +204,13 @@
     
     private func emitData(data: NSData!)
     {
-        dispatch_sync(NKGlobals.NKeventQueue, {
-            let str : NSString! = data.base64EncodedStringWithOptions([])
-            self.NKscriptObject?.invokeMethod("emit", withArguments: ["data", str], completionHandler: nil)
-        });
+        let str : NSString! = data.base64EncodedStringWithOptions([])
+        self.NKscriptObject?.invokeMethod("emit", withArguments: ["data", str], completionHandler: nil)
     }
     
     private func emitEnd()
     {
-        dispatch_sync(NKGlobals.NKeventQueue, {
-            self.NKscriptObject?.invokeMethod("emit", withArguments: ["end", ""], completionHandler: nil)
-        });
+        self.NKscriptObject?.invokeMethod("emit", withArguments: ["end", ""], completionHandler: nil)
     }
  }
  

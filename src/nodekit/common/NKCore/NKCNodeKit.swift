@@ -19,9 +19,9 @@ import Foundation
 import JavaScriptCore
 import WebKit
 
-struct NKGlobals {
-    static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
-}
+//struct NKGlobals {
+//    static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
+//}
 
 public class NKNodeKit: NKScriptContextDelegate {
     
@@ -51,13 +51,13 @@ public class NKNodeKit: NKScriptContextDelegate {
         self.context = context;
         
         // INSTALL JAVASCRIPT ENVIRONMENT ON MAIN CONTEXT
+        NKC_BootCore.bootTo(context)
         NKE_BootElectroMain.bootTo(context)
-        NKC_BootNodeCore.bootTo(context)
         
-        let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.console", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue])
+        let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.test", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue])
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script1, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
-        let script2Source = "var p = new io.nodekit.BrowserWindow();\n var result = io.nodekit.console.alertSync('hello'); \nio.nodekit.console.logconsole('hello' + result);\n p.webContents.send('hello world')\n";
+        let script2Source = "var p = new io.nodekit.BrowserWindow();\n var result = io.nodekit.test.alertSync('hello'); \nio.nodekit.test.logconsole('hello' + result);\n p.webContents.send('hello world')\n";
         let script2 = context.NKinjectJavaScript(NKScriptSource(source: script2Source, asFilename: "startup.js"))
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script2, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
@@ -86,48 +86,6 @@ public class NKNodeKit: NKScriptContextDelegate {
         /*
 NKJavascriptBridge.attachToContext(context)
 self.context = context;
-let fileManager = NSFileManager.defaultManager()
-let mainBundle : NSBundle = NSBundle.mainBundle()
-let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
-
-let appPath = (mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
-
-let resourcePath:String! = mainBundle.resourcePath
-let nodekitPath:String! = _nodeKitBundle.resourcePath
-
-let webPath = (resourcePath as NSString).stringByAppendingPathComponent("/app")
-
-//    let nodeModulePath = (resourcePath as NSString).stringByAppendingPathComponent("/app/node_modules")
-
-let appModulePath = (appPath as NSString).stringByAppendingPathComponent("/node_modules")
-
-let externalPackage = (appPath as NSString).stringByAppendingPathComponent("/package.json")
-let embeddedPackage = (webPath as NSString).stringByAppendingPathComponent("/package.json")
-
-var resPaths : NSString
-
-if (fileManager.fileExistsAtPath(externalPackage))
-{
-NKJavascriptBridge.setWorkingDirectory(appPath)
-
-resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(appPath).stringByAppendingString(":").stringByAppendingString(appModulePath).stringByAppendingString(":").stringByAppendingString(nodekitPath)
-}
-else
-{
-if (!fileManager.fileExistsAtPath(embeddedPackage))
-{
-print("Missing package.json in main bundle /Resources/app");
-print(resourcePath);
-return;
-}
-NKJavascriptBridge.setWorkingDirectory(webPath)
-
-resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(webPath).stringByAppendingString(":").stringByAppendingString(appModulePath).stringByAppendingString(":").stringByAppendingString(nodekitPath)
-
-}
-
-NKJavascriptBridge.setNodePaths(resPaths as String)
-
 let url = _nodeKitBundle.pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
 
 let bootstrapper = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding);

@@ -21,8 +21,8 @@
 import Foundation
 import ObjectiveC
 
-public class NKScriptValueObjectNative : NKScriptValueObject {
-    private let key = unsafeAddressOf(NKScriptValueObject)
+public class NKScriptValueNative : NKScriptValue {
+    private let key = unsafeAddressOf(NKScriptValue)
     private var proxy: NKScriptInvocation!
     final var plugin: AnyObject { return proxy.target }
     
@@ -61,9 +61,9 @@ public class NKScriptValueObjectNative : NKScriptValueObject {
         }
 
         var arguments = arguments?.map(wrapScriptObject) ?? []
-        var promise: NKScriptValueObject?
+        var promise: NKScriptValue?
         if arity == Int32(arguments.count) - 1 || arity < 0 {
-            promise = arguments.last as? NKScriptValueObject
+            promise = arguments.last as? NKScriptValue
             arguments.removeLast()
         }
         if selector == "initByScriptWithArguments:" {
@@ -174,7 +174,7 @@ public class NKScriptValueObjectNative : NKScriptValueObject {
         }
     }
 
-    // override methods of NKScriptValueObject
+    // override methods of NKScriptValue
     override public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         if let selector = channel.typeInfo[method]?.selector {
             let result: AnyObject! = proxy.call(selector, withObjects: arguments)
@@ -228,7 +228,7 @@ public class NKScriptValueObjectNative : NKScriptValueObject {
 }
 
 public extension NSObject {
-    var NKscriptObject: NKScriptValueObject? {
-        return objc_getAssociatedObject(self, unsafeAddressOf(NKScriptValueObject)) as? NKScriptValueObject
+    var NKscriptObject: NKScriptValue? {
+        return objc_getAssociatedObject(self, unsafeAddressOf(NKScriptValue)) as? NKScriptValue
     }
 }

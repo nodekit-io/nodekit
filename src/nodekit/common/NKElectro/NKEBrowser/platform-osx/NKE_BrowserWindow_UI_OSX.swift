@@ -70,7 +70,7 @@ extension NKE_BrowserWindow: WebUIDelegate {
             webView.NKgetScriptContext(id, options: [String: AnyObject](), delegate: self)
             
             NSURLProtocol.registerClass(NKE_ProtocolLocalFile)
-            //  NSURLProtocol.registerClass(NKE_ProtocolCustom)
+            NSURLProtocol.registerClass(NKE_ProtocolCustom)
             
             /*     NKJavascriptBridge.registerStringViewer({ (msg: String?, title: String?) -> () in
             webview.loadHTMLString(msg!, baseURL: NSURL(string: "about:blank"))

@@ -20,7 +20,7 @@
 import Foundation
 
 
-@objc class NKE_IpcMain: NSObject, NKE_IpcProtocol {
+class NKE_IpcMain: NSObject, NKE_IpcProtocol {
     private var globalEvents: NKEventEmitter = NKEventEmitter.global
     
     override init(){

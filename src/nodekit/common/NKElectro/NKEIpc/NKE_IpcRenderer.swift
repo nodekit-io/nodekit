@@ -19,7 +19,7 @@
 
 import Foundation
 
-@objc class NKE_IpcRenderer: NSObject, NKE_IpcProtocol {
+class NKE_IpcRenderer: NSObject, NKE_IpcProtocol {
     
     internal weak var _window: NKE_BrowserWindow? = nil
     internal var _id : Int = 0

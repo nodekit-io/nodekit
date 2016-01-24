@@ -57,7 +57,7 @@ class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-        log("EXIT")
+        log("+Application Exit")
     }
     
     func NKScriptEngineLoaded(context: NKScriptContext) -> Void {

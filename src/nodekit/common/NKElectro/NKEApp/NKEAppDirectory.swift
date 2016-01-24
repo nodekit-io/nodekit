@@ -59,7 +59,7 @@ struct NKEAppDirectory {
              let packageJSON =  try NSData(contentsOfFile: externalPackage, options: .DataReadingMappedIfSafe)
              return try NSJSONSerialization.JSONObjectWithData(packageJSON, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
             } catch let error as NSError {
-                log(error.localizedDescription)
+                log("!Error getting Package: \(error.localizedDescription)")
                 return nil
             }
         }
@@ -68,7 +68,7 @@ struct NKEAppDirectory {
             if (!fileManager.fileExistsAtPath(embeddedPackage))
             {
                 log("!Missing package.json in main bundle /Resources/app");
-                log(resourcePath);
+                log("!-->  \(resourcePath)");
                 return nil
             }
            do {
@@ -76,7 +76,7 @@ struct NKEAppDirectory {
             return try NSJSONSerialization.JSONObjectWithData(packageJSON, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
             
             } catch let error as NSError {
-                log(error.localizedDescription)
+                log("!Error getting Package as JSON: \(error.localizedDescription)")
                 return nil
             }
         }

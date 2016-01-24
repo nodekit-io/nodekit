@@ -18,7 +18,7 @@
  
  import JavaScriptCore
  
- @objc class NKC_SocketUDP: NSObject, NKScriptExport {
+ class NKC_SocketUDP: NSObject, NKScriptExport {
     
     class func attachTo(context: NKScriptContext) {
         let principal = NKC_SocketUDP()
@@ -143,7 +143,7 @@
         
         if ((err) != nil)
         {
-            log(err!.description)
+            log("!UDP Error: \(err!.description)")
         }
     }
     
@@ -226,7 +226,7 @@
  
  // GCDAsyncUdpSocket Delegate Methods
  extension NKC_SocketUDP: GCDAsyncUdpSocketDelegate {
-    @objc func udpSocket(sock: GCDAsyncUdpSocket!, didReceiveData data: NSData!, fromAddress address: NSData!, withFilterContext filterContext: AnyObject!) {
+    func udpSocket(sock: GCDAsyncUdpSocket!, didReceiveData data: NSData!, fromAddress address: NSData!, withFilterContext filterContext: AnyObject!) {
         
         var host:NSString?
         var port:UInt16 = 0

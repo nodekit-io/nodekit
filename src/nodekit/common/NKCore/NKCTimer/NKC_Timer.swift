@@ -34,7 +34,6 @@ class NKC_Timer : NSObject, NKScriptExport {
     }
     
     class func scriptNameForSelector(selector: Selector) -> String? {
-        log(selector.description)
         return selector == Selector("init") ? "" : nil
     }
     
@@ -100,8 +99,8 @@ class NKC_Timer : NSObject, NKScriptExport {
         NSRunLoop.mainRunLoop().addTimer(self._nsTimer!, forMode: NSRunLoopCommonModes)
     }
     
-    @objc func _timeOutHandler() {
-        _ = try? self._handler?.callWithArguments([])
+    func _timeOutHandler() {
+        self._handler?.callWithArguments([])
         let seconds: NSTimeInterval = self._repeatPeriod.doubleValue / 1000
         if (seconds>0) {
             self.scheduleTimeout(seconds)

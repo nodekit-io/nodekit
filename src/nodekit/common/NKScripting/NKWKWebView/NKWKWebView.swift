@@ -145,15 +145,15 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
             obj = val as? NSNumber ?? val.nonretainedObjectValue
         }
         
-        if let o = obj as? NKScriptValueObject {
+        if let o = obj as? NKScriptValue {
             return o.namespace
         } else if let o1 = obj as? NKScriptExport {
             if let o2 = o1 as? NSObject {
                 if let scriptObject = o2.NKscriptObject {
                     return scriptObject.namespace
                 } else {
-                    let scriptObject = NKScriptValueObjectNative(object: o2, inContext: self)
-                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValueObject), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN);
+                    let scriptObject = NKScriptValueNative(object: o2, inContext: self)
+                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN);
                     return scriptObject.namespace
                 }
             }

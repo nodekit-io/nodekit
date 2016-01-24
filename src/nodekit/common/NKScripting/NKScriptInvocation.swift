@@ -76,12 +76,12 @@ public class NKScriptInvocation {
     // These methods accept parameters in ObjC 'id' instead of Swift 'Any' type.
     // Meanwhile, arguments which are NSNull will be converted to nil before calling.
     // Return value in scalar type will be converted to object type if feasible.
-    @objc public func call(selector: Selector, withObjects objects: [AnyObject]?) -> AnyObject! {
+    public func call(selector: Selector, withObjects objects: [AnyObject]?) -> AnyObject! {
         let args: [Any!] = objects?.map{ $0 !== NSNull() ? ($0 as Any) : nil } ?? []
         let result = call(selector, withArguments: args)
         return castToObjectFromAny(result)
     }
-    @objc public func asyncCall(selector: Selector, withObjects objects: [AnyObject]?) {
+    public func asyncCall(selector: Selector, withObjects objects: [AnyObject]?) {
         let args: [Any!] = objects?.map{ $0 !== NSNull() ? ($0 as Any) : nil } ?? []
         asyncCall(selector, withArguments: args)
     }

@@ -20,7 +20,7 @@
 
 import Foundation
 
-public class NKScriptSource {
+public class NKScriptSource: NSObject {
     
     public let source: String
     public let cleanup: String?

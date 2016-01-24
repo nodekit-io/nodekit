@@ -45,7 +45,7 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate 
     
     func applicationWillTerminate(aNotification: NSNotification) {
         NKEventEmitter.global.emit("nk.ApplicationWillTerminate", ())
-        log("EXIT")
+        log("+Application Exit")
     }
     
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
