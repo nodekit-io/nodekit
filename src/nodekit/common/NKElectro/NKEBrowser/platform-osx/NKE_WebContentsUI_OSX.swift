@@ -37,15 +37,15 @@ class NKE_WebContentsUI: NKE_WebContentsBase {
         // Event:  'did-fail-load'
         // Event:  'did-finish-load'
         
-        _window?._events.on("did-finish-load") { (id: Int) in
+        _window._events.on("did-finish-load") { (id: Int) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
         
-        _window?._events.on("did-fail-loading") { (error: String) in
+        _window._events.on("did-fail-loading") { (error: String) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
         
-        webView = _window?._webView as? WebView
+        webView = _window._webView as? WebView
         
          _initIPC()
         
@@ -92,7 +92,7 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     }
     
     func executeJavaScript(code: String, userGesture: String) -> Void {
-        guard let context = _window?._context else {return;}
+        guard let context = _window._context else {return;}
         context.NKevaluateJavaScript(code, completionHandler: nil)
     }
     func setUserAgent(userAgent: String) -> Void { self.webView?.customUserAgent = userAgent }

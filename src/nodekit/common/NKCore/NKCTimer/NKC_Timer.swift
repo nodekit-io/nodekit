@@ -80,7 +80,7 @@ class NKC_Timer : NSObject, NKScriptExport {
     }
     
 
-    func start(delay: NSNumber!, `repeat`: NSNumber!) -> Void  {
+    func start(delay: NSNumber, `repeat`: NSNumber) -> Void  {
         if (self._nsTimer != nil)
         {
         self.stop()
@@ -89,10 +89,10 @@ class NKC_Timer : NSObject, NKScriptExport {
         self._repeatPeriod = `repeat`
         
         let secondsToDelay : NSTimeInterval = delay.doubleValue / 1000
-        self.scheduleTimeout(secondsToDelay)
+        self._scheduleTimeout(secondsToDelay)
     }
     
-    private func scheduleTimeout(timeout: NSTimeInterval)
+    private func _scheduleTimeout(timeout: NSTimeInterval)
     {
         self._nsTimer = NSTimer(timeInterval: timeout, target: self, selector: "_timeOutHandler", userInfo: nil, repeats: false)
         self._nsTimer!.tolerance = min(0.001, timeout / 10)
@@ -103,7 +103,7 @@ class NKC_Timer : NSObject, NKScriptExport {
         self._handler?.callWithArguments([])
         let seconds: NSTimeInterval = self._repeatPeriod.doubleValue / 1000
         if (seconds>0) {
-            self.scheduleTimeout(seconds)
+            self._scheduleTimeout(seconds)
         }
         
     }

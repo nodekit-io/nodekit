@@ -40,7 +40,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         let path=module; //self.getPath(module)
         var storageItem  = Dictionary<String, NSObject>()
         
-        let attr: NSDictionary!
+        let attr: [String : AnyObject]
         do
         {
             attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
@@ -50,12 +50,12 @@ class NKC_FileSystem: NSObject, NKScriptExport {
             return storageItem
         }
         
-        storageItem["birthtime"] = attr[NSFileCreationDate] as! NSDate!
-        storageItem["size"] = attr[NSFileSize] as! NSNumber!
-        storageItem["mtime"] = attr[NSFileModificationDate] as! NSDate!
-        storageItem["path"] = path as NSString!
+        storageItem["birthtime"] = attr[NSFileCreationDate] as! NSDate
+        storageItem["size"] = attr[NSFileSize] as! NSNumber
+        storageItem["mtime"] = attr[NSFileModificationDate] as! NSDate
+        storageItem["path"] = path as String
         
-        switch attr[NSFileType] as! NSString!
+        switch attr[NSFileType] as! String
         {
         case NSFileTypeDirectory:
             storageItem["filetype"] = "Directory"
@@ -94,12 +94,10 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         completionHandler.callWithArguments([NSNull(), self.getDirectory(module)])
     }
     
-    func getDirectory(module: String) -> NSArray {
-           let path=module; //self.getPath(module)
-        
-            let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) as NSArray!
-        
-            return dirContents
+    func getDirectory(module: String) -> [String] {
+        let path=module; //self.getPath(module)
+        let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) ?? [String]()
+        return dirContents
     }
     
     func getTempDirectory() -> String? {
@@ -108,12 +106,12 @@ class NKC_FileSystem: NSObject, NKScriptExport {
     }
 
     
-    func getContentAsync(storageItem: NSDictionary! , completionHandler: NKScriptValue) -> Void {
+    func getContentAsync(storageItem:  Dictionary<String, AnyObject>, completionHandler: NKScriptValue) -> Void {
           completionHandler.callWithArguments([NSNull(), self.getContent(storageItem)])
     }
     
-    func getContent(storageItem: NSDictionary!) -> NSString {
-        let path = storageItem["path"] as! NSString!;
+    func getContent(storageItem: Dictionary<String, AnyObject>) -> String {
+        guard let path = storageItem["path"] as? String else {return ""}
         var data: NSData?
         do {
           data = try NSData(contentsOfFile: path as String, options: NSDataReadingOptions(rawValue: 0))
@@ -124,25 +122,20 @@ class NKC_FileSystem: NSObject, NKScriptExport {
             return ""
         }
         
-        var content: NSString!
-         content =  (data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)))
-        
-         return content!
+        return (data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)))
     }
     
-    func writeContent(storageItem: NSDictionary!, str: NSString!) -> Bool {
-        
-        let path = storageItem["path"] as! NSString!
-        let data = NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions(rawValue:0))
-        return data!.writeToFile(path as String, atomically: false)
-        }
+    func writeContent(storageItem: Dictionary<String, AnyObject>, str: String) -> Bool {
+        guard let path = storageItem["path"] as? String else {return false}
+        let data = NSData(base64EncodedString: str, options: NSDataBase64DecodingOptions(rawValue:0))
+        return data!.writeToFile(path, atomically: false)
+    }
     
-    func writeContentAsync(storageItem: NSDictionary!, str: NSString!, completionHandler: NKScriptValue)  {
+    func writeContentAsync(storageItem: Dictionary<String, AnyObject>, str: String, completionHandler: NKScriptValue)  {
         completionHandler.callWithArguments([ NSNull(),  self.writeContent(storageItem, str: str)])
     }
 
-
-    func getSource(module: String) -> String! {
+    func getSource(module: String) -> String {
         
         let path=getPath(module);
         

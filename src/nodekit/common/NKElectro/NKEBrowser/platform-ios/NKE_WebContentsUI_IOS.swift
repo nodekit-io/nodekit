@@ -39,15 +39,15 @@ class NKE_WebContentsUI: NKE_WebContentsBase {
         // Event:  'did-fail-load'
         // Event:  'did-finish-load'
         
-        _window?._events.on("did-finish-load") { (id: Int) in
+        _window._events.on("did-finish-load") { (id: Int) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
         
-        _window?._events.on("did-fail-loading") { (error: String) in
+        _window._events.on("did-fail-loading") { (error: String) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
-        
-        webView = _window?._webView as? UIWebView
+    
+        webView = _window._webView as? UIWebView
         
         _initIPC()
        }
@@ -59,8 +59,7 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     // Messages to renderer are sent to the window events queue for that renderer
     func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
         let payload = NKE_IPC_Event(sender: 0, channel: channel, replyId: replyId, arg: arg)
-        guard let window = _window else {return;}
-        window._events.emit("nk.IPCtoRenderer", payload)
+         _window._events.emit("nk.IPCtoRenderer", payload)
     }
     
     func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
@@ -87,7 +86,7 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func goForward() -> Void { self.webView?.goForward() }
      
     func executeJavaScript(code: String, userGesture: String) -> Void {
-        guard let context = _window?._context else {return;}
+        guard let context = _window._context else {return;}
         context.NKevaluateJavaScript(code, completionHandler: nil)
     }
     func setUserAgent(userAgent: String) -> Void { NKE_WebContentsBase.NotImplemented() }

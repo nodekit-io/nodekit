@@ -63,7 +63,7 @@ class NKE_Dialog: NSObject, NKE_DialogProtocol {
             let buttonTitle: String = buttons[i] ?? "";
      
             let buttonAction = UIAlertAction(title: buttonTitle, style: (buttonTitle == "Cancel" ? .Cancel : .Default)) { (action) in
-                callback?.callWithArguments(arguments: [i], completionHandler: nil)
+                callback?.callWithArguments([i], completionHandler: nil)
                 };
             
             alertController.addAction(buttonAction)
