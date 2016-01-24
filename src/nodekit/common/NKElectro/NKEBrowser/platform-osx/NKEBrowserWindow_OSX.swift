@@ -1,7 +1,7 @@
 /*
 * nodekit.io
 *
-* Copyright (c) -> Void 2016 OffGrid Networks. All Rights Reserved.
+* Copyright (c) 2016 OffGrid Networks. All Rights Reserved.
 * Portions Copyright (c) 2013 GitHub, Inc. under MIT License
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
