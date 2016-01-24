@@ -63,7 +63,7 @@ extension NKE_IpcRenderer: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_IpcRenderer()
-        context.NKloadPlugin(principal, namespace: "io.nodekit._ipcRenderer", options: [String:AnyObject]());
+        context.NKloadPlugin(principal, namespace: "io.nodekit.ipcRenderer", options: [String:AnyObject]());
     }
     
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {

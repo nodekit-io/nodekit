@@ -28,7 +28,7 @@ class NKE_ProtocolFileDecode: NSObject {
     var mimeType : NSString?    // The mime type
     var textEncoding : NSString?   // The text encoding
     
-    init(request: NSURLRequest)
+    init(url: NSURL)
     {
         resourcePath = nil;
         
@@ -41,10 +41,10 @@ class NKE_ProtocolFileDecode: NSObject {
             "js" : "application/javascript" ,
             "css": "text/css" ]
         
-        urlPath = (request.URL!.path! as NSString).stringByDeletingLastPathComponent
+        urlPath = (url.path! as NSString).stringByDeletingLastPathComponent
         
-        fileExtension = request.URL!.pathExtension!.lowercaseString
-        fileName = request.URL!.lastPathComponent!
+        fileExtension = url.pathExtension!.lowercaseString
+        fileName = url.lastPathComponent!
         if (fileExtension.length == 0)
         {
             fileBase = fileName

@@ -725,8 +725,8 @@
 		E4A83BF71C4992F800514698 /* NKEProtocol */ = {
 			isa = PBXGroup;
 			children = (
-				E4A83BF81C4992F800514698 /* NKE_ProtocolFileDecode.swift */,
 				E4A83BF91C4992F800514698 /* NKE_Protocol.swift */,
+				E4A83BF81C4992F800514698 /* NKE_ProtocolFileDecode.swift */,
 				E4A83BFA1C4992F800514698 /* NKE_ProtocolLocalFile.swift */,
 			);
 			path = NKEProtocol;

@@ -33,7 +33,9 @@ class NKE_BootElectroMain: NSObject {
         NKE_BrowserWindow.attachTo(context);
         NKE_WebContentsBase.attachTo(context);
         NKE_Dialog.attachTo(context);
+        NKE_IpcMain.attachTo(context);
         NKE_Menu.attachTo(context);
+        NKE_Protocol.attachTo(context);
         
         //   menuPlugin = context.NKloadPlugin(NKEMenu(), namespace: "io.nodekit.menu", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue]);
         

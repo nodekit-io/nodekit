@@ -42,14 +42,14 @@ class NKE_Protocol : NSObject, NKScriptExport {
     override init() {
     }
     
-    func registerProtocol(scheme: String, handler: NKScriptValue, completion: NKScriptValue?) -> Void {
+    func registerCustomProtocol(scheme: String, handler: NKScriptValue, completion: NKScriptValue?) -> Void {
         let scheme = scheme.lowercaseString
         NKE_Protocol.registeredSchemes[scheme] = handler
         NKE_ProtocolCustom.registeredSchemes.insert(scheme)
         completion?.callWithArguments([])
     }
     
-    func unregisterProtocol(scheme: String, completion: NKScriptValue?) -> Void {
+    func unregisterCustomProtocol(scheme: String, completion: NKScriptValue?) -> Void {
         let scheme = scheme.lowercaseString
         
         if (NKE_Protocol.registeredSchemes[scheme] != nil)
@@ -197,8 +197,39 @@ class NKE_ProtocolCustom: NSURLProtocol {
         }
     }
     
+    func callbackFile(res: Dictionary<String, AnyObject>) {
+        if (self.isCancelled)  {return};
+        guard let path = res["path"] as? String else {return;}
+        guard let url = NSURL(string: path) else {return;}
+        let urlDecode = NKE_ProtocolFileDecode(url: url)
+        
+        if (urlDecode.exists())
+        {
+            let data: NSData! = NSData(contentsOfFile: urlDecode.resourcePath! as String)
+            
+            if (!self.headersWritten)
+            {
+                _writeHeaders(res)
+            }
+            
+            self.isLoading = false;
+            
+            let response: NSURLResponse = NSURLResponse(URL: request.URL!, MIMEType: urlDecode.mimeType as String?, expectedContentLength: data.length, textEncodingName: urlDecode.textEncoding as String?)
+            
+            self.client!.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: NSURLCacheStoragePolicy.AllowedInMemoryOnly)
+            self.client!.URLProtocol(self, didLoadData: data)
+            self.client!.URLProtocolDidFinishLoading(self)
+            
+        }  else {
+            log("!Missing File \(path)");
+            self.client!.URLProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorFileDoesNotExist, userInfo:  nil))
+        }
+    }
+    
     func callbackEnd(res: Dictionary<String, AnyObject>) {
         if (self.isCancelled)  {return};
+        if let _ = res["path"] as? String { return callbackFile(res);}
+        
         guard let chunk = res["_chunk"] as? String else {return;}
         
         let data : NSData =  NSData(base64EncodedString: chunk, options: NSDataBase64DecodingOptions.IgnoreUnknownCharacters)!

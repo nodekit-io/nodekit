@@ -48,8 +48,7 @@ class NKE_IpcMain: NSObject, NKE_IpcProtocol {
 extension NKE_IpcMain: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
-        let principal = NKE_IpcRenderer()
-        context.NKloadPlugin(principal, namespace: "io.nodekit._ipcMain", options: [String:AnyObject]());
+        context.NKloadPlugin(NKE_IpcMain(), namespace: "io.nodekit.ipcMain", options: [String:AnyObject]());
     }
     
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {

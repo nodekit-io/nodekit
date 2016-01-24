@@ -38,7 +38,7 @@ class NKC_BootCore: NSObject {
         NKC_FileSystem.attachTo(context);
         NKC_Console.attachTo(context);
         NKC_Crypto.attachTo(context);
-         NKC_SocketTCP.attachTo(context);
+        NKC_SocketTCP.attachTo(context);
         NKC_SocketUDP.attachTo(context);
         NKC_Timer.attachTo(context);
     }
