@@ -96,7 +96,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
                 die("Failed to read provision script: nkscripting")
         }
         
-        let nkscript = context!.NKinjectJavaScript(NKScriptSource(source: source as String, asFilename: "io.nodekit/scripting/nkscripting.js", namespace: "NKScripting"))
+        let nkscript = context!.NKinjectJavaScript(NKScriptSource(source: source as String, asFilename: "io.nodekit.scripting/NKScripting/nkscripting.js", namespace: "NKScripting"))
         objc_setAssociatedObject(context, key, nkscript, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         
         let key2 = unsafeAddressOf(NKScriptInvocation)
@@ -105,7 +105,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
                 die("Failed to read provision script: nkscripting")
         }
         
-        let nkpromise = context!.NKinjectJavaScript(NKScriptSource(source: source2 as String, asFilename: "io.nodekit/scripting/promise", namespace: "Promise"))
+        let nkpromise = context!.NKinjectJavaScript(NKScriptSource(source: source2 as String, asFilename: "io.nodekit.scripting/NKScripting/promise.js", namespace: "Promise"))
         objc_setAssociatedObject(context, key2, nkpromise, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
         log("+E\(context!.NKid) JavaScript Engine is ready for loading plugins")
@@ -131,7 +131,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         
          principal = NKScriptValueNative(namespace: namespace, channel: self, object: object)
         
-         userScript = context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: "io.nodekit.scripting/plugins/" + _stdlib_getDemangledTypeName(object) + ".js" ))
+         userScript = context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: namespace + "/plugin/" + _stdlib_getDemangledTypeName(object) + ".js" ))
         
         log("+E\(context.NKid) Plugin object \(object) is bound to \(namespace) with channel \(id)")
         return principal as NKScriptValue
@@ -293,7 +293,7 @@ public class NKScriptChannel : NSObject, NKScriptMessageHandler {
         return rewriteStub(
             "(function(exports) {\n" +
                 rewriteStub(stubs, forKey: ".local") +
-                "})(NKScripting.createPlugin('\(identifier!)', '\(principal.namespace)', \(base)));\n" /* + rewriteStub("\n//# sourceURL=io.nodekit.scripting/plugins/\(name).js", forKey: ".sourceURL") */,
+                "})(NKScripting.createPlugin('\(identifier!)', '\(principal.namespace)', \(base)));\n",
             forKey: ".global"
         )
     }

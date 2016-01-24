@@ -16,144 +16,133 @@
  * limitations under the License.
  */
 
-(function(process) {
- this.global = this;
- 
-  process._nextTick = (function () {
-                     var canSetTimeOut = typeof window !== 'undefined'
-                     && window.setTimeout;
-                    
-                     var canSetImmediate = typeof window !== 'undefined'
-                     && window.setImmediate;
-                     
-                     var canPost = typeof window !== 'undefined'
-                     && window.postMessage && window.addEventListener;
-                     
-                     if (canSetImmediate) {
-                     return function (f) { return window.setImmediate(f) };
-                     }
-                     
-                     if (canPost) {
-                         var queue = [];
-                         window.addEventListener('message', function (ev) {
-                                                 var source = ev.source;
-                                                 if ((source === window || source === null) && ev.data === 'process-tick') {
-                                                 ev.stopPropagation();
-                                                 if (queue.length > 0) {
-                                                 var fn = queue.shift();
-                                                 fn();
-                                                 }
-                                                 }
-                                                 }, true);
-                         
-                         return function nextTick(fn) {
-                         queue.push(fn);
-                         window.postMessage('process-tick', '*');
-                         };
+(function (process) {
+    this.global = this;
+
+    process._nextTick = (function () {
+        var canSetTimeOut = typeof window !== 'undefined'
+            && window.setTimeout;
+
+        var canSetImmediate = typeof window !== 'undefined'
+            && window.setImmediate;
+
+        var canPost = typeof window !== 'undefined'
+            && window.postMessage && window.addEventListener;
+
+        if (canSetImmediate) {
+            return function (f) { return window.setImmediate(f) };
+        }
+
+        if (canPost) {
+            var queue = [];
+            window.addEventListener('message', function (ev) {
+                var source = ev.source;
+                if ((source === window || source === null) && ev.data === 'process-tick') {
+                    ev.stopPropagation();
+                    if (queue.length > 0) {
+                        var fn = queue.shift();
+                        fn();
                     }
-                     
-                     if (canSetTimeOut) {
-                        return function nextTick(fn) {setTimeout(fn, 0);};
-                     }
-                     
-                      return function(f) {return io.nodekit.console.nextTick(f); };
-                     
-                     })();
+                }
+            }, true);
+
+            return function nextTick(fn) {
+                queue.push(fn);
+                window.postMessage('process-tick', '*');
+            };
+        }
+
+        if (canSetTimeOut) {
+            return function nextTick(fn) { setTimeout(fn, 0); };
+        }
+
+        return function (f) { return io.nodekit.console.nextTick(f); };
+
+    })();
 
     process._asyncFlags = {};
     process.moduleLoadList = [];
-    
-    process._setupAsyncListener = function(asyncFlags, runAsyncQueue, loadAsyncQueue, unloadAsyncQueue) {
+
+    process._setupAsyncListener = function (asyncFlags, runAsyncQueue, loadAsyncQueue, unloadAsyncQueue) {
         process._runAsyncQueue = runAsyncQueue;
         process._loadAsyncQueue = loadAsyncQueue;
         process._unloadAsyncQueue = unloadAsyncQueue;
     };
-    
- process._setupNextTick = function(tickInfo, _tickCallback, _runMicrotasks) {
-    _runMicrotasks.runMicrotasks = function(){};
-    process._tickCallback = _tickCallback;
-    process.nextTick = process._nextTick;
- //    _tickCallback();
- };
- 
-    process._setupDomainUse = function() {};
-    process.cwd = function cwd() { return  process.workingDirectory; };
+
+    process._setupNextTick = function (tickInfo, _tickCallback, _runMicrotasks) {
+        _runMicrotasks.runMicrotasks = function () { };
+        process._tickCallback = _tickCallback;
+        process.nextTick = process._nextTick;
+        //    _tickCallback();
+    };
+
+    process._setupDomainUse = function () { };
+    process.cwd = function cwd() { return process.workingDirectory; };
     process.isatty = false;
- 
+
     process.versions = { http_parser: '1.0', node: '0.12.9', v8: '3.14.5.8', ares: '1.9.0-DEV', uv: '0.10.3', zlib: '1.2.3', modules: '11', openssl: '1.0.1e' };
  
     process.version = 'v0.12.9';
     process.execArgv = ['--nodekit'];
-   process.arch = 'x64';
- process.umask = function(){return parseInt('0777', 8);}
- process._needImmediateCallbackValue = false;
- 
- Object.defineProperty( process, '_needImmediateCallback', {
-                       get: function() {
-                       return process._needImmediateCallbackValue;
-                       },
-                       set: function(v) {
-                       process._needImmediateCallbackValue = (v?true:false);
-                       if (v)
-                       process.nextTick(process.checkImmediate);
-                       }
-                       });
- 
- process.checkImmediate = function() {
-    this._immediateCallback();
-    this._needImmediateCallbackValue = false;
- }.bind(process)  ;
-	
- 
- io.nodekit.console.log('platform: ' + process.platform)
- 
-/*if ('undefined' === typeof window)
- {
-   window = {}
- }*/
- 
- if (!global.crypto)
- {
-   global.crypto = {}
- }
- 
- 
- if (!global.crypto.randomBytes)
- {
- global.crypto.randomBytes = function(size){
- return new Buffer(io.nodekit.crypto.getRandomBytes(size));
- };
- }
- 
- if (!global.crypto.getRandomValues)
- {
- 
- // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
-    global.crypto.getRandomValues = function(bytes){
-    var buf = new Buffer(io.nodekit.crypto.getRandomBytes(bytes.length))
-    buf.copy(bytes);
- };
- }
+    process.arch = 'x64';
+    process.umask = function () { return parseInt('0777', 8); }
+    process._needImmediateCallbackValue = false;
 
- 
- if (Error.captureStackTrace === undefined) {
- Error.captureStackTrace = function (obj) {
- if (Error.prepareStackTrace) {
- var frame = {
- isEval: function () { return false; },
- getFileName: function () { return "filename"; },
- getLineNumber: function () { return 1; },
- getColumnNumber: function () { return 1; },
- getFunctionName: function () { return "functionName" }
- };
- 
- obj.stack = Error.prepareStackTrace(obj, [frame, frame, frame]);
- } else {
- obj.stack = obj.stack || obj.name || "Error";
- }
- };
+    Object.defineProperty(process, '_needImmediateCallback', {
+        get: function () {
+            return process._needImmediateCallbackValue;
+        },
+        set: function (v) {
+            process._needImmediateCallbackValue = (v ? true : false);
+            if (v)
+                process.nextTick(process.checkImmediate);
+        }
+    });
 
- }
+    process.checkImmediate = function () {
+        this._immediateCallback();
+        this._needImmediateCallbackValue = false;
+    }.bind(process);
+
+
+    io.nodekit.console.log('platform: ' + process.platform + ' ' + process.devicefamily)
+
+    if (!global.crypto) {
+        global.crypto = {}
+    }
+
+
+    if (!global.crypto.randomBytes) {
+        global.crypto.randomBytes = function (size) {
+            return new Buffer(io.nodekit.crypto.getRandomBytesSync(size));
+        };
+    }
+
+    if (!global.crypto.getRandomValues) {
  
- 
+        // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+        global.crypto.getRandomValues = function (bytes) {
+            var buf = new Buffer(io.nodekit.crypto.getRandomBytesSync(bytes.length))
+            buf.copy(bytes);
+        };
+    }
+
+    if (Error.captureStackTrace === undefined) {
+        Error.captureStackTrace = function (obj) {
+            if (Error.prepareStackTrace) {
+                var frame = {
+                    isEval: function () { return false; },
+                    getFileName: function () { return "filename"; },
+                    getLineNumber: function () { return 1; },
+                    getColumnNumber: function () { return 1; },
+                    getFunctionName: function () { return "functionName" }
+                };
+
+                obj.stack = Error.prepareStackTrace(obj, [frame, frame, frame]);
+            } else {
+                obj.stack = obj.stack || obj.name || "Error";
+            }
+        };
+
+    }
 });

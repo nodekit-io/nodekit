@@ -25,7 +25,7 @@ class NKE_Protocol : NSObject, NKScriptExport {
    static var registeredSchemeTypes: Dictionary<String, NKScriptValue> = Dictionary<String, NKScriptValue>()
 
    class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKE_Protocol(), namespace: "io.nodekit.protocol", options: [String:AnyObject]());
+        context.NKloadPlugin(NKE_Protocol(), namespace: "io.nodekit.electro.protocol", options: [String:AnyObject]());
     }
     
     class func rewriteGeneratedStub(stub: String, forKey: String) -> String {

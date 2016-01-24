@@ -25,7 +25,7 @@ extension NKE_App: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_App()
-        context.NKloadPlugin(principal, namespace: "io.nodekit.app", options: [String:AnyObject]());
+        context.NKloadPlugin(principal, namespace: "io.nodekit.electro.app", options: [String:AnyObject]());
     }
     
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {

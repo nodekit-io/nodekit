@@ -19,8 +19,8 @@
 
 var fs = io.nodekit.fs
 
-fs.prototype._init = function() {}
+fs._init = function() {}
 
-fs.prototype.eval = function(script, filename) {
+fs.evalSync = function(script, filename) {
     return eval(script);
 }

@@ -121,4 +121,4 @@ MenuItem = (function() {
 
 })();
 
-io.nodekit.MenuItem = MenuItem;
+io.nodekit.electro.MenuItem = MenuItem;

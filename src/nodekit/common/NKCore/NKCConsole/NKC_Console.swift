@@ -43,6 +43,10 @@
         nklog(msg)
     }
     
+    func error(msg: String) -> Void {
+        nklog(msg)
+    }
+    
     func nextTick(callBack: NKScriptValue) -> Void {
         dispatch_async(dispatch_get_main_queue(), {() -> Void in
             callBack.callWithArguments([])

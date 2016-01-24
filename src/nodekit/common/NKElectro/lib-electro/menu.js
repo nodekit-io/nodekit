@@ -19,13 +19,13 @@
 
 var BrowserWindow, Menu, MenuItem, applicationMenu, bindings, generateGroupId, indexOfItemById, indexToInsertByPosition, nextGroupId;
 
-BrowserWindow = io.nodekit.BrowserWindow, MenuItem = io.nodekit.MenuItem;
+BrowserWindow = io.nodekit.electro.BrowserWindow, MenuItem = io.nodekit.electro.MenuItem;
 
 /* Bindings
  func setApplicationMenu(menu: [String: AnyObject]) -> Void
  func sendActionToFirstResponder(action: String) -> Void //OS X
  */
-bindings = io.nodekit._menu;
+bindings = io.nodekit.electro._menu;
 
 /* Automatically generated radio menu item's group id. */
 
@@ -361,4 +361,4 @@ Menu.buildFromTemplate = function(template) {
   return menu;
 };
 
-io.nodekit.Menu = Menu;
+io.nodekit.electro.Menu = Menu;

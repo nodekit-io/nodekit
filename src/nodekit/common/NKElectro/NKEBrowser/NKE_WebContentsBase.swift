@@ -34,9 +34,9 @@ extension NKE_WebContentsBase: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_WebContentsUI.self
-        context.NKloadPlugin(principal, namespace: "io.nodekit.WebContentsUI", options: [String:AnyObject]());
+        context.NKloadPlugin(principal, namespace: "io.nodekit.electro.WebContentsUI", options: [String:AnyObject]());
         let principal2 = NKE_WebContentsWK.self
-        context.NKloadPlugin(principal2, namespace: "io.nodekit.WebContentsWK", options: [String:AnyObject]());
+        context.NKloadPlugin(principal2, namespace: "io.nodekit.electro.WebContentsWK", options: [String:AnyObject]());
     }
     
     class func rewriteGeneratedStub(stub: String, forKey: String) -> String {

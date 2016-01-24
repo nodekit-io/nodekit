@@ -60,7 +60,7 @@ FileSystem.prototype.getItemAsync = function (filepath) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.getItemSync = function (filepath) {
-    var storageItem = io.nodekit.fs.stat(filepath);
+    var storageItem = io.nodekit.fs.statSync(filepath);
     return FileSystem.storageItemtoItemWithStat(storageItem);
 };
 
@@ -162,7 +162,7 @@ FileSystem.prototype.loadContentSync = function (file) {
         return null;
     
     try {
-    var contentBase64 = io.nodekit.fs.getContent(file._storageItem);
+    var contentBase64 = io.nodekit.fs.getContentSync(file._storageItem);
     var content = new Buffer( contentBase64, 'base64');
         
     file.setContent(content);
@@ -201,7 +201,7 @@ FileSystem.prototype.writeContentSync = function (file) {
         return null;
     
     var contentBase64 = file.getContent().toString('base64');
-    return io.nodekit.fs.writeContent(file._storageItem, contentBase64);
+    return io.nodekit.fs.writeContentSync(file._storageItem, contentBase64);
 };
 
 
@@ -267,7 +267,7 @@ FileSystem.prototype.writeBufferAsync = function (file, buffer) {
  * @return {Promise<[]>} The array of item names (or error if not found or not a directory).
  */
 FileSystem.prototype.getDirList = function (filepath) {
-      var result =io.nodekit.fs.getDirectory(filepath);
+      var result =io.nodekit.fs.getDirectorySync(filepath);
     return result;
 };
 
@@ -277,7 +277,7 @@ FileSystem.prototype.getDirList = function (filepath) {
  * @return bool
  */
 FileSystem.prototype.mkdir = function (filepath) {
-    var result =io.nodekit.fs.mkdir(filepath);
+    var result =io.nodekit.fs.mkdirSync(filepath);
     return result;
 };
 
@@ -287,7 +287,7 @@ FileSystem.prototype.mkdir = function (filepath) {
  * @return bool
  */
 FileSystem.prototype.rmdir = function (filepath) {
-    var result =io.nodekit.fs.rmdir(filepath);
+    var result =io.nodekit.fs.rmdirSync(filepath);
     return result;
 };
 
@@ -298,7 +298,7 @@ FileSystem.prototype.rmdir = function (filepath) {
  * @return bool
  */
 FileSystem.prototype.move = function (filepath, filepath2) {
-    var result =io.nodekit.fs.move(filepath, filepath2);
+    var result =io.nodekit.fs.moveSync(filepath, filepath2);
     return result;
 };
 
@@ -308,7 +308,7 @@ FileSystem.prototype.move = function (filepath, filepath2) {
  * @return bool
  */
 FileSystem.prototype.unlink = function (filepath) {
-    var result =io.nodekit.fs.unlink(filepath);
+    var result =io.nodekit.fs.unlinkSync(filepath);
     return result;
 };
 

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-var BrowserWindow = io.nodekit.BrowserWindow
+var BrowserWindow = io.nodekit.electro.BrowserWindow
 
 var _browserWindows = {}
 
@@ -27,9 +27,9 @@ BrowserWindow.prototype._init = function() {
     this.webContents.emit("hello");
     
  //   if (this.type == "Nitro")
- //     this.webContents = new io.nodekit.WebContentsWK(this._id)
+ //     this.webContents = new io.nodekit.electro.WebContentsWK(this._id)
  //   else if (this.type == "JavaScriptCore")
-  //    this.webContents = new io.nodekit.WebContentsUI(this._id);
+  //    this.webContents = new io.nodekit.electro.WebContentsUI(this._id);
 };
 
 BrowserWindow.prototype._deinit = function() {

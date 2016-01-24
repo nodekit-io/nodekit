@@ -1,3 +1,9 @@
+
+var p = new io.nodekit.electro.BrowserWindow();
+var result = io.nodekit.test.alertSync('hello');
+io.nodekit.test.logconsole('hello' + result);
+p.webContents.send('hello world')
+
 var util = require('util');
 
 console.log("STARTING SAMPLE APPLICATION");

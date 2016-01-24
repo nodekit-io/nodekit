@@ -58,17 +58,17 @@ function ContextifyScript(script, options) {
 }
 
 ContextifyScript.prototype.runInThisContext = function() {
-       return io.nodekit.fs.eval(this._script, this._filename);
+       return io.nodekit.fs.evalSync(this._script, this._filename);
    }
 
 ContextifyScript.prototype.runInContext = function(context) {
-    return io.nodekit.fs.eval(this._script, this._filename);
+    return io.nodekit.fs.evalSync(this._script, this._filename);
 
     // document.head.appendChild(this._script);
 }
 
 ContextifyScript.prototype.runInNewContext = function() {
-    return io.nodekit.fs.eval(this._script, this._filename);
+    return io.nodekit.fs.evalSync(this._script, this._filename);
     //  document.head.appendChild(this._script);
 }
 

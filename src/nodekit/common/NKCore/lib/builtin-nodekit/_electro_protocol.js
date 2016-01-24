@@ -23,8 +23,7 @@ var util = require('util');
 var stream = require('stream');
 var http = require('http');
 var EventEmitter = require('events').EventEmitter;
-
-//OBJECTIVE-C PUBLIC METHODS
+var protocol = io.nodekit.protocol
 
 /**
  * An Browser Http Server
@@ -34,22 +33,74 @@ var EventEmitter = require('events').EventEmitter;
  * @constructor
  * @public
  */
-function BrowserServer(requestListener){
-    this.requestListener = requestListener;
+function BrowserServer(scheme){
+    EventEmitter.call(this)
+    this.scheme = scheme.toLowerCase();
+    protocol.registerCustomProtocol(scheme, this.invoke);
+    
 };
+
+util.inherits(BrowserServer, EventEmitter);
 
 BrowserServer.prototype.listen = function(port, host) {
     private_BrowserEventHost.addListener('request', this.requestListener);
     if (!!port)
     {
-        var httpServer = http.createServer(this.requestListener);
+        var that = this
+        var httpServer = http.createServer(function(req, res){that.emit('request', req, res););
         httpServer.listen(port, host);
-        
     }
 };
 
-exports.createServer = function(requestListener) {
-    var server = new BrowserServer(requestListener);
+BrowserServer.prototype.invoke = function(request) {
+    var id = request["id"];
+    
+    var context = Object.create(function HttpContext() {});
+    context.socket = new EventEmitter();
+    var req = new IncomingMessage(context.socket);
+    context.req = req;
+    context.res = new OutgoingMessage(context.socket);;
+    
+    req.method = request["method"] || 'GET'
+    req.url = request["url"]
+    req.headers = request["headers"] || []
+    req.headers["Content-Length"] = request["length"]
+    
+    if (req.method == 'POST')
+    {
+        req.body.setData(request["body"])
+        req.headers["Content-Length"] = request["length"]
+    }
+    
+    context.res.on('finish', function() {
+                   var res = context.res;
+                   var data = res.getBody();
+                   res.headers["access-control-allow-origin"] = "*";
+                   this.callbackEnd(id, {'data': data, 'headers': res.headers, 'statusCode': res.statusCode } )
+                   
+                   for (var _key in context) {
+                   if (context.hasOwnProperty(_key))
+                   delete context[_key];
+                   };
+                   context = null;
+                   data = null;
+                   res=null;
+                   
+                   });
+    try {
+        this.emit("request", context.req, context.res);
+        
+    }  catch (e)
+    {
+        console.error(e);
+    }
+    
+}
+
+exports.createServer = function(scheme, requestListener) {
+    var server = new BrowserServer(scheme);
+    if (requestListener)
+        server.on('request', requestListener);
     return server;
 };
 
@@ -67,95 +118,6 @@ function BrowserEventHost(){};
 util.inherits(BrowserEventHost, events.EventEmitter);
 
 var private_BrowserEventHost = new BrowserEventHost();
-
-
-/**
- * Javascript function exposed to Swift/Objective-C called once per request to create the intial http context.
- * Does nothing than create an empty Object, but is written in Javascript to keep primary source of data here,
- * and to use a constructor specific to NodeKit (vs a generic object).  This allows applications to update
- * the prototype object if necessary
- *
- * Public to allow visibility from Swift/Objective-C.  Not intended for use outside of NodeKit.
- *
- * @function createEmptyContext
- *
- * @param context - the base http context dictionary
- * @returns (httpContext) - the Http Context object
- * @public
- */
-exports.createEmptyContext = function() {
-    try{
-        var context = Object.create(function HttpContext() {});
-        context.socket = new EventEmitter();
-        context.req = new IncomingMessage(context.socket);
-        context.res = new OutgoingMessage(context.socket);
-        return context;
-    }
-    catch (e)
-    {
-        io.nodekit.console.error(e, "createEmptyContext in _nodekit_invoke");
-    }
-}
-
-/**
- * Javascript function exposed to Swift/Objective-C called to cancel an Http Context
-  *
- * @function cancelContext
- *
- * @param owinContext - the base Http context dictionary
- * @returns (void)
- * @public
- */
-exports.cancelContext = function(httpContext) {
-    try{
-        
-        httpContext.socket.emit("close");
-    }
-    catch (e)
-    {
-        io.nodekit.console.error(e, "cancelContext in _nodekit_invoke");
-    }
-}
-
-/**
- * Javascript function exposed to Swift/Objective-C called once per request.
- * Adds a few basic properties, invokes the Application NodeFunc/AppFunc by emitting the request event,
- * waits for a return response callback, processes and passes back to Swift/Objective-C on the callback
- *
- * Public to allow visibility from Swift/Objective-C.  Not intended for use outside of nodeAppFunc.
- *
- * @function invokeContext
- *
- * @param httpContext - the base Http context dictionary
- * @param callBack - the Objective-C block callback
- * @public
- */
-exports.invokeContext = function invokeContext(httpContext, callBack) {
-    
-    try{
-        httpContext.res.on('finish', function() {
-                                  var data = httpContext.res.getBody();
-                                  httpContext["_chunk"] = data;
-                                  httpContext.res.headers["access-control-allow-origin"] = "*";
-                                  callBack();
-                                  
-                                  for (var _key in httpContext) {
-                                  if (httpContext.hasOwnProperty(_key))
-                                  delete httpContext[_key];
-                                  };
-                                  //   contextFactory.free(context);
-                                  httpContext = null;
-                                  data = null;
-
-                                  });
-        
-        private_BrowserEventHost.emit("request", httpContext.req, httpContext.res);
-        
-    }  catch (e)
-    {
-       io.nodekit.console.error(e, "invokeContext in _nodekit_invoke");
-    }
-};
 
 // INTERNAL CLASSES
 
@@ -193,42 +155,42 @@ RequestStream.prototype._read = function RequestStreamRead(size) {
  */
 
 /*
-function ResponseStream(httpContext) {
-    Writable.call(this, {decodeStrings: false});
-    this.httpContext = httpContext;
-    this.headersSent = false;
-}
-
-exports.createResponseStream = function(httpContext) {
-    httpContext["response.body"] = new ResponseStream(context);
-};
-
-
-var Writable = stream.Writable;
-util.inherits(ResponseStream, Writable);
-
-ResponseStream.prototype._write = function responseStreamWrite(chunk, enc, next){
-    if (!this.headersSent)
-    {
-        this.headersSent = true;
-        // Call On Sending Headers
-        var listeners = this.httpContext["io.nodekit.OnSendingHeaderListeners"];
-        for (var i = 0; i <  listeners.length; i++) {
-            listeners.callback(listeners.state);
-        }
-        listeners = null;
-    }
-    
-    this.httpContext["_chunk"] = chunk;
-    if (util.isBuffer(chunk))
-    {
-        this._writeBuffer();
-    }
-    else
-        this._writeString();
-    this.httpContext["_chunk"] = null;
-    next();
-};
+ function ResponseStream(httpContext) {
+ Writable.call(this, {decodeStrings: false});
+ this.httpContext = httpContext;
+ this.headersSent = false;
+ }
+ 
+ exports.createResponseStream = function(httpContext) {
+ httpContext["response.body"] = new ResponseStream(context);
+ };
+ 
+ 
+ var Writable = stream.Writable;
+ util.inherits(ResponseStream, Writable);
+ 
+ ResponseStream.prototype._write = function responseStreamWrite(chunk, enc, next){
+ if (!this.headersSent)
+ {
+ this.headersSent = true;
+ // Call On Sending Headers
+ var listeners = this.httpContext["io.nodekit.OnSendingHeaderListeners"];
+ for (var i = 0; i <  listeners.length; i++) {
+ listeners.callback(listeners.state);
+ }
+ listeners = null;
+ }
+ 
+ this.httpContext["_chunk"] = chunk;
+ if (util.isBuffer(chunk))
+ {
+ this._writeBuffer();
+ }
+ else
+ this._writeString();
+ this.httpContext["_chunk"] = null;
+ next();
+ };
  */
 
 /**
@@ -240,7 +202,7 @@ ResponseStream.prototype._write = function responseStreamWrite(chunk, enc, next)
 function ResponseStreamString() {
     Writable.call(this, {decodeStrings: true});
     this.bodyChunks = [];
-  }
+}
 
 var Writable = stream.Writable;
 util.inherits(ResponseStreamString, Writable);
@@ -254,6 +216,8 @@ ResponseStreamString.prototype.getBody = function ResponseStreamGetBody() {
     return Buffer.concat(this.bodyChunks).toString('base64');
 };
 
+
+
 /**
  * Represents an Http Incoming Request Message
  *
@@ -261,7 +225,6 @@ ResponseStreamString.prototype.getBody = function ResponseStreamGetBody() {
  * @constructor
  */
 function IncomingMessage(socket) {
-    RequestStream.call(this);
     this.socket = socket;
     this.connection = socket;
     this.httpVersion = null;
@@ -270,6 +233,8 @@ function IncomingMessage(socket) {
     this.readable = true;
     this.url = '';
     this.method = null;
+    this.body = new RequestStream()
+    
     
     this.httpVersionMajor =  1;
     this.httpVersionMinor = 1;

@@ -58,7 +58,7 @@ class NKC_Timer : NSObject, NKScriptExport {
         super.init()
     }
     
-    func onTimeout() -> NKScriptValue! {
+    func onTimeoutSync() -> NKScriptValue! {
         return self._handler!
     }
     

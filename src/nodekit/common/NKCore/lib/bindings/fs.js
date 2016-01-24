@@ -453,7 +453,7 @@ module.exports.internalModuleReadFile = function (path) {
     
     if (module.exports.internalModuleStat(path) === 0)
     {
-       var contentBase64 = io.nodekit.fs.getContent({path: path});
+       var contentBase64 = io.nodekit.fs.getContentSync({path: path});
         var content = (new Buffer( contentBase64, 'base64')).toString();
         return content;
     }

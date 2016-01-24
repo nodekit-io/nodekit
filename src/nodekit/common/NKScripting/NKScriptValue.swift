@@ -175,13 +175,13 @@ public class NKScriptValue : NSObject {
             }
             return n.stringValue
         } else if let date = obj as? NSDate {
-            return "(new Date(\(date.timeIntervalSince1970 * 1000)))"
+            return "\"\(date.toJSONDate())\""
         } else if let _ = obj as? NSData {
             // TODO: map to Uint8Array object
         } else if let a = obj as? [AnyObject] {
             return "[" + a.map(self.NKserialize).joinWithSeparator(", ") + "]"
         } else if let d = obj as? [String: AnyObject] {
-            return "{" + d.keys.map{"'\($0)': \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
+            return "{" + d.keys.map{"\"\($0)\": \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
         } else if obj === NSNull() {
             return "null"
         } else if obj == nil {

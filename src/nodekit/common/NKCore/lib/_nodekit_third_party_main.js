@@ -26,8 +26,6 @@ var EventEmitter = require('events').EventEmitter;
 console.warn = console.log;
 
 
-process.versions = { http_parser: '1.0', node: '0.10.4', v8: '3.14.5.8', ares: '1.9.0-DEV', uv: '0.10.3', zlib: '1.2.3', modules: '11', openssl: '1.0.1e' };
-
 DTRACE_NET_SERVER_CONNECTION = function(){};
 DTRACE_NET_STREAM_END= function(){};
 DTRACE_NET_SOCKET_READ  = function(){};
@@ -66,28 +64,6 @@ function stripBOM(content) {
     return content;
 }
 
-/**
- * NODEKIT INITIALIZATION
- * Load Application package.json file, register request/response server, and load debug application
- */
-
-var invoke = module._load('lib/_nodekit_invoke.js');
-io.nodekit.invokeContext = invoke.invokeContext;
-io.nodekit.createEmptyContext = invoke.createEmptyContext;
-io.nodekit.cancelContext = invoke.cancelContext;
-io.nodekit.createServer = invoke.createServer;
-
-process.package =  module._load('app/package.json', null, false);
-process.argv = ["node", __dirname + "/" + process.package['main']]
-module._load(process.package['main'], null, true);
-
-io.nodekit.console.setTimeout(1, function(){
-                              io.nodekit.console.log("NAVIGATED TO "  + process.package["node-baseurl"] + process.package["node-main"])
-                              io.nodekit.console.navigateTo(process.package["node-baseurl"] + process.package["node-main"], process.package.window.title);
-                              io.nodekit.console.resize(process.package.window.width, process.package.window.height);
-                              });
-
-
 var dns = require('dns');
 dns.platform.name_servers = [
                              {
@@ -100,5 +76,14 @@ dns.platform.name_servers = [
                              }
                              ];
 
-// # sourceURL=nodekit_third_party_main.js
+/**
+ * NODEKIT INITIALIZATION
+ * Load Application package.json file, register request/response server, and load debug application
+ */
+
+// INVOKE MAIN APP
+process.package =  module._load('app/package.json', null, false);
+process.argv = ["node", __dirname + "/" + process.package['main']]
+module._load(process.package['main'], null, true);
+
 

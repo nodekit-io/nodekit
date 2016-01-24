@@ -26,7 +26,7 @@ extension NKE_Menu: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_Menu()
-        context.NKloadPlugin(principal, namespace: "io.nodekit._menu", options: [String:AnyObject]());
+        context.NKloadPlugin(principal, namespace: "io.nodekit.electro._menu", options: [String:AnyObject]());
     }
     
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {

@@ -118,17 +118,17 @@
         }
     }
     
-    func fd() -> Int {
+    func fdSync() -> Int {
         return self._socket!.hash
     }
     
-    func remoteAddress() -> Dictionary<String, AnyObject> {
+    func remoteAddressSync() -> Dictionary<String, AnyObject> {
         let address: String = self._socket!.connectedHost
         let port : NSNumber = NSNumber(unsignedShort: self._socket!.connectedPort)
         return ["address": address, "port": port]
     }
     
-    func localAddress() -> Dictionary<String, AnyObject> {
+    func localAddressSync() -> Dictionary<String, AnyObject> {
         let address: String? = self._socket!.localHost
         let port : Int = Int(self._socket!.localPort)
         if (address != nil)

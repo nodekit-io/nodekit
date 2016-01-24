@@ -24,7 +24,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         context.NKloadPlugin(NKC_FileSystem(), namespace: "io.nodekit.fs", options: [String:AnyObject]());
     }
     
-    class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
             let url = NSBundle(forClass: NKC_FileSystem.self).pathForResource("fs", ofType: "js", inDirectory: "lib/platform")
@@ -35,7 +35,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         }
     }
     
-     func stat(module: String) -> Dictionary<String, AnyObject>  {
+     func statSync(module: String) -> Dictionary<String, AnyObject>  {
         
         let path=module; //self.getPath(module)
         var storageItem  = Dictionary<String, NSObject>()
@@ -75,7 +75,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
     }
     
     func statAsync(module: String, completionHandler: NKScriptValue) -> Void {
-        let ret = self.stat(module)
+        let ret = self.statSync(module)
         if (ret.count > 0)
         {
             completionHandler.callWithArguments([NSNull(), ret])
@@ -86,31 +86,31 @@ class NKC_FileSystem: NSObject, NKScriptExport {
     }
     
     
-    func exists (path: String) -> Bool {
+    func existsSync (path: String) -> Bool {
         return NSFileManager().fileExistsAtPath(path)
     }
     
     func getDirectoryAsync(module: String, completionHandler: NKScriptValue) -> Void  {
-        completionHandler.callWithArguments([NSNull(), self.getDirectory(module)])
+        completionHandler.callWithArguments([NSNull(), self.getDirectorySync(module)])
     }
     
-    func getDirectory(module: String) -> [String] {
+    func getDirectorySync(module: String) -> [String] {
         let path=module; //self.getPath(module)
         let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) ?? [String]()
         return dirContents
     }
     
-    func getTempDirectory() -> String? {
+    func getTempDirectorySync() -> String? {
         let fileURL: NSURL = NSURL.fileURLWithPath(NSTemporaryDirectory())
         return fileURL.path
     }
 
     
     func getContentAsync(storageItem:  Dictionary<String, AnyObject>, completionHandler: NKScriptValue) -> Void {
-          completionHandler.callWithArguments([NSNull(), self.getContent(storageItem)])
+          completionHandler.callWithArguments([NSNull(), self.getContentSync(storageItem)])
     }
     
-    func getContent(storageItem: Dictionary<String, AnyObject>) -> String {
+    func getContentSync(storageItem: Dictionary<String, AnyObject>) -> String {
         guard let path = storageItem["path"] as? String else {return ""}
         var data: NSData?
         do {
@@ -125,19 +125,19 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         return (data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)))
     }
     
-    func writeContent(storageItem: Dictionary<String, AnyObject>, str: String) -> Bool {
+    func writeContentSync(storageItem: Dictionary<String, AnyObject>, str: String) -> Bool {
         guard let path = storageItem["path"] as? String else {return false}
         let data = NSData(base64EncodedString: str, options: NSDataBase64DecodingOptions(rawValue:0))
         return data!.writeToFile(path, atomically: false)
     }
     
     func writeContentAsync(storageItem: Dictionary<String, AnyObject>, str: String, completionHandler: NKScriptValue)  {
-        completionHandler.callWithArguments([ NSNull(),  self.writeContent(storageItem, str: str)])
+        completionHandler.callWithArguments([ NSNull(),  self.writeContentSync(storageItem, str: str)])
     }
 
-    func getSource(module: String) -> String {
+    func getSourceSync(module: String) -> String {
         
-        let path=getPath(module);
+        let path=getPathSync(module);
         
         if (path=="")
         {
@@ -156,7 +156,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         return content!
     }
     
-    func mkdir (path: String) -> Bool {
+    func mkdirSync (path: String) -> Bool {
         
         
         do {
@@ -168,7 +168,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
 
     }
     
-    func rmdir (path: String) -> Bool {
+    func rmdirSync (path: String) -> Bool {
         
         
         do {
@@ -181,7 +181,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         
     }
 
-    func move (path: String, path2: String) -> Bool {
+    func moveSync (path: String, path2: String) -> Bool {
         
         
         do {
@@ -192,7 +192,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         }
     }
     
-    func unlink (path: String) -> Bool {
+    func unlinkSync (path: String) -> Bool {
         
          do {
             try NSFileManager.defaultManager().removeItemAtPath(path)
@@ -204,7 +204,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         
     }
     
-    func getPath(module: String) -> String {
+    func getPathSync(module: String) -> String {
         
         let directory = (module as NSString).stringByDeletingLastPathComponent
         var fileName = (module as NSString).lastPathComponent
@@ -238,7 +238,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         
     }
     
-    func getFullPath(parentModule: String, module: String) -> String!{
+    func getFullPathSync(parentModule: String, module: String) -> String!{
         
         if (parentModule != "")
         {

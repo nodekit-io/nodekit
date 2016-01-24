@@ -29,7 +29,7 @@ console.log("STARTING DEFAULT APPLICATION");
 var fs = require('fs');
 var path = require('path');
 
-var server = io.nodekit.createServer(function (request, response) {
+var server = io.nodekit.electro.protocol.createServer('node:', function (request, response) {
                                      console.log("EXECUTING DEFAULT APPLICATION");
                                      var file = path.resolve(__dirname, 'default.html');
                                      

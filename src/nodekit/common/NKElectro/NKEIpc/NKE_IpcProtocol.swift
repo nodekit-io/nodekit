@@ -31,7 +31,7 @@ protocol NKE_IpcProtocol: NKScriptExport {
 /* EXAMPLE USAGE
 
 // In main process.
-const ipcMain = io.nodekit.ipcMain;
+const ipcMain = io.nodekit.electro.ipcMain;
 ipcMain.on('asynchronous-message', function(event, arg) {
     console.log(arg);  // prints "ping"
     event.sender.send('asynchronous-reply', 'pong');
@@ -44,7 +44,7 @@ ipcMain.on('synchronous-message', function(event, arg) {
 
 
 // In renderer process (web page).
-const ipcRenderer = io.nodekit.ipcRenderer;
+const ipcRenderer = io.nodekit.electro.ipcRenderer;
 console.log(ipcRenderer.sendSync('synchronous-message', 'ping')); // prints "pong"
 
 ipcRenderer.on('asynchronous-reply', function(event, arg) {
@@ -55,8 +55,8 @@ ipcRenderer.send('asynchronous-message', 'ping');
 
 // In the main process.
 var window = null;
-io.nodekit.app.on('ready', function() {
-    window = new io.nodekit.BrowserWindow({width: 800, height: 600});
+io.nodekit.electro.app.on('ready', function() {
+    window = new io.nodekit.electro.BrowserWindow({width: 800, height: 600});
     window.loadURL('file://' + __dirname + '/index.html');
     window.webContents.on('did-finish-load', function() {
         window.webContents.send('ping', 'whoooooooh!');
@@ -66,7 +66,7 @@ io.nodekit.app.on('ready', function() {
 <!-- index.html -->
 :
 <script>
-io.nodekit.ipcRenderer.on('ping', function(event, message) {
+io.nodekit.electro.ipcRenderer.on('ping', function(event, message) {
     console.log(message);  // Prints "whoooooooh!"
 });
 </script>

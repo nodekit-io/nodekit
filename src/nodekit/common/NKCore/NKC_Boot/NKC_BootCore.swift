@@ -26,12 +26,13 @@ class NKC_BootCore: NSObject {
         let url = NSBundle(forClass: NKC_BootCore.self).pathForResource("_core", ofType: "js", inDirectory: "lib/platform")
         let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
         let processScript: String = syncProcessDictionary(context)
-        let script = "this.process = this.process || {};\nfunction _core(process){\n" + appjs! + "\n" + processScript + "\n}(this.process);\n"
+        let script = "this.process = this.process || {};\n(function _core(process){\n" + appjs! + "\n" + processScript + "\n})(this.process);\n"
         
-        let item = context.NKinjectJavaScript(NKScriptSource(source: script, asFilename: "io.nodekit.scripting/plugins/_core.js", namespace: "io.nodekit.core"))
+        let item = context.NKinjectJavaScript(NKScriptSource(source: script, asFilename: "io.nodekit.core/lib/platform/_core.js", namespace: "io.nodekit.core"))
         objc_setAssociatedObject(context, unsafeAddressOf(NKC_BootCore), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
        addPlugins(context)
+        
     }
     
     private class func addPlugins(context: NKScriptContext) {
@@ -83,8 +84,6 @@ class NKC_BootCore: NSObject {
         let nodekitPath:String! = _nodeKitBundle.resourcePath
         
         let webPath = (resourcePath as NSString).stringByAppendingPathComponent("/app")
-       // let nodeModulePath = (resourcePath as NSString).stringByAppendingPathComponent("/app/node_modules")
-        
         let appModulePath = (appPath as NSString).stringByAppendingPathComponent("/node_modules")
         
         let externalPackage = (appPath as NSString).stringByAppendingPathComponent("/package.json")

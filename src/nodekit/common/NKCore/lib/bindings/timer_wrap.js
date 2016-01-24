@@ -23,7 +23,7 @@ function invokeTimeoutHandler() {
 }
 
 function Timer() {
-    this._nativeTimer = io.nodekit.console.timer();
+    this._nativeTimer = new io.nodekit.Timer();
     this._nativeTimer.setOnTimeout(invokeTimeoutHandler.bind(this));
     Handle.call( this, this._nativeTimer );
 }

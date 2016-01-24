@@ -139,6 +139,7 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         return NSThread.currentThread().threadDictionary.objectForKey("nk.CurrentContext") as? NKScriptContext
     }
     
+   
     public func NKserialize(object: AnyObject?) -> String {
         var obj: AnyObject? = object
         if let val = obj as? NSValue {
@@ -167,8 +168,8 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
             }
             return n.stringValue
         } else if let date = obj as? NSDate {
-            return "(new Date(\(date.timeIntervalSince1970 * 1000)))"
-        } else if let _ = obj as? NSData {
+            return "\"\(date.toJSONDate())\""
+        }  else if let _ = obj as? NSData {
             // TODO: map to Uint8Array object
         } else if let a = obj as? [AnyObject] {
             return "[" + a.map(self.NKserialize).joinWithSeparator(", ") + "]"

@@ -24,7 +24,7 @@
 // func callbackEnd(id: Int, res: Dictionary<String, AnyObject>) -> Void {
 // func isProtocolHandled(scheme: String, callback: NKScriptValue) -> Void {
 
-var protocol = io.nodekit.protocol
+var protocol = io.nodekit.electro.protocol
 
 protocol._init = function() {
     this.callbacks = {}
@@ -67,6 +67,7 @@ protocol.callbackFile = function(request) {
     var handler = this.callbacks[request["scheme"]];
     var id = request["id"];
     handler(request, function(arg){
+            
             if (typeof arg === 'string') {
                 this.callbackEnd(id, {'path': arg})
              } else {
@@ -81,9 +82,15 @@ protocol.callbackBuffer = function(request) {
     var id = request["id"];
     handler(request, function(arg){
             if (Buffer.isBuffer(arg)) {
-                   this.callbackEnd(id, {'data': arg.toString('base64')})
+                    var statusCode = 200;
+                    var header = {'Content-Type': 'text/html; charset=utf-8'}
+                   this.callbackEnd(id, {'data': arg.toString('base64'), 'headers': header, 'statusCode': statusCode })
              } else {
-                    this.callbackEnd(id, {'data': arg['data'].toString('base64'), 'mimeType': arg['mimeType'], 'charset': arg['charset'] } )
+                        var contentType = arg['mimeType'] || 'text/html'
+                        var charset = arg['charset'] || 'utf-8'
+                        var header = {'Content-Type': contentType + "; charset=" + charset}
+                        var statusCode = arg['statusCode'] || 200;
+                        this.callbackEnd(id, {'data': arg['data'].toString('base64'), 'headers': header, 'statusCode': statusCode } )
              }
             id = null;
         })
@@ -94,12 +101,19 @@ protocol.callbackString = function(request) {
     var id = request["id"];
     handler(request, function(arg){
             if (typeof arg === 'string') {
-                // TO DO CHECK FOR CHARSET AND CONVERT TO BUFFER IF UTF16 or other than UTF8
-                this.callbackEnd(id, {'data': btoa(arg)})
+            // TO DO CHECK FOR CHARSET AND CONVERT TO BUFFER IF UTF16 or other than UTF8
+            var header = {'Content-Type': 'text/html; charset=utf-8'}
+            var statusCode = 200;
+            
+            this.callbackEnd(id, {'data': btoa(arg), 'headers': header, 'statusCode': statusCode })
             } else {
-                this.callbackEnd(id, {'data': btoa(arg['data']), 'mimeType': arg['mimeType'], 'charset': arg['charset'] } )
+                var contentType = arg['mimeType'] || 'text/html'
+                var charset = arg['charset'] || 'utf-8'
+                var header = {'Content-Type': contentType + "; charset=" + charset}
+                var statusCode = arg['statusCode'] || 200;
+                this.callbackEnd(id, {'data': btoa(arg['data']), 'headers': header, 'statusCode': statusCode } )
             }
-                id = null;
+            id = null;
             })
 }
 

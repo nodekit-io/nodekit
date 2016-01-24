@@ -25,7 +25,7 @@ extension NKE_Dialog: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_Dialog()
-        context.NKloadPlugin(principal, namespace: "io.nodekit.dialog", options: [String:AnyObject]());
+        context.NKloadPlugin(principal, namespace: "io.nodekit.electro.dialog", options: [String:AnyObject]());
     }
     
 }

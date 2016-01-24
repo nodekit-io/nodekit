@@ -105,7 +105,7 @@ extension NKE_BrowserWindow: NKScriptExport {
     
     static func attachTo(context: NKScriptContext) {
         let principal = NKE_BrowserWindow.self
-        context.NKloadPlugin(principal, namespace: "io.nodekit.BrowserWindow", options: [String:AnyObject]());
+        context.NKloadPlugin(principal, namespace: "io.nodekit.electro.BrowserWindow", options: [String:AnyObject]());
     }
     
     class func rewriteGeneratedStub(stub: String, forKey: String) -> String {

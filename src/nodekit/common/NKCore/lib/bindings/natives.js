@@ -91,6 +91,15 @@ var source = {};
            });
 
 /* CUSTOM NODE.JS API ADDITIONS*/
+[
+   	'electro',
+ ].forEach(function (name) {
+           source[name] = getSource('lib/builtin-nodekit/' + name );
+           });
+
+source['electron'] = source['electro'];
+
+/* CUSTOM NODE.JS API ADDITIONS*/
   source["_third_party_main"] = getSource('lib/_nodekit_third_party_main.js');
 
 source.config = "\\gyp\n{}";

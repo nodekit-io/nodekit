@@ -69,7 +69,7 @@ var fs = require('fs');
  
  
      this.writeFixture  = function(func, data) {
-         var tmpFile = io.nodekit.fs.getTempDirectory() + '/nodekit-spec.txt';
+         var tmpFile = io.nodekit.fs.getTempDirectorySync() + '/nodekit-spec.txt';
          if (!data) {
          data = 'This is a fixture file used for testing. It may be deleted.';
          }
@@ -81,7 +81,7 @@ var fs = require('fs');
      
   
      this.createTempFile  = function(data) {
-         var tmpFile = io.nodekit.fs.getTempDirectory() + '/nodekit-spec.txt';
+         var tmpFile = io.nodekit.fs.getTempDirectorySync() + '/nodekit-spec.txt';
          if (!data) {
          data = 'This is a fixture file used for testing. It may be deleted.';
          }

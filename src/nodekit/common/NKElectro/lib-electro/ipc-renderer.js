@@ -23,7 +23,7 @@
 // event "emit", withArguments: ["nk.IPCtoRenderer", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
 // evet "emit", withArguments: ["nk.IPCReplytoRenderer", item.sender, item.channel, item.replyId, item.arg[0]],
 
-var ipcRenderer = io.nodekit.ipcRenderer
+var ipcRenderer = io.nodekit.electro.ipcRenderer
 
 ipcRenderer._init = function() {
     

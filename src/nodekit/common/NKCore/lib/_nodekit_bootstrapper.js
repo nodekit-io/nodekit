@@ -28,7 +28,6 @@ var Startup = function Startup() {
     
     console.log = io.nodekit.console.log;
     
-    
     // run vanilla node.js startup
     BootstrapModule.bootstrap('lib/node.js');
     
@@ -61,17 +60,16 @@ function BootstrapModule(id) {
 }
 
 BootstrapModule.getSource = function(id) {
-    
-    var append = "\r\n //" + "# source" + "URL=" + id + "\r\n";
+    var append = "\r\n //# sourceURL=io.nodekit.core/" + id + "\r\n";
     
     if (id.indexOf("/") > -1)
-        return io.nodekit.fs.getSource(id) + append;
+        return io.nodekit.fs.getSourceSync(id) + append;
     
     if (BootstrapModule.nodeSourceExists(id)) {
         return BootstrapModule.getNodeSource(id) + append;
     }
     
-    return io.nodekit.fs.getSource(id) + append;
+    return io.nodekit.fs.getSourceSync(id) + append;
 }
 
 BootstrapModule._cache = {};
@@ -140,11 +138,9 @@ BootstrapModule.error = function(e, source)
     
     message += "</body>";
     io.nodekit.console.loadString(message, "Debug");
-    
     io.nodekit.console.log("EXCEPTION: " + e);
     io.nodekit.console.log("Source: " + sourceFile );
     io.nodekit.console.log("Stack: " + e.stack );
-
 };
 
 BootstrapModule.bootstrap = function(id) {
@@ -165,7 +161,7 @@ BootstrapModule.runInThisContext = function(code, options) {
     var displayErrors = options.displayErrors || false;
     
     try {
-        return io.nodekit.fs.eval(code, filename);
+        return io.nodekit.fs.evalSync(code, filename);
     } catch (e) {
         io.nodekit.console.log(e.message + " - " + filename + " - " + e.stack);
         
@@ -191,7 +187,7 @@ BootstrapModule.prototype.compile = function() {
     var reqFunc = function(id) {
         if (id[0] == ".")
         {
-            id = io.nodekit.fs.getFullPath(self.filename, id.substr(1));
+            id = io.nodekit.fs.getFullPathSync(self.filename, id.substr(1));
         }
         
         return BootstrapModule._load(id);

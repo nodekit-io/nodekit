@@ -34,7 +34,7 @@ public class NKC_Crypto : NSObject {
         }
     }
     
-    public func getRandomBytes(blockSize:Int) -> [UInt] {
+    public func getRandomBytesSync(blockSize:Int) -> [UInt] {
         var randomIV:[UInt] = [UInt]();
         for _ in 0..<blockSize {
             randomIV.append(UInt(UInt8(truncatingBitPattern: arc4random_uniform(256))));

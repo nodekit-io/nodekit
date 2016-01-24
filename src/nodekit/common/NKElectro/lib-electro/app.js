@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-var app = io.nodekit.app;
+var app = io.nodekit.electro.app;
 var bindings = app;
 
 app.commandLine = {

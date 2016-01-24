@@ -86,7 +86,7 @@
         self._socket?.setDelegate(self, delegateQueue: dispatch_get_main_queue())
     }
  
-    func bind (address: String, port: Int, flags: Int) -> String {
+    func bindSync(address: String, port: Int, flags: Int) -> String {
         self._addr = address as String;
         self._port = UInt16(port)
         var err: NSError? = nil
@@ -157,7 +157,7 @@
         self._socket!.sendData(data, toHost: address, port: UInt16(port), withTimeout: -1, tag: 0)
     }
     
-    func localAddress() -> Dictionary<String, AnyObject> {
+    func localAddressSync() -> Dictionary<String, AnyObject> {
         let address: String = self._socket!.localHost()
         let port : Int = Int(self._socket!.localPort())
         return  ["address": address, "port": port]

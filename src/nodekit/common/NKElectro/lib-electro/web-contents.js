@@ -21,8 +21,8 @@
 // func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
 //  event "emit", withArguments: ["nk.IPCReplytoMain", item.sender, item.channel, item.replyId, item.arg[0]])
 
-var WebContentsUI = io.nodekit.WebContentsUI
-var WebContentsWK = io.nodekit.WebContentsWK
+var WebContentsUI = io.nodekit.electro.WebContentsUI
+var WebContentsWK = io.nodekit.electro.WebContentsWK
 
 WebContentsWK.prototype._init = WebContentsUI.prototype._init = function() {
     this.emit = function(event){ console.log("EVENT" + event); }

@@ -48,7 +48,7 @@ function TCP(tcp) {
     if ((tcp !== null)  && (typeof(tcp) !== 'undefined'))
     {
         this._stream = tcp.stream;
-        this._remoteAddress = tcp.remoteAddress();
+        this._remoteAddress = tcp.remoteAddressSync();
     } else
     {
         this._remoteAddress = null;
@@ -77,7 +77,7 @@ util.inherits(TCP, StreamWrap);
 
 Object.defineProperty(TCP.prototype, '_fd', {
                       get: function() {
-                      return this._tcp.fd;
+                      return this._tcp.fdSync;
                       }
                       });
 
@@ -128,7 +128,7 @@ TCP.prototype.getpeername = function(out) {
 };
 
 TCP.prototype.getsockname = function(out) {
-    var local = this._tcp.localAddress();
+    var local = this._tcp.localAddressSync();
     out.address = local.address;
     out.port    = local.port;
     out.family  ='IPv4';
@@ -139,7 +139,7 @@ TCP.prototype.bind6 = function(addr,port) {
 };
 
 TCP.prototype.bind = function(addr, port) {
-    this._tcp.bind( addr, port);
+    this._tcp.bindSync( addr, port);
 };
 
 TCP.prototype.listen = function(backlog) {

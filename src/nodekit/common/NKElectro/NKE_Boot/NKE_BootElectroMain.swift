@@ -25,7 +25,7 @@ class NKE_BootElectroMain: NSObject {
         let url = NSBundle(forClass: NKE_BootElectroMain.self).pathForResource("_nke_main", ofType: "js", inDirectory: "lib-electro")
         let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
         let script = "function loadbootstrap(){\n" + appjs! + "\n}\n" + "loadbootstrap();" + "\n"
-        let item = context.NKinjectJavaScript(NKScriptSource(source: script, asFilename: "io.nodekit.scripting/plugins/_nke_main.js", namespace: "io.nodekit.electro"))
+        let item = context.NKinjectJavaScript(NKScriptSource(source: script, asFilename: "io.nodekit.electro/lib-electro/_nke_main.js", namespace: "io.nodekit.electro.main"))
         
         objc_setAssociatedObject(context, unsafeAddressOf(NKE_BootElectroMain), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
@@ -37,9 +37,9 @@ class NKE_BootElectroMain: NSObject {
         NKE_Menu.attachTo(context);
         NKE_Protocol.attachTo(context);
         
-        //   menuPlugin = context.NKloadPlugin(NKEMenu(), namespace: "io.nodekit.menu", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue]);
+        //   menuPlugin = context.NKloadPlugin(NKEMenu(), namespace: "io.nodekit.electro.menu", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue]);
         
-        //   menuItemPlugin = context.NKloadPlugin(NKEMenuItem(), namespace: "io.nodekit.menuItem", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue]);
+        //   menuItemPlugin = context.NKloadPlugin(NKEMenuItem(), namespace: "io.nodekit.electro.menuItem", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue]);
         
         
     }

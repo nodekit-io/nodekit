@@ -51,13 +51,22 @@ public class NKNodeKit: NKScriptContextDelegate {
         self.context = context;
         
         // INSTALL JAVASCRIPT ENVIRONMENT ON MAIN CONTEXT
-        NKC_BootCore.bootTo(context)
-        NKE_BootElectroMain.bootTo(context)
+         NKE_BootElectroMain.bootTo(context)
+         NKC_BootCore.bootTo(context)
         
+        // INJECT OTHER PLUGINS
         let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.test", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue])
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script1, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
-        let script2Source = "var p = new io.nodekit.BrowserWindow();\n var result = io.nodekit.test.alertSync('hello'); \nio.nodekit.test.logconsole('hello' + result);\n p.webContents.send('hello world')\n";
+        
+        // INJECT NODE BOOTSTRAP
+        let url = NSBundle(forClass: NKNodeKit.self).pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
+        let script = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
+        let item = context.NKinjectJavaScript(NKScriptSource(source: script!, asFilename: "io.nodekit.core/lib/_nodekit_bootstrapper.js", namespace: "io.nodekit.bootstrapper"))
+        objc_setAssociatedObject(context, unsafeAddressOf(NKNodeKit), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        
+
+        let script2Source = "var p = new io.nodekit.electro.BrowserWindow();\n var result = io.nodekit.test.alertSync('hello'); \nio.nodekit.test.logconsole('hello' + result);\n p.webContents.send('hello world')\n";
         let script2 = context.NKinjectJavaScript(NKScriptSource(source: script2Source, asFilename: "startup.js"))
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script2, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
         
@@ -84,14 +93,7 @@ public class NKNodeKit: NKScriptContextDelegate {
         })
         
         /*
-NKJavascriptBridge.attachToContext(context)
-self.context = context;
-let url = _nodeKitBundle.pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
 
-let bootstrapper = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding);
-
-let nsurl: NSURL = NSURL(fileURLWithPath: url!)
-context.evaluateScript(bootstrapper! as String, withSourceURL: nsurl)
 */
     }
 

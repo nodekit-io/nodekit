@@ -23,7 +23,7 @@
 // event "nk.IPCtoMain": item.sender, item.channel, item.replyId, item.arg
 // event "nk.IPCReplytoMain": item.sender, item.channel, item.replyId, item.arg[0]
 
-var ipcMain = io.nodekit.ipcMain
+var ipcMain = io.nodekit.electro.ipcMain
 
 ipcMain.on('nk.IPCtoMain', function (sender, channel, replyId, arg) {
     var webContents = io.nodeKit.BrowserWindow.fromId(sender).webContents;

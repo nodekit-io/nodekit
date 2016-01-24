@@ -226,11 +226,13 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
                 operand.fill(null, operand.length, args.length);
         }
         if ((name == "+") || (name.indexOf("Sync", operand.length - "Sync".length) !== -1))
-                 return this.$channel.postMessageSync({
-                                             '$opcode': name,
-                                             '$operand': operand,
-                                             '$target': this.$instanceID
-                                             })
+                   { var result = this.$channel.postMessageSync({
+                                                               '$opcode': name,
+                                                               '$operand': operand,
+                                                               '$target': this.$instanceID
+                                                                });
+                   return JSON.parse(result, JSON.dateParser);
+                   }
                    else
         this.$channel.postMessage({
             '$opcode': name,
@@ -369,6 +371,20 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
             listener.apply(this, arguments);
         });
     };
+                   
+    /* Polyfill JSON Date Parsing */
+                   if (JSON && !JSON.dateParser) {
+                   var reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+                   JSON.dateParser = function (key, value) {
+                   if (typeof value === 'string') {
+                   var a = reISO.exec(value);
+                   if (a) return new Date(value);
+                   }
+                   return value;
+                   };
+                   
+                   }
+                   
                    
     return exports;
                    
