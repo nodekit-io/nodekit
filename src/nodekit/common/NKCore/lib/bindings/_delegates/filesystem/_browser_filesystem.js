@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Domabo;  
+ * Copyright (c) 2016 OffGrid Networks;  
  *
  * Licensed under the the MIT license (the "License");
  * you may not use this file except in compliance with the License.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Domabo
+ * Copyright (c) 2016 OffGrid Networks
  *
  * Portions Copyright (c) 2008-2014 Pivotal Labs
  * Portions Copyright (C) 2011-2014 Ivan De Marino

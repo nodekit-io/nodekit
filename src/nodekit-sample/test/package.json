@@ -11,7 +11,7 @@
     "nodekit",
     "nodekit.io"
   ],
-  "author": "Domabo",
+  "author": "OffGrid Networks",
   "license": "MIT",
   "dependencies": {
     "connect": "^3.2.0",

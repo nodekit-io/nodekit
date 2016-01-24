@@ -5,7 +5,7 @@
     "node-baseurl": "http://node/",
     "node-splashtime": 2000,
     "description": "Default application",
-    "author": "Domabo",
+    "author": "OffGrid Networks",
     "version": "0.5.0",
     "repository": "https://github.com/nodekit-io/nodekit",
     "dependencies": {   }  ,

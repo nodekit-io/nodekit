@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Domabo
+ * Copyright (c) 2016 OffGrid Networks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Domabo.  Portions copyright (c) 2014 Drew Young
+ * Copyright (c) 2016 OffGrid Networks.  Portions copyright (c) 2014 Drew Young
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
