@@ -1,15 +1,17 @@
-![NK-Electro](../images/NKElectro.png)
+![NK-Electro](../images/NKElectro.png?v01)
+{NK} Electro is an API for {NK} NodeKit applications that facilitate application lifecycle and user interface tasks.  It is inspired by the Atom Electron application programming interface, and is generally a lighter-weight but code-compatible subset.
+
 # app
 
 The `app` module is responsible for controlling the application's lifecycle.
 
-The following example shows how to quit the application when the last window is
-closed:
+The following example shows how to open the main window when the application is ready to start:
 
 ```javascript
 const app = require('electro').app;
-app.on('window-all-closed', function() {
-  app.quit();
+const BrowserWindow = require('electro').BrowserWindow
+app.on('ready', function() {
+  var window = new BrowserWindow();
 });
 ```
 
