@@ -1,4 +1,4 @@
-![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/banner.png)
+![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/banner.png?v1)
 
 # {NK} NodeKit
 
