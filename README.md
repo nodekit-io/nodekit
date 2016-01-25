@@ -1,14 +1,13 @@
 ![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/banner.png?v1)
-
-# {NK} NodeKit
-
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
-
-NodeKit is the open-source, cross-platform, embedded engine for Node.js that provides a full Node.js instance inside any OS X, iOS, Android, or Windows applications.
+{NK} NodeKit is the universal, open-source, cross-platform, embedded engine for Node.js that provides a full Node.js instance inside any OS X, iOS, Android, or Windows applications.
 
 It enables applications developed for node.js to developed once and run without alteration for any of the above platforms as well as in the browser.
 
 This is a refined preview of the technology and is not intended for production use, but is supporting some production app store applications.  Use at your own caution.  Contributions welcome (details to follow)
+
+# {NK} NodeKit
+
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 
 ## Sample Application
