@@ -71,18 +71,6 @@ BrowserWindow.fromWebContents = function(webContents) {
     }
 };
 
-BrowserWindow.fromDevToolsWebContents = function(webContents) {
-    var i, len, ref1, window, windows;
-    windows = BrowserWindow.getAllWindows();
-    for (i = 0, len = windows.length; i < len; i++) {
-        window = windows[i];
-        if ((ref1 = window.devToolsWebContents) != null ? ref1.equal(webContents) : void 0) {
-            return window;
-        }
-    }
-};
-
-
 /* Helpers. */
 
 BrowserWindow.prototype.loadURL = function() {
