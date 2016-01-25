@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>NodeKit by nodekit-io</title>
+    <title>{NK} NodeKit Engine by nodekit-io</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/github-dark.css">
@@ -17,8 +17,8 @@
   <body>
     <div class="wrapper">
       <header>
-        <h1>NodeKit</h1>
-        <p>Embedded Node.js engine for iOS Mobile, OS X Desktop, Android, Windows Mobile, and Windows 10 Desktop</p>
+        <h1>{NK} NodeKit Engine</h1>
+        <p>The {NK} NodeKit engine for iOS Mobile, OS X Desktop, Android, Windows Mobile, and Windows 10 Desktop</p>
         <p class="view"><a href="https://github.com/nodekit-io/nodekit">View the Project on GitHub <small>nodekit-io/nodekit</small></a></p>
         <ul>
           <li><a href="https://github.com/nodekit-io/nodekit/zipball/master">Download <strong>ZIP File</strong></a></li>
@@ -30,7 +30,7 @@
         <p><img src="https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/nodekit.png" alt="http://nodekit.io"></p>
 
 <h1>
-<a id="nodekit" class="anchor" href="#nodekit" aria-hidden="true"><span class="octicon octicon-link"></span></a>NodeKit</h1>
+<a id="nodekit" class="anchor" href="#nodekit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>NodeKit</h1>
 
 <p><a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible"></a></p>
 
@@ -41,14 +41,14 @@
 <p>This is a refined preview of the technology and is not intended for production use, but is supporting some production app store applications.  Use at your own caution.  Contributions welcome (details to follow)</p>
 
 <h2>
-<a id="sample-application" class="anchor" href="#sample-application" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sample Application</h2>
+<a id="sample-application" class="anchor" href="#sample-application" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Application</h2>
 
 <div class="highlight highlight-source-shell"><pre>git clone https://github.com/nodekit-io/nodekit-sample.git
 <span class="pl-c1">cd</span> nodekit-sample
 carthage update</pre></div>
 
 <h2>
-<a id="simple-configuration" class="anchor" href="#simple-configuration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simple Configuration</h2>
+<a id="simple-configuration" class="anchor" href="#simple-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple Configuration</h2>
 
 <p>Two lines in main.swift to launch an embedded WebKit view and start the NodeKit engine (already included for you in the sample).   </p>
 
@@ -72,14 +72,14 @@ NKNodeKit<span class="pl-k">.</span><span class="pl-c1">start</span>();</pre></d
 <p>Then just build in XCode for both iOS and Mac targets.</p>
 
 <h2>
-<a id="distribution" class="anchor" href="#distribution" aria-hidden="true"><span class="octicon octicon-link"></span></a>Distribution</h2>
+<a id="distribution" class="anchor" href="#distribution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Distribution</h2>
 
 <p>The NodeKit repository contains an XCode project that compiles to an iOS 8 + and OS X 10.9 + dynamic framework.  Versions for Windows 10 and Android are in development.</p>
 
 <p>The single framework file (containing binary code and embedded resources like the core Node.js javascript code) can just be included in any iOS or OS X application.    See the sample app for an example.   You can thus compile and create your own projects;  no app store consumer really needs to know how you built it unless you want to tell them or modify the NodeKit source. </p>
 
 <h2>
-<a id="is-it-really-nodejs-" class="anchor" href="#is-it-really-nodejs-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Is it really Node.js ?</h2>
+<a id="is-it-really-nodejs-" class="anchor" href="#is-it-really-nodejs-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Is it really Node.js ?</h2>
 
 <p>Yes for all the javascript portions (most of Node.js is written in javascript, of course).  No for all the V8 bindings.  </p>
 
@@ -88,7 +88,7 @@ NKNodeKit<span class="pl-k">.</span><span class="pl-c1">start</span>();</pre></d
 <p>This means most Node packages will work without modification.  Those that require node-gyp would require an alternative. </p>
 
 <h2>
-<a id="how-does-it-relate-to-cordova-electron-and-node-webkit-" class="anchor" href="#how-does-it-relate-to-cordova-electron-and-node-webkit-" aria-hidden="true"><span class="octicon octicon-link"></span></a>How does it relate to Cordova, Electron, and Node-Webkit ?</h2>
+<a id="how-does-it-relate-to-cordova-electron-and-node-webkit-" class="anchor" href="#how-does-it-relate-to-cordova-electron-and-node-webkit-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How does it relate to Cordova, Electron, and Node-Webkit ?</h2>
 
 <p>We've built upon the shoulders of the excellent Nodelike and Nodyn projects (both no longer maintained) and even Microsoft's Node fork  by taking the approach of re-writing the bindings to V8.  However, we've rewritten (or reused open source) versions in javascript as far as possible.  The whole theory of Node.js is that javascript is pretty fast, in fact if compiled its really really fast.  Bridging back and forth to native introduces latency which we like to avoid.</p>
 
@@ -97,7 +97,7 @@ NKNodeKit<span class="pl-k">.</span><span class="pl-c1">start</span>();</pre></d
 <p>So on iOS and Macs we use JavaScriptCore... on Windows we use Chakra... and on Android and Linux we use V8.   Since its Node.js on each the only things we had to write (once) were the bindings and again really just the primary four (TCP sockets, UDP sockets, timers and the file system).  Others like buffers, cryptography etc., are replaced by javascript only versions.</p>
 
 <h2>
-<a id="supports" class="anchor" href="#supports" aria-hidden="true"><span class="octicon octicon-link"></span></a>Supports</h2>
+<a id="supports" class="anchor" href="#supports" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supports</h2>
 
 <p>iOS 8+, 9+
 OS X 10.9, 10.10, 10.11
@@ -105,19 +105,19 @@ Swift and Objective-C source (we wrote it nearly all in Swift 2.x)
 Node.js ~0.12.x</p>
 
 <h2>
-<a id="still-in-development" class="anchor" href="#still-in-development" aria-hidden="true"><span class="octicon octicon-link"></span></a>Still In Development</h2>
+<a id="still-in-development" class="anchor" href="#still-in-development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Still In Development</h2>
 
 <p>Android
 Windows 10
 Node.js 4.x/5.x updates (we run a very stable 0.12.x, and are testing the 4.x version in a development branch).</p>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
 <p>Apache 2.0</p>
 
 <h2>
-<a id="news" class="anchor" href="#news" aria-hidden="true"><span class="octicon octicon-link"></span></a>News</h2>
+<a id="news" class="anchor" href="#news" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>News</h2>
 
 <p>(December 2015) Updated for Swift 2.0 and refactored for iOS and OS X.
 Master branch contains Node.js v0.12.x (working).<br>
