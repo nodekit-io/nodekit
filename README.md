@@ -1,6 +1,6 @@
-![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/nodekit.png)
+![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/banner.png)
 
-# NodeKit
+# {NK} NodeKit
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
