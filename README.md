@@ -1,4 +1,4 @@
-![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/banner.png?v1)
+![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/doc/images/banner.png?v01)
 {NK} NodeKit is the universal, open-source, cross-platform, embedded engine for Node.js that provides a full Node.js instance inside any OS X, iOS, Android, or Windows applications.
 
 It enables applications developed for node.js to developed once and run without alteration for any of the above platforms as well as in the browser.
