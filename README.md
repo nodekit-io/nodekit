@@ -46,8 +46,8 @@ Build in XCode for both iOS and Mac targets.
 
 
 
-[![{NK} Scripting](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKScripting.png?v01)](https://github.com/nodekit-io/nodekit/blob/master/docs/NKScripting/readme.md)
-> [**{NK} Scripting**](https://github.com/nodekit-io/nodekit/blob/master/docs/NKScripting/readme.md) is an advanced JavaScript - Native (Swift, Objective-C, .NET C#) bridge for hybrid applications.   It builds upon the core platform bridges such as JavaScriptCore or ChakraCore, but abstracts the implementation details and standardizes across even multiple scripting engine families on the same platform (e.g., Nitro WKWebView and UIWebViews on iOS).
+[![{NK} Scripting](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKScripting.png?v01)](https://github.com/nodekit-io/nodekit/blob%2Fmaster/docs/NKScripting/readme.md)
+> [**{NK} Scripting**](https://github.com/nodekit-io/nodekit/blob%2Fmaster/docs/NKScripting/readme.md) is an advanced JavaScript - Native (Swift, Objective-C, .NET C#) bridge for hybrid applications.   It builds upon the core platform bridges such as JavaScriptCore or ChakraCore, but abstracts the implementation details and standardizes across even multiple scripting engine families on the same platform (e.g., Nitro WKWebView and UIWebViews on iOS).
 It is the foundation of {NK} NodeKit and can be used without {NK} Electro or {NK} Core or with substitutes.
 
 [![{NK} Electro](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKElectro.png?v01)](https://github.com/nodekit-io/nodekit/blob/master/docs/NKElectro/readme.md)
