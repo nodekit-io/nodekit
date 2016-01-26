@@ -20,14 +20,14 @@
 
 import Foundation
 
-public class NKScriptValue : NSObject {
-    
+public class NKScriptValue: NSObject {
+
     public let namespace: String
     private weak var _channel: NKScriptChannel?
     public var channel: NKScriptChannel { return _channel!; }
     public var context: NKScriptContext! { return _channel!.context!; }
     weak var origin: NKScriptValue!
-    
+
     // This object is a plugin object.
     init(namespace: String, channel: NKScriptChannel, origin: NKScriptValue?) {
         self.namespace = namespace
@@ -35,7 +35,7 @@ public class NKScriptValue : NSObject {
         super.init()
         self.origin = origin ?? self
     }
-    
+
     // The object is a stub for a JavaScript object which was retained as an argument.
     private var reference = 0
     convenience init(reference: Int, channel: NKScriptChannel, origin: NKScriptValue) {
@@ -43,7 +43,7 @@ public class NKScriptValue : NSObject {
         self.init(namespace: namespace, channel: channel, origin: origin)
         self.reference = reference
     }
-    
+
     deinit {
         let script: String
         if reference == 0 {
@@ -56,7 +56,7 @@ public class NKScriptValue : NSObject {
         }
         context?.NKevaluateJavaScript(script, completionHandler: nil)
     }
-    
+
     // Create from, Convert to and Compare with Native Objects
     //    init!(object value: AnyObject!, inContext context: NKScriptContext!)
     //   func toObject() -> AnyObject!
@@ -64,8 +64,8 @@ public class NKScriptValue : NSObject {
     //  func isEqualToObject(value: AnyObject!) -> Bool
     //  func isEqualWithTypeCoercionToObject(value: AnyObject!) -> Bool
     //  func isInstanceOf(value: AnyObject!) -> Bool
-    
-    
+
+
      // JavaScript object operations
     public func constructWithArguments(arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         let exp = "new " + scriptForCallingMethod(nil, arguments: arguments)
@@ -75,7 +75,7 @@ public class NKScriptValue : NSObject {
         let exp = "new \(scriptForCallingMethod(nil, arguments: arguments))"
         guard let result = try evaluateExpression(exp) else {
             NSException(name: "JavaScriptExceptionOccurred", reason: "NKScriptValue.construct", userInfo: nil).raise()
-            return "";
+            return ""
         }
         return result
     }
@@ -89,7 +89,7 @@ public class NKScriptValue : NSObject {
      public func callWithArguments(arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject! {
         return evaluateExpression(scriptForCallingMethod(nil, arguments: arguments), error: error)
     }
-    
+
     public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         let exp = scriptForCallingMethod(method, arguments: arguments)
         evaluateExpression(exp, completionHandler: completionHandler)
@@ -142,17 +142,17 @@ public class NKScriptValue : NSObject {
         return scriptForFetchingProperty(name) + " = " + self.context.NKserialize(value)
     }
     private func scriptForCallingMethod(name: String!, arguments: [AnyObject]?) -> String {
-        
+
         let args = arguments?.map(NKserialize) ?? []
         return scriptForFetchingProperty(name) + "(" + args.joinWithSeparator(", ") + ")"
     }
-    
+
     private func NKserialize(object: AnyObject?) -> String {
         var obj: AnyObject? = object
         if let val = obj as? NSValue {
             obj = val as? NSNumber ?? val.nonretainedObjectValue
         }
-        
+
         if let o = obj as? NKScriptValue {
             return o.namespace
         } else if let o1 = obj as? NKScriptExport {
@@ -161,7 +161,7 @@ public class NKScriptValue : NSObject {
                     return scriptObject.namespace
                 } else {
                     let scriptObject = NKScriptValueNative(object: o2, inContext: self.context)
-                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN);
+                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
                     return scriptObject.namespace
                 }
             }
@@ -181,7 +181,7 @@ public class NKScriptValue : NSObject {
         } else if let a = obj as? [AnyObject] {
             return "[" + a.map(self.NKserialize).joinWithSeparator(", ") + "]"
         } else if let d = obj as? [String: AnyObject] {
-            return "{" + d.keys.map{"\"\($0)\": \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
+            return "{" + d.keys.map {"\"\($0)\": \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
         } else if obj === NSNull() {
             return "null"
         } else if obj == nil {
@@ -227,11 +227,11 @@ extension NKScriptValue {
     private func evaluateExpression(expression: String) throws -> AnyObject? {
         return wrapScriptObject(try context?.NKevaluateJavaScript(scriptForRetaining(expression)))
     }
-    
+
     private func evaluateExpression(expression: String, error: NSErrorPointer) -> AnyObject? {
         return wrapScriptObject(context?.NKevaluateJavaScript(expression, error: error))
     }
-    
+
     private func evaluateExpression(expression: String, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         guard let completionHandler = completionHandler else {
             context?.NKevaluateJavaScript(expression, completionHandler: nil)
@@ -242,11 +242,11 @@ extension NKScriptValue {
             completionHandler(self?.wrapScriptObject(result) ?? result, error)
         }
     }
-    
+
     private func scriptForRetaining(script: String) -> String {
         return origin != nil ? "\(origin.namespace).$retainObject(\(script))" : script
     }
-    
+
     internal func wrapScriptObject(object: AnyObject!) -> AnyObject! {
         if let dict = object as? [String: AnyObject] where dict["$sig"] as? NSNumber == 0x5857574F {
             if let num = dict["$ref"] as? NSNumber {
@@ -258,4 +258,3 @@ extension NKScriptValue {
         return object
     }
 }
-

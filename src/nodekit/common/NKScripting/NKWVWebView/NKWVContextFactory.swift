@@ -20,13 +20,12 @@ import Foundation
 import WebKit
 
 extension NKScriptContextFactory {
-   public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
-    {
+   public func createContextUIWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) {
         let createWebView = { () -> Void in
-            
-            let webView:WebView = WebView(frame: CGRectZero)
-            
-            let webPrefs : WebPreferences = WebPreferences.standardPreferences()
+
+            let webView: WebView = WebView(frame: CGRect.zero)
+
+            let webPrefs: WebPreferences = WebPreferences.standardPreferences()
             webPrefs.javaEnabled = false
             webPrefs.plugInsEnabled = false
             webPrefs.javaScriptEnabled = true
@@ -36,26 +35,23 @@ extension NKScriptContextFactory {
             webPrefs.allowsAnimatedImageLooping = true
             webPrefs.shouldPrintBackgrounds = true
             webPrefs.userStyleSheetEnabled = false
-            
+
             webView.applicationNameForUserAgent = "nodeKit"
             webView.drawsBackground = false
             webView.preferences = webPrefs
             let id = NKScriptContextFactory.sequenceNumber
             webView.NKgetScriptContext(id, options: options, delegate: cb)
-            
+
             var item = Dictionary<String, AnyObject>()
             item["WebView"] = webView
-            NKScriptContextFactory._contexts[id] = item;
-            
+            NKScriptContextFactory._contexts[id] = item
+
             webView.mainFrame.loadHTMLString("<HTML><HEAD><script>// nodekit</script></HEAD><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
         }
-        
-        if (NSThread.isMainThread())
-        {
+
+        if (NSThread.isMainThread()) {
             createWebView()
-        }
-        else
-        {
+        } else {
             dispatch_async(dispatch_get_main_queue(), createWebView)
         }
 

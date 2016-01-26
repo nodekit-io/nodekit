@@ -21,24 +21,24 @@ import WebKit
 import JavaScriptCore
 import Cocoa
 
-protocol jse : JSExport {
+protocol jse: JSExport {
     func logconsole(text: AnyObject?) -> Void
     func alertSync(text: AnyObject?) -> String
 }
 
 
 class HelloWorldTest: NSObject, jse {
-    func logconsole(text: AnyObject?) -> Void  {
-        log(text as? String! ?? "");
+    func logconsole(text: AnyObject?) -> Void {
+        log(text as? String! ?? "")
     }
-    
-    func alertSync(text: AnyObject?) -> String  {
+
+    func alertSync(text: AnyObject?) -> String {
         dispatch_async(dispatch_get_main_queue()) {
             self._alert(title: text as? String, message: nil)
         }
         return "OK"
     }
-    
+
     private func _alert(title title: String?, message: String?) {
         let myPopup: NSAlert = NSAlert()
         myPopup.messageText = message ?? "NodeKit"
@@ -60,15 +60,15 @@ extension WKWebView: WKUIDelegate {
         myPopup.addButtonWithTitle("OK")
         myPopup.runModal()
     }
-    
+
     public func webView(webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String, initiatedByFrame frame: WKFrameInfo, completionHandler: () -> Void) {
-        
+
         _alert(title: self.title, message: message)
     }
-    
+
     public func webView(webView: WKWebView, runJavaScriptTextInputPanelWithPrompt prompt: String, defaultText: String?, initiatedByFrame frame: WKFrameInfo, completionHandler: (String?) -> Void) {
-        
-        completionHandler("hello from native;  you sent: " + prompt);
-        
+
+        completionHandler("hello from native;  you sent: " + prompt)
+
     }
 }

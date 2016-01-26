@@ -19,64 +19,57 @@
 import Foundation
 
 class NKE_ProtocolLocalFile: NSURLProtocol {
-    
+
     override class func canInitWithRequest(request: NSURLRequest) -> Bool {
-        
-        if (request.URL!.host == nil)
-        { return false;}
-        
-        
+
+        if (request.URL!.host == nil) { return false;}
+
+
         if ((request.URL!.scheme.caseInsensitiveCompare("internal") == NSComparisonResult.OrderedSame)
-        || (request.URL!.host?.caseInsensitiveCompare("internal") == NSComparisonResult.OrderedSame))
-        {
+        || (request.URL!.host?.caseInsensitiveCompare("internal") == NSComparisonResult.OrderedSame)) {
             return true
-        }
-        else
-        {
+        } else {
         return false
         }
-       
+
     }
     override class func canonicalRequestForRequest(request: NSURLRequest) -> NSURLRequest {
-        return request;
+        return request
     }
-    
-    override class func requestIsCacheEquivalent(a: NSURLRequest?, toRequest:NSURLRequest?) -> Bool {
+
+    override class func requestIsCacheEquivalent(a: NSURLRequest?, toRequest: NSURLRequest?) -> Bool {
         return false
     }
-  
+
     override func startLoading() {
-        
+
         let request: NSURLRequest = self.request
-        let client: NSURLProtocolClient! = self.client;
-        
-        
-        if (request.URL!.absoluteString == "internal://close") || (request.URL!.absoluteString == "http://internal/close")
-        {
+        let client: NSURLProtocolClient! = self.client
+
+
+        if (request.URL!.absoluteString == "internal://close") || (request.URL!.absoluteString == "http://internal/close") {
             exit(0)
         }
         log("+URL: \(request.URL!.absoluteString)")
-   
+
         let urlDecode = NKE_ProtocolFileDecode(url: request.URL!)
-        
-        if (urlDecode.exists())
-        {
+
+        if (urlDecode.exists()) {
             let data: NSData! = NSData(contentsOfFile: urlDecode.resourcePath! as String)
-            
+
             let response: NSURLResponse = NSURLResponse(URL: request.URL!, MIMEType: urlDecode.mimeType as String?, expectedContentLength: data.length, textEncodingName: urlDecode.textEncoding as String?)
-            
+
             client.URLProtocol(self, didReceiveResponse: response, cacheStoragePolicy: NSURLCacheStoragePolicy.AllowedInMemoryOnly)
-            
+
             client.URLProtocol(self, didLoadData: data)
             client.URLProtocolDidFinishLoading(self)
-            
-        }
-        else {
-            NSLog("Missing File %@", request.URL!);
+
+        } else {
+            NSLog("Missing File %@", request.URL!)
             client.URLProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorFileDoesNotExist, userInfo:  nil))
         }
     }
-    
+
     override func stopLoading() {
     }
 }

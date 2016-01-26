@@ -24,15 +24,14 @@ import WebKit
 //}
 
 public class NKNodeKit: NKScriptContextDelegate {
-    
-    public init()
-    {
-        self.context = nil;
+
+    public init() {
+        self.context = nil
       }
-    
-    var context : NKScriptContext?;
-    var scriptContextDelegate: NKScriptContextDelegate?;
-    
+
+    var context: NKScriptContext?
+    var scriptContextDelegate: NKScriptContextDelegate?
+
     public class func start() {
        #if os(iOS)
             NKMainMobile.start()
@@ -40,58 +39,58 @@ public class NKNodeKit: NKScriptContextDelegate {
             NKMainDesktop.start()
         #endif
     }
-    
+
     public func run(delegate: NKScriptContextDelegate? = nil) {
-        self.scriptContextDelegate = delegate;
+        self.scriptContextDelegate = delegate
        NKScriptContextFactory().createContext(["Engine": NKEngineType.JavaScriptCore.rawValue], delegate: self)
     }
-    
+
     public func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
-        
-        self.context = context;
-        
+
+        self.context = context
+
         // INSTALL JAVASCRIPT ENVIRONMENT ON MAIN CONTEXT
          NKE_BootElectroMain.bootTo(context)
          NKC_BootCore.bootTo(context)
-        
+
         // INJECT OTHER PLUGINS
         let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.test", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue])
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script1, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-        
-        
+
+
         // INJECT NODE BOOTSTRAP
         let url = NSBundle(forClass: NKNodeKit.self).pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
         let script = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
         let item = context.NKinjectJavaScript(NKScriptSource(source: script!, asFilename: "io.nodekit.core/lib/_nodekit_bootstrapper.js", namespace: "io.nodekit.bootstrapper"))
         objc_setAssociatedObject(context, unsafeAddressOf(NKNodeKit), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-        
 
-        let script2Source = "var p = new io.nodekit.electro.BrowserWindow();\n var result = io.nodekit.test.alertSync('hello'); \nio.nodekit.test.logconsole('hello' + result);\n p.webContents.send('hello world')\n";
+        let script2Source = "var p = new io.nodekit.electro.BrowserWindow();\n var result = io.nodekit.test.alertSync('hello'); \nio.nodekit.test.logconsole('hello' + result);\n p.webContents.send('hello world')\n"
         let script2 = context.NKinjectJavaScript(NKScriptSource(source: script2Source, asFilename: "startup.js"))
         objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script2, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-        
-        self.scriptContextDelegate?.NKScriptEngineLoaded(context);
-    
+       
+        self.scriptContextDelegate?.NKScriptEngineLoaded(context)
+
         let seconds = 5.0
         let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
         let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-        
+
         dispatch_after(dispatchTime, dispatch_get_main_queue(), {
+      
              NKSignalEmitter.global.trigger("io.nodekit.HelloWorld", "OK")
         })
     }
-    
+
     public func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
         let seconds = 0.0
         let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
         let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-        
+
         dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-            
-           self.scriptContextDelegate?.NKApplicationReady(id, context: context);
+
+           self.scriptContextDelegate?.NKApplicationReady(id, context: context)
             NKEventEmitter.global.emit("nk.ApplicationReady", ())
         })
-        
+
         /*
 
 */

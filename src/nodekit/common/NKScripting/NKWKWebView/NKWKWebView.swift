@@ -23,40 +23,38 @@ import ObjectiveC
 import WebKit
 
 extension WKWebView: NKScriptContext, NKScriptContextHost {
-    
+
     public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
-    
+
     public func NKgetScriptContext(id: Int, options: [String: AnyObject] = Dictionary<String, AnyObject>(),
-        delegate cb: NKScriptContextDelegate) -> Void
-    {
+        delegate cb: NKScriptContextDelegate) -> Void {
         log("+NodeKit Nitro JavaScript Engine E\(id)")
-        
-        self.navigationDelegate = NKWKWebViewDelegate(id: id, webView: self, delegate: cb);
-        self.UIDelegate = NKWKWebViewUIDelegate(webView: self);
-        
+
+        self.navigationDelegate = NKWKWebViewDelegate(id: id, webView: self, delegate: cb)
+        self.UIDelegate = NKWKWebViewUIDelegate(webView: self)
+
         objc_setAssociatedObject(self, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         cb.NKScriptEngineLoaded(self)
     }
-    
+
     public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {
-        
+
         let mainThread: Bool = (options["MainThread"] as? Bool) ?? false
-        
+
         let bridge = options["PluginBridge"] as? NKScriptExportType ?? NKScriptExportType.NKScriptExport
-        
+
         switch bridge {
         case .JSExport:
             NSException(name: "Not Supported", reason: "WKWebView does not support JSExport protocol", userInfo: nil).raise()
-            return nil;
+            return nil
         case .NKScriptExport:
             let channel: NKScriptChannel
-            if (mainThread)
-            {
+            if (mainThread) {
                 channel = NKScriptChannel(context: self, queue: dispatch_get_main_queue() )
             } else {
                 channel = NKScriptChannel(context: self)
             }
-            channel.userContentController = self;
+            channel.userContentController = self
             return channel.bindPlugin(object, toNamespace: namespace)
         }
     }
@@ -64,13 +62,13 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
     public func NKinjectJavaScript(script: NKScriptSource) -> AnyObject? {
         return NKWKUserScript(context: (self as WKWebView), script: script)
     }
-    
+
     public func NKevaluateJavaScript(javaScriptString: String,
         completionHandler: ((AnyObject?,
         NSError?) -> Void)?) {
-            self.evaluateJavaScript(javaScriptString, completionHandler: completionHandler);
+            self.evaluateJavaScript(javaScriptString, completionHandler: completionHandler)
     }
-    
+
     // Synchronized evaluateJavaScript
     // It returns nil if script is a statement or its result is undefined.
     // So, Swift cannot map the throwing method to Objective-C method.
@@ -133,19 +131,19 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         if error != nil { error.memory = err }
         return result
     }
-    
-    
+
+
     public static func NKcurrentContext() -> NKScriptContext! {
         return NSThread.currentThread().threadDictionary.objectForKey("nk.CurrentContext") as? NKScriptContext
     }
-    
-   
+
+
     public func NKserialize(object: AnyObject?) -> String {
         var obj: AnyObject? = object
         if let val = obj as? NSValue {
             obj = val as? NSNumber ?? val.nonretainedObjectValue
         }
-        
+
         if let o = obj as? NKScriptValue {
             return o.namespace
         } else if let o1 = obj as? NKScriptExport {
@@ -154,7 +152,7 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
                     return scriptObject.namespace
                 } else {
                     let scriptObject = NKScriptValueNative(object: o2, inContext: self)
-                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN);
+                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
                     return scriptObject.namespace
                 }
             }
@@ -169,12 +167,12 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
             return n.stringValue
         } else if let date = obj as? NSDate {
             return "\"\(date.toJSONDate())\""
-        }  else if let _ = obj as? NSData {
+        } else if let _ = obj as? NSData {
             // TODO: map to Uint8Array object
         } else if let a = obj as? [AnyObject] {
             return "[" + a.map(self.NKserialize).joinWithSeparator(", ") + "]"
         } else if let d = obj as? [String: AnyObject] {
-            return "{" + d.keys.map{"'\($0)': \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
+            return "{" + d.keys.map {"'\($0)': \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
         } else if obj === NSNull() {
             return "null"
         } else if obj == nil {
@@ -185,17 +183,14 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
 }
 
 extension WKWebView: NKScriptContentController {
-    internal func NKaddScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String)
-    {
-        let handler : WKScriptMessageHandler = NKWKMessageHandler(name: name, messageHandler: scriptMessageHandler, context: self)
+    internal func NKaddScriptMessageHandler (scriptMessageHandler: NKScriptMessageHandler, name: String) {
+        let handler: WKScriptMessageHandler = NKWKMessageHandler(name: name, messageHandler: scriptMessageHandler, context: self)
         self.configuration.userContentController.addScriptMessageHandler(handler, name: name)
     }
-    
-    internal func NKremoveScriptMessageHandlerForName (name: String)
-    {
+
+    internal func NKremoveScriptMessageHandlerForName (name: String) {
         self.configuration.userContentController.removeScriptMessageHandlerForName(name)
     }
-    
- 
-}
 
+
+}

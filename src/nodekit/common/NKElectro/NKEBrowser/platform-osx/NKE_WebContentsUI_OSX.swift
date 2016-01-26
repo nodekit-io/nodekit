@@ -22,48 +22,48 @@ import WebKit
 import JavaScriptCore
 
 class NKE_WebContentsUI: NKE_WebContentsBase {
-    
+
     internal weak var webView: WebView? = nil
-    
+
      override init() {
         super.init()
     }
-    
+
     required init(window: NKE_BrowserWindow) {
         super.init()
-        _window = window;
-        _id = window.id;
-        
+        _window = window
+        _id = window.id
+
         // Event:  'did-fail-load'
         // Event:  'did-finish-load'
-        
+
         _window._events.on("did-finish-load") { (id: Int) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
-        
+
         _window._events.on("did-fail-loading") { (error: String) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
-        
+
         webView = _window._webView as? WebView
-        
+
          _initIPC()
-        
+
     }
 }
 
 
 
 extension NKE_WebContentsUI: NKE_WebContentsProtocol {
-    
-    
+
+
     // Messages to renderer are sent to the window events queue for that renderer
     func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
         let payload = NKE_IPC_Event(sender: 0, channel: channel, replyId: replyId, arg: arg)
         guard let window = _window else {return;}
         window._events.emit("nk.IPCtoRenderer", payload)
     }
-    
+
     func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
         NSException(name: "Illegal function call", reason: "Send only API.  Replies are handled in ipcRenderer and ipcMain that receive message events", userInfo: nil).raise()
     }
@@ -72,13 +72,13 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func loadURL(url: String, options: [String: AnyObject]) -> Void {
         guard let webView = self.webView else {return;}
         let request = _getURLRequest(url, options: options)
-        webView.mainFrame.loadRequest(request);
+        webView.mainFrame.loadRequest(request)
     }
-    
+
     func getURL() -> String { return self.webView?.mainFrameURL ?? "" }
     func getTitle() -> String {return self.webView?.mainFrameTitle ?? ""  }
     func isLoading()  -> Bool { return self.webView?.loading ?? false }
-    
+
     func stop() -> Void { self.webView?.stopLoading(self) }
     func reload() -> Void { self.webView?.reload(self) }
     func reloadIgnoringCache() -> Void { self.webView?.reloadFromOrigin(self) }
@@ -86,18 +86,18 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func canGoForward() -> Bool { return self.webView?.canGoForward ?? false }
     func goBack() -> Void {self.webView?.goBack() }
     func goForward() -> Void { self.webView?.goForward() }
-    
+
     func send(channel: String, args: [AnyObject]) -> Void {
  //       _events.emit("nk.ipcRenderer", NKE_IPC_Event(channel: channel, event: ["sender": _id ], arg: args))
     }
-    
+
     func executeJavaScript(code: String, userGesture: String) -> Void {
         guard let context = _window._context else {return;}
         context.NKevaluateJavaScript(code, completionHandler: nil)
     }
     func setUserAgent(userAgent: String) -> Void { self.webView?.customUserAgent = userAgent }
     func getUserAgent()  -> String {return self.webView?.customUserAgent ?? "" }
-    
+
 /*  NOT IMPLEMENTED:
     func undo() -> Void { NKE_WebContentsBase.NotImplemented() }
     func redo() -> Void { NKE_WebContentsBase.NotImplemented() }
@@ -142,8 +142,8 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func savePage(fullPath: String, saveType: String, callback: NKScriptValue) -> Void { NKE_WebContentsBase.NotImplemented() }
      var session: NKScriptValue? { get { return nil } }
      var devToolsWebContents: NKE_WebContentProtocol { get } */
-    
-    
+
+
     // Event:  'did-frame-finish-load'
     // Event:  'did-get-redirect-request'
     // Event:  'did-get-redirect-request'
@@ -163,4 +163,3 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     // Event:  'devtools-focused'
     // Event:  'devtools-opened'
 }
-

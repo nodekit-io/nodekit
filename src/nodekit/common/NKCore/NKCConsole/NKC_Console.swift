@@ -19,15 +19,15 @@
  typealias NKStringViewer = (msg: String, title: String) -> Void
  typealias NKUrlNavigator = (uri: String, title: String) -> Void
 
- class NKC_Console : NSObject, NKScriptExport {
-    
+ class NKC_Console: NSObject, NKScriptExport {
+
     static var stringViewer: NKStringViewer? = nil
     static var urlNavigator: NKUrlNavigator? = nil
-    
+
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_Console(), namespace: "io.nodekit.console", options: [String:AnyObject]());
+        context.NKloadPlugin(NKC_Console(), namespace: "io.nodekit.console", options: [String:AnyObject]())
     }
-    
+
     class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
@@ -35,24 +35,24 @@
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
-            return stub;
+            return stub
         }
     }
-    
+
     func log(msg: String) -> Void {
         nklog(msg)
     }
-    
+
     func error(msg: String) -> Void {
         nklog(msg)
     }
-    
+
     func nextTick(callBack: NKScriptValue) -> Void {
         dispatch_async(dispatch_get_main_queue(), {() -> Void in
             callBack.callWithArguments([])
         })
     }
-    
+
     func setTimeout(delayInSeconds: Int, callBack: NKScriptValue) -> Void {
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delayInSeconds) * Int64(NSEC_PER_SEC) ), dispatch_get_main_queue(), {() -> Void in
             callBack.callWithArguments([])

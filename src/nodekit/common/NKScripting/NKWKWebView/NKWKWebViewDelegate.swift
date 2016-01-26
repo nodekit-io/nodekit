@@ -20,61 +20,56 @@ import Foundation
 import WebKit
 
 internal class NKWKWebViewDelegate: NSObject, WKNavigationDelegate {
-    
+
     weak var delegate: NKScriptContextDelegate?
     var id: Int
-    
-    init(id: Int, webView: WKWebView, delegate cb: NKScriptContextDelegate){
-        self.delegate = cb;
-        self.id = id;
+
+    init(id: Int, webView: WKWebView, delegate cb: NKScriptContextDelegate) {
+        self.delegate = cb
+        self.id = id
         super.init()
         objc_setAssociatedObject(webView, unsafeAddressOf(self), self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
-    
+
     func webView(webView: WKWebView,
         didFinishNavigation navigation: WKNavigation!) {
             if (self.delegate == nil) {return;}
-            
+
             let didFinishNavigation = {() -> Void in
                 guard let callback = self.delegate else {return;}
-                
-                webView.navigationDelegate = nil;
+
+                webView.navigationDelegate = nil
                 objc_setAssociatedObject(webView, unsafeAddressOf(self), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-                self.delegate = nil;
-                
+                self.delegate = nil
+
                 callback.NKApplicationReady(self.id, context: webView)
             }
-            
-            if (NSThread.isMainThread())
-            {
+
+            if (NSThread.isMainThread()) {
                 didFinishNavigation()
-            }
-            else
-            {
+            } else {
                 dispatch_async(dispatch_get_main_queue(), didFinishNavigation)
             }
-            
+
     }
 }
 
 internal class NKWKWebViewUIDelegate: NSObject, WKUIDelegate {
-    
-    init(webView: WKWebView){
+
+    init(webView: WKWebView) {
         super.init()
         objc_setAssociatedObject(webView, unsafeAddressOf(self), self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
-    
+
     func webView(webView: WKWebView,
         runJavaScriptTextInputPanelWithPrompt prompt: String,
         defaultText: String?,
         initiatedByFrame frame: WKFrameInfo,
         completionHandler: (String?) -> Void) {
-            if (prompt == "nk.Signal")
-            {
+            if (prompt == "nk.Signal") {
                 NKSignalEmitter.global.waitFor(defaultText!, handler: completionHandler)
-            } else
-            {
-                completionHandler(nil);
+            } else {
+                completionHandler(nil)
             }
     }
 }

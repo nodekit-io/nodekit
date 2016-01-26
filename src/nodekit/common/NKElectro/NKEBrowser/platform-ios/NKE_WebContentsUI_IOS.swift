@@ -23,60 +23,60 @@ import JavaScriptCore
 
 
 class NKE_WebContentsUI: NKE_WebContentsBase {
-    
+
     internal weak var webView: UIWebView? = nil
-    
+
      override init() {
         super.init()
     }
-    
+
     required init(window: NKE_BrowserWindow) {
         super.init()
-        
-         _window = window;
-        _id = window.id;
-        
+
+         _window = window
+        _id = window.id
+
         // Event:  'did-fail-load'
         // Event:  'did-finish-load'
-        
+
         _window._events.on("did-finish-load") { (id: Int) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
-        
+
         _window._events.on("did-fail-loading") { (error: String) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
-    
+
         webView = _window._webView as? UIWebView
-        
+
         _initIPC()
        }
 }
 
 extension NKE_WebContentsUI: NKE_WebContentsProtocol {
-    
-    
+
+
     // Messages to renderer are sent to the window events queue for that renderer
     func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
         let payload = NKE_IPC_Event(sender: 0, channel: channel, replyId: replyId, arg: arg)
          _window._events.emit("nk.IPCtoRenderer", payload)
     }
-    
+
     func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
         NSException(name: "Illegal function call", reason: "Send only API.  Replies are handled in ipcRenderer and ipcMain that receive message events", userInfo: nil).raise()
     }
 
-    
+
     func loadURL(url: String, options: [String: AnyObject]) -> Void {
         guard let webView = self.webView else {return;}
         let request = _getURLRequest(url, options: options)
-        webView.loadRequest(request);
+        webView.loadRequest(request)
     }
-    
+
     func getURL() -> String { return self.webView?.stringByEvaluatingJavaScriptFromString("window.location") ?? "" }
     func getTitle() -> String { return self.webView?.stringByEvaluatingJavaScriptFromString("document.title") ?? ""  }
     func isLoading()  -> Bool { return self.webView?.loading ?? false }
-    
+
     func stop() -> Void { self.webView?.stopLoading() }
     func reload() -> Void { self.webView?.reload() }
     func reloadIgnoringCache() -> Void { self.webView?.reload() }
@@ -84,14 +84,14 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func canGoForward() -> Bool { return self.webView?.canGoForward ?? false }
     func goBack() -> Void {self.webView?.goBack() }
     func goForward() -> Void { self.webView?.goForward() }
-     
+
     func executeJavaScript(code: String, userGesture: String) -> Void {
         guard let context = _window._context else {return;}
         context.NKevaluateJavaScript(code, completionHandler: nil)
     }
     func setUserAgent(userAgent: String) -> Void { NKE_WebContentsBase.NotImplemented() }
     func getUserAgent()  -> String { return self.webView?.stringByEvaluatingJavaScriptFromString("navigator.userAgent") ?? ""  }
-    
+
     /*  NOT IMPLEMENTED:
     func undo() -> Void { NKE_WebContentsBase.NotImplemented() }
     func redo() -> Void { NKE_WebContentsBase.NotImplemented() }
@@ -102,7 +102,7 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func delete() -> Void { self.webView?.delete(self) }
     func selectAll() -> Void { self.webView?.selectAll(self) }
     func replace(text: String) -> Void { self.webView?.replaceSelectionWithText(text) }
-    
+
     func downloadURL(url: String) -> Void { NKE_WebContentsBase.NotImplemented() }
     func isWaitingForResponse()  -> Bool { NKE_WebContentsBase.NotImplemented(); return false }
     func canGoToOffset(offset: Int) -> Bool { NKE_WebContentsBase.NotImplemented() }
@@ -136,8 +136,8 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     func savePage(fullPath: String, saveType: String, callback: NKScriptValue) -> Void { NKE_WebContentsBase.NotImplemented() }
     var session: NKScriptValue? { get { return nil } }
     var devToolsWebContents: NKE_WebContentProtocol { get } */
-    
-    
+
+
     // Event:  'did-frame-finish-load'
     // Event:  'did-get-redirect-request'
     // Event:  'did-get-redirect-request'
@@ -157,4 +157,3 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
     // Event:  'devtools-focused'
     // Event:  'devtools-opened'
 }
-

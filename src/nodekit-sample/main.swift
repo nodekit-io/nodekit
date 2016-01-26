@@ -19,4 +19,4 @@
 /* Uncomment the following import if using in a standalone project with NodeKit as a framework */
 // import NodeKit
 
-NKNodeKit.start();
+NKNodeKit.start()

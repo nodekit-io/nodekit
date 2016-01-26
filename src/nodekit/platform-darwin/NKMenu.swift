@@ -19,7 +19,7 @@
 import Cocoa
 
 class NKMenu {
-    
+
     class func addTo (app: NSApplication) {
         let mainMenu = NSMenu(title: "AMainMenu")
         for (title, items) in tree() {
@@ -30,8 +30,8 @@ class NKMenu {
         }
         app.menu = mainMenu
     }
-    
-    private class func tree() -> Dictionary<String, [NSMenuItem]>{
+
+    private class func tree() -> Dictionary<String, [NSMenuItem]> {
         return [
             "Edit": [
                 NSMenuItem(title: "Copy", action: nil, keyEquivalent:"c"),
@@ -47,4 +47,3 @@ class NKMenu {
         ]
     }
 }
-

@@ -20,24 +20,24 @@ import UIKit
 import JavaScriptCore
 
 internal struct NKUIWebView {
-   internal static var __globalWebViews : [UIWebView] = []
+   internal static var __globalWebViews: [UIWebView] = []
 }
 
 extension UIWebView: NKScriptContextHost {
-    
+
     public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
-    
+
     public func NKgetScriptContext(id: Int, options: [String: AnyObject] = Dictionary<String, AnyObject>(),
         delegate cb: NKScriptContextDelegate) -> Void {
-       
+
         log("+NodeKit UIWebView-JavaScriptCore JavaScript Engine E\(id)")
         var item = Dictionary<String, AnyObject>()
-        
+
         objc_setAssociatedObject(self, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-        NKScriptContextFactory._contexts[id] = item;
-        self.delegate = NKUIWebViewDelegate(id: id, webView: self, delegate: cb);
-        
+        NKScriptContextFactory._contexts[id] = item
+        self.delegate = NKUIWebViewDelegate(id: id, webView: self, delegate: cb)
+
         item["UIWebView"] = self
     }
 }
@@ -53,37 +53,35 @@ extension UIWebView {
             objc_setAssociatedObject(self, key, context, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    
-    func registerForJSContext(callback cb: (JSContext)-> Void){
+
+    func registerForJSContext(callback cb: (JSContext)-> Void) {
         let key = unsafeAddressOf(JSContextCallback)
         let value = JSContextCallback(callback: cb)
         objc_setAssociatedObject(self, key, value, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         if NKUIWebView.__globalWebViews.contains(self) { return }
         NKUIWebView.__globalWebViews.append(self)
     }
-    
-    func unRegisterForJSContext(){
+
+    func unRegisterForJSContext() {
         if let index =  NKUIWebView.__globalWebViews.indexOf(self) {
              NKUIWebView.__globalWebViews.removeAtIndex(index)
         }
     }
-    
+
     // always called on main thread
-    func bindJSContext(context: JSContext){
-        self.currentJSContext = context;
+    func bindJSContext(context: JSContext) {
+        self.currentJSContext = context
         let value = objc_getAssociatedObject(self, unsafeAddressOf(JSContextCallback))
         guard (value != nil) else {return;}
         guard let cb = value as? JSContextCallback else {return;}
-        cb.callback(context);
+        cb.callback(context)
     }
-    
+
     // helper object to store a callback in objc association dictionary
-    private class JSContextCallback : NSObject {
-        init(callback: (JSContext)-> Void)
-        {
+    private class JSContextCallback: NSObject {
+        init(callback: (JSContext)-> Void) {
             self.callback = callback
         }
-        var callback : ((JSContext)-> Void)! = nil
+        var callback: ((JSContext)-> Void)! = nil
     }
 }
-

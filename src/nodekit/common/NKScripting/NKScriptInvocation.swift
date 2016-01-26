@@ -36,7 +36,7 @@ public class NKScriptInvocation {
     public init(target: AnyObject, option: Option = .None) {
         self.target = target
     //    if (target is AnyClass) {self.targetClass = target} else {self.targetClass = target.dynamicType }
-        
+
         switch option {
         case .None:
             self.queue = nil
@@ -77,12 +77,12 @@ public class NKScriptInvocation {
     // Meanwhile, arguments which are NSNull will be converted to nil before calling.
     // Return value in scalar type will be converted to object type if feasible.
     public func call(selector: Selector, withObjects objects: [AnyObject]?) -> AnyObject! {
-        let args: [Any!] = objects?.map{ $0 !== NSNull() ? ($0 as Any) : nil } ?? []
+        let args: [Any!] = objects?.map { $0 !== NSNull() ? ($0 as Any) : nil } ?? []
         let result = call(selector, withArguments: args)
         return castToObjectFromAny(result)
     }
     public func asyncCall(selector: Selector, withObjects objects: [AnyObject]?) {
-        let args: [Any!] = objects?.map{ $0 !== NSNull() ? ($0 as Any) : nil } ?? []
+        let args: [Any!] = objects?.map { $0 !== NSNull() ? ($0 as Any) : nil } ?? []
         asyncCall(selector, withArguments: args)
     }
 
@@ -284,7 +284,7 @@ private func castToAnyFromObject(object: AnyObject, withObjCType type: UnsafePoi
     case "d": return num?.doubleValue
     case "B": return num?.boolValue
     case "v": return Void()
-    case "*": return (object as? String)?.nulTerminatedUTF8.withUnsafeBufferPointer{ COpaquePointer($0.baseAddress) }
+    case "*": return (object as? String)?.nulTerminatedUTF8.withUnsafeBufferPointer { COpaquePointer($0.baseAddress) }
     case ":": return object is String ? Selector(object as! String) : Selector()
     case "@": return object
     case "#": return object as? AnyClass
@@ -301,16 +301,16 @@ public func castToObjectFromAny(value: Any!) -> AnyObject! {
         return value as? AnyObject
     }
 
-    if let v = value as? Int8           { return NSNumber(char: v) } else
-    if let v = value as? Int16          { return NSNumber(short: v) } else
-    if let v = value as? Int32          { return NSNumber(int: v) } else
-    if let v = value as? Int64          { return NSNumber(longLong: v) } else
-    if let v = value as? UInt8          { return NSNumber(unsignedChar: v) } else
-    if let v = value as? UInt16         { return NSNumber(unsignedShort: v) } else
-    if let v = value as? UInt32         { return NSNumber(unsignedInt: v) } else
-    if let v = value as? UInt64         { return NSNumber(unsignedLongLong: v) } else
-    if let v = value as? UnicodeScalar  { return NSNumber(unsignedInt: v.value) } else
-    if let s = value as? Selector       { return s.description } else
+    if let v = value as? Int8 { return NSNumber(char: v) } else
+    if let v = value as? Int16 { return NSNumber(short: v) } else
+    if let v = value as? Int32 { return NSNumber(int: v) } else
+    if let v = value as? Int64 { return NSNumber(longLong: v) } else
+    if let v = value as? UInt8 { return NSNumber(unsignedChar: v) } else
+    if let v = value as? UInt16 { return NSNumber(unsignedShort: v) } else
+    if let v = value as? UInt32 { return NSNumber(unsignedInt: v) } else
+    if let v = value as? UInt64 { return NSNumber(unsignedLongLong: v) } else
+    if let v = value as? UnicodeScalar { return NSNumber(unsignedInt: v.value) } else
+    if let s = value as? Selector { return s.description } else
     if let p = value as? COpaquePointer { return NSValue(pointer: UnsafePointer<Void>(p)) }
     //assertionFailure("Can't convert '\(value.dynamicType)' to AnyObject")
     return nil
@@ -334,7 +334,7 @@ extension Selector: CVarArgType {
 }
 
 private extension Selector {
-    enum Family : Int8 {
+    enum Family: Int8 {
         case none        = 0
         case alloc       = 97
         case copy        = 99
@@ -342,7 +342,7 @@ private extension Selector {
         case init_       = 105
         case new         = 110
     }
-    static var prefixes : [[CChar]] = [
+    static var prefixes: [[CChar]] = [
         /* alloc */       [97, 108, 108, 111, 99],
         /* copy */        [99, 111, 112, 121],
         /* mutableCopy */ [109, 117, 116, 97, 98, 108, 101, 67, 111, 112, 121],

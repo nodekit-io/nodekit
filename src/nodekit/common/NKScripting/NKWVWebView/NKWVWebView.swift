@@ -20,15 +20,15 @@ import WebKit
 import JavaScriptCore
 
 extension WebView: NKScriptContextHost {
-    
+
     public var NKid: Int { get { return objc_getAssociatedObject(self, unsafeAddressOf(NKJSContextId)) as! Int; } }
-    
+
     public func NKgetScriptContext(id: Int, options: [String: AnyObject] = Dictionary<String, AnyObject>(),
         delegate cb: NKScriptContextDelegate) -> Void {
         log("+NodeKit WebView-JavaScriptCore JavaScript Engine E\(id)")
           objc_setAssociatedObject(self, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
-        self.frameLoadDelegate =  NKWVWebViewDelegate(id: id, webView: self, delegate: cb);
+
+        self.frameLoadDelegate =  NKWVWebViewDelegate(id: id, webView: self, delegate: cb)
     }
 }
 
@@ -44,4 +44,3 @@ extension WebView {
         }
     }
 }
-

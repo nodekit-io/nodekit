@@ -15,14 +15,14 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
- 
+
 import Darwin
 
-public class NKC_Crypto : NSObject {
+public class NKC_Crypto: NSObject {
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_Crypto(), namespace: "io.nodekit.crypto", options: [String:AnyObject]());
+        context.NKloadPlugin(NKC_Crypto(), namespace: "io.nodekit.crypto", options: [String:AnyObject]())
     }
-    
+
     class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
@@ -30,16 +30,15 @@ public class NKC_Crypto : NSObject {
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
-            return stub;
+            return stub
         }
     }
-    
-    public func getRandomBytesSync(blockSize:Int) -> [UInt] {
-        var randomIV:[UInt] = [UInt]();
+
+    public func getRandomBytesSync(blockSize: Int) -> [UInt] {
+        var randomIV: [UInt] = [UInt]()
         for _ in 0..<blockSize {
-            randomIV.append(UInt(UInt8(truncatingBitPattern: arc4random_uniform(256))));
+            randomIV.append(UInt(UInt8(truncatingBitPattern: arc4random_uniform(256))))
         }
         return randomIV
     }
  }
- 

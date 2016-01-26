@@ -20,8 +20,8 @@
 import Foundation
 
 struct NKEAppDirectory {
-    
-    
+
+
     static func getPath(name: String) -> String {
         switch(name) {
             case "home":  return NSSearchPathForDirectoriesInDomains(.UserDirectory, .UserDomainMask, true)[0]
@@ -39,22 +39,21 @@ struct NKEAppDirectory {
         default: return ""
         }
     }
-    
+
     static func getPackage() -> NSDictionary? {
-        
-        
-        let mainBundle : NSBundle = NSBundle.mainBundle()
-        let resourcePath:String! = mainBundle.resourcePath
+
+
+        let mainBundle: NSBundle = NSBundle.mainBundle()
+        let resourcePath: String! = mainBundle.resourcePath
         let fileManager = NSFileManager.defaultManager()
 
         let appPath = (mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
         let webPath = (resourcePath as NSString).stringByAppendingPathComponent("/app")
-        
+
         let externalPackage = (appPath as NSString).stringByAppendingPathComponent("/package.json")
         let embeddedPackage = (webPath as NSString).stringByAppendingPathComponent("/package.json")
-        
-         if (fileManager.fileExistsAtPath(externalPackage))
-        {
+
+         if (fileManager.fileExistsAtPath(externalPackage)) {
             do {
              let packageJSON =  try NSData(contentsOfFile: externalPackage, options: .DataReadingMappedIfSafe)
              return try NSJSONSerialization.JSONObjectWithData(packageJSON, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
@@ -62,19 +61,16 @@ struct NKEAppDirectory {
                 log("!Error getting Package: \(error.localizedDescription)")
                 return nil
             }
-        }
-        else
-        {
-            if (!fileManager.fileExistsAtPath(embeddedPackage))
-            {
-                log("!Missing package.json in main bundle /Resources/app");
-                log("!-->  \(resourcePath)");
+        } else {
+            if (!fileManager.fileExistsAtPath(embeddedPackage)) {
+                log("!Missing package.json in main bundle /Resources/app")
+                log("!-->  \(resourcePath)")
                 return nil
             }
            do {
             let packageJSON =  try NSData(contentsOfFile: externalPackage, options: .DataReadingMappedIfSafe)
             return try NSJSONSerialization.JSONObjectWithData(packageJSON, options: NSJSONReadingOptions.MutableContainers) as? NSDictionary
-            
+
             } catch let error as NSError {
                 log("!Error getting Package as JSON: \(error.localizedDescription)")
                 return nil

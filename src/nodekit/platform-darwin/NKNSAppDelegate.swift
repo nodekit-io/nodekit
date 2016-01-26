@@ -19,7 +19,7 @@
 import Cocoa
 
 class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate {
-   
+
     private var splashWindow: NKE_BrowserWindow? = NKE_BrowserWindow(options: [
         "nk.browserType": "UIWebView",
         "title": "",
@@ -29,35 +29,34 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate 
         "nk.InstallElectro": false
         ])
 
-    var _nodekit : NKNodeKit;
-    
+    var _nodekit: NKNodeKit
+
     let app: NSApplication
-    
+
     init(app: NSApplication) {
         self.app = app
-        _nodekit = NKNodeKit();
+        _nodekit = NKNodeKit()
     }
-    
+
     func applicationDidFinishLaunching(aNotification: NSNotification) {
        _nodekit.run(self)
         NKEventEmitter.global.emit("nk.ApplicationDidFinishLaunching", ())
      }
-    
+
     func applicationWillTerminate(aNotification: NSNotification) {
         NKEventEmitter.global.emit("nk.ApplicationWillTerminate", ())
         log("+Application Exit")
     }
-    
+
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
         return true
     }
-    
+
      func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
     }
-    
+
      func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
         splashWindow?.close()
-        splashWindow = nil;
+        splashWindow = nil
     }
-
 }

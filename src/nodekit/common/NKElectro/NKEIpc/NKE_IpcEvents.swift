@@ -24,12 +24,11 @@ internal struct NKE_IPC_Event {
     var channel: String
     var replyId: String
     var arg: [AnyObject]
-    
-    init(sender: Int, channel: String, replyId: String, arg: [AnyObject])
-    {
-        self.sender = sender;
-        self.channel = channel;
-        self.replyId = replyId;
-        self.arg = arg;
+
+    init(sender: Int, channel: String, replyId: String, arg: [AnyObject]) {
+        self.sender = sender
+        self.channel = channel
+        self.replyId = replyId
+        self.arg = arg
     }
 }

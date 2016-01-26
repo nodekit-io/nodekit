@@ -20,23 +20,22 @@ import Foundation
 import WebKit
 
 extension NKScriptContextFactory {
-    func createContextWKWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate)
-    {
+    func createContextWKWebView(options: [String: AnyObject] = Dictionary<String, AnyObject>(), delegate cb: NKScriptContextDelegate) {
     //    dispatch_async(NKScriptChannel.defaultQueue) {
-            
+
             let config = WKWebViewConfiguration()
             let webPrefs = WKPreferences()
             webPrefs.javaScriptEnabled = true
             webPrefs.javaScriptCanOpenWindowsAutomatically = true
             config.preferences = webPrefs
-            let webView = WKWebView(frame: CGRectZero, configuration: config)
+            let webView = WKWebView(frame: CGRect.zero, configuration: config)
             let id = NKScriptContextFactory.sequenceNumber
              webView.NKgetScriptContext(id, options: options, delegate: cb)
-            
+
             var item = Dictionary<String, AnyObject>()
-            NKScriptContextFactory._contexts[id] = item;
+            NKScriptContextFactory._contexts[id] = item
             item["WKWebView"] = self
-            
+
             webView.loadHTMLString("<HTML><BODY>NodeKit WKWebView: VM \(id)</BODY></HTML>", baseURL: NSURL(string: "about: blank"))
   //      }
     }

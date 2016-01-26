@@ -21,89 +21,80 @@ import UIKit
 import JavaScriptCore
 
 internal class NKUIWebViewDelegate: NSObject, UIWebViewDelegate {
-    
+
     weak var delegate: NKScriptContextDelegate?
     weak var webView: UIWebView?
     var context: JSContext?
-    var id: Int;
-    
-    init(id: Int, webView: UIWebView, delegate cb: NKScriptContextDelegate){
-        self.delegate = cb;
-        self.webView = webView;
-        self.context = nil;
-        self.id = id;
+    var id: Int
+
+    init(id: Int, webView: UIWebView, delegate cb: NKScriptContextDelegate) {
+        self.delegate = cb
+        self.webView = webView
+        self.context = nil
+        self.id = id
         super.init()
         objc_setAssociatedObject(webView, unsafeAddressOf(self), self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         webView.registerForJSContext(callback: self.gotJavaScriptContext)
     }
-    
+
     private func gotJavaScriptContext(context: JSContext) {
         if (self.delegate == nil) {return;}
-        
+
          guard let callback = self.delegate else {return;}
-        self.context = context;
-        
+        self.context = context
+
         objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), self.id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
+
         callback.NKScriptEngineLoaded(context)
-        
+
     }
-    
+
     internal func webViewDidFinishLoad(webView: UIWebView) {
         if (self.delegate == nil) {return;}
-        
+
         let didFinishLoad = {() -> Void in
             guard let webView = self.webView else {return;}
             guard let callback = self.delegate else {return;}
-            webView.delegate = nil;
+            webView.delegate = nil
             objc_setAssociatedObject(self.context, unsafeAddressOf(self), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-            self.delegate = nil;
-            self.webView = nil;
+            self.delegate = nil
+            self.webView = nil
             guard let context = self.context else {return;}
-            self.context = nil;
+            self.context = nil
             callback.NKApplicationReady(self.id, context: context)
         }
-        
-        if (NSThread.isMainThread())
-        {
+
+        if (NSThread.isMainThread()) {
             didFinishLoad()
-        }
-        else
-        {
+        } else {
             dispatch_async(dispatch_get_main_queue(), didFinishLoad)
         }
-        
+
     }
 }
 
-extension NSObject
-{
-    func webView(webView: UIWebView!, didCreateJavaScriptContext context: JSContext!, forFrame frame: AnyObject!)
-    {
+extension NSObject {
+    func webView(webView: UIWebView!, didCreateJavaScriptContext context: JSContext!, forFrame frame: AnyObject!) {
         let didCreateJavaScriptContext = {() -> Void in
             // thread-safe on main thread
-            
-            let array = NKUIWebView.__globalWebViews;
+
+            let array = NKUIWebView.__globalWebViews
             for var index = array.count - 1; index >= 0; --index {
                 let webView = array[index]
                 let checksum = "__NKUIWebView\(webView.hash)"
                 webView.stringByEvaluatingJavaScriptFromString("var \(checksum) = '\(checksum)'")
                 let jschecksum = context.objectForKeyedSubscript(checksum).toString()
                 webView.stringByEvaluatingJavaScriptFromString("delete \(checksum)")
-                if (jschecksum == checksum)
-                {
+                if (jschecksum == checksum) {
                     webView.bindJSContext(context)
                     break
                 }
             }
         }
-        
-        if (NSThread.isMainThread())
-        {
+
+        if (NSThread.isMainThread()) {
             didCreateJavaScriptContext()
-        }
-        else
-        {
+        } else {
             dispatch_async(dispatch_get_main_queue(), didCreateJavaScriptContext)
         }
     }

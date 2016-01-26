@@ -25,31 +25,31 @@ class NKJSCScript {
     let source: String
     let cleanup: String?
     let filename: String
-    
+
     init(context: NKScriptContext, script: NKScriptSource) {
         self.context = context
-        self.source = script.source 
-        self.cleanup = script.cleanup;
-        self.filename = script.filename;
+        self.source = script.source
+        self.cleanup = script.cleanup
+        self.filename = script.filename
         inject()
     }
-    
+
     deinit {
         eject()
     }
-    
+
     private func inject() {
         guard let context = context else { return }
-        
+
      //   context.evaluateJavaScript(source, completionHandler: nil)
-        (context as! JSContext).evaluateScript(source, withSourceURL: NSURL(string: "file:///" + filename)!);
+        (context as! JSContext).evaluateScript(source, withSourceURL: NSURL(string: "file:///" + filename)!)
          log("+E\(context.NKid) Injected \(filename) ")
 
     }
-    
+
     private func eject() {
         guard let context = context else { return }
-        
+
         if let cleanup = cleanup {
             context.NKevaluateJavaScript(cleanup, completionHandler: nil)
         }

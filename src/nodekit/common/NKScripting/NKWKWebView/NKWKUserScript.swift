@@ -31,11 +31,11 @@ class NKWKUserScript {
         self.webView = context
         self.cleanup = script.cleanup
         self.filename = script.filename ?? ""
-        
+
         self.wkscript = WKUserScript(source: script.source,
             injectionTime: WKUserScriptInjectionTime.AtDocumentStart,
             forMainFrameOnly: true)
-        
+
         inject()
     }
 
@@ -46,7 +46,7 @@ class NKWKUserScript {
     private func inject() {
         guard let webView = webView else { return }
         guard let wkscript = wkscript else {return }
-        
+
         // add to userContentController
         webView.configuration.userContentController.addUserScript(wkscript)
 
@@ -59,8 +59,7 @@ class NKWKUserScript {
                    log("+E\(webView.NKid) Injected and executed \(self.filename) ")
                 }
             }
-        } else
-        {
+        } else {
             log("+E\(webView.NKid) Injected \(self.filename) ")
         }
     }
@@ -79,9 +78,9 @@ class NKWKUserScript {
             // clean up in current context
             webView.evaluateJavaScript(cleanup, completionHandler: nil)
         }
-        
+
         log("+E\(webView.NKid) Removed script \(self.filename) ")
-        
+
         self.wkscript = nil
     }
 }

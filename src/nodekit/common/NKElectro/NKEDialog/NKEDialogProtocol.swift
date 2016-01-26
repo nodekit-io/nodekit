@@ -22,7 +22,7 @@ import WebKit
 import JavaScriptCore
 
 protocol NKE_DialogProtocol: NKScriptExport {
-    
+
     func showOpenDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?) -> Void
     func showSaveDialog(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?)-> Void
     func showMessageBox(browserWindow: NKE_BrowserWindow?, options: Dictionary<String, AnyObject>?, callback: NKScriptValue?) -> Void

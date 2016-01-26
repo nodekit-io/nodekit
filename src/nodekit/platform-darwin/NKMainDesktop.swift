@@ -19,7 +19,7 @@
 import Cocoa
 
 class NKMainDesktop {
-    
+
     class func start () {
         let app      = NSApplication.sharedApplication()
         let delegate = NKNSAppDelegate(app: app)

@@ -20,7 +20,7 @@
 
 import Foundation
 
-public enum NKScriptExportType : Int {
+public enum NKScriptExportType: Int {
     case NKScriptExport = 0
     case JSExport
 }

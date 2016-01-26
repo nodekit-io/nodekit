@@ -19,10 +19,10 @@
 import UIKit
 
 public class NKMainMobile {
-    
+
     public class func start () {
-        
+
         UIApplicationMain(Process.argc, Process.unsafeArgv, NSStringFromClass(UIApplication), NSStringFromClass(NKUIAppDelegate))
-        
+
         }
 }

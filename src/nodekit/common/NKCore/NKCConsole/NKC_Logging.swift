@@ -22,14 +22,14 @@ import Darwin
 
 public typealias asl_object_t = COpaquePointer
 
-@asmname("asl_open") func asl_open(ident: UnsafePointer<Int8>, _ facility: UnsafePointer<Int8>, _ opts: UInt32) -> asl_object_t;
-@asmname("asl_close") func asl_close(obj: asl_object_t);
-@asmname("asl_vlog") func asl_vlog(obj: asl_object_t, _ msg: asl_object_t, _ level: Int32, _ format: UnsafePointer<Int8>, _ ap: CVaListPointer) -> Int32;
-@asmname("asl_add_output_file") func asl_add_output_file(client: asl_object_t, _ descriptor: Int32, _ msg_fmt: UnsafePointer<Int8>, _ time_fmt: UnsafePointer<Int8>, _ filter: Int32, _ text_encoding: Int32) -> Int32;
-@asmname("asl_set_output_file_filter") func asl_set_output_file_filter(asl: asl_object_t, _ descriptor: Int32, _ filter: Int32) -> Int32;
+@asmname("asl_open") func asl_open(ident: UnsafePointer<Int8>, _ facility: UnsafePointer<Int8>, _ opts: UInt32) -> asl_object_t
+@asmname("asl_close") func asl_close(obj: asl_object_t)
+@asmname("asl_vlog") func asl_vlog(obj: asl_object_t, _ msg: asl_object_t, _ level: Int32, _ format: UnsafePointer<Int8>, _ ap: CVaListPointer) -> Int32
+@asmname("asl_add_output_file") func asl_add_output_file(client: asl_object_t, _ descriptor: Int32, _ msg_fmt: UnsafePointer<Int8>, _ time_fmt: UnsafePointer<Int8>, _ filter: Int32, _ text_encoding: Int32) -> Int32
+@asmname("asl_set_output_file_filter") func asl_set_output_file_filter(asl: asl_object_t, _ descriptor: Int32, _ filter: Int32) -> Int32
 
-public class NKC_Logging : NKScriptExport {
-    public enum Level : Int32 {
+public class NKC_Logging: NKScriptExport {
+    public enum Level: Int32 {
         case Emergency = 0
         case Alert     = 1
         case Critical  = 2
@@ -39,7 +39,7 @@ public class NKC_Logging : NKScriptExport {
         case Info      = 6
         case Debug     = 7
 
-        private static let symbols : [Character] = [
+        private static let symbols: [Character] = [
             "\0", "\0", "$", "!", "?", "-", "+", " "
         ]
         private init?(symbol: Character) {
@@ -50,7 +50,7 @@ public class NKC_Logging : NKScriptExport {
         }
     }
 
-    public struct Filter : OptionSetType {
+    public struct Filter: OptionSetType {
         private var value: Int32
         public var rawValue: Int32 {
             return value
@@ -131,11 +131,11 @@ public class NKC_Logging : NKScriptExport {
 private let logger = NKC_Logging(facility: "io.nodekit.core.consolelog")
 func log(message: String, level: NKC_Logging.Level? = nil) {
     logger.log(message, level: level)
-    print(message);
+    print(message)
 }
 
 func nklog(message: String, level: NKC_Logging.Level? = nil) {
-    log(message, level: level);
+    log(message, level: level)
 }
 
 @noreturn func die(@autoclosure message: ()->String, file: StaticString = __FILE__, line: UInt = __LINE__) {

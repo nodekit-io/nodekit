@@ -16,13 +16,13 @@
 * limitations under the License.
 */
 
-public class NKScriptMessage : NSObject {
-    public var body : AnyObject;
-    public var name : String
-    
-    init(name: String, body: AnyObject){
-        self.body = body;
-        self.name = name;
+public class NKScriptMessage: NSObject {
+    public var body: AnyObject
+    public var name: String
+
+    init(name: String, body: AnyObject) {
+        self.body = body
+        self.name = name
     }
 }
 

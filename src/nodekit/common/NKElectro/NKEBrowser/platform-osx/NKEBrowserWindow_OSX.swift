@@ -22,24 +22,24 @@ import WebKit
 import JavaScriptCore
 
 extension NKE_BrowserWindow {
-        
+
     internal func createWindow(options: Dictionary<String, AnyObject>) -> AnyObject {
         let width: CGFloat = CGFloat((options[NKEBrowserOptions.kWidth] as? Int) ?? NKEBrowserDefaults.kWidth)
         let height: CGFloat = CGFloat((options[NKEBrowserOptions.kHeight] as? Int) ?? NKEBrowserDefaults.kHeight)
         let title: String = (options[NKEBrowserOptions.kTitle] as? String) ?? NKEBrowserDefaults.kTitle
-        
-        let windowRect : NSRect = (NSScreen.mainScreen()!).frame
-        let frameRect : NSRect = NSMakeRect(
+
+        let windowRect: NSRect = (NSScreen.mainScreen()!).frame
+        let frameRect: NSRect = NSMakeRect(
             (NSWidth(windowRect) - width)/2,
             (NSHeight(windowRect) - height)/2,
             width, height)
-        
+
         let window = NSWindow(contentRect: frameRect, styleMask: NSTitledWindowMask | NSClosableWindowMask | NSResizableWindowMask, backing: NSBackingStoreType.Buffered, `defer`: false, screen: NSScreen.mainScreen())
         objc_setAssociatedObject(self, unsafeAddressOf(NSWindow), window, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        
+
          window.title = title
         window.makeKeyAndOrderFront(nil)
-        return window;
+        return window
     }
 }
 
@@ -47,44 +47,44 @@ extension NKE_BrowserWindow: NKE_BrowserWindowProtocol {
     func destroy() -> Void { NotImplemented(); }
     func close() -> Void {
         guard let window = self._window as? NSWindow else {return;}
-        window.close();
-        self._window = nil;
-        NKE_BrowserWindow._windowArray[self._id] = nil;
+        window.close()
+        self._window = nil
+        NKE_BrowserWindow._windowArray[self._id] = nil
         _context = nil
         _webView = nil
     }
-    
+
     func focus() -> Void { NotImplemented(); }
     func isFocused() -> Bool { NotImplemented(); return false; }
     func show() -> Void { NotImplemented(); }
     func showInactive() -> Void { NotImplemented(); }
     func hide() -> Void { NotImplemented(); }
-    func isVisible() -> Bool  { NotImplemented(); return true; }
+    func isVisible() -> Bool { NotImplemented(); return true; }
     func maximize() -> Void { NotImplemented(); }
     func unmaximize() -> Void { NotImplemented(); }
-    func isMaximized() -> Bool  { NotImplemented(); return false; }
+    func isMaximized() -> Bool { NotImplemented(); return false; }
     func minimize() -> Void { NotImplemented(); }
     func isMinimized() -> Bool { NotImplemented(); return false; }
     func setFullScreen(flag: Bool) -> Void { NotImplemented(); }
-    func isFullScreen() -> Bool  { NotImplemented(); return false; }
+    func isFullScreen() -> Bool { NotImplemented(); return false; }
     func setAspectRatio(aspectRatio: NSNumber, extraSize: [Int]) -> Void { NotImplemented(); } //OS X
     func setBounds(options: [NSObject : AnyObject]!) -> Void { NotImplemented(); }
-    func getBounds() -> [NSObject : AnyObject]!  { NotImplemented(); return [NSObject : AnyObject](); }
+    func getBounds() -> [NSObject : AnyObject]! { NotImplemented(); return [NSObject : AnyObject](); }
     func setSize(width: Int, height: Int) -> Void { NotImplemented(); }
-    func getSize() -> [NSObject : AnyObject]!   { NotImplemented(); return [NSObject : AnyObject](); }
+    func getSize() -> [NSObject : AnyObject]! { NotImplemented(); return [NSObject : AnyObject](); }
     func setContentSize(width: Int, height: Int) -> Void { NotImplemented(); }
-    func getContentSize() -> [Int]   { NotImplemented(); return [Int](); }
+    func getContentSize() -> [Int] { NotImplemented(); return [Int](); }
     func setMinimumSize(width: Int, height: Int) -> Void { NotImplemented(); }
-    func getMinimumSize() -> [Int]  { NotImplemented(); return [Int](); }
+    func getMinimumSize() -> [Int] { NotImplemented(); return [Int](); }
     func setMaximumSize(width: Int, height: Int) -> Void { NotImplemented(); }
-    func getMaximumSize() -> [Int]  { NotImplemented(); return [Int](); }
+    func getMaximumSize() -> [Int] { NotImplemented(); return [Int](); }
     func setResizable(resizable: Bool) -> Void { NotImplemented(); }
-    func isResizable() -> Bool  { NotImplemented(); return false; }
+    func isResizable() -> Bool { NotImplemented(); return false; }
     func setAlwaysOnTop(flag: Bool) -> Void { NotImplemented(); }
     func isAlwaysOnTop() -> Bool { NotImplemented(); return false; }
     func center() -> Void { NotImplemented(); }
     func setPosition(x: Int, y: Int) -> Void { NotImplemented(); }
-    func getPosition() -> [Int]  { NotImplemented(); return [Int]() }
+    func getPosition() -> [Int] { NotImplemented(); return [Int]() }
     func setTitle(title: String) -> Void { NotImplemented(); }
     func getTitle() -> Void { NotImplemented(); }
     func flashFrame(flag: Bool) -> Void { NotImplemented(); }
@@ -118,12 +118,12 @@ extension NKE_BrowserWindow: NKE_BrowserWindowProtocol {
     func setVisibleOnAllWorkspaces(visible: Bool) -> Void { NotImplemented(); }
     func isVisibleOnAllWorkspaces() -> Bool { NotImplemented(); return false; }
     func setIgnoreMouseEvents(ignore: Bool) -> Void { NotImplemented(); } //OS X
-    
-    
+
+
     private static func NotImplemented() -> Void {
         NSException(name: "NotImplemented", reason: "This function is not implemented", userInfo: nil).raise()
     }
-    
+
     private func NotImplemented() -> Void {
         NSException(name: "NotImplemented", reason: "This function is not implemented", userInfo: nil).raise()
     }

@@ -19,11 +19,11 @@
 import Foundation
 
 class NKC_FileSystem: NSObject, NKScriptExport {
-    
+
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_FileSystem(), namespace: "io.nodekit.fs", options: [String:AnyObject]());
+        context.NKloadPlugin(NKC_FileSystem(), namespace: "io.nodekit.fs", options: [String:AnyObject]())
     }
-    
+
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
@@ -31,32 +31,29 @@ class NKC_FileSystem: NSObject, NKScriptExport {
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
-            return stub;
+            return stub
         }
     }
-    
-     func statSync(module: String) -> Dictionary<String, AnyObject>  {
-        
+
+     func statSync(module: String) -> Dictionary<String, AnyObject> {
+
         let path=module; //self.getPath(module)
         var storageItem  = Dictionary<String, NSObject>()
-        
+
         let attr: [String : AnyObject]
-        do
-        {
+        do {
             attr = try NSFileManager.defaultManager().attributesOfItemAtPath(path)
-            
-        } catch _
-        {
+
+        } catch _ {
             return storageItem
         }
-        
+
         storageItem["birthtime"] = attr[NSFileCreationDate] as! NSDate
         storageItem["size"] = attr[NSFileSize] as! NSNumber
         storageItem["mtime"] = attr[NSFileModificationDate] as! NSDate
         storageItem["path"] = path as String
-        
-        switch attr[NSFileType] as! String
-        {
+
+        switch attr[NSFileType] as! String {
         case NSFileTypeDirectory:
             storageItem["filetype"] = "Directory"
             break
@@ -70,95 +67,91 @@ class NKC_FileSystem: NSObject, NKScriptExport {
             storageItem["filetype"] = "File"
             break
         }
-        
+
         return storageItem
     }
-    
+
     func statAsync(module: String, completionHandler: NKScriptValue) -> Void {
         let ret = self.statSync(module)
-        if (ret.count > 0)
-        {
+        if (ret.count > 0) {
             completionHandler.callWithArguments([NSNull(), ret])
-        } else
-        {
+        } else {
             completionHandler.callWithArguments(["stat error"])
         }
     }
-    
-    
+
+
     func existsSync (path: String) -> Bool {
         return NSFileManager().fileExistsAtPath(path)
     }
-    
-    func getDirectoryAsync(module: String, completionHandler: NKScriptValue) -> Void  {
+
+    func getDirectoryAsync(module: String, completionHandler: NKScriptValue) -> Void {
         completionHandler.callWithArguments([NSNull(), self.getDirectorySync(module)])
     }
-    
+
     func getDirectorySync(module: String) -> [String] {
         let path=module; //self.getPath(module)
         let dirContents = (try? NSFileManager.defaultManager().contentsOfDirectoryAtPath(path)) ?? [String]()
         return dirContents
     }
-    
+
     func getTempDirectorySync() -> String? {
         let fileURL: NSURL = NSURL.fileURLWithPath(NSTemporaryDirectory())
         return fileURL.path
     }
 
-    
-    func getContentAsync(storageItem:  Dictionary<String, AnyObject>, completionHandler: NKScriptValue) -> Void {
+
+    func getContentAsync(storageItem: Dictionary<String, AnyObject>, completionHandler: NKScriptValue) -> Void {
           completionHandler.callWithArguments([NSNull(), self.getContentSync(storageItem)])
     }
-    
+
     func getContentSync(storageItem: Dictionary<String, AnyObject>) -> String {
         guard let path = storageItem["path"] as? String else {return ""}
         var data: NSData?
         do {
           data = try NSData(contentsOfFile: path as String, options: NSDataReadingOptions(rawValue: 0))
-        }
-        catch _ {
-            log("!ERROR reading file");
-            
+        } catch _ {
+            log("!ERROR reading file")
+
             return ""
         }
-        
+
         return (data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)))
     }
-    
+
     func writeContentSync(storageItem: Dictionary<String, AnyObject>, str: String) -> Bool {
         guard let path = storageItem["path"] as? String else {return false}
         let data = NSData(base64EncodedString: str, options: NSDataBase64DecodingOptions(rawValue:0))
         return data!.writeToFile(path, atomically: false)
     }
-    
-    func writeContentAsync(storageItem: Dictionary<String, AnyObject>, str: String, completionHandler: NKScriptValue)  {
+
+    func writeContentAsync(storageItem: Dictionary<String, AnyObject>, str: String, completionHandler: NKScriptValue) {
         completionHandler.callWithArguments([ NSNull(),  self.writeContentSync(storageItem, str: str)])
     }
 
     func getSourceSync(module: String) -> String {
-        
-        let path=getPathSync(module);
-        
-        if (path=="")
-        {
+
+        let path=getPathSync(module)
+
+        if (path=="") {
           return ""
         }
-        
+
         let originalEncoding: UnsafeMutablePointer<UInt> = nil
-        
+
         var content: String?
         do {
             content = try String(contentsOfFile: path, usedEncoding: originalEncoding)
         } catch _ {
             content = nil
         }
-        
+
         return content!
     }
-    
+
     func mkdirSync (path: String) -> Bool {
-        
-        
+
+
         do {
             try NSFileManager.defaultManager().createDirectoryAtPath(path, withIntermediateDirectories: true, attributes: nil)
             return true
@@ -167,23 +160,23 @@ class NKC_FileSystem: NSObject, NKScriptExport {
         }
 
     }
-    
+
     func rmdirSync (path: String) -> Bool {
-        
-        
+
+
         do {
             try NSFileManager.defaultManager().removeItemAtPath(path)
             return true
         } catch _ {
             return false
         }
-            
-        
+
+
     }
 
     func moveSync (path: String, path2: String) -> Bool {
-        
-        
+
+
         do {
             try NSFileManager.defaultManager().moveItemAtPath(path, toPath: path2)
             return true
@@ -191,64 +184,59 @@ class NKC_FileSystem: NSObject, NKScriptExport {
             return false
         }
     }
-    
+
     func unlinkSync (path: String) -> Bool {
-        
+
          do {
             try NSFileManager.defaultManager().removeItemAtPath(path)
             return true
         } catch _ {
             return false
         }
-        
-        
+
+
     }
-    
+
     func getPathSync(module: String) -> String {
-        
+
         let directory = (module as NSString).stringByDeletingLastPathComponent
         var fileName = (module as NSString).lastPathComponent
         var fileExtension = (fileName as NSString).pathExtension
         fileName = (fileName as NSString).stringByDeletingPathExtension
-        
+
         if (fileExtension=="") {
             fileExtension = "js"
         }
-        
-        let mainBundle : NSBundle = NSBundle.mainBundle()
-   //     var resourcePath:String! = mainBundle.resourcePath
-        
+
+        let mainBundle: NSBundle = NSBundle.mainBundle()
+   //     var resourcePath: String! = mainBundle.resourcePath
+
         var path = mainBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
-        
-        if (path == nil)
-        {
+
+        if (path == nil) {
             let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
-            
+
             path = _nodeKitBundle.pathForResource(fileName, ofType: fileExtension, inDirectory: directory)
-            
-            if (path == nil)
-            {
-                
+
+            if (path == nil) {
+
             log("!Error - source file not found: \(directory + "/" + fileName + "." + fileExtension)")
             return ""
             }
         }
-        
-        return path!;
-        
+
+        return path!
+
     }
-    
-    func getFullPathSync(parentModule: String, module: String) -> String!{
-        
-        if (parentModule != "")
-        {
+
+    func getFullPathSync(parentModule: String, module: String) -> String! {
+
+        if (parentModule != "") {
             let parentPath = (parentModule as NSString).stringByDeletingLastPathComponent
-            
+
             let id = parentPath + module
             return id
-        }
-        else
-        {
+        } else {
             return module
         }
     }

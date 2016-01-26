@@ -21,53 +21,53 @@ import Foundation
 import WebKit
 
 class NKE_WebContentsWK: NKE_WebContentsBase {
-    
+
     internal weak var webView: WKWebView? = nil
-    
+
     override init() {
         super.init()
     }
-    
+
     required init(window: NKE_BrowserWindow) {
         super.init()
-        _window = window;
-        _id = window.id;
-        
+        _window = window
+        _id = window.id
+
         _window._events.on("did-finish-load") { (id: Int) in
             self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
-        
+
         _window._events.on("did-fail-loading") { (error: String) in
             self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
-        
+
 
         webView = _window._webView as? WKWebView
-        
+
          _initIPC()
-        
+
     }
 }
 
 extension NKE_WebContentsWK: NKE_WebContentsProtocol {
-    
+
     // Messages to renderer are sent to the window events queue for that renderer
     func ipcSend(channel: String, replyId: String, arg: [AnyObject]) -> Void {
         let payload = NKE_IPC_Event(sender: 0, channel: channel, replyId: replyId, arg: arg)
         guard let window = _window else {return;}
         window._events.emit("nk.IPCtoRenderer", payload)
     }
-    
+
     func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
         NSException(name: "Illegal function call", reason: "Send only API.  Replies are handled in ipcRenderer and ipcMain that receive message events", userInfo: nil).raise()
     }
-    
+
     func loadURL(url: String, options: [String: AnyObject]) -> Void {
         guard let webView = self.webView else {return;}
         let request = _getURLRequest(url, options: options)
-        webView.loadRequest(request);
+        webView.loadRequest(request)
     }
-    
+
     func getURL() -> String { return self.webView?.URL?.description ?? "" }
     func getTitle() -> String {return self.webView?.title ?? ""  }
     func isLoading()  -> Bool { return self.webView?.loading ?? false }
@@ -84,7 +84,7 @@ extension NKE_WebContentsWK: NKE_WebContentsProtocol {
     }
     func setUserAgent(userAgent: String) -> Void { self.webView?.customUserAgent = userAgent }
     func getUserAgent()  -> String {return self.webView?.customUserAgent ?? "" }
-    
+
     // NOT IMPLEMENTED
     /*
     func downloadURL(url: String) -> Void { NKE_WebContentsBase.NotImplemented() }
@@ -129,7 +129,7 @@ extension NKE_WebContentsWK: NKE_WebContentsProtocol {
     func savePage(fullPath: String, saveType: String, callback: NKScriptValue) -> Void { NKE_WebContentsBase.NotImplemented() }
     var session: NKScriptValue? { get { return nil } }
     var devToolsWebContents: NKE_WebContentProtocol { get } */
-    
+
     // EVENT EMITTER
     // Event:  'certificate-error'
     // Event:  'crashed'
@@ -151,6 +151,5 @@ extension NKE_WebContentsWK: NKE_WebContentsProtocol {
     // Event:  'plugin-crashed'
     // Event:  'select-client-certificate'
     // Event:  'will-navigate'
- 
-}
 
+}

@@ -21,44 +21,41 @@ import WebKit
 import JavaScriptCore
 import UIKit
 
-protocol jse : JSExport {
+protocol jse: JSExport {
        func logconsole(text: AnyObject?) -> Void
     func alertSync(text: AnyObject?) -> String
 }
 
 class HelloWorldTest: NSObject, jse {
-    
-    func logconsole(text: AnyObject?) -> Void  {
-        log(text as? String! ?? "");
+
+    func logconsole(text: AnyObject?) -> Void {
+        log(text as? String! ?? "")
     }
-    
-    func alertSync(text: AnyObject?) -> String  {
+
+    func alertSync(text: AnyObject?) -> String {
         let alertBlock = { () -> Void in
             self._alert(title: text as? String, message: nil)
         }
-        
-        if (NSThread.isMainThread())
-        {
+
+        if (NSThread.isMainThread()) {
             alertBlock()
-        }
-        else
-        {
+        } else {
             dispatch_async(dispatch_get_main_queue(), alertBlock)
         }
         return "OK"
     }
 
-    
+
     private func _alert(title title: String?, message: String?) {
         let buttons: [String] = ["Ok"]
         let title: String = title ?? ""
         let message: String = message ?? ""
-        
+
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .Alert)
-        
+
         for var i = 0; i < buttons.count; i++ {
-            let buttonTitle: String = buttons[i] ?? "";
-            
+            let buttonTitle: String = buttons[i] ?? ""
+
             let buttonAction = UIAlertAction(title: buttonTitle, style: (buttonTitle == "Cancel" ? .Cancel : .Default), handler: nil)
             alertController.addAction(buttonAction)
         }
@@ -66,4 +63,3 @@ class HelloWorldTest: NSObject, jse {
         viewController.presentViewController(alertController, animated: true, completion: nil)
     }
 }
-

@@ -22,15 +22,15 @@ import WebKit
 import JavaScriptCore
 
 protocol NKE_BrowserWindowProtocol: NKScriptExport {
-    
+
     // Creates a new BrowserWindow with native properties as set by the options.
     init(options: Dictionary<String, AnyObject>)
-    
+
     // class functions
     static func fromId(id: Int) -> NKE_BrowserWindowProtocol?
-     
+
     var id: Int {get}
-    
+
     func destroy() -> Void
     func close() -> Void
     func focus() -> Void

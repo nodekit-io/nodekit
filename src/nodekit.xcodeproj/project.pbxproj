@@ -306,8 +306,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		E488A0751C1F70970041DFCF /* NKUIWebView_NOTUSED.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKUIWebView_NOTUSED.swift; path = "nodekit/platform-darwin/NKUIWebView_NOTUSED.swift"; sourceTree = "<group>"; };
-		E488A0761C1F70970041DFCF /* NKWKWebView_NOTUSED.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKWKWebView_NOTUSED.swift; path = "nodekit/platform-darwin/NKWKWebView_NOTUSED.swift"; sourceTree = "<group>"; };
 		E488A0771C1F70970041DFCF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit/platform-darwin/Info.plist"; sourceTree = "<group>"; };
 		E488A07D1C1F70AC0041DFCF /* NKWKViewController_NOTUSED.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKWKViewController_NOTUSED.swift; path = "nodekit/platform-ios/NKWKViewController_NOTUSED.swift"; sourceTree = "<group>"; };
 		E488A07E1C1F70AC0041DFCF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit/platform-ios/Info.plist"; sourceTree = "<group>"; };
@@ -487,8 +485,6 @@
 				E48C5E461C3DC1C5006CEF53 /* NKJSDesktop.swift */,
 				E4AD89F01C1F84D20043F630 /* NKMenu.swift */,
 				E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */,
-				E488A0751C1F70970041DFCF /* NKUIWebView_NOTUSED.swift */,
-				E488A0761C1F70970041DFCF /* NKWKWebView_NOTUSED.swift */,
 				E4C253D11C20A5FF001B3388 /* NKMainDesktop.swift */,
 			);
 			name = "platform-darwin";

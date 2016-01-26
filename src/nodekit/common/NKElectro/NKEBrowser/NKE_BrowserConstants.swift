@@ -19,7 +19,7 @@
 
 import Foundation
 
-public enum NKEBrowserType : String {
+public enum NKEBrowserType: String {
     case WKWebView = "WKWebView"
     case UIWebView = "UIWebView"
 }
@@ -137,5 +137,5 @@ struct NKEBrowserSwitches {
     static let kWidevineCdmPath: String = "widevine-cdm-path"
     // Widevine CDM version.
     static let kWidevineCdmVersion: String = "widevine-cdm-version"
-    
+
 }
