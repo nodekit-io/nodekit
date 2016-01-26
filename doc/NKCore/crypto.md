@@ -1,7 +1,9 @@
 ![NK-Core](../images/NKCore.png?v01)
 # Crypto
 
-    Native JavaScript replacement of Node.js API with native randomization using core OS system calls, not third party libaries for improved security; does not use OpenSSL
+    Native JavaScript replacement of Node.js API with native randomization
+    using core OS system calls,  not third party libaries for improved 
+    security; does not use OpenSSL
 
 Use `require('crypto')` to access this module.
 

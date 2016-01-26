@@ -4,7 +4,7 @@
  
 # {NK} Core
 
-### Standard modules included for the main process:
+### All of the following modules are available for the main process:
 
 * [Assertion Testing](assert.html)
 * [Buffer](buffer.html)
