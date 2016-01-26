@@ -1,6 +1,3 @@
----
-title: {NK} Core
----
 ![NK-Core](../images/NKCore.png?v01)
 > **{NK} Core** provides a light-weight but fully functional version of Node for [{NK} NodeKit](http://nodekit.io) applications.  It leverages the original Node source for all the Javascript components, but generally backs with different bindings to leverage each platform's built-in javascript engine(s) instead of the V8 engine.  Where possible native code has been moved to Javascript.  
 

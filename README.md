@@ -1,4 +1,4 @@
-![http://nodekit.io](docs/images/banner.png?v02)
+![http://nodekit.io](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/banner.png?v02)
 *{NK} NodeKit* is the universal, open-source, embedded engine that provides a full Node.js instance inside desktop and mobile applications for OS X, iOS, Android, and Windows. 
 
 For application developers, the backend can be written in pure Node javascript code, the front-end in the architecture of your choice including but not limited to Atom Electron API, Facebook React, Express, etc.)
@@ -46,15 +46,15 @@ Build in XCode for both iOS and Mac targets.
 
 
 
-[![{NK} Scripting](docs/images/NKScripting.png?v01)](docs/NKScripting/readme.md)
-> [**{NK} Scripting**](docs/NKScripting/readme.md) is an advanced JavaScript - Native (Swift, Objective-C, .NET C#) bridge for hybrid applications.   It builds upon the core platform bridges such as JavaScriptCore or ChakraCore, but abstracts the implementation details and standardizes across even multiple scripting engine families on the same platform (e.g., Nitro WKWebView and UIWebViews on iOS).
+[![{NK} Scripting](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKScripting.png?v01)](https%3A%2F%2Fgithub.com%2Fnodekit-io%2Fnodekit%2Fblob%2Fmasterdocs/NKScripting/readme.md)
+> [**{NK} Scripting**](https%3A%2F%2Fgithub.com%2Fnodekit-io%2Fnodekit%2Fblob%2Fmaster/docs/NKScripting/readme.md) is an advanced JavaScript - Native (Swift, Objective-C, .NET C#) bridge for hybrid applications.   It builds upon the core platform bridges such as JavaScriptCore or ChakraCore, but abstracts the implementation details and standardizes across even multiple scripting engine families on the same platform (e.g., Nitro WKWebView and UIWebViews on iOS).
 It is the foundation of {NK} NodeKit and can be used without {NK} Electro or {NK} Core or with substitutes.
 
-[![{NK} Electro](docs/images/NKElectro.png?v01)](docs/NKElectro/readme.md)
-> [**{NK} Electro**](docs/NKElectro/readme.md) is an API for [{NK} NodeKit](http://nodekit.io) applications that facilitates application lifecycle and user interface tasks.  It is inspired by the Atom Electron API, and is generally a lighter-weight but code-compatible subset.  It requires {NK} Scripting but can be used without {NK} Core if you dont need all the Node features and just want a lightweight way of building universal desktop and mobile apps, a bit like Cordova but with {NK} Scripting features.
+[![{NK} Electro](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKElectro.png?v01)](https%3A%2F%2Fgithub.com%2Fnodekit-io%2Fnodekit%2Fblob%2Fmaster/docs/NKElectro/readme.md)
+> [**{NK} Electro**](https%3A%2F%2Fgithub.com%2Fnodekit-io%2Fnodekit%2Fblob%2Fmaster/docs/NKElectro/readme.md) is an API for [{NK} NodeKit](http://nodekit.io) applications that facilitates application lifecycle and user interface tasks.  It is inspired by the Atom Electron API, and is generally a lighter-weight but code-compatible subset.  It requires {NK} Scripting but can be used without {NK} Core if you dont need all the Node features and just want a lightweight way of building universal desktop and mobile apps, a bit like Cordova but with {NK} Scripting features.
 
-[![{NK} Core](docs/images/NKCore.png?v01)](docs/NKCore/readme.md)
- > [**{NK} Core**](docs/NKCore/readme.md) takes the above a step further and provides a light-weight but fully functional version of Node for [{NK} NodeKit](http://nodekit.io) applications.  It leverages the original Node source for all the Javascript components, but generally backs with different bindings to leverage each platform's built-in javascript engine(s) instead of the V8 engine.  Where possible native code has been moved to Javascript.  It requires {NK} Scripting and is generally paired with {NK} Electro as here, but technically you could replace {NK} Electro with your own code or plugin to open and manage the window lifecycle.
+[![{NK} Core](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKCore.png?v01)](https%3A%2F%2Fgithub.com%2Fnodekit-io%2Fnodekit%2Fblob%2Fmaster/docs/NKCore/readme.md)
+ > [**{NK} Core**](https%3A%2F%2Fgithub.com%2Fnodekit-io%2Fnodekit%2Fblob%2Fmaster/docs/NKCore/readme.md) takes the above a step further and provides a light-weight but fully functional version of Node for [{NK} NodeKit](http://nodekit.io) applications.  It leverages the original Node source for all the Javascript components, but generally backs with different bindings to leverage each platform's built-in javascript engine(s) instead of the V8 engine.  Where possible native code has been moved to Javascript.  It requires {NK} Scripting and is generally paired with {NK} Electro as here, but technically you could replace {NK} Electro with your own code or plugin to open and manage the window lifecycle.
 
 
 ## Distribution
