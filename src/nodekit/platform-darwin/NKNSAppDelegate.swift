@@ -19,27 +19,35 @@
 import Cocoa
 
 class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate {
+    
+    internal static var options: Dictionary<String, AnyObject>?
+    internal static var delegate: NKScriptContextDelegate?
 
-    private var splashWindow: NKE_BrowserWindow? = NKE_BrowserWindow(options: [
-        "nk.browserType": "UIWebView",
-        "title": "",
-        "preloadURL": "http://internal/splash/views/StartupSplash.html",
-        "width": 800,
-        "height": 600,
-        "nk.InstallElectro": false
-        ])
-
-    var _nodekit: NKNodeKit
-
+    private var splashWindow: NKE_BrowserWindow?
+    private let nodekit: NKNodeKit
+    
     let app: NSApplication
 
     init(app: NSApplication) {
         self.app = app
-        _nodekit = NKNodeKit()
+        self.nodekit = NKNodeKit()
+        
+        let splash: [String: AnyObject] = (NKNSAppDelegate.options?["nk.splashWindow"] as? [String: AnyObject]) ??  [
+            "nk.browserType": "UIWebView",
+            "title": "",
+            "preloadURL": "internal://localhost/splash/views/StartupSplash.html",
+            "width": 800,
+            "height": 600,
+            "nk.InstallElectro": false
+        ]
+        
+       splashWindow = NKE_BrowserWindow(options: splash)
     }
+    
+    // OS X Delegate Methods
 
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-       _nodekit.run(self)
+        nodekit.start(NKNSAppDelegate.options ?? Dictionary<String, AnyObject>(), delegate: self)
         NKEventEmitter.global.emit("nk.ApplicationDidFinishLaunching", ())
      }
 
@@ -49,14 +57,18 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate 
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(sender: NSApplication) -> Bool {
-        return true
+        return false
+    }
+    
+    // NodeKit Delegate Methods
+
+     func NKScriptEngineDidLoad(context: NKScriptContext) -> Void {
+        NKNSAppDelegate.delegate?.NKScriptEngineDidLoad(context)
     }
 
-     func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
-    }
-
-     func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
+     func NKScriptEngineReady(context: NKScriptContext) -> Void {
         splashWindow?.close()
         splashWindow = nil
+        NKNSAppDelegate.delegate?.NKScriptEngineReady(context)
     }
 }

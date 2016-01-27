@@ -40,7 +40,7 @@ public class NKWKMessageHandler: NSObject, WKScriptMessageHandler {
      if let body = message.body as? [String: AnyObject], let _ = body["$nk.sync"] as? Bool, let id = body["$id"] as? String {
             let result = messageHandler.userContentControllerSync(didReceiveScriptMessage: NKScriptMessage(name: name, body: message.body))
             let resultJSON = context?.NKserialize(result)
-            NKSignalEmitter.global.trigger(id, resultJSON)
+            NKEventEmitter.global.emit(id, resultJSON)
             return
         }
 

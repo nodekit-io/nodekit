@@ -1,12 +1,22 @@
 
-var p = new io.nodekit.electro.BrowserWindow();
-var result = io.nodekit.test.alertSync('hello');
-io.nodekit.test.logconsole('hello' + result);
-p.webContents.send('hello world')
+console.log("STARTING SAMPLE APPLICATION");
+var BrowserWindow = require('electro').BrowserWindow;
+var app = require('electro').app;
+
+app.on("ready", function(){
+       var p = new BrowserWindow();
+       var result = io.nodekit.test.alertSync('hello');
+       io.nodekit.test.logconsole('hello' + result);
+       p.webContents.send('hello world')
+       
+       })
+
+
+/*
 
 var util = require('util');
 
-console.log("STARTING SAMPLE APPLICATION");
+
 
 var fs = require('fs');
 var path = require('path');
@@ -28,4 +38,4 @@ var server = http.createServer( function (request, response) {
 
 server.listen(3000);
 
-console.log("Server running");
+console.log("Server running");*/

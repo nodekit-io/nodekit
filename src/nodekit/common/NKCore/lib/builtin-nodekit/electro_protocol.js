@@ -23,7 +23,7 @@ var util = require('util');
 var stream = require('stream');
 var http = require('http');
 var EventEmitter = require('events').EventEmitter;
-var protocol = io.nodekit.protocol
+var protocol = io.nodekit.electro.protocol
 
 /**
  * An Browser Http Server
@@ -33,71 +33,68 @@ var protocol = io.nodekit.protocol
  * @constructor
  * @public
  */
-function BrowserServer(scheme){
+function BrowserServer(scheme) {
     EventEmitter.call(this)
     this.scheme = scheme.toLowerCase();
     protocol.registerCustomProtocol(scheme, this.invoke);
-    
+
 };
 
 util.inherits(BrowserServer, EventEmitter);
 
-BrowserServer.prototype.listen = function(port, host) {
+BrowserServer.prototype.listen = function (port, host) {
     private_BrowserEventHost.addListener('request', this.requestListener);
-    if (!!port)
-    {
+    if (!!port) {
         var that = this
-        var httpServer = http.createServer(function(req, res){that.emit('request', req, res););
+        var httpServer = http.createServer(function (req, res) { that.emit('request', req, res); });
         httpServer.listen(port, host);
     }
 };
 
-BrowserServer.prototype.invoke = function(request) {
+BrowserServer.prototype.invoke = function (request) {
     var id = request["id"];
-    
-    var context = Object.create(function HttpContext() {});
+
+    var context = Object.create(function HttpContext() { });
     context.socket = new EventEmitter();
     var req = new IncomingMessage(context.socket);
     context.req = req;
     context.res = new OutgoingMessage(context.socket);;
-    
+
     req.method = request["method"] || 'GET'
     req.url = request["url"]
     req.headers = request["headers"] || []
     req.headers["Content-Length"] = request["length"]
-    
-    if (req.method == 'POST')
-    {
+
+    if (req.method == 'POST') {
         req.body.setData(request["body"])
         req.headers["Content-Length"] = request["length"]
     }
-    
-    context.res.on('finish', function() {
-                   var res = context.res;
-                   var data = res.getBody();
-                   res.headers["access-control-allow-origin"] = "*";
-                   this.callbackEnd(id, {'data': data, 'headers': res.headers, 'statusCode': res.statusCode } )
-                   
-                   for (var _key in context) {
-                   if (context.hasOwnProperty(_key))
-                   delete context[_key];
-                   };
-                   context = null;
-                   data = null;
-                   res=null;
-                   
-                   });
+
+    context.res.on('finish', function () {
+        var res = context.res;
+        var data = res.getBody();
+        res.headers["access-control-allow-origin"] = "*";
+        this.callbackEnd(id, { 'data': data, 'headers': res.headers, 'statusCode': res.statusCode })
+
+        for (var _key in context) {
+            if (context.hasOwnProperty(_key))
+                delete context[_key];
+        };
+        context = null;
+        data = null;
+        res = null;
+
+    });
     try {
         this.emit("request", context.req, context.res);
-        
-    }  catch (e)
-    {
+
+    } catch (e) {
         console.error(e);
     }
-    
+
 }
 
-exports.createServer = function(scheme, requestListener) {
+exports.createServer = function (scheme, requestListener) {
     var server = new BrowserServer(scheme);
     if (requestListener)
         server.on('request', requestListener);
@@ -114,7 +111,7 @@ exports.createServer = function(scheme, requestListener) {
  * @constructor
  * @private
  */
-function BrowserEventHost(){};
+function BrowserEventHost() { };
 util.inherits(BrowserEventHost, events.EventEmitter);
 
 var private_BrowserEventHost = new BrowserEventHost();
@@ -127,17 +124,15 @@ var private_BrowserEventHost = new BrowserEventHost();
  * @class RequestStream
  * @constructor
  */
-function RequestStream()
-{
+function RequestStream() {
     this.data = "";
 }
 
 var Readable = stream.Readable;
 util.inherits(RequestStream, Readable);
 
-RequestStream.prototype.setData = function RequestStreamSetData(str)
-{
-    Readable.call(this, { highWaterMark: str.length});
+RequestStream.prototype.setData = function RequestStreamSetData(str) {
+    Readable.call(this, { highWaterMark: str.length });
     this.data = str;
 };
 
@@ -200,7 +195,7 @@ RequestStream.prototype._read = function RequestStreamRead(size) {
  * @constructor
  */
 function ResponseStreamString() {
-    Writable.call(this, {decodeStrings: true});
+    Writable.call(this, { decodeStrings: true });
     this.bodyChunks = [];
 }
 
@@ -234,38 +229,37 @@ function IncomingMessage(socket) {
     this.url = '';
     this.method = null;
     this.body = new RequestStream()
-    
-    
-    this.httpVersionMajor =  1;
+
+
+    this.httpVersionMajor = 1;
     this.httpVersionMinor = 1;
-    this.httpVersion =   this.httpVersionMajor + "." + this.httpVersionMinor;
+    this.httpVersion = this.httpVersionMajor + "." + this.httpVersionMinor;
 }
 
 Object.defineProperty(IncomingMessage.prototype, "rawHeaders", {
-                      get: function () {
-                      var ret = [];
-                      for(var key in this.headers){
-                      ret.push(key);
-                      ret.push(this.headers);
-                      };
-                      return ret;
-                      }
-                      });
+    get: function () {
+        var ret = [];
+        for (var key in this.headers) {
+            ret.push(key);
+            ret.push(this.headers);
+        };
+        return ret;
+    }
+});
 
 Object.defineProperty(IncomingMessage.prototype, "trailers", {
-                      get: function () {  return {};   }
-                      });
+    get: function () { return {}; }
+});
 
 Object.defineProperty(IncomingMessage.prototype, "rawTrailers", {
-                      get: function () {  return []; }
-                      });
+    get: function () { return []; }
+});
 
-IncomingMessage.prototype.getHeader = function HttpBrowserRequestGetHeader(key)
-{
+IncomingMessage.prototype.getHeader = function HttpBrowserRequestGetHeader(key) {
     return private_getIgnoreCase(this.headers, key);
 }
 
-IncomingMessage.prototype.destroy = function(error) {
+IncomingMessage.prototype.destroy = function (error) {
 }
 
 /**
@@ -289,49 +283,41 @@ function OutgoingMessage(socket) {
 
 util.inherits(OutgoingMessage, ResponseStreamString);
 
-OutgoingMessage.prototype.status =  function (code) { this.statusCode = code; return this;};
+OutgoingMessage.prototype.status = function (code) { this.statusCode = code; return this; };
 
-OutgoingMessage.prototype.writeContinue = function writeContinue(statusCode, headers)
-{
-    throw {name : "NotImplementedError", message : "writeContinue HTTP 100 not implemented;  instead server must implement"};
+OutgoingMessage.prototype.writeContinue = function writeContinue(statusCode, headers) {
+    throw { name: "NotImplementedError", message: "writeContinue HTTP 100 not implemented;  instead server must implement" };
 };
 
-OutgoingMessage.prototype.setTimeout = function setTimeout(msecs, callback)
-{
-    throw {name : "NotImplementedError", message : "set Timeout not implemented as no sockets needed"};
+OutgoingMessage.prototype.setTimeout = function setTimeout(msecs, callback) {
+    throw { name: "NotImplementedError", message: "set Timeout not implemented as no sockets needed" };
 };
 
-OutgoingMessage.prototype.addTrailers = function addTrailers(trailers)
-{
-    throw {name : "NotImplementedError", message : "HTTP Trailers (trailing headers) not supported"};
+OutgoingMessage.prototype.addTrailers = function addTrailers(trailers) {
+    throw { name: "NotImplementedError", message: "HTTP Trailers (trailing headers) not supported" };
 };
 
-OutgoingMessage.prototype.writeHead = function HttpBrowserResponseWriteHead(statusCode, headers)
-{
+OutgoingMessage.prototype.writeHead = function HttpBrowserResponseWriteHead(statusCode, headers) {
     this.statusCode = statusCode;
-    
+
     var keys = Object.keys(headers);
     for (var i = 0; i < keys.length; i++) {
         var k = keys[i];
-        if (k)
-        {
+        if (k) {
             this.setHeader.call(this, k, headers[k]);
         }
     }
 };
 
-OutgoingMessage.prototype.setHeader = function HttpBrowserResponseSetHeader(key, val)
-{
+OutgoingMessage.prototype.setHeader = function HttpBrowserResponseSetHeader(key, val) {
     private_setIgnoreCase(this.headers, key, val);
 };
 
-OutgoingMessage.prototype.getHeader = function HttpBrowserResponseGetHeader(key)
-{
+OutgoingMessage.prototype.getHeader = function HttpBrowserResponseGetHeader(key) {
     return private_getIgnoreCase(this.headers, key);
 };
 
-OutgoingMessage.prototype.removeHeader = function HttpBrowserResponseRemoveHeader(key, value)
-{
+OutgoingMessage.prototype.removeHeader = function HttpBrowserResponseRemoveHeader(key, value) {
     return private_deleteIgnoreCase(this.headers, key);
 };
 
@@ -350,11 +336,10 @@ OutgoingMessage.prototype.statusMessage = undefined;
  * @param val (string) the new property value
  * @private
  */
-function private_setIgnoreCase(obj, key, val)
-{
+function private_setIgnoreCase(obj, key, val) {
     key = key.toLowerCase();
-    for(var p in obj){
-        if(obj.hasOwnProperty(p) && key == p.toLowerCase()){
+    for (var p in obj) {
+        if (obj.hasOwnProperty(p) && key == p.toLowerCase()) {
             obj[p] = val;
             return;
         }
@@ -371,11 +356,10 @@ function private_setIgnoreCase(obj, key, val)
  * @param val (string) the new property value
  * @private
  */
-function private_getIgnoreCase(obj, key)
-{
+function private_getIgnoreCase(obj, key) {
     key = key.toLowerCase();
-    for(var p in obj){
-        if(obj.hasOwnProperty(p) && key == p.toLowerCase()){
+    for (var p in obj) {
+        if (obj.hasOwnProperty(p) && key == p.toLowerCase()) {
             return obj[p];
         }
     }
@@ -391,11 +375,10 @@ function private_getIgnoreCase(obj, key)
  * @return (bool) true if successful, false if not
  * @private
  */
-function private_deleteIgnoreCase(obj, key)
-{
+function private_deleteIgnoreCase(obj, key) {
     key = key.toLowerCase();
-    for(var p in obj){
-        if(obj.hasOwnProperty(p) && key == p.toLowerCase()){
+    for (var p in obj) {
+        if (obj.hasOwnProperty(p) && key == p.toLowerCase()) {
             delete obj[p];
             return true;
         }

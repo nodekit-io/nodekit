@@ -59,8 +59,8 @@ internal protocol NKScriptContentController: class {
 }
 
 public protocol NKScriptContextDelegate: class {
-    func NKScriptEngineLoaded(context: NKScriptContext) -> Void
-    func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void
+    func NKScriptEngineDidLoad(context: NKScriptContext) -> Void
+    func NKScriptEngineReady(context: NKScriptContext) -> Void
 }
 
 public class NKJSContextId {}

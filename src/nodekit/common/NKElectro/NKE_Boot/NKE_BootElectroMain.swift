@@ -21,7 +21,7 @@ import Foundation
 
 class NKE_BootElectroMain: NSObject {
 
-    static func bootTo(context: NKScriptContext) {
+    static func addElectro(context: NKScriptContext) {
         let url = NSBundle(forClass: NKE_BootElectroMain.self).pathForResource("_nke_main", ofType: "js", inDirectory: "lib-electro")
         let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
         let script = "function loadbootstrap(){\n" + appjs! + "\n}\n" + "loadbootstrap();" + "\n"

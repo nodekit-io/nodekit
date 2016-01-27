@@ -24,7 +24,7 @@ import UIKit
 
 extension NKE_BrowserWindow {
 
-    internal func UIApplicationReady() -> Void {
+    internal func UIScriptEnvironmentReady() -> Void {
         (self._webView as! UIWebView).delegate = self
          self._events.emit("did-finish-load", self._id)
     }

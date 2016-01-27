@@ -22,7 +22,7 @@ import JavaScriptCore
 
 extension NKE_BrowserWindow {
 
-    internal func WKApplicationReady() -> Void {
+    internal func WKScriptEnvironmentReady() -> Void {
         (self._webView as! WKWebView).navigationDelegate = self
          self._events.emit("did-finish-load", self._id)
     }

@@ -34,7 +34,7 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         self.UIDelegate = NKWKWebViewUIDelegate(webView: self)
 
         objc_setAssociatedObject(self, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        cb.NKScriptEngineLoaded(self)
+        cb.NKScriptEngineDidLoad(self)
     }
 
     public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {

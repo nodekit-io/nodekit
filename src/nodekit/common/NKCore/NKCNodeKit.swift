@@ -24,76 +24,57 @@ import WebKit
 //}
 
 public class NKNodeKit: NKScriptContextDelegate {
-
-    public init() {
-        self.context = nil
-      }
-
-    var context: NKScriptContext?
-    var scriptContextDelegate: NKScriptContextDelegate?
-
+    
+    // Common Public Methods
+    
     public class func start() {
-       #if os(iOS)
-            NKMainMobile.start()
+        #if os(iOS)
+            NKMainMobile.start(Dictionary<String, AnyObject>(), delegate: nil)
         #elseif os(OSX)
-            NKMainDesktop.start()
+            NKMainDesktop.start(Dictionary<String, AnyObject>(), delegate: nil)
         #endif
     }
-
-    public func run(delegate: NKScriptContextDelegate? = nil) {
+    
+    public class func start(options: Dictionary<String, AnyObject>, delegate: NKScriptContextDelegate? = nil) {
+        #if os(iOS)
+            NKMainMobile.start(options, delegate: delegate)
+        #elseif os(OSX)
+            NKMainDesktop.start(options, delegate: delegate)
+        #endif
+    }
+    
+    // Instance Methods (Not normally Called from Public, but Exposed to Allow Multiple {NK} NodeKit's per process)
+    
+     public init() {
+        self.context = nil
+    }
+    
+    var context: NKScriptContext?
+    private var scriptContextDelegate: NKScriptContextDelegate?
+    
+    public func start(var options: Dictionary<String, AnyObject>, delegate: NKScriptContextDelegate? = nil) {
         self.scriptContextDelegate = delegate
-       NKScriptContextFactory().createContext(["Engine": NKEngineType.JavaScriptCore.rawValue], delegate: self)
+        options["Engine"] = options["Engine"] ?? NKEngineType.JavaScriptCore.rawValue
+        NKScriptContextFactory().createContext(options, delegate: self)
     }
-
-    public func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
-
+    
+    public func NKScriptEngineDidLoad(context: NKScriptContext) -> Void {
         self.context = context
-
+        
         // INSTALL JAVASCRIPT ENVIRONMENT ON MAIN CONTEXT
-         NKE_BootElectroMain.bootTo(context)
-         NKC_BootCore.bootTo(context)
-
-        // INJECT OTHER PLUGINS
-        let script1 =  context.NKloadPlugin(HelloWorldTest(), namespace: "io.nodekit.test", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue])
-        objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script1, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-
-
-        // INJECT NODE BOOTSTRAP
-        let url = NSBundle(forClass: NKNodeKit.self).pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
-        let script = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
-        let item = context.NKinjectJavaScript(NKScriptSource(source: script!, asFilename: "io.nodekit.core/lib/_nodekit_bootstrapper.js", namespace: "io.nodekit.bootstrapper"))
-        objc_setAssociatedObject(context, unsafeAddressOf(NKNodeKit), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-
-        let script2Source = "var p = new io.nodekit.electro.BrowserWindow();\n var result = io.nodekit.test.alertSync('hello'); \nio.nodekit.test.logconsole('hello' + result);\n p.webContents.send('hello world')\n"
-        let script2 = context.NKinjectJavaScript(NKScriptSource(source: script2Source, asFilename: "startup.js"))
-        objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script2, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-       
-        self.scriptContextDelegate?.NKScriptEngineLoaded(context)
-
-        let seconds = 5.0
-        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-
-        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-      
-             NKSignalEmitter.global.trigger("io.nodekit.HelloWorld", "OK")
+        NKE_BootElectroMain.addElectro(context)
+        NKC_BootCore.addCorePlatform(context)
+        NKC_BootCore.bootCore(context)
+        
+        // NOTIFIY DELEGATE THAT SCRIPT ENGINE IS LOADED
+        self.scriptContextDelegate?.NKScriptEngineDidLoad(context)
+    }
+    
+    public func NKScriptEngineReady(context: NKScriptContext) -> Void {
+        // NOTIFIY DELEGATE ON MAIN QUEUE THAT SCRIPT ENGINE IS LOADED
+        dispatch_async(dispatch_get_main_queue(),{
+            self.scriptContextDelegate?.NKScriptEngineReady(context)
+            NKEventEmitter.global.emit("nk.Ready", ())
         })
     }
-
-    public func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
-        let seconds = 0.0
-        let delay = seconds * Double(NSEC_PER_SEC)  // nanoseconds per seconds
-        let dispatchTime = dispatch_time(DISPATCH_TIME_NOW, Int64(delay))
-
-        dispatch_after(dispatchTime, dispatch_get_main_queue(), {
-
-           self.scriptContextDelegate?.NKApplicationReady(id, context: context)
-            NKEventEmitter.global.emit("nk.ApplicationReady", ())
-        })
-
-        /*
-
-*/
-    }
-
 }

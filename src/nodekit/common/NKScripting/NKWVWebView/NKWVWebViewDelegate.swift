@@ -46,7 +46,7 @@ public class NKWVWebViewDelegate: NSObject, WebFrameLoadDelegate {
             webView.currentJSContext = context
             objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-            callback.NKScriptEngineLoaded(context)
+            callback.NKScriptEngineDidLoad(context)
         }
 
         if (NSThread.isMainThread()) {
@@ -56,7 +56,6 @@ public class NKWVWebViewDelegate: NSObject, WebFrameLoadDelegate {
         }
 
     }
-
 
     public func webView(sender: WebView!,
         didFinishLoadForFrame frame: WebFrame!) {
@@ -71,9 +70,9 @@ public class NKWVWebViewDelegate: NSObject, WebFrameLoadDelegate {
                 objc_setAssociatedObject(webView, unsafeAddressOf(self), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
                 self.delegate = nil
                 self.webView = nil
-                guard let context = self.context else {callback.NKApplicationReady(self.id, context: nil); return; }
+                guard let context = self.context else { return; }
                 self.context = nil
-                callback.NKApplicationReady(self.id, context: context)
+                callback.NKScriptEngineReady(context)
             }
 
             if (NSThread.isMainThread()) {

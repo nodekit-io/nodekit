@@ -31,10 +31,5 @@ class NKE_BootElectroRenderer: NSObject {
 
         NKE_IpcRenderer.attachTo(context)
 
-        let script2Source = "io.nodekit.electro.ipcRenderer.on('channel', function(msg){console.log(msg);}); "
-        let script2 = context.NKinjectJavaScript(NKScriptSource(source: script2Source, asFilename: "startup.js"))
-        objc_setAssociatedObject(context, unsafeAddressOf(HelloWorldTest), script2, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-
-
     }
 }

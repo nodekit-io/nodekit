@@ -60,7 +60,8 @@ class NKEventSubscriptionGeneric<T>: NKEventSubscription {
 
 class NKEventEmitter {
 
-    internal static var global: NKEventEmitter = NKEventEmitter()
+    // global EventEmitter that is actually a signal emitter (retains early triggers without subscriptions until once is called)
+    internal static var global: NKEventEmitter = NKSignalEmitter()
 
     private var currentSubscription: NKEventSubscription?
     private var subscriptions: [String: [Int:NKEventSubscription]] = [:]
@@ -110,87 +111,35 @@ class NKEventEmitter {
     }
 }
 
-
-// Static variables (class variables not allowed for generics)
-private var seq2: Int = 1
-
-class NKSignalSubscription {
-
-    typealias NKHandler = (String?) -> Void
-
-    let handler: NKHandler
-
-    private let emitter: NKSignalEmitter
-    private let signal: String
-    private let id: Int
-
-    init(emitter: NKSignalEmitter, signal: String,  handler: NKHandler) {
-        id = seq2++
-        self.signal = signal
-        self.emitter = emitter
-        self.handler = handler
-    }
-
-    func remove() {
-        emitter.subscriptions[signal]?.removeValueForKey(id)
-    }
-}
-
-class NKSignalEmitter {
-
-    internal static var global: NKSignalEmitter = NKSignalEmitter()
-
-    private var currentSubscription: NKSignalSubscription?
-    private var subscriptions: [String: [Int:NKSignalSubscription]] = [:]
-    private var earlyTriggers: [String: String?] = [:]
-
-    private func on(signal: String, handler: (String?) -> Void) -> NKSignalSubscription {
-        var eventSubscriptions: [Int:NKSignalSubscription]
-
-        if let values = subscriptions[signal] {
-            eventSubscriptions = values
-        } else {
-            eventSubscriptions = [:]
-        }
-
-        let subscription = NKSignalSubscription(
-            emitter: self,
-            signal: signal,
-            handler: handler
-        )
-
-        eventSubscriptions[subscription.id] = subscription
-        subscriptions[signal] = eventSubscriptions
-        return subscription
-    }
-
-    func waitFor(event: String, handler: (String?) -> Void) {
-         let registerBlock = { () -> Void in
+private class NKSignalEmitter: NKEventEmitter {
+    
+    private var earlyTriggers: [String: Any] = [:]
+    
+    override func once<T>(event: String, handler: (T) -> Void) {
+        let registerBlock = { () -> Void in
             if let data = self.earlyTriggers[event] {
-              self.earlyTriggers.removeValueForKey(event)
-                handler(data)
+                self.earlyTriggers.removeValueForKey(event)
+                handler(data as! T)
                 return
             }
-            self.on(event) { (data: String?) -> Void in
+            self.on(event) { (data: T) -> Void in
                 self.currentSubscription?.remove()
                 handler(data)
             }
-
         }
+        
         if (NSThread.isMainThread()) {
             registerBlock()
         } else {
             dispatch_async(dispatch_get_main_queue(), registerBlock)
         }
     }
-
-    func trigger(event: String, _ data: String?) {
-
+    
+    override func emit<T>(event: String, _ data: T) {
         let triggerBlock = { () -> Void in
             if let subscriptions = self.subscriptions[event] {
                 for (_, subscription) in subscriptions {
-                    self.currentSubscription = subscription
-                    subscription.handler(data)
+                     (subscription as! NKEventSubscriptionGeneric<T>).handler(data)
                 }
             } else {
                 self.earlyTriggers[event] = data

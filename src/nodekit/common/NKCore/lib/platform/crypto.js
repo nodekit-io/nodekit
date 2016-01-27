@@ -16,7 +16,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+this.global = this;
 
-var crypto = io.nodekit.crypto
+if (!global.crypto) {
+    global.crypto = {}
+}
 
-crypto.prototype._init = function() {}
+
+if (!global.crypto.randomBytes) {
+    global.crypto.randomBytes = function (size) {
+        return new Buffer(io.nodekit.crypto.getRandomBytesSync(size));
+    };
+}
+
+if (!global.crypto.getRandomValues) {
+    
+    // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
+    global.crypto.getRandomValues = function (bytes) {
+        var buf = new Buffer(io.nodekit.crypto.getRandomBytesSync(bytes.length))
+        buf.copy(bytes);
+    };
+}

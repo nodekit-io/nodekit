@@ -19,4 +19,15 @@
 /* Uncomment the following import if using in a standalone project with NodeKit as a framework */
 // import NodeKit
 
-NKNodeKit.start()
+
+class myNKDelegate: NSObject, NKScriptContextDelegate {
+    func NKScriptEngineDidLoad(context: NKScriptContext) -> Void {
+        SamplePlugin.attachTo(context)
+    }
+    
+    func NKScriptEngineReady(context: NKScriptContext) -> Void {
+    }
+}
+
+NKNodeKit.start([String: AnyObject](), delegate: myNKDelegate() )
+

@@ -15,7 +15,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+io.nodekit.console.log("THIRD PARTY MAIN");
 module = require('module');
 var util = require('util');
 var path = require('path');
@@ -24,7 +24,6 @@ global.process.sources = [];
 var EventEmitter = require('events').EventEmitter;
 
 console.warn = console.log;
-
 
 DTRACE_NET_SERVER_CONNECTION = function(){};
 DTRACE_NET_STREAM_END= function(){};
@@ -76,14 +75,36 @@ dns.platform.name_servers = [
                              }
                              ];
 
+if (Error.captureStackTrace === undefined) {
+    Error.captureStackTrace = function (obj) {
+        if (Error.prepareStackTrace) {
+            var frame = {
+            isEval: function () { return false; },
+            getFileName: function () { return "filename"; },
+            getLineNumber: function () { return 1; },
+            getColumnNumber: function () { return 1; },
+            getFunctionName: function () { return "functionName" }
+            };
+            
+            obj.stack = Error.prepareStackTrace(obj, [frame, frame, frame]);
+        } else {
+            obj.stack = obj.stack || obj.name || "Error";
+        }
+    };
+    
+}
+
 /**
  * NODEKIT INITIALIZATION
  * Load Application package.json file, register request/response server, and load debug application
  */
 
+console.log("Starting PACKAGE.JSON");
 // INVOKE MAIN APP
 process.package =  module._load('app/package.json', null, false);
 process.argv = ["node", __dirname + "/" + process.package['main']]
 module._load(process.package['main'], null, true);
 
-
+process.nextTick(function(){
+                 process.native.emit("nk.jsApplicationReady");
+                 });

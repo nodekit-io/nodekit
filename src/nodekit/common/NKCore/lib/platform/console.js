@@ -19,11 +19,5 @@
 
 var console = io.nodekit.console
 
-console.prototype._init = function() {}
-
-console.prototype.timer = function() {
-    return new io.nodekit.timer();
-}
-
-console.prototype.navigateTo = function navigateTo(url, title){}
-console.prototype.resize = function resize(width, height){}
+console.navigateTo = function navigateTo(url, title){}
+console.resize = function resize(width, height){}

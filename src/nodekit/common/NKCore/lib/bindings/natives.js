@@ -92,7 +92,7 @@ var source = {};
 
 /* CUSTOM NODE.JS API ADDITIONS*/
 [
-   	'electro',
+   	'electro', 'electro_protocol'
  ].forEach(function (name) {
            source[name] = getSource('lib/builtin-nodekit/' + name );
            });

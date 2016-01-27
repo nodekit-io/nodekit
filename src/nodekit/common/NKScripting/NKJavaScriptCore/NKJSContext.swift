@@ -28,11 +28,10 @@ extension JSContext: NKScriptContextHost {
         let context = self
 
         log("+NodeKit JavaScriptCore JavaScript Engine E\(id)")
-          objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
-        cb.NKScriptEngineLoaded(context)
-        cb.NKApplicationReady(id, context: context)
-
+        cb.NKScriptEngineDidLoad(context)
+        cb.NKScriptEngineReady(context)
     }
 }
 

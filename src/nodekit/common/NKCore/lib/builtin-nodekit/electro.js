@@ -22,7 +22,7 @@ var electro = {
     'BrowserWindow': io.nodekit.electro.BrowserWindow,
     'contentTracing': "not implemented",
     'dialog': io.nodekit.electro.dialog,
-    'ipcMain': io.nodekit..electro.ipcMain,
+    'ipcMain': io.nodekit.electro.ipcMain,
     'Menu': io.nodekit.electro.Menu,
     'MenuItem': io.nodekit.electro.MenuItem,
     'powerMonitor': "not implemented",
@@ -33,6 +33,6 @@ var electro = {
     'Tray': "not implemented"
 }
 
-electro.protocol.createServer = require('../_electro_protocol.js').createServer
+electro.protocol.createServer = require('electro_protocol').createServer
 
 module.exports = electro

@@ -43,7 +43,7 @@ extension NKE_App: NKScriptExport {
 class NKE_App: NSObject, NKEAppProtocol {
 
     private var events: NKEventEmitter = NKEventEmitter.global
-
+ 
     override init() {
         super.init()
         initializeEvents()
@@ -81,7 +81,7 @@ class NKE_App: NSObject, NKEAppProtocol {
 
     private func initializeEvents() {
     // Event: 'ready'
-        events.once("nk.ApplicationReady") { () -> Void in
+        events.once("nk.jsApplicationReady") { (data: AnyObject) -> Void in
              self.NKscriptObject?.invokeMethod("emit", withArguments: ["ready"], completionHandler: nil)
         }
 

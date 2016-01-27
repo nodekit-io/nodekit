@@ -42,7 +42,7 @@ internal class NKWKWebViewDelegate: NSObject, WKNavigationDelegate {
                 objc_setAssociatedObject(webView, unsafeAddressOf(self), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
                 self.delegate = nil
 
-                callback.NKApplicationReady(self.id, context: webView)
+                callback.NKScriptEngineReady(webView)
             }
 
             if (NSThread.isMainThread()) {
@@ -50,7 +50,6 @@ internal class NKWKWebViewDelegate: NSObject, WKNavigationDelegate {
             } else {
                 dispatch_async(dispatch_get_main_queue(), didFinishNavigation)
             }
-
     }
 }
 
@@ -67,7 +66,7 @@ internal class NKWKWebViewUIDelegate: NSObject, WKUIDelegate {
         initiatedByFrame frame: WKFrameInfo,
         completionHandler: (String?) -> Void) {
             if (prompt == "nk.Signal") {
-                NKSignalEmitter.global.waitFor(defaultText!, handler: completionHandler)
+                NKEventEmitter.global.once(defaultText!, handler: completionHandler)
             } else {
                 completionHandler(nil)
             }

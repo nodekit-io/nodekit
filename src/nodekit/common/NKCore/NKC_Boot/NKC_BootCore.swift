@@ -19,95 +19,29 @@
 
 import Foundation
 
+private class NKC_BootCoreBootStrap : NSObject {}
+
 class NKC_BootCore: NSObject {
 
-    class func bootTo(context: NKScriptContext) {
-
-        let url = NSBundle(forClass: NKC_BootCore.self).pathForResource("_core", ofType: "js", inDirectory: "lib/platform")
-        let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
-        let processScript: String = syncProcessDictionary(context)
-        let script = "this.process = this.process || {};\n(function _core(process){\n" + appjs! + "\n" + processScript + "\n})(this.process);\n"
-
-        let item = context.NKinjectJavaScript(NKScriptSource(source: script, asFilename: "io.nodekit.core/lib/platform/_core.js", namespace: "io.nodekit.core"))
-        objc_setAssociatedObject(context, unsafeAddressOf(NKC_BootCore), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
-
-       addPlugins(context)
-
-    }
-
-    private class func addPlugins(context: NKScriptContext) {
+    class func addCorePlatform(context: NKScriptContext) {
+        // PROCESS SHOULD BE FIRST CORE PLATFORM PLUGIN
+        NKC_Process.attachTo(context)
+        
+        // LOAD REMAINING CORE PLATFORM PLUGINS
         NKC_FileSystem.attachTo(context)
         NKC_Console.attachTo(context)
         NKC_Crypto.attachTo(context)
         NKC_SocketTCP.attachTo(context)
         NKC_SocketUDP.attachTo(context)
         NKC_Timer.attachTo(context)
+        
     }
-
-    private class func syncProcessDictionary(context: NKScriptContext) -> String {
-        #if os(iOS)
-            let PLATFORM: String = "darwin"
-            let DEVICEFAMILY: String = "mobile"
-        #elseif os(OSX)
-            let PLATFORM: String = "darwin"
-            let DEVICEFAMILY: String = "desktop"
-        #else
-            let PLATFORM: String = "darwin"
-            let DEVICEFAMILY: String = "desktop"
-        #endif
-
-        var process: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>()
-        process["platform"] = PLATFORM
-        process["devicefamily"] = DEVICEFAMILY
-        process["argv"] = ["nodekit"]
-        process["execPath"] = NSBundle.mainBundle().resourcePath!
-
-        setNodePaths(&process)
-
-        var script = ""
-
-        for (name, val) in process {
-               script += "process['\(name)'] = \(context.NKserialize(val));\n"
-        }
-
-        return script
-    }
-
-    private class func setNodePaths(inout process: Dictionary<String, AnyObject>) {
-        let fileManager = NSFileManager.defaultManager()
-        let mainBundle: NSBundle = NSBundle.mainBundle()
-        let _nodeKitBundle: NSBundle = NSBundle(forClass: NKNodeKit.self)
-
-        let appPath = (mainBundle.bundlePath as NSString).stringByDeletingLastPathComponent
-
-        let resourcePath: String! = mainBundle.resourcePath
-        let nodekitPath: String! = _nodeKitBundle.resourcePath
-
-        let webPath = (resourcePath as NSString).stringByAppendingPathComponent("/app")
-        let appModulePath = (appPath as NSString).stringByAppendingPathComponent("/node_modules")
-
-        let externalPackage = (appPath as NSString).stringByAppendingPathComponent("/package.json")
-        let embeddedPackage = (webPath as NSString).stringByAppendingPathComponent("/package.json")
-
-        var resPaths: String
-
-        if (fileManager.fileExistsAtPath(externalPackage)) {
-            process["workingDirectory"] = appPath
-
-            resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(appPath).stringByAppendingString(":").stringByAppendingString(appModulePath).stringByAppendingString(":").stringByAppendingString(nodekitPath)
-        } else {
-            if (!fileManager.fileExistsAtPath(embeddedPackage)) {
-                print("Missing package.json in main bundle /Resources/app")
-                print(resourcePath)
-                return
-            }
-            process["workingDirectory"] = webPath
-
-            resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(webPath).stringByAppendingString(":").stringByAppendingString(appModulePath).stringByAppendingString(":").stringByAppendingString(nodekitPath)
-
-        }
-        var env  = NSProcessInfo.processInfo().environment
-        env["NODE_PATH"] = resPaths
-        process["env"] = env
+    
+    class func bootCore(context: NKScriptContext) {
+        // INJECT NODE BOOTSTRAP
+        let url = NSBundle(forClass: NKNodeKit.self).pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
+        let script = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
+        let item = context.NKinjectJavaScript(NKScriptSource(source: script!, asFilename: "io.nodekit.core/lib/_nodekit_bootstrapper.js", namespace: "io.nodekit.bootstrapper"))
+        objc_setAssociatedObject(context, unsafeAddressOf(NKC_BootCoreBootStrap), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
     }
 }

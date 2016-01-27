@@ -18,10 +18,13 @@
 
 import UIKit
 
-class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
+class NKUIAppDelegate: UIResponder, UIApplicationDelegate, NKScriptContextDelegate {
 
     var window: UIWindow?
     var _nodekit: NKNodeKit?
+    
+    internal static var options: Dictionary<String, AnyObject>?
+    internal static var delegate: NKScriptContextDelegate?
 
     private var splashWindow: NKE_BrowserWindow?
 
@@ -33,7 +36,8 @@ class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
 
        _nodekit = NKNodeKit()
-       _nodekit!.run()
+       _nodekit!.start(NKUIAppDelegate.options ?? Dictionary<String, AnyObject>(), delegate: self)
+        NKEventEmitter.global.emit("nk.ApplicationDidFinishLaunching", ())
         return true
     }
 
@@ -57,13 +61,19 @@ class NKUIAppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+        NKEventEmitter.global.emit("nk.ApplicationWillTerminate", ())
         log("+Application Exit")
     }
 
-    func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
+   // NodeKit Delegate Methods
+    
+    func NKScriptEngineDidLoad(context: NKScriptContext) -> Void {
+        NKUIAppDelegate.delegate?.NKScriptEngineDidLoad(context)
+    }
+    
+    func NKScriptEngineReady(context: NKScriptContext) -> Void {
+         NKUIAppDelegate.delegate?.NKScriptEngineReady(context)
     }
 
-    func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
-     }
 
 }

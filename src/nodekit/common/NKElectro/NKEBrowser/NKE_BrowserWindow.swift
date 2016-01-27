@@ -130,8 +130,8 @@ extension NKE_BrowserWindow: NKScriptExport {
 }
 
 extension NKE_BrowserWindow: NKScriptContextDelegate {
-    internal func NKScriptEngineLoaded(context: NKScriptContext) -> Void {
-        log("E\(context.NKid) Renderer Engine Loaded")
+    internal func NKScriptEngineDidLoad(context: NKScriptContext) -> Void {
+        log("+E\(context.NKid) Renderer Loaded")
 
         if (!(self._options["nk.InstallElectro"] as! Bool)) { return;}
         self._context = context
@@ -140,14 +140,13 @@ extension NKE_BrowserWindow: NKScriptContextDelegate {
         NKE_BootElectroRenderer.bootTo(context)
     }
 
-    internal func NKApplicationReady(id: Int, context: NKScriptContext?) -> Void {
+    internal func NKScriptEngineReady(context: NKScriptContext) -> Void {
         switch self._browserType {
         case .WKWebView:
-            WKApplicationReady()
+            WKScriptEnvironmentReady()
          case .UIWebView:
-            UIApplicationReady()
+            UIScriptEnvironmentReady()
         }
-        log("+E\(id) Application Ready")
-
+        log("+E\(id) Renderer Ready")
     }
 }

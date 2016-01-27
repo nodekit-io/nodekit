@@ -40,13 +40,10 @@ internal class NKUIWebViewDelegate: NSObject, UIWebViewDelegate {
     private func gotJavaScriptContext(context: JSContext) {
         if (self.delegate == nil) {return;}
 
-         guard let callback = self.delegate else {return;}
+        guard let callback = self.delegate else {return;}
         self.context = context
-
         objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), self.id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
-        callback.NKScriptEngineLoaded(context)
-
+        callback.NKScriptEngineDidLoad(context)
     }
 
     internal func webViewDidFinishLoad(webView: UIWebView) {
@@ -61,7 +58,7 @@ internal class NKUIWebViewDelegate: NSObject, UIWebViewDelegate {
             self.webView = nil
             guard let context = self.context else {return;}
             self.context = nil
-            callback.NKApplicationReady(self.id, context: context)
+            callback.NKScriptEngineReady(context)
         }
 
         if (NSThread.isMainThread()) {

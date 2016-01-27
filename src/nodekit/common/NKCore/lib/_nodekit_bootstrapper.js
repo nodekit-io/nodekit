@@ -18,7 +18,8 @@
 
 var Startup = function Startup() {
     
-    BootstrapModule.bootstrap('lib/_nodekit_process.js');
+    if (!process)
+        throw new Error("NK Core cannot be booted before NK Core Platform plugins")
     
     process.binding = function(id) {
            return BootstrapModule._load('lib/bindings/' + id);
@@ -215,5 +216,3 @@ BootstrapModule.getNodeSource = function(id) {
 }
 
 Startup();
-
-

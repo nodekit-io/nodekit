@@ -21,13 +21,16 @@ import WebKit
 import JavaScriptCore
 import UIKit
 
-protocol jse: JSExport {
-       func logconsole(text: AnyObject?) -> Void
+protocol SamplePluginProtocol: NKScriptExport, JSExport {
+    func logconsole(text: AnyObject?) -> Void
     func alertSync(text: AnyObject?) -> String
 }
 
-class HelloWorldTest: NSObject, jse {
-
+class SamplePlugin: NSObject, SamplePluginProtocol {
+    class func attachTo(context: NKScriptContext) {
+        context.NKloadPlugin(SamplePlugin(), namespace: "io.nodekit.test", options: ["PluginBridge": NKScriptExportType.NKScriptExport.rawValue])
+    }
+    
     func logconsole(text: AnyObject?) -> Void {
         log(text as? String! ?? "")
     }
