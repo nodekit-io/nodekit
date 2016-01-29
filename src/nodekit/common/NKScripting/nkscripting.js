@@ -66,8 +66,8 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
             'value': 1,
             'writable': true
         });
-        
-        this.events = {};
+                   
+        this.events = {}
     }
  
     exports = NKScripting;
@@ -110,7 +110,7 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
             }, NKScripting.prototype);
             base.__proto__ = Object.create(Object.getPrototypeOf(base), properties);
             NKScripting.call(base, channelName);
-        } else {
+         } else {
             base = new NKScripting(channelName);
         }
         return NKScripting.createNamespace(namespace, base);
@@ -126,7 +126,7 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
             Object.defineProperty(this, '$properties', {'configurable': true, 'value': {}});
             ctor[this.$instanceID] = this;
             NKScripting.invokeNative.apply(this, arguments);
-                   
+            this.events = {};
             if (this._init) this._init();
         }
 

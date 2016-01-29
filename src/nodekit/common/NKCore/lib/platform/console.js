@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-var console = io.nodekit.console
+var console = io.nodekit.platform.console
 
 console.navigateTo = function navigateTo(url, title){}
 console.resize = function resize(width, height){}

@@ -17,8 +17,12 @@
  * limitations under the License.
  */
 
-var Timer = io.nodekit.platform.Timer
+var Tcp = io.nodekit.platform.TCP
 
-Timer.prototype._init = function() {
+Tcp.prototype._init = function() {
+
+    // inherit core node Stream interface, if available
+    if (io.nodekit.NativeStream)
+       this.stream = new io.nodekit.NativeStream(this);
     
 };

@@ -18,7 +18,7 @@
 
  class NKC_Process: NSObject, NKScriptExport {
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_Process(), namespace: "io.nodekit.processNative", options: [String:AnyObject]())
+        context.NKloadPlugin(NKC_Process(), namespace: "io.nodekit.platform.process", options: [String:AnyObject]())
     }
 
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {

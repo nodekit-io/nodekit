@@ -16,6 +16,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+var cryptoNative = io.nodekit.platform.crypto
+
 this.global = this;
 
 if (!global.crypto) {
@@ -25,7 +28,7 @@ if (!global.crypto) {
 
 if (!global.crypto.randomBytes) {
     global.crypto.randomBytes = function (size) {
-        return new Buffer(io.nodekit.crypto.getRandomBytesSync(size));
+        return new Buffer(cryptoNative.getRandomBytesSync(size));
     };
 }
 
@@ -33,7 +36,7 @@ if (!global.crypto.getRandomValues) {
     
     // copy(targetBuffer, targetStart=0, sourceStart=0, sourceEnd=buffer.length)
     global.crypto.getRandomValues = function (bytes) {
-        var buf = new Buffer(io.nodekit.crypto.getRandomBytesSync(bytes.length))
+        var buf = new Buffer(cryptoNative.getRandomBytesSync(bytes.length))
         buf.copy(bytes);
     };
 }

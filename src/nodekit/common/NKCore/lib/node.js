@@ -63,7 +63,7 @@
     startup.processRawDebug();
 
     startup.resolveArgv0();
- } catch (e) {io.nodekit.console.log(e.message + e.stack)};
+ } catch (e) {console.log(e.message + e.stack)};
 
     // There are various modes that Node can run in. The most common two
     // are running from a script and running the REPL - but there are a few

@@ -22,12 +22,13 @@ var StreamWrap = process.binding('stream_wrap').Stream;
 var Duplex = require('stream').Duplex;
 var EventEmitter = require('events').EventEmitter;
 var Buffer = require('buffer').Buffer;
+var nativeTCP = require('platform').TCP
 
 /* TCP Binding
  * Behaves like a stream and inherits stream_wrap
  *
  * Dependencies:
- * io.nodekit.socket.Tcp() that inherits _tcp EventEmitter and NativeStream
+ * io.nodekit.platform.TCP() that inherits _tcp EventEmitter and NativeStream
  * _tcp.on("connection", function(_tcp))
  * _tcp.on("afterConnect", function())
  * _tcp.on('data', function(chunk))
@@ -52,7 +53,7 @@ function TCP(tcp) {
     } else
     {
         this._remoteAddress = null;
-        this._tcp = new io.nodekit.socket.Tcp();
+        this._tcp = new nativeTCP();
         this._onConnection = TCP.prototype._onConnection.bind(this);
         this._onAfterConnect = TCP.prototype._onAfterConnect.bind(this);
         this._onEnd = TCP.prototype._onEnd.bind(this);
@@ -82,16 +83,25 @@ Object.defineProperty(TCP.prototype, '_fd', {
                       });
 
 TCP.prototype._onEnd = function() {
-    this._tcp.removeListener( "end", this._onEnd);
-    this._tcp.removeListener( "connection", this._onConnection);
-    this._tcp.removeListener( "afterConnect", this._onAfterConnect);
-    this._onEnd = null;
-    this._onConnection = null;
-    this._onAfterConnect = null;
-    this._tcp = null;
-    this._stream = null;
+    this.dispose()
 };
 
+TCP.prototype.dispose = function TCP() {
+    if (this._tcp)
+    {
+        this._tcp.removeListener( "end", this._onEnd);
+        this._tcp.removeListener( "connection", this._onConnection);
+        this._tcp.removeListener( "afterConnect", this._onAfterConnect);
+        this._onEnd = null;
+        this._onConnection = null;
+        this._onAfterConnect = null;
+        this._tcp.stream = null;
+        this._tcp.dispose();
+        this._tcp = null;
+        this._stream = null;
+        this._remoteAddress = null;
+    }
+}
 
 // ----------------------------------------
 // Server
@@ -139,7 +149,7 @@ TCP.prototype.bind6 = function(addr,port) {
 };
 
 TCP.prototype.bind = function(addr, port) {
-    this._tcp.bindSync( addr, port);
+    this._tcp.bind( addr, port);
 };
 
 TCP.prototype.listen = function(backlog) {
@@ -168,15 +178,8 @@ function NativeStream(source) {
 util.inherits(NativeStream, Duplex);
 
 NativeStream.prototype.onSourceEnd = function() {
-    
-    this._source.removeListener('end', this._onEnd);
-    this._source.removeListener('data', this._onData);
-    
     this.push(null);
     this.end();
-    this._onEnd = null;
-    this._onData = null;
-    this._source = null;
 }
 
 NativeStream.prototype.onSourceData  = function(chunk) {
@@ -187,10 +190,23 @@ NativeStream.prototype._read = function NativeStreamRead(size) {
 }
 
 NativeStream.prototype.close = function NativeStreamClose() {
+     if (this._source)
+    {
+        this._source.close();
+    };
+    this.dispose();
+}
+
+NativeStream.prototype.dispose = function NativeStreamDispose() {
     if (this._source)
     {
-        this._source.disconnect();
-    };
+        this._source.removeListener('end', this._onEnd);
+        this._source.removeListener('data', this._onData);
+        this._onEnd = null;
+        this._onData = null;
+        this._source.dispose();
+        this._source = null;
+    }
 }
 
 NativeStream.prototype._write = function NativeStreamWrite(chunk, enc, cb) {

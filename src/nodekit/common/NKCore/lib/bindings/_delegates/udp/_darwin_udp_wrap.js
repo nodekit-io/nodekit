@@ -19,12 +19,13 @@ var Handle = process.binding('handle_wrap').Handle;
 var util   = require('util');
 var EventEmitter = require('events').EventEmitter;
 var Buffer = require('buffer').Buffer;
+var nativeUDP = require('platform').UDP
 
 /* UDP Binding
  * Behaves like a EventEmitter and inherits handle_wrap
  *
  * Dependencies:
- * io.nodekit.socket.Udp() that inherits EventEmitter
+ * io.nodekit.platform.UDP() that inherits EventEmitter
  * _udp.bind(ip, port, flags)
  * _udp.recvStart()
  * _udp.send(buffer, offset, length, port, address)
@@ -47,7 +48,7 @@ var UDP = function() {
     {
         return new UDP();
     }
-     this._udp = new io.nodekit.socket.Udp();
+     this._udp = new nativeUDP();
     
     Handle.call(this, this._udp);
     this._handle.on('recv', UDP.prototype._onRecv.bind(this));

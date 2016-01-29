@@ -30,7 +30,7 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
 
     var typeInfo: NKScriptMetaObject!
 
-    private var instances = [Int: NKScriptValueNative]()
+    internal var instances = [Int: NKScriptValueNative]()
     private var userScript: AnyObject?
     private(set) var principal: NKScriptValueNative {
         get { return instances[0]! }

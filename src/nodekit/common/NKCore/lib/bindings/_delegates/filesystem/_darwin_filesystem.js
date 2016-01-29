@@ -29,7 +29,7 @@ var FSError = require('./error');
 var SymbolicLink = require('./symlink');
 var Promise = require('promise');
 var Buffer = require('buffer').Buffer;
-
+var native = require('platform').fs;
 
 /**
  * Create a new file system for OSX bridge
@@ -44,7 +44,7 @@ function FileSystem() {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.getItemAsync = function (filepath) {
-    var fs_StatAsync = Promise.denodeify(function(id, callback){io.nodekit.fs.statAsync(id, callback);});
+    var fs_StatAsync = Promise.denodeify(function(id, callback){native.statAsync(id, callback);});
     
     return fs_StatAsync(filepath)
     .then(function(storageItem){
@@ -60,7 +60,7 @@ FileSystem.prototype.getItemAsync = function (filepath) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.getItemSync = function (filepath) {
-    var storageItem = io.nodekit.fs.statSync(filepath);
+    var storageItem = native.statSync(filepath);
     return FileSystem.storageItemtoItemWithStat(storageItem);
 };
 
@@ -162,7 +162,7 @@ FileSystem.prototype.loadContentSync = function (file) {
         return null;
     
     try {
-    var contentBase64 = io.nodekit.fs.getContentSync(file._storageItem);
+    var contentBase64 = native.getContentSync(file._storageItem);
     var content = new Buffer( contentBase64, 'base64');
         
     file.setContent(content);
@@ -178,7 +178,7 @@ FileSystem.prototype.loadContentSync = function (file) {
  * @return {Promise<Item>} The item (or null if not found).
  */
 FileSystem.prototype.loadContentAsync = function (file) {
-    var fs_getContent = Promise.denodeify(function(id, callback){io.nodekit.fs.getContentAsync(id, callback);});
+    var fs_getContent = Promise.denodeify(function(id, callback){native.getContentAsync(id, callback);});
     
     return fs_getContent(file._storageItem)
     .then(function(content){
@@ -201,7 +201,7 @@ FileSystem.prototype.writeContentSync = function (file) {
         return null;
     
     var contentBase64 = file.getContent().toString('base64');
-    return io.nodekit.fs.writeContentSync(file._storageItem, contentBase64);
+    return native.writeContentSync(file._storageItem, contentBase64);
 };
 
 
@@ -216,7 +216,7 @@ FileSystem.prototype.writeContentAsync = function (file, callback) {
       var contentBase64 = file.getContent().toString('base64');
     
       var fs_writeContent = Promise.denodeify(function(id, str, callback){
-                                            return io.nodekit.fs.writeContentAsync(id, str, callback);
+                                            return native.writeContentAsync(id, str, callback);
                                             });
     
     
@@ -235,7 +235,7 @@ FileSystem.prototype.writeBufferSync = function (file, buffer) {
         return null;
     
     var contentBase64 = buffer.toString('base64');
-    return io.nodekit.fs.writeContentSync(file._storageItem, contentBase64);
+    return native.writeContentSync(file._storageItem, contentBase64);
   };
 
 
@@ -251,7 +251,7 @@ FileSystem.prototype.writeBufferAsync = function (file, buffer) {
     
     var fs_writeContent = Promise.denodeify(function(id, buf, callback){
                                             var contentBase64 = buf.toString('base64');
-             io.nodekit.fs.writeContentAsync(id, contentBase64, callback);
+             native.writeContentAsync(id, contentBase64, callback);
                                             });
     
    
@@ -267,7 +267,7 @@ FileSystem.prototype.writeBufferAsync = function (file, buffer) {
  * @return {Promise<[]>} The array of item names (or error if not found or not a directory).
  */
 FileSystem.prototype.getDirList = function (filepath) {
-      var result =io.nodekit.fs.getDirectorySync(filepath);
+      var result = native.getDirectorySync(filepath);
     return result;
 };
 
@@ -277,7 +277,7 @@ FileSystem.prototype.getDirList = function (filepath) {
  * @return bool
  */
 FileSystem.prototype.mkdir = function (filepath) {
-    var result =io.nodekit.fs.mkdirSync(filepath);
+    var result = native.mkdirSync(filepath);
     return result;
 };
 
@@ -287,7 +287,7 @@ FileSystem.prototype.mkdir = function (filepath) {
  * @return bool
  */
 FileSystem.prototype.rmdir = function (filepath) {
-    var result =io.nodekit.fs.rmdirSync(filepath);
+    var result = native.rmdirSync(filepath);
     return result;
 };
 
@@ -298,7 +298,7 @@ FileSystem.prototype.rmdir = function (filepath) {
  * @return bool
  */
 FileSystem.prototype.move = function (filepath, filepath2) {
-    var result =io.nodekit.fs.moveSync(filepath, filepath2);
+    var result = native.moveSync(filepath, filepath2);
     return result;
 };
 
@@ -308,7 +308,7 @@ FileSystem.prototype.move = function (filepath, filepath2) {
  * @return bool
  */
 FileSystem.prototype.unlink = function (filepath) {
-    var result =io.nodekit.fs.unlinkSync(filepath);
+    var result = native.unlinkSync(filepath);
     return result;
 };
 
@@ -431,6 +431,21 @@ FileSystem.directory = function (config) {
     }
     return dir;
   };
+};
+
+// Used to speed up module loading.  Returns the contents of the file as
+// a string or undefined when the file cannot be opened.  The speedup
+// comes from not creating Error objects on failure.
+FileSystem.prototype.internalModuleReadFile = function (path) {
+    
+    if (module.exports.internalModuleStat(path) === 0)
+    {
+        var contentBase64 = native.getContentSync({path: path});
+        var content = (new Buffer( contentBase64, 'base64')).toString();
+        return content;
+    }
+    else
+        return undefined;
 };
 
 

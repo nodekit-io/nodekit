@@ -40,7 +40,12 @@ public class NKScriptValueNative: NKScriptValue {
         let pluginNamespace = channel.principal.namespace
         let id = channel.nativeFirstSequence
         let namespace = pluginNamespace + "[" + String(id) + "]"
+    
         super.init(namespace: namespace, channel: channel, origin: nil)
+    
+        channel.instances[id] = self;
+        log("+E\(context!.NKid) Instance \(id) is bound to \(namespace)")
+    
         proxy = bindObject(value)
         syncCreationWithProperties()
     }

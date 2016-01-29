@@ -21,7 +21,7 @@ import Foundation
 class NKC_FileSystem: NSObject, NKScriptExport {
 
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_FileSystem(), namespace: "io.nodekit.fs", options: [String:AnyObject]())
+        context.NKloadPlugin(NKC_FileSystem(), namespace: "io.nodekit.platform.fs", options: [String:AnyObject]())
     }
 
     func rewriteGeneratedStub(stub: String, forKey: String) -> String {

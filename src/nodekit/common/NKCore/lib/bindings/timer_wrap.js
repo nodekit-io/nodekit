@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+var NativeTimer = require('platform').Timer;
 var util = require('util');
 var Handle = process.binding('handle_wrap').Handle;
 var kOnTimeout = 0;
@@ -23,7 +24,7 @@ function invokeTimeoutHandler() {
 }
 
 function Timer() {
-    this._nativeTimer = new io.nodekit.Timer();
+    this._nativeTimer = new NativeTimer();
     this._nativeTimer.setOnTimeout(invokeTimeoutHandler.bind(this));
     Handle.call( this, this._nativeTimer );
 }

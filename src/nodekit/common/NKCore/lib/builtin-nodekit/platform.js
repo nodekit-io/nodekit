@@ -2,7 +2,6 @@
  * nodekit.io
  *
  * Copyright (c) 2016 OffGrid Networks. All Rights Reserved.
- * Portions Copyright (c) 2013 GitHub, Inc. under MIT License
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +16,14 @@
  * limitations under the License.
  */
 
-var Udp = io.nodekit.socket.Udp
+var platform = {
+    'console': io.nodekit.platform.console,
+    'crypto': io.nodekit.platform.crypto,
+    'fs': io.nodekit.platform.fs,
+    'process': io.nodekit.platform.process,
+    'TCP': io.nodekit.platform.TCP,
+    'Timer': io.nodekit.platform.Timer,
+    'UDP': io.nodekit.platform.UDP
+}
 
-Udp.prototype._init = function() {
-    
-};
+module.exports = platform

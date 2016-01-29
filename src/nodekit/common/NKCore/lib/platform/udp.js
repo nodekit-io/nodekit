@@ -17,12 +17,13 @@
  * limitations under the License.
  */
 
-var Tcp = io.nodekit.socket.Tcp
+var Udp = io.nodekit.platform.UDP
 
-Tcp.prototype._init = function() {
-
-    // inherit core node Stream interface, if available
-    if (io.nodekit.NativeStream)
-       this.stream = new io.nodekit.NativeStream(this);
+Udp.prototype._init = function() {
     
 };
+
+Udp.prototype.close = function() {
+    this.disconnect();
+    this.dispose();
+}

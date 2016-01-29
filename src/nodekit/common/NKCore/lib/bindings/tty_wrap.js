@@ -50,7 +50,7 @@ TTY.prototype.setRawMode = function(rawMode) {
 }
 
 TTY.prototype.writeUtf8String = function(req,data) {
-    io.nodekit.console.log("TTY:" + data);
+    io.nodekit.platform.console.log("TTY:" + data);
     req.oncomplete(0, this, req);
 };
 

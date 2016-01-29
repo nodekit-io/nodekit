@@ -21,14 +21,13 @@
  class NKC_SocketUDP: NSObject, NKScriptExport {
 
     class func attachTo(context: NKScriptContext) {
-        let principal = NKC_SocketUDP()
-        context.NKloadPlugin(principal, namespace: "io.nodekit.socket.Udp", options: [String:AnyObject]())
+         context.NKloadPlugin(NKC_SocketUDP.self, namespace: "io.nodekit.platform.UDP", options: [String:AnyObject]())
     }
 
     class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
-            let url = NSBundle(forClass: NKC_SocketUDP.self).pathForResource("socket-udp", ofType: "js", inDirectory: "lib/nk-core")
+            let url = NSBundle(forClass: NKC_SocketUDP.self).pathForResource("udp", ofType: "js", inDirectory: "lib/platform")
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
@@ -49,7 +48,7 @@
     }
 
     class func scriptNameForSelector(selector: Selector) -> String? {
-        return selector == Selector("initWithId:") ? "" : nil
+        return selector == Selector("init") ? "" : nil
     }
 
     /* NKSocketUDP
@@ -183,7 +182,7 @@
        _ = try? self._socket?.enableBroadcast(flag)
     }
 
-    func close() -> Void {
+    func disconnect() -> Void {
         if (self._socket !== nil) {
             self._socket!.close()
             self._socket = nil

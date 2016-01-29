@@ -15,7 +15,6 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-io.nodekit.console.log("THIRD PARTY MAIN");
 module = require('module');
 var util = require('util');
 var path = require('path');

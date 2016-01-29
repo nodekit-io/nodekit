@@ -28,7 +28,7 @@ class NKE_Protocol: NSObject, NKScriptExport {
         context.NKloadPlugin(NKE_Protocol(), namespace: "io.nodekit.electro.protocol", options: [String:AnyObject]())
     }
 
-    class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
             let url = NSBundle(forClass: NKE_Menu.self).pathForResource("protocol", ofType: "js", inDirectory: "lib-electro")

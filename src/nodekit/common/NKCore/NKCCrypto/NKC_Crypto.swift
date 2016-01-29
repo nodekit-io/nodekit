@@ -18,12 +18,12 @@
 
 import Darwin
 
-public class NKC_Crypto: NSObject {
+class NKC_Crypto: NSObject, NKScriptExport {
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_Crypto(), namespace: "io.nodekit.crypto", options: [String:AnyObject]())
+        context.NKloadPlugin(NKC_Crypto(), namespace: "io.nodekit.platform.crypto", options: [String:AnyObject]())
     }
 
-    class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
             let url = NSBundle(forClass: NKC_Crypto.self).pathForResource("crypto", ofType: "js", inDirectory: "lib/platform")
@@ -34,7 +34,7 @@ public class NKC_Crypto: NSObject {
         }
     }
 
-    public func getRandomBytesSync(blockSize: Int) -> [UInt] {
+    func getRandomBytesSync(blockSize: Int) -> [UInt] {
         var randomIV: [UInt] = [UInt]()
         for _ in 0..<blockSize {
             randomIV.append(UInt(UInt8(truncatingBitPattern: arc4random_uniform(256))))

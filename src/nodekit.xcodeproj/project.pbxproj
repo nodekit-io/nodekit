@@ -239,9 +239,7 @@
 		E4AD89E51C1F833C0043F630 /* app in Resources */ = {isa = PBXBuildFile; fileRef = E488A0D71C1F761F0041DFCF /* app */; };
 		E4AD89E81C1F833C0043F630 /* test in Resources */ = {isa = PBXBuildFile; fileRef = E488A0F81C1F76A40041DFCF /* test */; };
 		E4AD89ED1C1F834B0043F630 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E488A0E31C1F76510041DFCF /* Assets.xcassets */; };
-		E4AD89F21C1F85220043F630 /* NKMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD89F01C1F84D20043F630 /* NKMenu.swift */; };
 		E4AD89F31C1F85220043F630 /* NKNSAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */; };
-		E4AD89F41C1F85230043F630 /* NKMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD89F01C1F84D20043F630 /* NKMenu.swift */; };
 		E4AD89F51C1F85230043F630 /* NKNSAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */; };
 		E4B5C6201C4F019400EBC172 /* NKC_BootCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B5C61E1C4F019400EBC172 /* NKC_BootCore.swift */; };
 		E4B5C6211C4F019400EBC172 /* NKC_BootCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4B5C61E1C4F019400EBC172 /* NKC_BootCore.swift */; };
@@ -394,7 +392,6 @@
 		E4AD89C41C1F828A0043F630 /* nodekit-sample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "nodekit-sample.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4AD89D11C1F82AA0043F630 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit-sample/platform-darwin/Info.plist"; sourceTree = "<group>"; };
 		E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKNSAppDelegate.swift; path = "nodekit/platform-darwin/NKNSAppDelegate.swift"; sourceTree = "<group>"; };
-		E4AD89F01C1F84D20043F630 /* NKMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMenu.swift; path = "nodekit/platform-darwin/NKMenu.swift"; sourceTree = "<group>"; };
 		E4B5C61E1C4F019400EBC172 /* NKC_BootCore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKC_BootCore.swift; sourceTree = "<group>"; };
 		E4C253D11C20A5FF001B3388 /* NKMainDesktop.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMainDesktop.swift; path = "nodekit/platform-darwin/NKMainDesktop.swift"; sourceTree = "<group>"; };
 		E4C253D41C20AABC001B3388 /* NKMainMobile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = NKMainMobile.swift; path = "nodekit/platform-ios/NKMainMobile.swift"; sourceTree = "<group>"; };
@@ -484,7 +481,6 @@
 			isa = PBXGroup;
 			children = (
 				E488A0771C1F70970041DFCF /* Info.plist */,
-				E4AD89F01C1F84D20043F630 /* NKMenu.swift */,
 				E4AD89EE1C1F84C80043F630 /* NKNSAppDelegate.swift */,
 				E4C253D11C20A5FF001B3388 /* NKMainDesktop.swift */,
 			);
@@ -1170,7 +1166,6 @@
 				E4A8393B1C47446C00514698 /* NKE_BootElectroMain.swift in Sources */,
 				E4A8392F1C47418900514698 /* NKE_IpcRenderer.swift in Sources */,
 				E4D8C2DB1C418D4C00D07A0F /* NKWVWebView.swift in Sources */,
-				E4AD89F21C1F85220043F630 /* NKMenu.swift in Sources */,
 				E4A838AC1C46B83D00514698 /* NKEMenu-osx.swift in Sources */,
 				E4A838AF1C46B84500514698 /* NKEMenuProtocol.swift in Sources */,
 				E4A83D3C1C4993CB00514698 /* GCDAsyncSocket.m in Sources */,
@@ -1346,7 +1341,6 @@
 				E4A839301C47418900514698 /* NKE_IpcRenderer.swift in Sources */,
 				E4C253DF1C20AFC0001B3388 /* main.swift in Sources */,
 				E4A83D4B1C4993D700514698 /* NKC_SocketUDP.swift in Sources */,
-				E4AD89F41C1F85230043F630 /* NKMenu.swift in Sources */,
 				E48C5ECB1C3F203C006CEF53 /* NKWKWebView.swift in Sources */,
 				E4A839411C47446C00514698 /* NKE_BootElectroRenderer.swift in Sources */,
 				E48C5EBF1C3F203C006CEF53 /* NKScriptValue.swift in Sources */,

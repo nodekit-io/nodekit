@@ -25,10 +25,10 @@
     static var urlNavigator: NKUrlNavigator? = nil
 
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_Console(), namespace: "io.nodekit.console", options: [String:AnyObject]())
+        context.NKloadPlugin(NKC_Console(), namespace: "io.nodekit.platform.console", options: [String:AnyObject]())
     }
 
-    class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
+    func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
             let url = NSBundle(forClass: NKC_Console.self).pathForResource("console", ofType: "js", inDirectory: "lib/platform")

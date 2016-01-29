@@ -36,7 +36,7 @@ extension NKE_BrowserWindow {
             let window = self.createWindow(options) as! NSWindow
             self._window = window
 
-            let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "https://google.com"
+            let urlAddress: String = (options[NKEBrowserOptions.kPreloadURL] as? String) ?? "about:blank"
 
             let width: CGFloat = CGFloat((options[NKEBrowserOptions.kWidth] as? Int) ?? 800)
             let height: CGFloat = CGFloat((options[NKEBrowserOptions.kHeight] as? Int) ?? 600)

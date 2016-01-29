@@ -63,12 +63,15 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate 
     // NodeKit Delegate Methods
 
      func NKScriptEngineDidLoad(context: NKScriptContext) -> Void {
+        NKEventEmitter.global.once("nk.jsApplicationReady") { (data: AnyObject) -> Void in
+            self.splashWindow?.close()
+            self.splashWindow = nil
+        }
+
         NKNSAppDelegate.delegate?.NKScriptEngineDidLoad(context)
     }
 
      func NKScriptEngineReady(context: NKScriptContext) -> Void {
-        splashWindow?.close()
-        splashWindow = nil
         NKNSAppDelegate.delegate?.NKScriptEngineReady(context)
     }
 }

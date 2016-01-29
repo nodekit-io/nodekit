@@ -7,7 +7,7 @@ describe("fs module", function() {
          var tmpFile,
          basedir,
          data = 'now is the winter of our discontent made glorious summer',
-         tempDir = io.nodekit.fs.getTempDirectorySync();
+         tempDir = io.nodekit.platform.fs.getTempDirectorySync();
          
          beforeEach(function() {
                     tmpFile = new helper.File(tempDir + "/pork-recipes.txt");

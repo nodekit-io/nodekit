@@ -66,12 +66,13 @@ protocol.unregisterProtocol = function(scheme, completion) {
 protocol.callbackFile = function(request) {
     var handler = this.callbacks[request["scheme"]];
     var id = request["id"];
+    var self = this;
     handler(request, function(arg){
             
             if (typeof arg === 'string') {
-                this.callbackEnd(id, {'path': arg})
+                self.callbackEnd(id, {'path': arg})
              } else {
-                this.callbackEnd(id, arg)
+                self.callbackEnd(id, arg)
             }
             id = null;
         })
@@ -80,17 +81,18 @@ protocol.callbackFile = function(request) {
 protocol.callbackBuffer = function(request) {
     var handler = this.callbacks[request["scheme"]];
     var id = request["id"];
+    var self = this;
     handler(request, function(arg){
             if (Buffer.isBuffer(arg)) {
                     var statusCode = 200;
                     var header = {'Content-Type': 'text/html; charset=utf-8'}
-                   this.callbackEnd(id, {'data': arg.toString('base64'), 'headers': header, 'statusCode': statusCode })
+                   self.callbackEnd(id, {'data': arg.toString('base64'), 'headers': header, 'statusCode': statusCode })
              } else {
                         var contentType = arg['mimeType'] || 'text/html'
                         var charset = arg['charset'] || 'utf-8'
                         var header = {'Content-Type': contentType + "; charset=" + charset}
                         var statusCode = arg['statusCode'] || 200;
-                        this.callbackEnd(id, {'data': arg['data'].toString('base64'), 'headers': header, 'statusCode': statusCode } )
+                        self.callbackEnd(id, {'data': arg['data'].toString('base64'), 'headers': header, 'statusCode': statusCode } )
              }
             id = null;
         })
@@ -99,19 +101,20 @@ protocol.callbackBuffer = function(request) {
 protocol.callbackString = function(request) {
     var handler = this.callbacks[request["scheme"]];
     var id = request["id"];
+    var self = this;
     handler(request, function(arg){
             if (typeof arg === 'string') {
             // TO DO CHECK FOR CHARSET AND CONVERT TO BUFFER IF UTF16 or other than UTF8
             var header = {'Content-Type': 'text/html; charset=utf-8'}
             var statusCode = 200;
             
-            this.callbackEnd(id, {'data': btoa(arg), 'headers': header, 'statusCode': statusCode })
+            self.callbackEnd(id, {'data': btoa(arg), 'headers': header, 'statusCode': statusCode })
             } else {
                 var contentType = arg['mimeType'] || 'text/html'
                 var charset = arg['charset'] || 'utf-8'
                 var header = {'Content-Type': contentType + "; charset=" + charset}
                 var statusCode = arg['statusCode'] || 200;
-                this.callbackEnd(id, {'data': btoa(arg['data']), 'headers': header, 'statusCode': statusCode } )
+                self.callbackEnd(id, {'data': btoa(arg['data']), 'headers': header, 'statusCode': statusCode } )
             }
             id = null;
             })
@@ -121,12 +124,14 @@ protocol.callbackString = function(request) {
 protocol.callbackHttp = function(request) {
     var handler = this.callbacks[request["scheme"]];
     var id = request["id"];
+    var self = this;
+    
     handler(request, function(arg){
             if (arg["url"])
             {
                 var url = arg["url"];
-                var header = {'location': url, 'referer': arg["referrer"]
-                this.callbackEnd(id, {'statusCode': 302, 'headers': header})
+            var header = {'location': url, 'referer': arg["referrer"] }
+                self.callbackEnd(id, {'statusCode': 302, 'headers': header})
             } else
             {
                 throw new Error('HTTP request to request unsupported, only redirects');

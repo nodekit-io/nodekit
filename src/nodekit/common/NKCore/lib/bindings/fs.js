@@ -450,13 +450,5 @@ module.exports.fdatasync = function (fd) {
 // a string or undefined when the file cannot be opened.  The speedup
 // comes from not creating Error objects on failure.
 module.exports.internalModuleReadFile = function (path) {
-    
-    if (module.exports.internalModuleStat(path) === 0)
-    {
-       var contentBase64 = io.nodekit.fs.getContentSync({path: path});
-        var content = (new Buffer( contentBase64, 'base64')).toString();
-        return content;
-    }
-    else
-        return undefined;
+    return fs_delegate.internalModuleReadFile(path);
 };

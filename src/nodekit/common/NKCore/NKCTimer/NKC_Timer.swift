@@ -19,7 +19,7 @@
 class NKC_Timer: NSObject, NKScriptExport {
 
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_Timer.self, namespace: "io.nodekit.Timer", options: [String:AnyObject]())
+        context.NKloadPlugin(NKC_Timer.self, namespace: "io.nodekit.platform.Timer", options: [String:AnyObject]())
     }
 
     class func rewriteGeneratedStub(stub: String, forKey: String) -> String {

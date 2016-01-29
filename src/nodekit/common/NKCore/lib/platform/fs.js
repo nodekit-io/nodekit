@@ -17,27 +17,8 @@
  * limitations under the License.
  */
 
-var fs = io.nodekit.fs
+var fs = io.nodekit.platform.fs
 
 fs._init = function() {}
 
-fs.evalSync = function(script, filename) {
-    try {
-        return eval(script);
-     } catch (e) {
-        if (e instanceof SyntaxError) {
-            
-         /*   var source =script.split(/\r?\n/);
-            var line = 0;
-            for (i = Math.max(1, e.line-5); i < Math.min(source.length, e.line + 5); i++) {
-               console.log(i + " " + source[i-1])
-              if (i == e.line)
-                  console.log(" " + Array(e.column).join(" ") + "^")
-            } */
-            console.log("Syntax Error in " + ( filename) )
-            console.log(e.message);
-        } else {
-            throw( e );
-        }
-    }
-}
+

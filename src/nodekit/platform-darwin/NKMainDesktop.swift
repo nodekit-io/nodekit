@@ -27,7 +27,6 @@ class NKMainDesktop {
         let nsDelegate = NKNSAppDelegate(app: app)
         app.delegate = nsDelegate
         
-        NKMenu.addTo(app)
         app.setActivationPolicy(.Regular)
         atexit_b { app.setActivationPolicy(.Prohibited); return }
         app.activateIgnoringOtherApps(true)

@@ -41,13 +41,13 @@
     // NKScripting
 
     class func attachTo(context: NKScriptContext) {
-        context.NKloadPlugin(NKC_SocketTCP.self, namespace: "io.nodekit.socket.Tcp", options: [String:AnyObject]())
+        context.NKloadPlugin(NKC_SocketTCP.self, namespace: "io.nodekit.platform.TCP", options: [String:AnyObject]())
     }
 
     class func rewriteGeneratedStub(stub: String, forKey: String) -> String {
         switch (forKey) {
         case ".global":
-            let url = NSBundle(forClass: NKC_SocketTCP.self).pathForResource("socket-tcp", ofType: "js", inDirectory: "lib/platform")
+            let url = NSBundle(forClass: NKC_SocketTCP.self).pathForResource("tcp", ofType: "js", inDirectory: "lib/platform")
             let appjs = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
             return "function loadplugin(){\n" + appjs! + "\n}\n" + stub + "\n" + "loadplugin();" + "\n"
         default:
@@ -73,7 +73,7 @@
 
     // local variables and init
 
-    let connections: NSMutableSet = NSMutableSet()
+    private let connections: NSMutableSet = NSMutableSet()
     private var _addr: String!
     private var _port: Int
     private var _socket: GCDAsyncSocket?
@@ -139,10 +139,17 @@
         self._socket!.writeData(data, withTimeout: 10, tag: 1)
     }
 
-    func disconnect() -> Void {
+    func close() -> Void {
         if (self._socket !== nil) {
             self._socket!.disconnect()
         }
+        if (self._server !== nil) {
+            self._server!.close()
+        }
+        self._socket = nil
+        self._server = nil
+        self._port = 0
+        self._addr = nil
     }
  }
 

@@ -16,6 +16,8 @@
  * limitations under the License.
  */
 
+var native = io.nodekit.platform;
+
 var Startup = function Startup() {
     
     if (!process)
@@ -27,23 +29,23 @@ var Startup = function Startup() {
     
     BootstrapModule.loadNodeSource(process.binding('natives'));
     
-    console.log = io.nodekit.console.log;
+    console.log = native.console.log;
     
     // run vanilla node.js startup
     BootstrapModule.bootstrap('lib/node.js');
     
     global.setImmediate = function(fn){ process.nextTick(fn.bind.apply(fn, arguments)) }
         
-    console.log = io.nodekit.console.log;
+    console.log = native.console.log;
     console.warn = console.log;
-    io.nodekit.console.error = BootstrapModule.error;
+    native.console.error = BootstrapModule.error;
    try
     {
        process._tickCallback();
     }
     catch (e)
     {
-        io.nodekit.console.error(e, "tickCallBack in nodekit_bootstrapper");
+        NKconsole.error(e, "tickCallBack in nodekit_bootstrapper");
     }
  }
 
@@ -64,13 +66,13 @@ BootstrapModule.getSource = function(id) {
     var append = "\r\n //# sourceURL=io.nodekit.core/" + id + "\r\n";
     
     if (id.indexOf("/") > -1)
-        return io.nodekit.fs.getSourceSync(id) + append;
+        return native.fs.getSourceSync(id) + append;
     
     if (BootstrapModule.nodeSourceExists(id)) {
         return BootstrapModule.getNodeSource(id) + append;
     }
     
-    return io.nodekit.fs.getSourceSync(id) + append;
+    return native.fs.getSourceSync(id) + append;
 }
 
 BootstrapModule._cache = {};
@@ -98,10 +100,10 @@ BootstrapModule._load = function(id)
 
 BootstrapModule.error = function(e, source)
 {
-    io.nodekit.console.log("ERROR OCCURED via " + source);
-    io.nodekit.console.log("EXCEPTION: " + e);
+    native.console.log("ERROR OCCURED via " + source);
+    native.console.log("EXCEPTION: " + e);
     
-    io.nodekit.console.log(JSON.stringify(e));
+    native.console.log(JSON.stringify(e));
     var message = "";
     var sourceFile = "unknown";
     
@@ -138,10 +140,10 @@ BootstrapModule.error = function(e, source)
     }
     
     message += "</body>";
-    io.nodekit.console.loadString(message, "Debug");
-    io.nodekit.console.log("EXCEPTION: " + e);
-    io.nodekit.console.log("Source: " + sourceFile );
-    io.nodekit.console.log("Stack: " + e.stack );
+    native.console.loadString(message, "Debug");
+    native.console.log("EXCEPTION: " + e);
+    native.console.log("Source: " + sourceFile );
+    native.console.log("Stack: " + e.stack );
 };
 
 BootstrapModule.bootstrap = function(id) {
@@ -162,9 +164,9 @@ BootstrapModule.runInThisContext = function(code, options) {
     var displayErrors = options.displayErrors || false;
     
     try {
-        return io.nodekit.fs.evalSync(code, filename);
+        return process.evalSync(code, filename);
     } catch (e) {
-        io.nodekit.console.log(e.message + " - " + filename + " - " + e.stack);
+        native.console.log(e.message + " - " + filename + " - " + e.stack);
         
     }
 }
@@ -188,7 +190,7 @@ BootstrapModule.prototype.compile = function() {
     var reqFunc = function(id) {
         if (id[0] == ".")
         {
-            id = io.nodekit.fs.getFullPathSync(self.filename, id.substr(1));
+            id = native.fs.getFullPathSync(self.filename, id.substr(1));
         }
         
         return BootstrapModule._load(id);
