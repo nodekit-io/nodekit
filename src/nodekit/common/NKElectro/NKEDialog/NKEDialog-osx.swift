@@ -18,8 +18,7 @@
 */
 
 import Foundation
-import WebKit
-import JavaScriptCore
+import Cocoa
 
 extension NKE_Dialog: NKScriptExport {
 
@@ -161,9 +160,9 @@ class NKE_Dialog: NSObject, NKE_DialogProtocol {
         savePanel.beginWithCompletionHandler({(result: Int) in
             if(result == NSFileHandlingPanelOKButton) {
                  let url = savePanel.URL!
-                callback?.callWithArguments([true, url.path!], error: nil)
+                callback?.callWithArguments([true, url.path!], completionHandler: nil)
             } else {
-                callback?.callWithArguments([false, ""], error: nil)
+                callback?.callWithArguments([false, ""], completionHandler: nil)
             }
         })
     }
@@ -204,7 +203,7 @@ class NKE_Dialog: NSObject, NKE_DialogProtocol {
 
         let result: Int = msgBox.runModal()
 
-        callback?.callWithArguments([result], error: nil)
+        callback?.callWithArguments([result], completionHandler: nil)
 
     }
 

@@ -41,7 +41,7 @@ class NKC_BootCore: NSObject {
         // INJECT NODE BOOTSTRAP
         let url = NSBundle(forClass: NKNodeKit.self).pathForResource("_nodekit_bootstrapper", ofType: "js", inDirectory: "lib")
         let script = try? NSString(contentsOfFile: url!, encoding: NSUTF8StringEncoding) as String
-        let item = context.NKinjectJavaScript(NKScriptSource(source: script!, asFilename: "io.nodekit.core/lib/_nodekit_bootstrapper.js", namespace: "io.nodekit.bootstrapper"))
-        objc_setAssociatedObject(context, unsafeAddressOf(NKC_BootCoreBootStrap), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        context.NKinjectJavaScript(NKScriptSource(source: script!, asFilename: "io.nodekit.core/lib/_nodekit_bootstrapper.js", namespace: "io.nodekit.bootstrapper"))
+        
     }
 }

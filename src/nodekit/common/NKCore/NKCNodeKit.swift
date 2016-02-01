@@ -16,8 +16,6 @@
 * limitations under the License.
 */
 import Foundation
-import JavaScriptCore
-import WebKit
 
 //struct NKGlobals {
 //    static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)

@@ -18,9 +18,6 @@
 */
 
 import Foundation
-import WebKit
-import JavaScriptCore
-
 
 class NKE_BrowserWindow: NSObject {
 

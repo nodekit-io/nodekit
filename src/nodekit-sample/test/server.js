@@ -33,7 +33,7 @@ start: function(options) {
     .use('/test', serveStatic(publicRoot));
   
     this.server = http.createServer(app);
-    this.server.listen(options.port || 8000, 'localhost');
+    this.server.listen(options.port || 3000, 'localhost');
 },
     
 stop: function() {

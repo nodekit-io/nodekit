@@ -1,11 +1,8 @@
 var Duplex = require('stream').Transform;
 
 describe("Duplex streams in object mode", function() {
-  it("should work", function() {
+  it("should work", function(done) {
 
-    waitsFor(function() {
-      return (read.val === 1 && written.val === 2);
-    }, 4000);
     var stream = new Duplex({ objectMode: true });
 
     expect(stream._readableState.objectMode).toBeTruthy();
@@ -27,6 +24,7 @@ describe("Duplex streams in object mode", function() {
 
     stream.push({ val: 1 });
     stream.end({ val: 2 });
+     done()
 
   });
 });

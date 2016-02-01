@@ -1,6 +1,6 @@
 {
   "name": "nodekit",
-  "main": "app/sample/index.js",
+  "main": "test/index.js",
   "node-main": "",
   "node-baseurl": "http://localhost:3000",
   "node-splashtime": 2000,

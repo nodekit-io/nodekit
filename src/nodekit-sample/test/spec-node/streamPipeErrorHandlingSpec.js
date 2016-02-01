@@ -35,7 +35,7 @@ describe("Stream pipe error handling", function() {
     expect(gotErr).toBe(err);
   });
 
-  it("should throw on error if error listeners have been removed", function() {
+  it("should throw on error if error listeners have been removed", function(done) {
     var R = Stream.Readable;
     var W = Stream.Writable;
 
@@ -45,8 +45,7 @@ describe("Stream pipe error handling", function() {
     var didTest = false;
 
     var test = this;
-    waitsFor(function() { return didTest && removed; });
-
+    
     r._read = function() {
       setTimeout(function() {
         expect(removed).toBeTruthy();
@@ -59,6 +58,7 @@ describe("Stream pipe error handling", function() {
         }
       });
       didTest = true;
+     done()
     };
 
     w.on('error', myOnError);
@@ -71,7 +71,7 @@ describe("Stream pipe error handling", function() {
     }
   });
 
-  it("should throw on error if error listeners have been removed", function() {
+  it("should throw on error if error listeners have been removed", function(done) {
     var R = Stream.Readable;
     var W = Stream.Writable;
 
@@ -81,13 +81,12 @@ describe("Stream pipe error handling", function() {
     var didTest = false;
     var caught = false;
 
-    waitsFor(function() { return didTest && removed && caught; });
-
-    r._read = function() {
+   r._read = function() {
       setTimeout(function() {
         expect(removed).toBe(true);
         w.emit('error', new Error('fail'));
         didTest = true;
+                 done()
       });
     };
 

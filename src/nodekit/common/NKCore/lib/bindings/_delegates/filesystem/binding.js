@@ -257,7 +257,7 @@ Binding.prototype.stat = function (filepath, callback) {
               });
     } else {
         var item = this._system.getItemSync(filepath);
-        if (!item) return false // throw new FSError('ENOENT', filepath);
+        if (!item) throw new FSError('ENOENT', filepath);
         return new Stats(item.getStats());
     }
 };

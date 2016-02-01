@@ -38,6 +38,10 @@ describe('Stream transforms', function() {
     this.length += c.length;
     return true;
   };
+         
+  BufferStream.prototype.toString = function() {
+         return this.chunks.join('');
+         };
 
   BufferStream.prototype.end = function(c) {
     console.log("BufferStream end " + c);
@@ -55,22 +59,17 @@ describe('Stream transforms', function() {
     return true;
   };
 
-  beforeEach(function() {
-    helper.testComplete(false);
-  });
 
-  xit('should transform input', function() {
-    waitsFor(helper.testComplete, 4000);
+  it('should transform input', function(done) {
     var incrStream = new IncrStream();
     var buf = new BufferStream();
     incrStream.on('end', function() {
-      expect(buf.toString()).toBe("101");
+                  console.log(buf.toString());
+      expect(buf.toString()).toBe("101101");
+                    done()
     });
     incrStream.pipe(buf);
     incrStream.end("100");
-    setTimeout(function() {
-      console.log("Timed out");
-    }, 40000);
   });
 });
 

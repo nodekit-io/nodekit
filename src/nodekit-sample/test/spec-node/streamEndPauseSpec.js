@@ -1,13 +1,12 @@
 
 describe("Zero length stream", function() {
 
-  it("should emit end events", function() {
+  it("should emit end events", function(done) {
     var Readable = require('stream').Readable;
     var stream = new Readable();
     var calledRead = false;
     var gotEnd = false;
 
-    waitsFor(function() { return calledRead && gotEnd; }, "End not emitted");
     stream._read = function() {
       expect(calledRead).toBe(false);
       calledRead = true;
@@ -22,6 +21,7 @@ describe("Zero length stream", function() {
     setTimeout(function() {
       stream.on('end', function() {
         gotEnd = true;
+                done()
       });
       stream.resume();
     });

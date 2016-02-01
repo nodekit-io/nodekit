@@ -14,52 +14,241 @@
  * limitations under the License.
  */
 
-"use strict";
+var util = require('util');
+var nativeDNS = require('platform').DNS;
 
 var cares = {};
 
 cares.isIP = function(host) {
-  if ( host.match( "^[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?$" ) ) {
-    return 4;
-  }
-
-  return 0;
+    if ( ! host ) {
+        return false;
+    }
+    if ( host.match( "^[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?\\.[0-9][0-9]?[0-9]?$" ) ) {
+        return 4;
+    }
+    
+    return 0;
 }
+// ----------------------------------------------------------------------
+// ----------------------------------------------------------------------
+
+function translateError(err) {
+    
+    switch (err) {
+        case "ADDRFAMILY":
+            return process.binding('uv').UV_EAI_ADDRFAMILY
+        case "AGAIN":
+            return process.binding('uv').UV_EAI_AGAIN
+        case "BADFLAGS":
+            return process.binding('uv').UV_EAI_BADFLAGS
+        case "CANCELED":
+            return process.binding('uv').UV_EAI_CANCELED
+        case "FAIL":
+            return process.binding('uv').UV_EAI_FAIL
+        case "FAMILY":
+            return process.binding('uv').UV_EAI_FAMILY
+        case "NODATA":
+            return process.binding('uv').UV_EAI_NODATA
+        case "NONAME":
+            return process.binding('uv').UV_EAI_NONAME
+        case "OVERFLOW":
+            return process.binding('uv').UV_EAI_OVERFLOW
+        case "SERVICE":
+            return process.binding('uv').UV_EAI_SERVICE
+        case "BADHINTS":
+            return process.binding('uv').UV_EAI_BADHINTS
+        case "PROTOCOL":
+            return process.binding('uv').UV_EAI_PROTOCOL
+        default:
+            return err;
+    }
+}
+
+// ----------------------------------------------------------------------
+// getaddrinfo
+// ----------------------------------------------------------------------
 
 cares.getaddrinfo = function(req,name,family) {
-    return new Error("Not Implemented");
+    
+    if (name == "localhost")
+    {
+        req.oncomplete(undefined, ["127.0.0.1"], 4);
+        return;
+    }
+    if (name == "nodyn.io")
+    {
+        req.oncomplete(undefined, ["199.193.199.40"], 4);
+        return;
+    }
+    
+    var callback = function(err, result) {
+        if (err ) {
+            req.oncomplete( translateError( err ) );
+        } else {
+            req.oncomplete( undefined, [ result.hostAddress ], result.family );
+        }
+    };
+    
+    if ( family === 4 ) {
+        nativeDNS.GetAddrInfo4(name, callback);
+    } else if (family === 6 ) {
+        nativeDNS.GetAddrInfo6(name, callback);
+    } else {
+        nativeDNS.GetAddrInfo(name, callback);
+    }
 }
+
+
+// ----------------------------------------------------------------------
+// A
+// ----------------------------------------------------------------------
 
 cares.queryA = function(req,name) {
-    return new Error("Not Implemented");
+    nativeDNS.QueryA(name, function(err, result) {
+                         if ( err ) {
+                            req.oncomplete( err );
+                         } else {
+                         var a = [];
+                         result.forEach(function(item) {
+                                        a.push(item.hostAddress)
+                                        });
+                         req.oncomplete(undefined, a);
+                         }
+                         });
 }
+
+
+// ----------------------------------------------------------------------
+// AAAA
+// ----------------------------------------------------------------------
 
 cares.queryAaaa = function(req,name) {
-    return new Error("Not Implemented");
+    nativeDNS.QueryAaaa(name, function(err, result) {
+                        if ( err ) {
+                        req.oncomplete( err );
+                        } else {
+                        var a = [];
+                        result.forEach(function(item) {
+                                       a.push(item.hostAddress)
+                                       });
+                        req.oncomplete(undefined, a);
+                        }
+                        });
 }
+
+// ----------------------------------------------------------------------
+// MX
+// ----------------------------------------------------------------------
 
 cares.queryMx = function(req,name) {
-    return new Error("Not Implemented");
+    nativeDNS.QueryMx(name, function(err, result) {
+                      if ( err ) {
+                      req.oncomplete( err );
+                      } else {
+                      var a = [];
+                      result.forEach(function(item) {
+                                     a.push( {
+                                            exchange: item.name,
+                                            priority: item.priority,
+                                            } );
+                                     });
+                      req.oncomplete(undefined, a);
+                      }
+                      });
 }
+
+// ----------------------------------------------------------------------
+// TXT
+// ----------------------------------------------------------------------
 
 cares.queryTxt = function(req,name) {
-    return new Error("Not Implemented");
-}
+    nativeDNS.QueryTxt(name,  function(err, result) {
+                       if ( err ) {
+                       req.oncomplete( err );
+                       } else {
+                       var a = [];
+                       result.forEach(function(item) {
+                                      a.push(item)
+                                      });
+                       req.oncomplete(undefined, a);
+                       }
+                       });}
+
+// ----------------------------------------------------------------------
+// SRV
+// ----------------------------------------------------------------------
 
 cares.querySrv = function(req,name) {
-    return new Error("Not Implemented");
+    nativeDNS.QuerySrv(name,  function(err, result) {
+                       if ( err ) {
+                       req.oncomplete( err );
+                       } else {
+                       var a = [];
+                       result.forEach(function(item) {
+                                      a.push( {
+                                             name:     item.target,
+                                             port:     item.port,
+                                             priority: item.priority,
+                                             weight:   item.weight,
+                                             } );
+                                      });
+                       req.oncomplete(undefined, a);
+                       }
+                       });
 }
+
+// ----------------------------------------------------------------------
+// NS
+// ----------------------------------------------------------------------
 
 cares.queryNs = function(req,name) {
-    return new Error("Not Implemented");
+    nativeDNS.queryNs(name,  function(err, result) {
+                       if ( err ) {
+                       req.oncomplete( err );
+                       } else {
+                       var a = [];
+                       result.forEach(function(item) {
+                                      a.push( item );
+                                      });
+                       req.oncomplete(undefined, a);
+                       }
+                       });
 }
+
+// ----------------------------------------------------------------------
+// CNAME
+// ----------------------------------------------------------------------
 
 cares.queryCname = function(req,name) {
-    return new Error("Not Implemented");
+    nativeDNS.queryCname(name,  function(err, result) {
+                      if ( err ) {
+                      req.oncomplete( err );
+                      } else {
+                      var a = [];
+                      result.forEach(function(item) {
+                                     a.push( item );
+                                     });
+                      req.oncomplete(undefined, a);
+                      }
+                      });
 }
 
+// ----------------------------------------------------------------------
+// Reverse
+// ----------------------------------------------------------------------
+
 cares.getHostByAddr = function(req,name) {
-    return new Error("Not Implemented");
+    nativeDNS.GetHostByAddr(name,  function(err, result) {
+                         if ( err ) {
+                         req.oncomplete( err );
+                         } else {
+                             req.oncomplete(undefined, result.hostName);
+                         }
+                         });
 }
+// ----------------------------------------------------------------------
+
+cares.GetAddrInfoReqWrap = function GetAddrInfoReqWrap(){}
+cares.GetAddrInfoReqWrap = function GetNameInfoReqWrap(){}
 
 module.exports = cares;

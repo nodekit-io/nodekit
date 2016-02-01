@@ -41,7 +41,7 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate 
             "nk.InstallElectro": false
         ]
         
-       splashWindow = NKE_BrowserWindow(options: splash)
+        splashWindow = NKE_BrowserWindow(options: splash)
     }
     
     // OS X Delegate Methods
@@ -64,8 +64,8 @@ class NKNSAppDelegate: NSObject, NSApplicationDelegate, NKScriptContextDelegate 
 
      func NKScriptEngineDidLoad(context: NKScriptContext) -> Void {
         NKEventEmitter.global.once("nk.jsApplicationReady") { (data: AnyObject) -> Void in
-            self.splashWindow?.close()
-            self.splashWindow = nil
+        self.splashWindow?.close()
+        self.splashWindow = nil
         }
 
         NKNSAppDelegate.delegate?.NKScriptEngineDidLoad(context)

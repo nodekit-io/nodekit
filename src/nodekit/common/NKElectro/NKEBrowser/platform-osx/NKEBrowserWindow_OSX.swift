@@ -18,8 +18,7 @@
 */
 
 import Foundation
-import WebKit
-import JavaScriptCore
+import Cocoa
 
 extension NKE_BrowserWindow {
 

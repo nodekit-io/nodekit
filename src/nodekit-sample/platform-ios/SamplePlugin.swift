@@ -17,11 +17,9 @@
 */
 
 import Foundation
-import WebKit
-import JavaScriptCore
 import UIKit
 
-protocol SamplePluginProtocol: NKScriptExport, JSExport {
+protocol SamplePluginProtocol: NKScriptExport {
     func logconsole(text: AnyObject?) -> Void
     func alertSync(text: AnyObject?) -> String
 }

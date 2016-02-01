@@ -12,8 +12,7 @@ describe("fs module", function() {
          beforeEach(function() {
                     tmpFile = new helper.File(tempDir + "/pork-recipes.txt");
                     basedir = tempDir;
-                    helper.testComplete(false);
-                    });
+                      });
          
          afterEach(function() {
                    tmpFile.delete();
@@ -47,8 +46,7 @@ describe("fs module", function() {
                      expect(newDirectory.exists()).toBe(true);
                      fs.rmdir(basedir + "/waffle-recipes", function() {
                               expect(newDirectory.exists()).toBe(false);
-                              helper.testComplete(true);
-                              done();
+                               done();
                               });
                      });
             });
@@ -178,8 +176,7 @@ describe("fs module", function() {
             tmpFile.delete();
             });
          
-    /*     it("should have a truncate function", function() {
-            waitsFor(helper.testComplete, "the truncate test to complete", 5000);
+    /*     it("should have a truncate function", function(done) {
             helper.writeFixture(function(sut) {
                                 fs.exists(sut.getAbsolutePath(), function(exists) {
                                           expect(exists).toBe(true);
@@ -187,31 +184,29 @@ describe("fs module", function() {
                                           fs.truncate(sut.getAbsolutePath(), 3, function(err, result) {
                                                       expect(sut.length()).toBe(3);
                                                       sut.delete();
-                                                      helper.testComplete(true);
+                                                      done()
                                                       });
                                           });
                                 }, data);
             });
          
-         it("should extend files with trunctate() as well as shorten them", function() {
-            waitsFor(helper.testComplete, "the truncate test to complete", 5000);
-            helper.writeFixture(function(sut) {
+         it("should extend files with trunctate() as well as shorten them", function(done) {
+             helper.writeFixture(function(sut) {
                                 fs.truncate(sut.getAbsolutePath(), 1024, function(err, result) {
                                             expect(sut.exists()).toBe(true);
                                             expect(sut.length()).toBe(1024);
                                             sut.delete();
-                                            helper.testComplete(true);
+                                            done()
                                             });
                                 });
             });
          
-         it("should provide synchronous truncate()", function() {
+         it("should provide synchronous truncate()", function(done) {
             fs.truncateSync(tmpFile.getAbsolutePath(), 6);
             expect(tmpFile.length()).toBe(6);
             });
          
-         it("should provide ftruncate", function() {
-            waitsFor(helper.testComplete, "the ftruncate test to complete", 5000);
+         it("should provide ftruncate", function(done) {
             helper.writeFixture(function(sut) {
                                 expect(sut.length()).toBe(data.length);
                                 fs.open(sut.getAbsolutePath(), 'r+', function(err, fd) {
@@ -220,15 +215,14 @@ describe("fs module", function() {
                                                      expect(sut.length()).toBe(6);
                                                      fs.close(fd, function() {
                                                               sut.delete();
-                                                              helper.testComplete(true);
+                                                              done()
                                                               });
                                                      });
                                         });
                                 }, data);
             });
          
-         it("should extend files with ftrunctate() as well as shorten them", function() {
-            waitsFor(helper.testComplete, "the ftruncate test to complete", 5000);
+         it("should extend files with ftrunctate() as well as shorten them", function(done) {
             helper.writeFixture(function(sut) {
                                 fs.open(sut.getAbsolutePath(), 'r+', function(err, fd) {
                                         fs.ftruncate(fd, 1024, function(err, result) {
@@ -236,52 +230,49 @@ describe("fs module", function() {
                                                      expect(sut.length()).toBe(1024);
                                                      fs.close(fd, function() {
                                                               sut.delete();
-                                                              helper.testComplete(true);
+                                                              done()
                                                               });
                                                      });
                                         });
                                 });
             });
          
-         it("should provide synchronous ftruncate()", function() {
-            waitsFor(helper.testComplete, "the ftruncate test to complete", 5000);
+         it("should provide synchronous ftruncate()", function(done) {
             helper.writeFixture(function(sut) {
                                 fs.open(sut.getAbsolutePath(), 'r+', function(err, fd) {
                                         fs.ftruncateSync(fd, 6);
                                         expect(sut.length()).toBe(6);
                                         fs.close(fd, function() {
                                                  sut.delete();
-                                                 helper.testComplete(true);
+                                                 done()
                                                  });
                                         });
                                 }, data);
             });*/
          
-      /*      it("should provide a readdir function", function() {
-            waitsFor(helper.testComplete, "the readdir test to complete", 5000);
-            fs.readdir(tempDir, function(e,r) {
+      /*      it("should provide a readdir function", function(done) {
+             fs.readdir(tempDir, function(e,r) {
                        expect(r.length).toBeGreaterThan(0);
                        // make sure this thing behaves like a JS array
                        expect((typeof r.forEach)).toBe('function');
                        for ( i = 0 ; i < r.length ; ++i ) {
                        expect( r[i].indexOf( "/" ) ).toBe(-1);
                        }
-                       helper.testComplete(true);
+                       done()
                        });
             });
          
-         it('should provide appropriate error for readdir if no-such-directoyr', function() {
-            waitsFor( helper.testComplete, 'the readdir test to complete', 5000);
+         it('should provide appropriate error for readdir if no-such-directoyr', function(done) {
             fs.readdir( '/i/do/not/exist/damnit', function(e,r) {
                        expect(e).not.toBe( undefined );
                        expect(r).toBe( undefined );
-                       helper.testComplete(true);
+                       done()
                        });
             });
          
          
          
-         it('should throw ENOENT for readdir if no-such-directory', function() {
+         it('should throw ENOENT for readdir if no-such-directory', function(done) {
             var caught;
             var entries;
             try {
@@ -294,7 +285,7 @@ describe("fs module", function() {
             expect( caught.code ).toBe( "ENOENT" );
             })
          
-         it('should throw ENOTDIR for readdir on an existing non-dir file', function() {
+         it('should throw ENOTDIR for readdir on an existing non-dir file', function(done) {
             var caught;
             var entries;
             try {
@@ -308,7 +299,7 @@ describe("fs module", function() {
             })
          
          
-         it("should provide a readdirSync function", function() {
+         it("should provide a readdirSync function", function(done) {
             var r = fs.readdirSync(tempDir);
             expect(r.length).toBeGreaterThan(0);
             // make sure this thing behaves like a JS array
@@ -316,8 +307,7 @@ describe("fs module", function() {
             });
          
         
-         it('should provide fs.fchmodSync', function() {
-            waitsFor(helper.testComplete, '', 5000);
+         it('should provide fs.fchmodSync', function(done) {
             helper.writeFixture(function(sut) {
                                 var fd = fs.openSync(sut.getAbsolutePath(), 'r');
                                 var err = fs.fchmodSync(fd, 0400);
@@ -325,61 +315,57 @@ describe("fs module", function() {
                                 var stat = fs.fstatSync(fd);
                                 expect(stat.mode).toBe(33024);
                                 sut.delete();
-                                helper.testComplete(true);
+                                done()
                                 });
             });
          
-         it('should provide fs.fchmod', function() {
-            waitsFor(helper.testComplete, '', 5000);
+         it('should provide fs.fchmod', function(done) {
             helper.writeFixture(function(sut) {
                                 var fd = fs.openSync(sut.getAbsolutePath(), 'r');
                                 fs.fchmod(fd, 0400, function(e) {
                                           expect(e).toBeFalsy();
                                           var stat = fs.statSync(sut.getAbsolutePath());
                                           expect(stat.mode).toBe(33024);
-                                          helper.testComplete(true);
+                                          done()
                                           });
                                 });
             });
          
          describe('realpath', function() {
-                  it('should resolve existing files', function() {
+                  it('should resolve existing files', function(done) {
                      var file = java.io.File.createTempFile("realpath-test", ".txt");
-                     waitsFor(helper.testComplete, 'the realpath test to complete', 5000);
                      fs.writeFileSync(file.getAbsolutePath(), 'To be or not to be, that is the question');
                      fs.realpath(file.getAbsolutePath(), function(e, p) {
                                  expect(e).toBeFalsy();
                                  expect(p).toBeTruthy();
                                  expect(p).toBe(file.getCanonicalPath());
                                  fs.unlinkSync(file.getAbsolutePath());
-                                 helper.testComplete(true);
+                                 done()
                                  });
                      });
                   
-                  it('should provide the callback function with an Error if path does not exist', function() {
+                  it('should provide the callback function with an Error if path does not exist', function(done) {
                      var filename = 'some-file-that-does-not-exist.txt';
-                     waitsFor(helper.testComplete, 'the realpath test to complete', 5000);
-                     fs.realpath(filename, function(e, p) {
+                      fs.realpath(filename, function(e, p) {
                                  expect(e).toBeTruthy();
                                  expect(e.syscall).toBe('stat');
                                  var util = require('util');
                                  expect(p).toBeFalsy();
-                                 helper.testComplete(true);
+                                 done()
                                  });
                      });
                   
-                  it('should resolve cached paths when provided with a cache', function() {
+                  it('should resolve cached paths when provided with a cache', function(done) {
                      var cache = {'/flavors/cherry-lime':'/beverages/soda/flavors/cherry-lime'};
-                     waitsFor(helper.testComplete, 'the realpath test to complete');
                      fs.realpath('/flavors/cherry-lime', cache, function(e,p) {
                                  expect(e).toBeFalsy();
                                  expect(p).toBeTruthy();
                                  expect(p).toBe('/beverages/soda/flavors/cherry-lime');
-                                 helper.testComplete(true);
+                                 done()
                                  });
                      });
                   
-                  it('should have an analogous sync function', function() {
+                  it('should have an analogous sync function', function(done) {
                      var file = java.io.File.createTempFile("realpath-test", ".txt");
                      var filename = file.getAbsolutePath();
                      fs.writeFileSync(filename, 'To be or not to be, that is the question');
@@ -390,7 +376,7 @@ describe("fs module", function() {
                      fs.unlinkSync(filename);
                      });
                   
-                  it('should throw when the path is not found synchronously', function() {
+                  it('should throw when the path is not found synchronously', function(done) {
                      var filename = 'some-file-that-does-not-exist.txt';
                      try {
                      fs.realpathSync(filename);
@@ -401,7 +387,7 @@ describe("fs module", function() {
                      }
                      });
                   
-                  it('should resolve cached paths synchronously, too', function() {
+                  it('should resolve cached paths synchronously, too', function(done) {
                      var cache = {'/flavors/cherry-lime':'/beverages/soda/flavors/cherry-lime'};
                      var p = fs.realpathSync('/flavors/cherry-lime', cache);
                      expect(p).toBeTruthy();
@@ -412,60 +398,54 @@ describe("fs module", function() {
          
          describe("when opening files", function() {
                   
-                  it("should error on open read if the file doesn't exist", function() {
-                     waitsFor(helper.testComplete, "the open read fails test to complete", 5000);
+                  it("should error on open read if the file doesn't exist", function(done) {
                      fs.open('some-non-file.txt', 'r', function(e, f) {
                              expect(e instanceof Error).toBeTruthy();
-                             helper.testComplete(true);
+                             done()
                              });
                      });
                   
-                  it("should open files for reading", function() {
-                     waitsFor(helper.testComplete, "the open files test to complete", 5000);
+                  it("should open files for reading", function(done) {
                      helper.writeFixture(function(sut) {
                                          fs.open(sut.getAbsolutePath(), 'r', function(e, f) {
                                                  expect(e).toBeFalsy();
                                                  sut.delete();
-                                                 helper.testComplete(true);
+                                                 done()
                                                  });
                                          });
                      });
                   
-                  it("should open files for writing", function() {
-                     waitsFor(helper.testComplete, "the open files for writing test to complete", 5000);
-                     helper.writeFixture(function(sut) {
+                  it("should open files for writing", function(done) {
+                      helper.writeFixture(function(sut) {
                                          fs.open(sut.getAbsolutePath(), 'r+', null, function(e, f) {
                                                  expect(e).toBeFalsy();
                                                  sut.delete();
-                                                 helper.testComplete(true);
+                                                 done()
                                                  });
                                          });
                      });
                   
-                  it("should provide an error if attempting to close null", function() {
-                     waitsFor(helper.testComplete, "the close callback to return an error", 5000);
+                  it("should provide an error if attempting to close null", function(done) {
                      fs.close(null, function(e) {
                               expect(e.message).toBe("Don't know how to close null");
-                              helper.testComplete(true);
+                              done()
                               });
                      });
                   
-                  it("should close", function() {
-                     waitsFor(helper.testComplete, "the close callback to finish", 5000);
-                     helper.writeFixture(function(sut) {
+                  it("should close", function(done) {
+                      helper.writeFixture(function(sut) {
                                          fs.open(sut.getAbsolutePath(), 'r+', null, function(e, f) {
                                                  expect(!e).toBe(true);
                                                  fs.close(f, function(ex) {
                                                           expect(!ex).toBe(true);
                                                           sut.delete();
-                                                          helper.testComplete(true);
+                                                          done()
                                                           });
                                                  });
                                          });
                      });
                   
-                  it("should be able to read a file contents", function() {
-                     waitsFor(helper.testComplete, "the readFile to complete", 5000);
+                  it("should be able to read a file contents", function(done) {
                      var contents = "American Cheese";
                      helper.writeFixture(function(sut) {
                                          fs.readFile(sut.getAbsolutePath(), function(err, file) {
@@ -474,27 +454,26 @@ describe("fs module", function() {
                                                      expect(file instanceof Buffer).toBe(true);
                                                      expect(file.toString('ascii')).toBe(contents);
                                                      sut.delete();
-                                                     helper.testComplete(true);
+                                                     done()
                                                      });
                                          }, contents);
                      });
                   
-                  it("should be able to read a file using encoding", function() {
-                     waitsFor(helper.testComplete, "the readFile to complete", 5000);
-                     var contents = "American Cheese";
+                  it("should be able to read a file using encoding", function(done) {
+                      var contents = "American Cheese";
                      helper.writeFixture(function(sut) {
                                          fs.readFile(sut.getAbsolutePath(), {encoding:'ascii'}, function(err, str) {
                                                      expect(typeof str).toBe('string');
                                                      expect(str).toBe(contents);
                                                      sut.delete();
-                                                     helper.testComplete(true);
+                                                     done()
                                                      });
                                          }, contents);
                      });
                   
                   describe("synchronously", function() {
                            
-                           it("should error on openSync read if the file doesn't exist", function() {
+                           it("should error on openSync read if the file doesn't exist", function(done) {
                               try {
                               var f = fs.openSync('some-non-file.txt', 'r');
                               } catch(e) {
@@ -502,58 +481,54 @@ describe("fs module", function() {
                               }
                               });
                            
-                           it("should open files with openSync in write mode", function() {
-                              waitsFor(helper.testComplete, "the openSync write test to complete", 5000);
-                              helper.writeFixture(function(sut) {
+                           it("should open files with openSync in write mode", function(done) {
+                               helper.writeFixture(function(sut) {
                                                   var f = fs.openSync(sut.getAbsolutePath(), 'r+', null);
                                                   expect(f).toBeTruthy();
                                                   sut.delete();
-                                                  helper.testComplete(true);
+                                                  done()
                                                   });
                               });
                            
-                           it("should open files with openSync in read mode", function() {
-                              waitsFor(helper.testComplete, "the openSync read test to complete", 5000);
+                           it("should open files with openSync in read mode", function(done) {
                               helper.writeFixture(function(sut) {
                                                   var f = fs.openSync(sut.getAbsolutePath(), 'r', null);
                                                   expect(f).toBeTruthy();
                                                   sut.delete();
-                                                  helper.testComplete(true);
+                                                  done()
                                                   });
                               });
                            
-                           it("should close files synchronously", function() {
+                           it("should close files synchronously", function(done) {
                               helper.writeFixture(function(sut) {
                                                   fs.open(sut.getAbsolutePath(), 'r+', null, function(e, f) {
                                                           expect(!e).toBe(true);
                                                           var ex = fs.closeSync(f);
                                                           expect(!ex).toBe(true);
                                                           sut.delete();
-                                                          helper.testComplete(true);
+                                                          done()
                                                           });
                                                   });
                               });
                            
-                           it("should close files synchronously, even non-filedescriptors", function() {
+                           it("should close files synchronously, even non-filedescriptors", function(done) {
                               var e = fs.closeSync(null);
                               expect(e instanceof Error).toBeTruthy();
                               });
                            
-                           it("should be able to read a file", function() {
-                              waitsFor(helper.testComplete, "the read to complete", 5000);
+                           it("should be able to read a file", function(done) {
                               var contents = "American Cheese";
                               helper.writeFixture(function(sut) {
                                                   var result = fs.readFileSync(sut.getAbsolutePath());
                                                   expect(typeof result).toBe('object');
                                                   expect(result.toString('ascii')).toBe(contents);
                                                   sut.delete();
-                                                  helper.testComplete(true);
+                                                  done()
                                                   }, contents);
                               });
         
         
-        it("should be able to symlink files", function() {
-        waitsFor(helper.testComplete, "the symlink operation to complete", 5000);
+        it("should be able to symlink files", function(done) {
         helper.writeFixture(function(sut) {
         var srcPath = sut.getAbsolutePath();
         var dstPath = sut.getAbsolutePath() + '.link';
@@ -562,13 +537,12 @@ describe("fs module", function() {
         expect(fs.readlinkSync(dstPath)).toBe(srcPath);
         fs.unlink(srcPath);
         fs.unlink(dstPath);
-        helper.testComplete(true);
+        done()
         });
         });
         });
         
-        it("should be able to link files", function() {
-        waitsFor(helper.testComplete, "the link operation to complete", 5000);
+        it("should be able to link files", function(done) {
         helper.writeFixture(function(sut) {
         var srcPath = sut.getAbsolutePath();
         var dstPath = sut.getAbsolutePath() + '.link';
@@ -577,22 +551,21 @@ describe("fs module", function() {
         expect(fs.existsSync(dstPath)).toBeTruthy();
         fs.unlink(srcPath);
         fs.unlink(dstPath);
-        helper.testComplete(true);
+        done()
         });
         });
         });
          
          
          
-                           it("should be able to read a file with encoding", function() {
-                              waitsFor(helper.testComplete, "the read to complete", 5000);
+                           it("should be able to read a file with encoding", function(done) {
                               var contents = "American Cheese";
                               helper.writeFixture(function(sut) {
                                                   var result = fs.readFileSync(sut.getAbsolutePath(), {encoding: 'ascii'});
                                                   expect(typeof result).toBe('string');
                                                   expect(result).toBe(contents);
                                                   sut.delete();
-                                                  helper.testComplete(true);
+                                                  done()
                                                   }, contents);
                               });
                            

@@ -3,9 +3,7 @@ var net       = require('net');
 
 describe('The net module', function() {
   // TODO: This still appears to be racy on CI
-  it('should handle pause and resume on a socket', function() {
-    helper.testComplete(false);
-    waitsFor(helper.testComplete, "The net pause/resume test", 10000);
+  it('should handle pause and resume on a socket', function(done) {
     var N = 200;
     var recv = '', chars_recved = 0;
 
@@ -57,7 +55,7 @@ describe('The net module', function() {
       client.on('end', function() {
         server.close();
         client.end();
-        helper.testComplete(true);
+        done()
       });
     });
     server.listen(8800);

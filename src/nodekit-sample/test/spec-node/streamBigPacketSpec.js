@@ -5,13 +5,6 @@ var util = require('util'),
 describe("Streaming big packets", function() {
 
   it("should work", function() {
-    waitsFor(function() { 
-      if (passed && later) {
-        s1.emit('drain');
-        return true;
-      }
-      return false;
-    }, "the test to complete", 8000);
     var passed = false;
     var later = false;
 

@@ -4,58 +4,52 @@ var net = require( "net" );
 describe( "net.Server", function() {
 
   beforeEach(function() {
-    helper.testComplete(false);
-  });
+   });
 
-  it("should have all the correct functions defined", function() {
+  it("should have all the correct functions defined", function(done) {
     expect(typeof net.Server).toBe('function');
     expect(typeof net.Socket).toBe('function');
     expect(typeof net.createServer).toBe('function');
     expect(typeof net.connect).toBe('function');
     expect(typeof net.createConnection).toBe('function');
-    helper.testComplete(true);
+    done()
   });
 
-  it("should fire a 'listening' event", function() {
+  it("should fire a 'listening' event", function(done) {
     var server = net.createServer();
     server.listen(8800, function() {
       server.close();
-      helper.testComplete(true);
+      done()
     });
-    waitsFor(helper.testComplete, "waiting for .listen(handler) to fire", 3000);
   });
 
-  it("should fire a 'close' event registered prior to close()", function() {
+  it("should fire a 'close' event registered prior to close()", function(done) {
     var server = net.createServer();
     server.on('close', function(e) {
-      helper.testComplete(true);
+      done()
     });
     server.listen(8800, function() {
       server.close();
     });
-    waitsFor(helper.testComplete, "waiting for .on(close) to fire", 3000);
-
   });
 
-  it("should fire a 'close' event on a callback passed to close()", function() {
+  it("should fire a 'close' event on a callback passed to close()", function(done) {
     var server = net.createServer();
     server.listen(8800, function() {
       server.close(function() {
-        helper.testComplete(true);
+          done()
       });
     });
-    waitsFor(helper.testComplete, "waiting for close handler to fire", 3000);
   });
 
-  it("should fire a 'connect' callback on client connection", function() {
-    waitsFor(helper.testComplete, "waiting for connection handler to fire", 5000 );
-    var server = net.createServer();
+  it("should fire a 'connect' callback on client connection", function(done) {
+     var server = net.createServer();
     server.listen(8800, function() {
       var socket = net.connect(8800, function() {
         // stop accepting connections
         server.close( function() {
           // only called once all connections are closed
-          helper.testComplete(true);
+            done()
         });
         // destroy the client connection
         socket.destroy();
@@ -63,15 +57,14 @@ describe( "net.Server", function() {
     });
   });
 
-  it("should allow reading and writing from both client/server connections", function() {
-    waitsFor(helper.testComplete, "waiting for read/write to complete", 3000);
+  it("should allow reading and writing from both client/server connections", function(done) {
     var completedCallback = false;
     var server = net.createServer();
     server.on('connection', function(conn) {
       conn.on('data', function(buff) {
         expect(buff.toString()).toBe('crunchy bacon');
         conn.write('with chocolate', function() {
-          helper.testComplete(true);
+            done()
           server.close();
         });
       });
@@ -87,22 +80,21 @@ describe( "net.Server", function() {
     }); */
   });
 
-  it("should support an idle socket timeout", function() {
+  it("should support an idle socket timeout", function(done) {
     var server = net.createServer();
     server.on('connection', function(socket) {
       socket.setTimeout(10, function() {
         socket.destroy();
         server.close();
-        helper.testComplete(true);
+          done()
       });
     });
     server.listen(8800, function() {
       var client = net.connect(8800);
     });
-    waitsFor(helper.testComplete, "waiting for timeout to fire", 15000);
-  });
+   });
 
-  it("should allow cancellation of an idle socket timeout", function() {
+  it("should allow cancellation of an idle socket timeout", function(done) {
     var server = net.createServer();
     server.on('connection', function(socket) {
       socket.setTimeout(300, function() {
@@ -115,15 +107,14 @@ describe( "net.Server", function() {
         setTimeout(function() {
           socket.destroy();
           server.close();
-          helper.testComplete(true);
+            done()
         }, 500);
       });
      });
-    waitsFor(helper.testComplete, "waiting for timeout to fire", 15000);
-  });
+   });
 
 
-  it( "should provide a remote address", function() {
+  it( "should provide a remote address", function(done) {
     var server = net.createServer();
     server.listen(8800, function() {
       var socket = net.connect(8800, function() {
@@ -131,13 +122,12 @@ describe( "net.Server", function() {
         expect(socket.remotePort).toBe(8800);
         socket.destroy();
         server.close();
-        helper.testComplete(true);
+       done()
       });
     });
-    waitsFor(helper.testComplete, "waiting for socket address to be checked", 3000);
   });
 
-/*  it( "should provide a server address", function() {
+/*  it( "should provide a server address", function(done) {
     var server = net.createServer();
     server.listen(8800, function() {
       var socket = net.connect(8800, function() {
@@ -150,18 +140,16 @@ describe( "net.Server", function() {
         }
         socket.destroy();
         server.close();
-        helper.testComplete(true);
+       done();
       });
     });
-    waitsFor(helper.testComplete, "waiting for server address to be checked", 3000);
-  });*/
+   });*/
 
 /*
-  it("should emit error events", function() {
+  it("should emit error events", function(done) {
     var server = net.createServer();
     var error  = new Error('phoney baloney');
-    waitsFor(helper.testComplete, "waiting for server to error", 3);
-
+ 
     server.on('connection', function(socket) {
       socket.on('data', function(buffer) {
         expect(typeof buffer).toBe('object');
@@ -174,7 +162,7 @@ describe( "net.Server", function() {
 
     server.on('error', function(e) {
       expect(e).toBe(error);
-      helper.testComplete(true);
+      done()
     });
 
     server.listen(8800, function() {

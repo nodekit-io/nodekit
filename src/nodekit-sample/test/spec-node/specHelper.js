@@ -1,35 +1,3 @@
-// This is the equivalent of the old waitsFor/runs syntax
-// which was removed from Jasmine 2
-waitsFor = function(escapeFunction, timeoutMessage, escapeTime) {
-    if (typeof(timeoutMessage) != "string")
-    {
-        escapeTime = timeoutMessage;
-        timeoutMessage = null;
-    }
-
-    // check the escapeFunction every millisecond so as soon as it is met we can escape the function
-    var interval = setInterval(function() {
-                               if (escapeFunction()) {
-                               clearMe();
-                               }
-                               }, 1);
-    
-    // in case we never reach the escapeFunction, we will time out
-    // at the escapeTime
-    var timeOut = setTimeout(function() {
-                             console.log("TIMED OUT");
-                             if (timeoutMessage)
-                               throw new Error(timeoutMessage);
-                              clearMe();
-                             }, escapeTime);
-    
-    // clear the interval and the timeout
-    function clearMe(){
-        clearInterval(interval);
-        clearTimeout(timeOut);
-    }
-};
-
 var fs = require('fs');
 
 (function() {

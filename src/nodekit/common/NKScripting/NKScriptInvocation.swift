@@ -158,14 +158,15 @@ extension NKScriptInvocation {
 private let _NSInvocation: AnyClass = NSClassFromString("NSInvocation")!
 private let _NSMethodSignature: AnyClass = NSClassFromString("NSMethodSignature")!
 public func invoke(target: AnyObject, selector: Selector, withArguments arguments: [Any!], onThread thread: NSThread? = nil, waitUntilDone wait: Bool = true) -> Any! {
-    let method = class_getInstanceMethod(target.dynamicType, selector)
+    let method =  class_getInstanceMethod(target.dynamicType, selector)
+
     if method == nil {
         // TODO: supports forwordingTargetForSelector: of NSObject?
-        (target as? NSObject)?.doesNotRecognizeSelector(selector)
+         (target as? NSObject)?.doesNotRecognizeSelector(selector)
         // Not an NSObject, mimic the behavior of NSObject
-        let reason = "-[\(target.dynamicType) \(selector)]: unrecognized selector sent to instance \(unsafeAddressOf(target))"
+        let reason = "\(selector.description) unrecognized selector sent to instance \(unsafeAddressOf(target))"
         withVaList([reason]) { NSLogv("%@", $0) }
-        NSException(name: NSInvalidArgumentException, reason: reason, userInfo: nil).raise()
+     //   NSException(name: NSInvalidArgumentException, reason: reason, userInfo: nil).raise()
     }
 
     let sig = _NSMethodSignature.signatureWithObjCTypes(method_getTypeEncoding(method))!

@@ -89,25 +89,23 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
     private func prepareForPlugin() {
         let key = unsafeAddressOf(NKScriptChannel)
         if objc_getAssociatedObject(context, key) != nil { return }
-
+        objc_setAssociatedObject(context, key, self, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        
         let bundle = NSBundle(forClass: NKScriptChannel.self)
         guard let path = bundle.pathForResource("nkscripting", ofType: "js"),
             let source = try? NSString(contentsOfFile: path, encoding: NSUTF8StringEncoding) else {
                 die("Failed to read provision script: nkscripting")
         }
 
-        let nkscript = context!.NKinjectJavaScript(NKScriptSource(source: source as String, asFilename: "io.nodekit.scripting/NKScripting/nkscripting.js", namespace: "NKScripting"))
-        objc_setAssociatedObject(context, key, nkscript, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
-        let key2 = unsafeAddressOf(NKScriptInvocation)
+        context!.NKinjectJavaScript(NKScriptSource(source: source as String, asFilename: "io.nodekit.scripting/NKScripting/nkscripting.js", namespace: "NKScripting"))
+      
         guard let path2 = bundle.pathForResource("promise", ofType: "js"),
-            let source2 = try? NSString(contentsOfFile: path2, encoding: NSUTF8StringEncoding) else {
+        let source2 = try? NSString(contentsOfFile: path2, encoding: NSUTF8StringEncoding) else {
                 die("Failed to read provision script: nkscripting")
         }
 
-        let nkpromise = context!.NKinjectJavaScript(NKScriptSource(source: source2 as String, asFilename: "io.nodekit.scripting/NKScripting/promise.js", namespace: "Promise"))
-        objc_setAssociatedObject(context, key2, nkpromise, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-
+        context!.NKinjectJavaScript(NKScriptSource(source: source2 as String, asFilename: "io.nodekit.scripting/NKScripting/promise.js", namespace: "Promise"))
+     
         log("+E\(context!.NKid) JavaScript Engine is ready for loading plugins")
     }
 
@@ -129,7 +127,7 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
 
          principal = NKScriptValueNative(namespace: namespace, channel: self, object: object)
 
-         userScript = context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: namespace + "/plugin/" + _stdlib_getDemangledTypeName(object) + ".js" ))
+        context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: namespace + "/plugin/" + _stdlib_getDemangledTypeName(object) + ".js" ))
 
         log("+E\(context.NKid) Plugin object \(object) is bound to \(namespace) with channel \(id)")
         return principal as NKScriptValue
@@ -192,7 +190,7 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
             // discard unknown message
             log("!Unknown message: \(message.body)")
         }
-        NSThread.currentThread().threadDictionary.removeObjectForKey( "nk.CurrentContext")
+      NSThread.currentThread().threadDictionary.removeObjectForKey( "nk.CurrentContext")
 
     }
 
@@ -267,7 +265,7 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
                 stub = "exports.\(key) = \(method)"
             } else if member.isProperty {
                 if (isFactory) {  stub = "NKScripting.defineProperty(exports, '\(key)', null, \(member.setter != nil));" } else {
-                    let value = self.context?.NKserialize(principal[key])
+                    let value = self.context?.NKserialize(principal.valueForPropertyNative(key))
                     stub = "NKScripting.defineProperty(exports, '\(key)', \(value), \(member.setter != nil));"
                 }
             } else {

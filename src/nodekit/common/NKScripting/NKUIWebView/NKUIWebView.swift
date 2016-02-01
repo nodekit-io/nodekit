@@ -17,6 +17,7 @@
 */
 
 import UIKit
+import WebKit
 import JavaScriptCore
 
 internal struct NKUIWebView {
@@ -31,15 +32,15 @@ extension UIWebView: NKScriptContextHost {
         delegate cb: NKScriptContextDelegate) -> Void {
 
         log("+NodeKit UIWebView-JavaScriptCore JavaScript Engine E\(id)")
-        var item = Dictionary<String, AnyObject>()
-
+     
         objc_setAssociatedObject(self, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
 
+        var item = Dictionary<String, AnyObject>()
+        item["UIWebView"] = self
         NKScriptContextFactory._contexts[id] = item
         self.delegate = NKUIWebViewDelegate(id: id, webView: self, delegate: cb)
 
-        item["UIWebView"] = self
-    }
+      }
 }
 
 extension UIWebView {

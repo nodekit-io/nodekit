@@ -49,7 +49,7 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
                    obj["$nk.sync"] = true;
                    obj["$id"] = id;
                    channel.postMessage.apply(this, args);
-                   return JSON.parse(window.prompt("nk.Signal", id));
+                   return window.prompt("nk.Signal", id);
                    }
                    }
                    
@@ -231,7 +231,7 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
                                                                '$operand': operand,
                                                                '$target': this.$instanceID
                                                                 });
-                   return JSON.parse(result, JSON.dateParser);
+                    return JSON.parse(result, JSON.dateParser);
                    }
                    else
         this.$channel.postMessage({

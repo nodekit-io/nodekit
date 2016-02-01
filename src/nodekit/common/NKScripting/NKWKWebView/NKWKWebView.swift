@@ -34,10 +34,11 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         self.UIDelegate = NKWKWebViewUIDelegate(webView: self)
 
         objc_setAssociatedObject(self, unsafeAddressOf(NKJSContextId), id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            
         cb.NKScriptEngineDidLoad(self)
     }
 
-    public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> AnyObject? {
+    public func NKloadPlugin(object: AnyObject, namespace: String, options: Dictionary<String, AnyObject> = Dictionary<String, AnyObject>() ) -> Void {
 
         let mainThread: Bool = (options["MainThread"] as? Bool) ?? false
 
@@ -46,7 +47,7 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         switch bridge {
         case .JSExport:
             NSException(name: "Not Supported", reason: "WKWebView does not support JSExport protocol", userInfo: nil).raise()
-            return nil
+            return;
         case .NKScriptExport:
             let channel: NKScriptChannel
             if (mainThread) {
@@ -55,12 +56,14 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
                 channel = NKScriptChannel(context: self)
             }
             channel.userContentController = self
-            return channel.bindPlugin(object, toNamespace: namespace)
+            guard let pluginValue = channel.bindPlugin(object, toNamespace: namespace) else {return;}
+            objc_setAssociatedObject(self, unsafeAddressOf(pluginValue), pluginValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 
-    public func NKinjectJavaScript(script: NKScriptSource) -> AnyObject? {
-        return NKWKUserScript(context: (self as WKWebView), script: script)
+    public func NKinjectJavaScript(script: NKScriptSource) -> Void {
+        let item = NKWKUserScript(context: (self as WKWebView), script: script)
+        objc_setAssociatedObject(self, unsafeAddressOf(item), item, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
     }
 
     public func NKevaluateJavaScript(javaScriptString: String,
@@ -69,6 +72,8 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
             self.evaluateJavaScript(javaScriptString, completionHandler: completionHandler)
     }
 
+    
+    /*
     // Synchronized evaluateJavaScript
     // It returns nil if script is a statement or its result is undefined.
     // So, Swift cannot map the throwing method to Objective-C method.
@@ -131,12 +136,11 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         if error != nil { error.memory = err }
         return result
     }
-
+*/
 
     public static func NKcurrentContext() -> NKScriptContext! {
         return NSThread.currentThread().threadDictionary.objectForKey("nk.CurrentContext") as? NKScriptContext
     }
-
 
     public func NKserialize(object: AnyObject?) -> String {
         var obj: AnyObject? = object
@@ -152,7 +156,7 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
                     return scriptObject.namespace
                 } else {
                     let scriptObject = NKScriptValueNative(object: o2, inContext: self)
-                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
                     return scriptObject.namespace
                 }
             }
@@ -172,7 +176,7 @@ extension WKWebView: NKScriptContext, NKScriptContextHost {
         } else if let a = obj as? [AnyObject] {
             return "[" + a.map(self.NKserialize).joinWithSeparator(", ") + "]"
         } else if let d = obj as? [String: AnyObject] {
-            return "{" + d.keys.map {"'\($0)': \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
+            return "{" + d.keys.map {"\"\($0)\": \(self.NKserialize(d[$0]!))"}.joinWithSeparator(", ") + "}"
         } else if obj === NSNull() {
             return "null"
         } else if obj == nil {

@@ -140,10 +140,9 @@ describe('process', function() {
     expect(functionCalled).toBe('bar');
   });
 
-  it('should pass testNextTick', function() {
-    waitsFor(helper.testComplete);
+  it('should pass testNextTick', function(done) {
     process.nextTick(function() {
-      helper.testComplete(true);
+      done()
     });
   });
 

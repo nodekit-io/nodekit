@@ -18,7 +18,6 @@
 
 import Foundation
 import WebKit
-import JavaScriptCore
 
 
 extension NKE_BrowserWindow {

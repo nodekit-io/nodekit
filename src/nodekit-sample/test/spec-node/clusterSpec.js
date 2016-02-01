@@ -4,12 +4,8 @@ var http = require('http');
 
 describe("clustering", function() {
 
-  beforeEach(function() {
-    helper.testComplete(false);
-  });
 
-  it ('should be able to delegate requests to children', function() {
-      waitsFor(helper.testComplete, "child to come online process a request and die", 10000);
+  it ('should be able to delegate requests to children', function(done) {
       cluster.setupMaster( {
         exec: './src/test/javascript/cluster_child.js',
         silent: false
@@ -33,7 +29,7 @@ describe("clustering", function() {
             });
             child.on('exit', function() {
               console.log( "master: child exited" );
-              helper.testComplete(true);
+             done()
             });
             console.log( "master: disconnecting" );
             child.disconnect();

@@ -62,7 +62,7 @@ function stripBOM(content) {
     return content;
 }
 
-var dns = require('dns');
+/*var dns = require('dns');
 dns.platform.name_servers = [
                              {
                              address: '8.8.8.8',
@@ -72,7 +72,7 @@ dns.platform.name_servers = [
                              address: '8.8.4.4',
                              port: 53
                              }
-                             ];
+                             ]; */
 
 if (Error.captureStackTrace === undefined) {
     Error.captureStackTrace = function (obj) {

@@ -73,7 +73,7 @@ FileSystem.prototype.getItemSync = function (filepath) {
 FileSystem.storageItemtoItemWithStat = function (storageItem) {
     var stat = {};
     
-    if (storageItem) {
+    if (storageItem && storageItem.filetype) {
         stat.path = storageItem.path;
         stat.birthtime = storageItem.birthtime;
         stat.mtime = storageItem.mtime;

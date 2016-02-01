@@ -18,8 +18,6 @@
 */
 
 import Foundation
-import WebKit
-import JavaScriptCore
 
 protocol NKEAppProtocol: NKScriptExport {
     func quit() -> Void

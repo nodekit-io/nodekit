@@ -6,10 +6,6 @@ var net    = require('net');
 
 describe( "http.request", function() {
 
-  beforeEach(function() {
-    helper.testComplete(false);
-  });
-
   afterEach(function(){
   });
 
@@ -21,8 +17,7 @@ describe( "http.request", function() {
     request.abort();
   });
 
-  it( "should send the request when headers are implicitly sent", function() {
-    waitsFor(helper.testComplete, "page to load", 5000 );
+  it( "should send the request when headers are implicitly sent", function(done) {
     var page = '';
     var request = http.request( { host: 'nodyn.io' }, function(response) {
       response.on('data', function(d) {
@@ -31,20 +26,19 @@ describe( "http.request", function() {
       response.on( 'end', function() {
         request.socket.end();
         expect( page.indexOf( 'Red Hat' ) ).not.toBe( 0 );
-        helper.testComplete(true);
+        done()
       });
     });
     request.end();
   });
 
-  it('should receive a "socket" event', function() {
-      waitsFor(helper.testComplete, "page to load", 5000 );
-      var socket;
+  it('should receive a "socket" event', function(done) {
+    var socket;
       var request = http.request( { host: 'nodyn.io' }, function(response) {
         response.on('data',function(){});
         response.on('end', function() {
           expect( socket ).not.toBe( undefined );
-          helper.testComplete(true);
+         done()
         });
       });
       request.on( "socket", function(s) {
@@ -54,8 +48,7 @@ describe( "http.request", function() {
       request.end();
   });
 
-  it('should allow later binding of a response-handler', function(){
-      waitsFor(helper.testComplete, "page to load", 5000 );
+  it('should allow later binding of a response-handler', function(done){
       var page = '';
       var request = http.request( { host: 'nodyn.io' } );
       request.on('response', function(response) {
@@ -65,7 +58,7 @@ describe( "http.request", function() {
         response.on( 'end', function() {
           request.socket.end();
           expect( page.indexOf( 'Red Hat' ) ).not.toBe( 0 );
-          helper.testComplete(true);
+          done()
         });
       });
       request.end();

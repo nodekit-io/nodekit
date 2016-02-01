@@ -41,9 +41,8 @@ class NKJSCScript {
     private func inject() {
         guard let context = context else { return }
 
-     //   context.evaluateJavaScript(source, completionHandler: nil)
-        (context as! JSContext).evaluateScript(source, withSourceURL: NSURL(string: "file:///" + filename)!)
-         log("+E\(context.NKid) Injected \(filename) ")
+       (context as! JSContext).NKevaluateJavaScript(source, withSourceURL: NSURL(string: "file:///" + filename)!, completionHandler: nil)
+        log("+E\(context.NKid) Injected \(filename) ")
 
     }
 

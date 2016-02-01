@@ -32,10 +32,7 @@ TestWritable.prototype._write = function(chunk, encoding, cb) {
 
 describe("Piping a stream that's already ended", function() {
 
-  it("should work", function() {
-    waitsFor(function() {
-      return (enderEnded === true) && (writableFinished === true);
-    }, 4000);
+  it("should work", function(done) {
     // this one should not emit 'end' until we read() from it later.
     var ender = new TestReadable();
     var enderEnded = false;
@@ -57,6 +54,7 @@ describe("Piping a stream that's already ended", function() {
       var w = new TestWritable();
       w.on('finish', function() {
         writableFinished = true;
+           done()
       });
       piper.pipe(w);
 

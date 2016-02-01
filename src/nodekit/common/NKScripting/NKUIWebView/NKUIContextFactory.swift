@@ -17,7 +17,6 @@
 */
 
 import Foundation
-import JavaScriptCore
 import UIKit
 
 extension NKScriptContextFactory {

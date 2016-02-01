@@ -65,68 +65,64 @@ public class NKScriptValue: NSObject {
     //  func isEqualWithTypeCoercionToObject(value: AnyObject!) -> Bool
     //  func isInstanceOf(value: AnyObject!) -> Bool
 
+    
+    public func testLog() {
+        log("testLog");
+    }
 
-     // JavaScript object operations
+    // Async JavaScript object operations
     public func constructWithArguments(arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         let exp = "new " + scriptForCallingMethod(nil, arguments: arguments)
         evaluateExpression(exp, completionHandler: completionHandler)
     }
-    public func constructWithArguments(arguments: [AnyObject]!) throws -> AnyObject {
-        let exp = "new \(scriptForCallingMethod(nil, arguments: arguments))"
-        guard let result = try evaluateExpression(exp) else {
-            NSException(name: "JavaScriptExceptionOccurred", reason: "NKScriptValue.construct", userInfo: nil).raise()
-            return ""
-        }
-        return result
-    }
+   
     public func callWithArguments(arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
-        let exp = scriptForCallingMethod(nil, arguments: arguments)
-        evaluateExpression(exp, completionHandler: completionHandler)
+        dispatch_async(NKScriptChannel.defaultQueue) {() -> Void in
+            
+            let exp = self.scriptForCallingMethod(nil, arguments: arguments)
+            self.evaluateExpression(exp, completionHandler: completionHandler)
+        }
     }
-    public func callWithArguments(arguments: [AnyObject]!) -> AnyObject! {
-        return try! evaluateExpression(scriptForCallingMethod(nil, arguments: arguments))
-    }
-     public func callWithArguments(arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject! {
-        return evaluateExpression(scriptForCallingMethod(nil, arguments: arguments), error: error)
-    }
-
+  
     public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
-        let exp = scriptForCallingMethod(method, arguments: arguments)
-        evaluateExpression(exp, completionHandler: completionHandler)
+        dispatch_async(NKScriptChannel.defaultQueue) {() -> Void in
+            
+            let exp = self.scriptForCallingMethod(method, arguments: arguments)
+            self.evaluateExpression(exp, completionHandler: completionHandler)
+        }
     }
-    public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!) throws -> AnyObject! {
-        return try evaluateExpression(scriptForCallingMethod(method, arguments: arguments))
-    }
-    public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject! {
-        return evaluateExpression(scriptForCallingMethod(method, arguments: arguments), error: error)
-    }
-
-
+  
     public func defineProperty(property: String!, descriptor: AnyObject!) {
         let exp = "Object.defineProperty(\(namespace), \(property), \(self.context.NKserialize(descriptor)))"
-        _ = try! evaluateExpression(exp)
+        evaluateExpression(exp, completionHandler: nil)
     }
-    public func deleteProperty(property: String!) -> Bool {
-        let result: AnyObject? = try! evaluateExpression("delete \(scriptForFetchingProperty(property))")
-        return (result as? NSNumber)?.boolValue ?? false
+    
+    public func deleteProperty(property: String!) -> Void {
+        evaluateExpression("delete \(scriptForFetchingProperty(property))", completionHandler: nil)
     }
-    public func hasProperty(property: String!) -> Bool {
-        let result: AnyObject? = try! evaluateExpression("\(scriptForFetchingProperty(property)) != undefined")
-        return (result as? NSNumber)?.boolValue ?? false
+ 
+    public func hasProperty(property: String!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+        evaluateExpression("\(scriptForFetchingProperty(property)) != undefined", completionHandler: completionHandler)
     }
-    public func valueForProperty(property: String!) -> AnyObject? {
-        return try! evaluateExpression(scriptForFetchingProperty(property))
+    
+    public func valueForProperty(property: String!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+        evaluateExpression(scriptForFetchingProperty(property), completionHandler: completionHandler)
     }
+    
     public func setValue(value: AnyObject!, forProperty property: String!) {
         context?.NKevaluateJavaScript(scriptForUpdatingProperty(property, value: value), completionHandler: nil)
     }
-    public func valueAtIndex(index: Int) -> AnyObject? {
-        return try! evaluateExpression("\(namespace)[\(index)]")
+    
+    public func valueAtIndex(index: Int, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+        evaluateExpression("\(namespace)[\(index)]", completionHandler: completionHandler)
     }
+    
     public func setValue(value: AnyObject!, atIndex index: Int) {
         context?.NKevaluateJavaScript("\(namespace)[\(index)] = \(self.context.NKserialize(value))", completionHandler: nil)
     }
-
+    
+    // Private JavaScript scripts and helpers
+    
     private func scriptForFetchingProperty(name: String!) -> String {
         if name == nil {
             return namespace
@@ -144,7 +140,7 @@ public class NKScriptValue: NSObject {
     private func scriptForCallingMethod(name: String!, arguments: [AnyObject]?) -> String {
 
         let args = arguments?.map(NKserialize) ?? []
-        return scriptForFetchingProperty(name) + "(" + args.joinWithSeparator(", ") + ")"
+        return "(function line_eval(){ try { return " + scriptForFetchingProperty(name) + "(" + args.joinWithSeparator(", ") + ")" + "} catch(ex) { console.log(ex.toString()); return ex} })()"
     }
 
     private func NKserialize(object: AnyObject?) -> String {
@@ -161,7 +157,7 @@ public class NKScriptValue: NSObject {
                     return scriptObject.namespace
                 } else {
                     let scriptObject = NKScriptValueNative(object: o2, inContext: self.context)
-                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+                    objc_setAssociatedObject(o2, unsafeAddressOf(NKScriptValue), scriptObject, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
                     return scriptObject.namespace
                 }
             }
@@ -189,50 +185,8 @@ public class NKScriptValue: NSObject {
         }
         return "'\(obj!.description)'"
     }
-}
 
-
-extension NKScriptValue {
-    // Subscript as property accessor
-    public subscript(name: String) -> AnyObject? {
-        get {
-            return valueForProperty(name)
-        }
-        set {
-            setValue(newValue, forProperty: name)
-        }
-    }
-    public subscript(index: Int) -> AnyObject? {
-        get {
-            return valueAtIndex(index)
-        }
-        set {
-            setValue(newValue, atIndex: index)
-        }
-    }
-}
-
-extension NKScriptValue {
-    // DOM objects
-    public var windowObject: NKScriptValue { get {
-        return NKScriptValue(namespace: "window", channel: self.channel, origin: self.origin) }
-    }
-    public var documentObject: NKScriptValue { get {
-        return NKScriptValue(namespace: "document", channel: self.channel, origin: self.origin) }
-    }
-}
-
-extension NKScriptValue {
-    // PRIVATE/INTERNAL METHODS
-    private func evaluateExpression(expression: String) throws -> AnyObject? {
-        return wrapScriptObject(try context?.NKevaluateJavaScript(scriptForRetaining(expression)))
-    }
-
-    private func evaluateExpression(expression: String, error: NSErrorPointer) -> AnyObject? {
-        return wrapScriptObject(context?.NKevaluateJavaScript(expression, error: error))
-    }
-
-    private func evaluateExpression(expression: String, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+   private func evaluateExpression(expression: String, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
         guard let completionHandler = completionHandler else {
             context?.NKevaluateJavaScript(expression, completionHandler: nil)
             return
@@ -256,5 +210,15 @@ extension NKScriptValue {
             }
         }
         return object
+    }
+}
+
+extension NKScriptValue {
+    // DOM objects
+    public var windowObject: NKScriptValue { get {
+        return NKScriptValue(namespace: "window", channel: self.channel, origin: self.origin) }
+    }
+    public var documentObject: NKScriptValue { get {
+        return NKScriptValue(namespace: "document", channel: self.channel, origin: self.origin) }
     }
 }

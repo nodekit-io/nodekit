@@ -18,7 +18,3 @@
  */
 
 var Timer = io.nodekit.platform.Timer
-
-Timer.prototype._init = function() {
-    
-};

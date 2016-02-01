@@ -18,7 +18,6 @@
 
 import Foundation
 import WebKit
-import JavaScriptCore
 
 public class NKWVWebViewDelegate: NSObject, WebFrameLoadDelegate {
 

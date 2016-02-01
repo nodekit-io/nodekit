@@ -25,38 +25,35 @@ describe('The dgram module', function() {
     socket.close();
   });
 
-  it('should bind a udp4 socket', function() {
-    waitsFor(helper.testComplete, "the dgram bind test", 5000);
+  it('should bind a udp4 socket', function(done) {
     var socket = dgram.createSocket('udp4');
     expect(socket !== null).toBeTruthy();
     expect(typeof socket.bind).toBe('function');
     socket.bind(54321, function() {
-      socket.on('close', function() { helper.testComplete(true); });
+      socket.on('close', function() {   done() });
       socket.close();
     });
   });
 
-  it('should close a udp4 socket', function() {
-    waitsFor(helper.testComplete, "the dgram socket close test", 5000);
+  it('should close a udp4 socket', function(done) {
     var socket = dgram.createSocket('udp4');
     expect(socket !== null).toBeTruthy();
     expect(typeof socket.close).toBe('function');
-    socket.on('close', function() { helper.testComplete(true); });
+    socket.on('close', function() {   done() });
     socket.close();
   });
 
-  it('should have a socket with an address', function() {
-    waitsFor(helper.testComplete, "the dgram socket address test", 5000);
+  it('should have a socket with an address', function(done) {
     var socket = dgram.createSocket('udp4');
     expect(socket !== null).toBeTruthy();
     expect(typeof socket.address).toBe('function');
-    socket.bind(54321, function() {
+    socket.bind(54322, function() {
       var addr = socket.address();
       expect(addr !== undefined).toBeTruthy();
       expect(addr.address).toBe('0.0.0.0');
       expect(addr.family).toBe('IPv4');
-      expect(addr.port).toBe(54321);
-      socket.on('close', function() { helper.testComplete(true); });
+      expect(addr.port).toBe(54322);
+      socket.on('close', function() {   done() });
       socket.close();
     });
   });
@@ -71,7 +68,6 @@ describe('The dgram module', function() {
   });
 
   it('should send and receive packets', function() {
-    waitsFor(helper.testComplete, "the dgram send / receive test", 5000);
     var peer1 = dgram.createSocket('udp4');
     var peer2 = dgram.createSocket('udp4');
     var buffer = new Buffer('turkey dinner');
@@ -81,18 +77,17 @@ describe('The dgram module', function() {
 
     peer2.on('message', function(msg, rinfo) {
       expect(buffer.toString()).toBe(msg.toString());
-      peer2.on('close', function() { helper.testComplete(true); });
+      peer2.on('close', function() {   done() });
       peer1.on('close', function() { peer2.close(); });
       peer1.close();
     });
 
-    peer2.bind(54321, function() {
+    peer2.bind(54323, function() {
       peer1.send(buffer, 0, buffer.length, 54321, 'localhost');
     });
   });
 
-  it('should echo packets', function() {
-    waitsFor(helper.testComplete, "the dgram echo test", 5000);
+  it('should echo packets', function(done) {
     var peer1 = dgram.createSocket('udp4');
     var peer2 = dgram.createSocket('udp4');
     var buffer = new Buffer('turkey dinner');
@@ -108,20 +103,19 @@ describe('The dgram module', function() {
     peer2.on('message', function(msg, rinfo) {
       expect(buffer.toString()).toBe(msg.toString());
       peer1.on('close', function() { peer2.close(); });
-      peer2.on('close', function() { helper.testComplete(true); });
+      peer2.on('close', function() {   done() });
       peer1.close();
     });
 
-    peer2.bind(54321, function() {
-      peer1.bind(54322, function() {
-        peer2.send(buffer, 0, buffer.length, 54321, 'localhost');
+    peer2.bind(54324, function() {
+      peer1.bind(54325, function() {
+        peer2.send(buffer, 0, buffer.length, 54324, 'localhost');
       });
     });
   });
 
-  it('should allow setting the broadcast option on a socket', function() {
-    waitsFor(helper.testComplete, "the dgram broadcast test", 5000);
-    var peer1 = dgram.createSocket('udp4');
+  xit('should allow setting the broadcast option on a socket', function(done) {
+     var peer1 = dgram.createSocket('udp4');
     var peer2 = dgram.createSocket('udp4');
 
     peer1.setBroadcast(true);
@@ -135,18 +129,17 @@ describe('The dgram module', function() {
     peer1.on('message', function(msg, rinfo) {
       expect(msg.toString()).toBe(buffer.toString());
       peer1.on('close', function() { peer2.close(); });
-      peer2.on('close', function() { helper.testComplete(true); });
+      peer2.on('close', function() {   done()});
       peer1.close();
     });
 
-    peer1.bind(54321, function() {
-      peer2.send(buffer, 0, buffer.length, 54321, '127.255.255.255');
-      peer2.send(buffer, 0, buffer.length, 54321, '255.255.255.255');
+    peer1.bind(54326, function() {
+      peer2.send(buffer, 0, buffer.length, 54326, '127.255.255.255');
+      peer2.send(buffer, 0, buffer.length, 54326, '255.255.255.255');
     });
   });
 
-  it('should add and drop multicast group membership', function() {
-    waitsFor(helper.testComplete, "the dgram broadcast test", 5000);
+  xit('should add and drop multicast group membership', function(done) {
     var buffer = new Buffer('steak frites');
     var groupAddress = '230.0.0.1';
     var received = false;
@@ -170,23 +163,20 @@ describe('The dgram module', function() {
 
       // send another message to the group and wait to see if
       // peer2 gets it - if not, end succesfully
-      peer2.send(buffer, 0, buffer.length, 54321, groupAddress, function() {
+      peer2.send(buffer, 0, buffer.length, 54327, groupAddress, function() {
         setTimeout(function() {
-          helper.testComplete(true);
+            done()
         }, 1000);
       });
     });
 
-    peer1.bind(54321, function() {
+    peer1.bind(54327, function() {
       peer1.addMembership(groupAddress);
       // send a message to the multicast group
-      peer2.send(buffer, 0, buffer.length, 54321, groupAddress);
+      peer2.send(buffer, 0, buffer.length, 54327, groupAddress);
     });
   });
 
-  beforeEach(function() {
-    helper.testComplete(false);
-  });
 });
 
 function unexpectedError(e) { console.log("ERROR: " + e); expect(true).toBe(false); /*this.fail(e);*/ }

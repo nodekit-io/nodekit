@@ -18,8 +18,6 @@
 */
 
 import Foundation
-import WebKit
-import JavaScriptCore
 
 protocol NKE_BrowserWindowProtocol: NKScriptExport {
 

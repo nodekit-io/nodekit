@@ -33,11 +33,9 @@
  *
  */
 
- import JavaScriptCore
-
 
  class NKC_SocketTCP: NSObject, NKScriptExport {
-
+    
     // NKScripting
 
     class func attachTo(context: NKScriptContext) {
@@ -84,7 +82,7 @@
         self._addr = nil
         self._socket = GCDAsyncSocket()
         super.init()
-        self._socket!.setDelegate(self, delegateQueue: dispatch_get_main_queue())
+        self._socket!.setDelegate(self, delegateQueue: NKScriptChannel.defaultQueue /* dispatch_get_main_queue() */)
     }
 
 
@@ -136,7 +134,7 @@
 
     func writeString(string: String) -> Void {
         let data = NSData(base64EncodedString: string, options: NSDataBase64DecodingOptions(rawValue: 0))
-        self._socket!.writeData(data, withTimeout: 10, tag: 1)
+        self._socket?.writeData(data, withTimeout: 10, tag: 1)
     }
 
     func close() -> Void {
@@ -155,10 +153,13 @@
 
  // DELEGATE METHODS FOR GCDAsyncSocket
  extension NKC_SocketTCP {
+    
+
+
     func socket(socket: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
         let socketConnection = NKC_SocketTCP(socket: newSocket, server: self)
         connections.addObject(socketConnection)
-        newSocket.setDelegate(socketConnection, delegateQueue: dispatch_get_main_queue())
+        newSocket.setDelegate(socketConnection, delegateQueue: NKScriptChannel.defaultQueue /* dispatch_get_main_queue() */)
 
         self.emitConnection(socketConnection)
         newSocket.readDataWithTimeout(30, tag: 1)
@@ -192,11 +193,11 @@
     }
 
     private func emitConnection(tcp: NKC_SocketTCP) -> Void {
-       _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments: ["connection", tcp])
+        self.NKscriptObject?.invokeMethod("emit", withArguments: ["connection", tcp], completionHandler: nil)
     }
 
     private func emitAfterConnect() {
-        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["afterConnect", ""])
+        self.NKscriptObject?.invokeMethod("emit", withArguments:["afterConnect", ""], completionHandler: nil)
     }
 
     private func emitData(data: NSData!) {

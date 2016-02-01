@@ -44,7 +44,7 @@ public class NKScriptValueNative: NKScriptValue {
         super.init(namespace: namespace, channel: channel, origin: nil)
     
         channel.instances[id] = self;
-        log("+E\(context!.NKid) Instance \(id) is bound to \(namespace)")
+        log("+E\(context!.NKid) Instance \(id) \(unsafeAddressOf(value)) is bound to \(namespace)")
     
         proxy = bindObject(value)
         syncCreationWithProperties()
@@ -53,7 +53,7 @@ public class NKScriptValueNative: NKScriptValue {
     init(namespace: String, channel: NKScriptChannel, object: AnyObject) {
         super.init(namespace: namespace, channel: channel, origin: nil)
         proxy = bindObject(object)
-
+        log("+E\(context!.NKid) Instance \(unsafeAddressOf(object)) is bound to \(namespace)")
     }
 
     init?(namespace: String, channel: NKScriptChannel, arguments: [AnyObject]?) {
@@ -84,6 +84,9 @@ public class NKScriptValueNative: NKScriptValue {
         proxy = bindObject(instance)
         syncProperties()
         promise?.invokeMethod("resolve", withArguments: [self], completionHandler: nil)
+        
+        log("+E\(context!.NKid) Instance \(unsafeAddressOf(instance)) created for \(namespace)")
+        
     }
 
     deinit {
@@ -189,33 +192,27 @@ public class NKScriptValueNative: NKScriptValue {
         }
     }
 
-    override public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!) throws -> AnyObject! {
-        if let selector = channel.typeInfo[method]?.selector {
-            return proxy.call(selector, withObjects: arguments)
-        }
-        return try super.invokeMethod(method, withArguments: arguments)
-    }
-
-     override public func  invokeMethod(method: String!, withArguments arguments: [AnyObject]!, error: NSErrorPointer) -> AnyObject! {
-        if let selector = channel.typeInfo[method]?.selector {
-            return proxy.call(selector, withObjects: arguments)
-        }
-        return super.invokeMethod(method, withArguments: arguments, error: error)
-    }
-
-    override public func valueForProperty(property: String!) -> AnyObject? {
-        if let getter = channel.typeInfo[property]?.getter {
-            return proxy.call(getter, withObjects: nil)
-        }
-        return super.valueForProperty(property)
-    }
-    override public func setValue(value: AnyObject!, forProperty property: String!) {
+     override public func setValue(value: AnyObject!, forProperty property: String!) {
         if channel.typeInfo[property]?.setter != nil {
             proxy[property] = value
         } else {
             assert(channel.typeInfo[property] == nil, "Property '\(property)' is readonly")
             super.setValue(value, forProperty: property)
         }
+    }
+    
+    override public func valueForProperty(property: String!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+        if let getter = channel.typeInfo[property]?.getter {
+            completionHandler?(proxy.call(getter, withObjects: nil), nil)
+        }
+        super.valueForProperty(property, completionHandler: completionHandler)
+    }
+    
+    public func valueForPropertyNative(property: String!) -> AnyObject? {
+        if let getter = channel.typeInfo[property]?.getter {
+            return proxy.call(getter, withObjects: nil)
+        }
+        return nil
     }
 
     // KVO for syncing properties

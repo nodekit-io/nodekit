@@ -39,23 +39,12 @@
         }
     }
 
-    func log(msg: String) -> Void {
-        nklog(msg)
+    func log(msg: AnyObject) -> Void {
+        nklog(msg as? String ?? "INVALID LOG")
     }
 
     func error(msg: String) -> Void {
         nklog(msg)
     }
 
-    func nextTick(callBack: NKScriptValue) -> Void {
-        dispatch_async(dispatch_get_main_queue(), {() -> Void in
-            callBack.callWithArguments([])
-        })
-    }
-
-    func setTimeout(delayInSeconds: Int, callBack: NKScriptValue) -> Void {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(delayInSeconds) * Int64(NSEC_PER_SEC) ), dispatch_get_main_queue(), {() -> Void in
-            callBack.callWithArguments([])
-        })
-    }
- }
+}

@@ -16,9 +16,7 @@
  * limitations under the License.
  */
 
- import JavaScriptCore
-
- class NKC_SocketUDP: NSObject, NKScriptExport {
+  class NKC_SocketUDP: NSObject, NKScriptExport {
 
     class func attachTo(context: NKScriptContext) {
          context.NKloadPlugin(NKC_SocketUDP.self, namespace: "io.nodekit.platform.UDP", options: [String:AnyObject]())
@@ -192,7 +190,7 @@
     private func emitRecv(data: NSData!, host: String?, port: Int) {
         guard let host: String = host! else {return; }
         let str: String = data.base64EncodedStringWithOptions([])
-        _ = try? self.NKscriptObject?.invokeMethod("emit", withArguments:["recv", str, host, port ])
+        self.NKscriptObject?.invokeMethod("emit", withArguments:["recv", str, host, port ], completionHandler: nil)
     }
 
     private func setSocketIPOptions(option: Int32, setting: Int) -> Void {

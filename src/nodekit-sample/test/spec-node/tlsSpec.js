@@ -8,7 +8,6 @@ describe('tls', function(){
   var serverCert;
 
   beforeEach( function() {
-    helper.testComplete(false);
     serverKey  = fs.readFileSync( './keys/RSA/server-key.pem');
     serverCert = fs.readFileSync( './keys/RSA/server-cert.pem');
 
@@ -26,9 +25,8 @@ describe('tls', function(){
     })
   });
 
-  it( 'should allow creation of a server that can listen with key and cert', function() {
-    waitsFor(helper.testComplete, "server to be listening", 5000);
-    var server = tls.createServer( {
+  it( 'should allow creation of a server that can listen with key and cert', function(done) {
+     var server = tls.createServer( {
       key: serverKey,
       passphrase: 'iamserver',
       cert: serverCert,
@@ -38,12 +36,11 @@ describe('tls', function(){
 
     server.listen(8181, function() {
       server.close();
-      helper.testComplete(true);
+     done()
     });
   });
 
-  it ('should allow a secure client connection', function() {
-    waitsFor(helper.testComplete, "server to receive connection", 5000);
+  it ('should allow a secure client connection', function(done) {
     var server = tls.createServer( {
       key: serverKey,
       passphrase: 'iamserver',
@@ -54,7 +51,7 @@ describe('tls', function(){
         expect( b.toString() ).toBe( "howdy" );
         connection.destroy();
         server.close( function() {
-          helper.testComplete(true);
+          done()
         });
       })
     });
@@ -70,8 +67,7 @@ describe('tls', function(){
     })
   });
 
-  it ('should allow a secure authenticated client connection', function() {
-    waitsFor(helper.testComplete, "server to receive connection", 5000);
+  it ('should allow a secure authenticated client connection', function(done) {
     var server = tls.createServer( {
       key: serverKey,
       passphrase: 'iamserver',
@@ -85,7 +81,7 @@ describe('tls', function(){
         expect( b.toString() ).toBe( "howdy" );
         connection.destroy();
         server.close( function() {
-          helper.testComplete(true);
+         done();
         });
       })
     });

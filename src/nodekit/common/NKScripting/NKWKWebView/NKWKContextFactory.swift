@@ -33,9 +33,9 @@ extension NKScriptContextFactory {
              webView.NKgetScriptContext(id, options: options, delegate: cb)
 
             var item = Dictionary<String, AnyObject>()
+            item["WKWebView"] = webView
             NKScriptContextFactory._contexts[id] = item
-            item["WKWebView"] = self
-
+        
             webView.loadHTMLString("<HTML><BODY>NodeKit WKWebView: VM \(id)</BODY></HTML>", baseURL: NSURL(string: "about: blank"))
   //      }
     }

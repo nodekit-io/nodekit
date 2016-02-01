@@ -8,12 +8,10 @@ describe("crypto pbkdf2 functions", function() {
     expect( key.toString('base64') ).toBe( '8AavpPHN8uxdtEmy+Vl7ksMHtPf8fBgpvsvvCZtyKXyExKdSabsRdGrpapTrvotcOPy0O1RR5/I4x04IZJhNZA==' );
   })
 
-  it( "should produce the same key as node, in its callback form", function() {
-    helper.testComplete(false);
-    waitsFor(helper.testComplete, "the callback should receive key" );
-    var key = crypto.pbkdf2( "I like tacos", "beef", 10, 64, function(err, key) {
+  it( "should produce the same key as node, in its callback form", function(done) {
+      var key = crypto.pbkdf2( "I like tacos", "beef", 10, 64, function(err, key) {
       expect( key.toString('base64') ).toBe( '8AavpPHN8uxdtEmy+Vl7ksMHtPf8fBgpvsvvCZtyKXyExKdSabsRdGrpapTrvotcOPy0O1RR5/I4x04IZJhNZA==' );
-      helper.testComplete(true);
+       done()
     } );
   })
 

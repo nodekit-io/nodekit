@@ -17,11 +17,10 @@
 */
 
 import Foundation
-import WebKit
-import JavaScriptCore
 import Cocoa
+import WebKit
 
-protocol SamplePluginProtocol: NKScriptExport, JSExport {
+protocol SamplePluginProtocol: NKScriptExport {
     func logconsole(text: AnyObject?) -> Void
     func alertSync(text: AnyObject?) -> String
 }
@@ -53,7 +52,7 @@ class SamplePlugin: NSObject, SamplePluginProtocol {
     }
 }
 
-
+/*
 
 extension WKWebView: WKUIDelegate {
     private func _alert(title title: String?, message: String?) {
@@ -75,4 +74,4 @@ extension WKWebView: WKUIDelegate {
         completionHandler("hello from native;  you sent: " + prompt)
 
     }
-}
+} */

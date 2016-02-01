@@ -42,11 +42,7 @@ extension NKScriptContextFactory {
             let id = NKScriptContextFactory.sequenceNumber
             webView.NKgetScriptContext(id, options: options, delegate: cb)
 
-            var item = Dictionary<String, AnyObject>()
-            item["WebView"] = webView
-            NKScriptContextFactory._contexts[id] = item
-
-            webView.mainFrame.loadHTMLString("<HTML><HEAD><script>// nodekit</script></HEAD><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>", baseURL: NSURL(string: "nodekit: core"))
+            webView.mainFrame.loadHTMLString("<HTML><HEAD><script>// nodekit</script></HEAD><BODY>NodeKit UIWebView: JavaScriptCore VM \(id)</BODY></HTML>",baseURL: NSURL(string: "nodekit: core"))
         }
 
         if (NSThread.isMainThread()) {

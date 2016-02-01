@@ -14,15 +14,12 @@ function Readable() {
 util.inherits(Readable, stream.Stream);
 
 describe("Stream pipe event", function() {
-  it("should be emitted on pipe()", function() {
-    waitsFor(function() {
-      return passed;
-    }, 3000);
-    var passed = false;
+  it("should be emitted on pipe()", function(done) {
+
 
     var w = new Writable();
     w.on('pipe', function(src) {
-      passed = true;
+      done()
     });
     var r = new Readable();
     r.pipe(w);

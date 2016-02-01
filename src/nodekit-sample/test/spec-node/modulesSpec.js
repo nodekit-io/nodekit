@@ -1,7 +1,5 @@
 var helper = require('./specHelper');
 
-helper.testComplete = function() {};
-
 /*var System    = java.lang.System;
 var userDir   = System.getProperty('user.dir');
 var userHome  = System.getProperty('user.home');*/
@@ -40,7 +38,7 @@ var matchers = {
       return false;
     }
 
-    if ( (typeof mod.children) != 'object' ) {
+    if ((typeof mod.children) != 'object' ) {
       this.message = function(){ return 'Expected typeof mod.childrento be "object" byt was ' + ( typeof mod.children); };
       return false;
     }
@@ -51,34 +49,25 @@ var matchers = {
 
 describe( "modules", function() {
 
-  beforeEach(function() {
- //   this.addMatchers( matchers );
-    helper.testComplete(false);
-  });
-
   it("should have mod.dirname", function() {
     var mod = require('./somemodule');
     expect(mod.dirname).not.toBe(null);
     expect(mod.dirname).not.toBe(undefined);
-    helper.testComplete(true);
   });
 
   it("should have locate module's index.js", function() {
     var mod = require('./amodule');
     expect(mod.flavor).toBe("nacho cheese");
-    helper.testComplete(true);
   });
 
   it("should find module's package.json", function() {
     var mod = require('./somemodule');
     expect(mod.flavor).toBe("cool ranch");
-    helper.testComplete(true);
-  });
+     });
 
   it("should find an load json files", function() {
     json = require('./conf.json');
     expect(json.somekey).toBe("somevalue");
-    helper.testComplete(true);
   });
 
   it("should properly isolate", function() {
@@ -89,7 +78,6 @@ describe( "modules", function() {
     } catch (err) {
       expect(err instanceof ReferenceError).toBe(true);
     }
-    helper.testComplete(true);
-  })
+   })
 
 });

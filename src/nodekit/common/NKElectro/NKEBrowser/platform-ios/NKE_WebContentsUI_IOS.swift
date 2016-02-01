@@ -19,8 +19,6 @@
 
 import Foundation
 import WebKit
-import JavaScriptCore
-
 
 class NKE_WebContentsUI: NKE_WebContentsBase {
 

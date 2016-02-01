@@ -56,6 +56,7 @@ function getGid() {
  * @constructor
  */
 function Item() {
+    
 
   var now = Date.now();
 
@@ -316,9 +317,7 @@ Item.prototype.getStats = function() {
     atime: this.getATime(),
     mtime: this.getMTime(),
     ctime: this.getCTime(),
-  isFile: this.isFile,
-  isDirectory: this.isDirectory
-  };
+    };
 };
 
 

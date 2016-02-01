@@ -2,104 +2,92 @@ var helper    = require('./specHelper');
 
 describe("The timers module", function() {
 
-  beforeEach(function() {
-    helper.testComplete(false);
-  });
-
-  it('should pass testSetTimeout', function() {
+  it('should pass testSetTimeout', function(done) {
     var x = 0;
-    waitsFor(helper.testComplete, "the setTimeout test to complete", 3000);
     setTimeout(function() {
       x = x+1;
     }, 10);
     setTimeout(function() {
       expect(x).toBe(1);
-      helper.testComplete(true);
+      done()
     }, 1000);
   });
 
-  it('should pass testSetTimeoutWaits', function() {
+  it('should pass testSetTimeoutWaits', function(done) {
     var x = 0;
-    waitsFor(helper.testComplete, "the setTimeoutWaits test to complete", 3000);
-    setTimeout(function() {
+     setTimeout(function() {
       x = x+1;
     }, 300);
     setTimeout(function() {
       expect(x).toBe(1);
-      helper.testComplete(true);
+                 done()
     }, 2000);
   });
 
-  it('should pass testSetTimeoutPassesArgs', function() {
+  it('should pass testSetTimeoutPassesArgs', function(done) {
     var x = 0;
-    waitsFor(helper.testComplete, "the setTimeoutPassesArgs test to complete", 3000);
     setTimeout(function(y, z) {
       x = z+y;
     }, 1, 5, 45);
     setTimeout(function() {
       expect(x).toBe(50);
-      helper.testComplete(true);
+                done()
     }, 100);
   });
 
-  it('should pass testClearTimeout', function() {
+  it('should pass testClearTimeout', function(done) {
     var x = 0;
-    waitsFor(helper.testComplete, "the clearTimeout test to complete", 3000);
     var timerId = setTimeout(function(y) {
       x = x+y;
     }, 200, 5);
     clearTimeout(timerId);
     setTimeout(function() {
       expect(x).toBe(0);
-      helper.testComplete(true);
+                done()
     }, 200);
   });
 
-  it('should pass testSetInterval', function() {
+  it('should pass testSetInterval', function(done) {
     var x = 0;
-    waitsFor(helper.testComplete, "the setInterval test to complete", 3000);
-    var id = setInterval(function() {
-      console.log( "interval fire: " + java.lang.Thread.currentThread() );
+var id = setInterval(function() {
+      console.log( "interval fire: " );
       x = x+1;
       console.log( "interval x=" + x );
-    }, 300);
+    }, 1000);
     setTimeout(function() {
-      console.log( "timeout fire: " + java.lang.Thread.currentThread() );
+      console.log( "timeout fire: "  );
       console.log( "timeout x=" + x );
       expect(x).toBeGreaterThan(1);
       clearInterval(id);
-      helper.testComplete(true);
+                 done()
     }, 3000 );
   });
 
-  it('should pass testClearInterval', function() {
+  it('should pass testClearInterval', function(done) {
     var x = 0;
-    waitsFor(helper.testComplete, "the clearInterval test to complete", 3000);
     var id = setInterval(function() {
       x = x+1;
     }, 500);
     clearInterval(id);
     setTimeout(function() {
       expect(x).toBe(0);
-      helper.testComplete(true);
+                 done()
     }, 100);
   });
 
-  it('should return opaque timer thingies that can be ref/unrefed', function() {
+  it('should return opaque timer thingies that can be ref/unrefed', function(done) {
     var x = 0;
-    waitsFor(helper.testComplete, "the test to complete", 3000);
-    var ref = setInterval(function() {
+    var ref = setInterval(function(done) {
       x = x+1;
     }, 500);
     expect(ref.ref).toBeTruthy();
     expect(ref.unref).toBeTruthy();
     ref.unref();
-    helper.testComplete(true);
+      done()
   });
 
-  it('should have a setImmediate function', function() {
+  it('should have a setImmediate function', function(done) {
     var x = 0;
-    waitsFor(function() { return x === 2; }, 'the test to complete', 3000);
     setImmediate(function(y) {
       expect(x).toBe(0);
       expect(y).toBe(1);
@@ -109,6 +97,7 @@ describe("The timers module", function() {
       expect(x).toBe(1);
       expect(z).toBe(2);
       x = z;
+                 done()
     }, 2);
   });
 });

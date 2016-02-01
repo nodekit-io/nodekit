@@ -18,8 +18,6 @@
 */
 
 import Foundation
-import WebKit
-import JavaScriptCore
 
 extension NKE_App: NKScriptExport {
 

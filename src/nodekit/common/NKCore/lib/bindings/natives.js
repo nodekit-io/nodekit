@@ -45,7 +45,7 @@ var source = {};
 	'constants',
   	/* 'crypto', ** SEE REPLACEMENT SECTION BELOW ** */
 	'dgram',
-	/* 'dns', ** SEE REPLACEMENT SECTION BELOW ** */
+	'dns', /**  HANDLED BY cares_wrap ** */
 	'domain',
 	'events',
 	'freelist',
@@ -64,7 +64,7 @@ var source = {};
 	'stream',
 	'string_decoder',
 	'sys',
-	'timers',
+    'timers',
 	'tls',
    'tty',
 	'url',
@@ -77,7 +77,7 @@ var source = {};
 
 /* CUSTOM NODE.JS API REPLACEMENTS*/
 [
-	'buffer', 'dns', 'crypto'
+	'buffer', /* 'dns', alternative to cares_wrap */ 'crypto'
  ].forEach(function (name) {
            source[name] = getSource('lib/builtin-replacements/' + name );
            });

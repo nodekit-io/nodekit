@@ -49,7 +49,7 @@ function TCP(tcp) {
     if ((tcp !== null)  && (typeof(tcp) !== 'undefined'))
     {
         this._stream = tcp.stream;
-        this._remoteAddress = tcp.remoteAddressSync();
+      //  this._remoteAddress = tcp.remoteAddressSync();
     } else
     {
         this._remoteAddress = null;
@@ -78,7 +78,7 @@ util.inherits(TCP, StreamWrap);
 
 Object.defineProperty(TCP.prototype, '_fd', {
                       get: function() {
-                      return this._tcp.fdSync;
+                      return null // this._tcp.fdSync;
                       }
                       });
 

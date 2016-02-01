@@ -17,7 +17,6 @@
 */
 
 import Foundation
-import JavaScriptCore
 
 public enum NKEngineType: Int {
     case JavaScriptCore  = 0
@@ -41,8 +40,8 @@ public class NKScriptContextFactory {
 
         switch engine {
         case .JavaScriptCore:
-            self.createContextJavaScriptCore(options, delegate: cb)
-        case .Nitro:
+           self.createContextJavaScriptCore(options, delegate: cb)
+         case .Nitro:
             self.createContextWKWebView(options, delegate: cb)
         case .UIWebView:
             self.createContextUIWebView(options, delegate: cb)

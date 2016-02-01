@@ -17,7 +17,6 @@
 */
 
 import Foundation
-import JavaScriptCore
 
 class NKE_Protocol: NSObject, NKScriptExport {
    static var registeredSchemes: Dictionary<String, NKScriptValue> = Dictionary<String, NKScriptValue>()
@@ -46,7 +45,7 @@ class NKE_Protocol: NSObject, NKScriptExport {
         let scheme = scheme.lowercaseString
         NKE_Protocol.registeredSchemes[scheme] = handler
         NKE_ProtocolCustom.registeredSchemes.insert(scheme)
-        completion?.callWithArguments([])
+        completion?.callWithArguments([], completionHandler: nil)
     }
 
     func unregisterCustomProtocol(scheme: String, completion: NKScriptValue?) -> Void {
@@ -56,7 +55,8 @@ class NKE_Protocol: NSObject, NKScriptExport {
             NKE_Protocol.registeredSchemes.removeValueForKey(scheme)
         }
         NKE_ProtocolCustom.registeredSchemes.remove(scheme)
-        completion?.callWithArguments([])
+        completion?.callWithArguments([], completionHandler: nil)
+
     }
 
     class func _emitRequest(req: Dictionary<String, AnyObject>, nativeRequest: NKE_ProtocolCustom) -> Void {
@@ -65,7 +65,8 @@ class NKE_Protocol: NSObject, NKScriptExport {
 
         let handler = NKE_Protocol.registeredSchemes[scheme]
         NKE_Protocol.activeRequests[id] = nativeRequest
-        handler?.callWithArguments([req])
+        handler?.callWithArguments([req], completionHandler: nil)
+
     }
 
     class func _cancelRequest(nativeRequest: NKE_ProtocolCustom) -> Void {
@@ -88,7 +89,7 @@ class NKE_Protocol: NSObject, NKScriptExport {
 
     func isProtocolHandled(scheme: String, callback: NKScriptValue) -> Void {
         let isHandled: Bool = (NKE_Protocol.registeredSchemes[scheme] != nil)
-        callback.callWithArguments([isHandled])
+        callback.callWithArguments([isHandled], completionHandler: nil)
     }
 }
 

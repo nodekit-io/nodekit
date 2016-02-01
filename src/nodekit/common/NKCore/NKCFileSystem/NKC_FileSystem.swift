@@ -74,9 +74,9 @@ class NKC_FileSystem: NSObject, NKScriptExport {
     func statAsync(module: String, completionHandler: NKScriptValue) -> Void {
         let ret = self.statSync(module)
         if (ret.count > 0) {
-            completionHandler.callWithArguments([NSNull(), ret])
+            completionHandler.callWithArguments([NSNull(), ret], completionHandler: nil)
         } else {
-            completionHandler.callWithArguments(["stat error"])
+            completionHandler.callWithArguments(["stat error"], completionHandler: nil)
         }
     }
 
@@ -86,7 +86,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
     }
 
     func getDirectoryAsync(module: String, completionHandler: NKScriptValue) -> Void {
-        completionHandler.callWithArguments([NSNull(), self.getDirectorySync(module)])
+        completionHandler.callWithArguments([NSNull(), self.getDirectorySync(module)], completionHandler: nil)
     }
 
     func getDirectorySync(module: String) -> [String] {
@@ -102,7 +102,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
 
 
     func getContentAsync(storageItem: Dictionary<String, AnyObject>, completionHandler: NKScriptValue) -> Void {
-          completionHandler.callWithArguments([NSNull(), self.getContentSync(storageItem)])
+          completionHandler.callWithArguments([NSNull(), self.getContentSync(storageItem)], completionHandler: nil)
     }
 
     func getContentSync(storageItem: Dictionary<String, AnyObject>) -> String {
@@ -126,7 +126,7 @@ class NKC_FileSystem: NSObject, NKScriptExport {
     }
 
     func writeContentAsync(storageItem: Dictionary<String, AnyObject>, str: String, completionHandler: NKScriptValue) {
-        completionHandler.callWithArguments([ NSNull(),  self.writeContentSync(storageItem, str: str)])
+        completionHandler.callWithArguments([ NSNull(),  self.writeContentSync(storageItem, str: str)], completionHandler: nil)
     }
 
     func getSourceSync(module: String) -> String {
@@ -137,16 +137,17 @@ class NKC_FileSystem: NSObject, NKScriptExport {
           return ""
         }
 
-        let originalEncoding: UnsafeMutablePointer<UInt> = nil
-
-        var content: String?
+       var data: NSData?
         do {
-            content = try String(contentsOfFile: path, usedEncoding: originalEncoding)
+            data = try NSData(contentsOfFile: path as String, options: NSDataReadingOptions(rawValue: 0))
         } catch _ {
-            content = nil
+            log("!ERROR reading file")
+            
+            return ""
         }
+        
+        return (data!.base64EncodedStringWithOptions(NSDataBase64EncodingOptions(rawValue: 0)))
 
-        return content!
     }
 
     func mkdirSync (path: String) -> Bool {
