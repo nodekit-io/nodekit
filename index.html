@@ -28,7 +28,7 @@
         </ul>
       </header>
       <section>
-        <p><img src="https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKNodeKit.png?v02" alt="http://nodekit.io">
+        <p><img src="https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/banner.png?v02" alt="http://nodekit.io">
 <em>{NK} NodeKit</em> is the universal, open-source, embedded engine that provides a full Node.js instance inside desktop and mobile applications for OS X, iOS, Android, and Windows. </p>
 
 <p>For application developers, the backend can be written in pure Node javascript code, the front-end in the architecture of your choice including but not limited to Atom Electron API, Facebook React, Express, etc.)</p>
@@ -43,11 +43,24 @@
 <p><a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible"></a></p>
 
 <h2>
-<a id="sample-application" class="anchor" href="#sample-application" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Application</h2>
+<a id="sample-application-using-frameworks" class="anchor" href="#sample-application-using-frameworks" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sample Application (using Frameworks)</h2>
 
 <div class="highlight highlight-source-shell"><pre>git clone https://github.com/nodekit-io/nodekit-sample.git
 <span class="pl-c1">cd</span> nodekit-sample
 carthage update</pre></div>
+
+<h2>
+<a id="tests-and-sample-application-full-build" class="anchor" href="#tests-and-sample-application-full-build" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tests and Sample Application (Full Build)</h2>
+
+<p>Tests are directly embedded as a {NK} NodeKit application.  One of the the nice things about {NK} NodeKit being in pure Swift 2.x is that it has no external dependencies.  </p>
+
+<div class="highlight highlight-source-shell"><pre>git clone https://github.com/nodekit-io/nodekit.git</pre></div>
+
+<p>Open <code>src/nodekit.xcodeproj</code> in Xcode.  You will see 4 build targets, 2 for the frameworks (on iOS and OSX respectively) and 2 for the sample app. </p>
+
+<p>Build the nodekit-Mac-sample for My Mac or the nodekit-iOS-sample for the iOS Simulator (e.g., iPhone 6) and run.    All the Node.js tests should run and you should see the results as a graphical chart.  </p>
+
+<p>To switch to the sample app, change the <code>package.json</code> main entry to point to <code>app/sample/index.js</code> instead of <code>test/index.js</code></p>
 
 <h2>
 <a id="simple-configuration" class="anchor" href="#simple-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple Configuration</h2>
@@ -67,10 +80,10 @@ NKNodeKit<span class="pl-k">.</span><span class="pl-c1">start</span>();</pre></d
 
 <p>The sample app includes a built in web server for serving static and dynamic content; on iOS this can be an http server over a localhost port, but on OSX you may want to use no ports at all and just use built in protocol server.</p>
 
-<p>Build in XCode for both iOS and Mac targets.</p>
+<p>Build in Xcode for both iOS and Mac targets.</p>
 
 <h2>
-<a id="three-main-components-in-nk-scripting" class="anchor" href="#three-main-components-in-nk-scripting" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Three Main Components in {NK} Scripting</h2>
+<a id="three-main-components-in-nk-nodekit" class="anchor" href="#three-main-components-in-nk-nodekit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Three Main Components in {NK} NodeKit</h2>
 
 <p><a href="https://github.com/nodekit-io/nodekit/blob/master/docs/NKScripting/readme.md"><img src="https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKScripting.png?v01" alt="{NK} Scripting"></a></p>
 
@@ -140,6 +153,7 @@ Node.js 4.x/5.x updates (we run a very stable 0.12.x for broadest package compat
 <a id="news" class="anchor" href="#news" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>News</h2>
 
 <ul>
+<li>(February 2016) Removed the last of the Objective-C and C code;  the entire framework on Darwin platforms is now pure Swift 2.x including the rewritten POSIX sockets layer that makes full use of GCD, is non blocking, and contains no external dependencies;  we may end up releasing as <code>{NK} Sockets</code> as while there are lots of good Objective-C libraries, there are fewer Swift versions (and almost none without a tiny C dependency which we've eliminated) and we had to cobble this together from a few complementary sources. </li>
 <li>(January 2016) Updated to use all core darwin JavaScript Engines, harmonized the API to industry standard (e.g, Electron subset for front end, JavaScriptCore like for back end) and refactored out {NK} Scripting and {NK} Electro and associated docs in the process</li>
 <li>(December 2015) Updated for Swift 2.0 and refactored for iOS and OS X.</li>
 <li>Master branch contains Node.js v0.12.x (working).<br>
