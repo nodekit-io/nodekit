@@ -312,8 +312,6 @@
 		E488A12D1C1F78890041DFCF /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = "nodekit-sample/platform-ios/Info.plist"; sourceTree = "<group>"; };
 		E488A1311C1F78FB0041DFCF /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = "Launch Screen.storyboard"; path = "nodekit-sample/platform-ios/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		E48C5E241C3DBF25006CEF53 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = DEVELOPER_DIR; };
-		E48C5E531C3F203C006CEF53 /* NodeKit-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NodeKit-Bridging-Header.h"; sourceTree = "<group>"; };
-		E48C5E541C3F203C006CEF53 /* NodeKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NodeKit.h; sourceTree = "<group>"; };
 		E48C5E5D1C3F203C006CEF53 /* NKJSContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKJSContext.swift; sourceTree = "<group>"; };
 		E48C5E5E1C3F203C006CEF53 /* NKJSCScript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKJSCScript.swift; sourceTree = "<group>"; };
 		E48C5E5F1C3F203C006CEF53 /* NKScriptValueNative.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NKScriptValueNative.swift; sourceTree = "<group>"; };
@@ -479,7 +477,6 @@
 				E4A83C071C49939700514698 /* NKCore */,
 				E4A838351C46B7C700514698 /* NKElectro */,
 				E48C5E5A1C3F203C006CEF53 /* NKScripting */,
-				E48C5E521C3F203C006CEF53 /* objective-c */,
 				E4C253E01C20B481001B3388 /* www */,
 			);
 			name = common;
@@ -535,16 +532,6 @@
 				E488A0E31C1F76510041DFCF /* Assets.xcassets */,
 			);
 			name = "platform-darwin";
-			sourceTree = "<group>";
-		};
-		E48C5E521C3F203C006CEF53 /* objective-c */ = {
-			isa = PBXGroup;
-			children = (
-				E48C5E531C3F203C006CEF53 /* NodeKit-Bridging-Header.h */,
-				E48C5E541C3F203C006CEF53 /* NodeKit.h */,
-			);
-			name = "objective-c";
-			path = "nodekit/common/objective-c";
 			sourceTree = "<group>";
 		};
 		E48C5E5A1C3F203C006CEF53 /* NKScripting */ = {
