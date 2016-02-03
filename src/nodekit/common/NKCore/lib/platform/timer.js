@@ -18,3 +18,5 @@
  */
 
 var Timer = io.nodekit.platform.Timer
+
+this._windowTimeout = this.setTimeout

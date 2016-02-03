@@ -54,15 +54,15 @@ class NKE_IpcRenderer: NSObject, NKE_IpcProtocol {
     // Replies to main are sent directly to the webContents window that sent the original message
     func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
         guard let window = _window else {return;}
-        let payload = NKE_IPC_Event(sender: _id, channel: channel, replyId: replyId, arg: [result])
-        window._events.emit("nk.IPCReplytoMain", payload)
+     //   let payload = NKE_IPC_Event(sender: _id, channel: channel, replyId: replyId, arg: [result])
+        window._events.emit("nk.IPCReplytoMain", (sender: _id, channel: channel, replyId: replyId, arg: [result]))
     }
 }
 
 extension NKE_IpcRenderer: NKScriptExport {
 
     static func attachTo(context: NKScriptContext) {
-        let principal = NKE_IpcRenderer()
+        let principal = NKE_IpcRenderer(id: context.NKid)
         context.NKloadPlugin(principal, namespace: "io.nodekit.electro.ipcRenderer", options: [String:AnyObject]())
     }
 

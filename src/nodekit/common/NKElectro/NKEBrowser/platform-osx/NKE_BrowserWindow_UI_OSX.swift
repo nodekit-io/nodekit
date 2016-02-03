@@ -141,11 +141,11 @@ extension NKE_BrowserWindow: WebFrameLoadDelegate {
 
     func webView(sender: WebView!, didFailProvisionalLoadWithError error: NSError!, forFrame frame: WebFrame!) {
                  if (frame !== sender.mainFrame) {return;}
-            self._events.emit("did-fail-loading", error.description)
+            self._events.emit("did-fail-loading", (self._id,  error.description))
     }
 
     func webView(sender: WebView!, didFailLoadWithError error: NSError!, forFrame frame: WebFrame!) {
             if (frame !== sender.mainFrame) {return;}
-            self._events.emit("did-fail-loading", error.description)
+            self._events.emit("did-fail-loading", (self._id,  error.description))
     }
 }

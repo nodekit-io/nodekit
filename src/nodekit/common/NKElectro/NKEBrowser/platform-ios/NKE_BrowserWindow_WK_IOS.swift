@@ -96,12 +96,12 @@ extension NKE_BrowserWindow: WKNavigationDelegate {
     func webView(webView: WKWebView,
         didFailNavigation navigation: WKNavigation!,
         withError error: NSError) {
-            self._events.emit("did-fail-loading", error.description)
+            self._events.emit("did-fail-loading", (self._id,  error.description))
     }
 
     func webView(webView: WKWebView,
         didFailProvisionalNavigation navigation: WKNavigation!,
         withError error: NSError) {
-            self._events.emit("did-fail-loading", error.description)
+            self._events.emit("did-fail-loading", (self._id,  error.description))
     }
 }

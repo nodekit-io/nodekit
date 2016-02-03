@@ -78,6 +78,7 @@ class NKC_Timer: NSObject, NKScriptExport {
         self._nsTimer = nil
         self._handler = nil
         self._repeatPeriod = 0
+        (self.NKscriptObject as? NKScriptValueNative)?.invokeMethod("dispose", withArguments: [], completionHandler: nil)
     }
 
 

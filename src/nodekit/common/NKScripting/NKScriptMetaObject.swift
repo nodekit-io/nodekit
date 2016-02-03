@@ -255,3 +255,4 @@ internal func instanceMethods(forProtocol aProtocol: Protocol) -> Set<Selector> 
     }
     return selectors
 }
+

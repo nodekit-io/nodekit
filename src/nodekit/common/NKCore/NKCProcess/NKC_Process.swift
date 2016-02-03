@@ -118,8 +118,7 @@
             resPaths = resourcePath.stringByAppendingString(":").stringByAppendingString(appPath).stringByAppendingString(":").stringByAppendingString(appModulePath).stringByAppendingString(":").stringByAppendingString(nodekitPath)
         } else {
             if (!fileManager.fileExistsAtPath(embeddedPackage)) {
-                print("Missing package.json in main bundle /Resources/app")
-                print(resourcePath)
+                log("!Missing package.json in main bundle /Resources/app for \(resourcePath)")
                 return
             }
             process["workingDirectory"] = webPath

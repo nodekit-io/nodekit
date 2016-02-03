@@ -49,7 +49,11 @@ function TCP(tcp) {
     if ((tcp !== null)  && (typeof(tcp) !== 'undefined'))
     {
         this._stream = tcp.stream;
-      //  this._remoteAddress = tcp.remoteAddressSync();
+        this._remoteAddress = tcp.remoteAddressSync();
+        this._tcp = tcp
+        this._onEnd = TCP.prototype._onEnd.bind(this);
+        this._tcp.on( "end", this._onEnd);
+        
     } else
     {
         this._remoteAddress = null;
@@ -57,8 +61,9 @@ function TCP(tcp) {
         this._onConnection = TCP.prototype._onConnection.bind(this);
         this._onAfterConnect = TCP.prototype._onAfterConnect.bind(this);
         this._onEnd = TCP.prototype._onEnd.bind(this);
-        
+       
         this._tcp.on( "end", this._onEnd);
+        
         
         // Server
         this._tcp.on( "connection", this._onConnection);
@@ -83,25 +88,24 @@ Object.defineProperty(TCP.prototype, '_fd', {
                       });
 
 TCP.prototype._onEnd = function() {
-    this.dispose()
-};
-
-TCP.prototype.dispose = function TCP() {
     if (this._tcp)
     {
+        if (this._tcp.removeListener)
+        {
         this._tcp.removeListener( "end", this._onEnd);
         this._tcp.removeListener( "connection", this._onConnection);
         this._tcp.removeListener( "afterConnect", this._onAfterConnect);
+        this._tcp.stream = null;
+        this._tcp.dispose();
+        }
         this._onEnd = null;
         this._onConnection = null;
         this._onAfterConnect = null;
-        this._tcp.stream = null;
-        this._tcp.dispose();
-        this._tcp = null;
+         this._tcp = null;
         this._stream = null;
         this._remoteAddress = null;
     }
-}
+};
 
 // ----------------------------------------
 // Server
@@ -115,11 +119,12 @@ TCP.prototype._onConnection = function(stream) {
 // ----------------------------------------
 // Client
 // ----------------------------------------
-TCP.prototype._onAfterConnect = function() {
+TCP.prototype._onAfterConnect = function(host, port) {
     var status = 0;
     var handle = this;
     var readable = true;
     var writable = true;
+    this._remoteAddress = {address: host, port: port};
     
     if ( this._req ) {
         var oncomplete = this._req.oncomplete;
@@ -149,7 +154,7 @@ TCP.prototype.bind6 = function(addr,port) {
 };
 
 TCP.prototype.bind = function(addr, port) {
-    this._tcp.bind( addr, port);
+    this._tcp.bindSync( addr, port);
 };
 
 TCP.prototype.listen = function(backlog) {
@@ -166,14 +171,14 @@ module.exports.TCP = TCP;
 
 function NativeStream(source) {
     Duplex.call( this, { encoding: 'base64'});
-    
-    this._source = source;
+    this.id = source.$instanceID
+    this._sourcenative = source;
     this._onEnd =NativeStream.prototype.onSourceEnd.bind(this);
     this._onData = NativeStream.prototype.onSourceData.bind(this);
     
     source.on('end', this._onEnd);
     source.on('data', this._onData);
-};
+  };
 
 util.inherits(NativeStream, Duplex);
 
@@ -190,40 +195,39 @@ NativeStream.prototype._read = function NativeStreamRead(size) {
 }
 
 NativeStream.prototype.close = function NativeStreamClose() {
-     if (this._source)
+    
+     if (this._sourcenative && this._sourcenative.close)
     {
-        this._source.close();
+        this._sourcenative.close();
     };
-    this.dispose();
-}
-
-NativeStream.prototype.dispose = function NativeStreamDispose() {
-    if (this._source)
+    
+    if (this._sourcenative.events)
     {
-        this._source.removeListener('end', this._onEnd);
-        this._source.removeListener('data', this._onData);
-        this._onEnd = null;
-        this._onData = null;
-        this._source.dispose();
-        this._source = null;
+        this._sourcenative.removeListener('end', this._onEnd);
+        this._sourcenative.removeListener('data', this._onData);
+        this._sourcenative.dispose();
+        this._sourcenative = null;
     }
+    
+    this._onEnd = null;
+    this._onData = null;
 }
 
 NativeStream.prototype._write = function NativeStreamWrite(chunk, enc, cb) {
     
     if (util.isBuffer(chunk))
     {
-        this._source.writeString(chunk.toString('base64'));
+        this._sourcenative.writeString(chunk.toString('base64'));
     }
     else if (enc == 'base64')
     {
         // TO DO: FIGURE OUT WHY chunk is coming in UTF8 not base64 format; for now just reconvert
-        this._source.writeString(chunk.toString('base64'));
+        this._sourcenative.writeString(chunk.toString('base64'));
     }
     else
     {
         var buf = new Buffer(chunk, enc);
-        this._source.writeString(buf.toString('base64'));
+        this._sourcenative.writeString(buf.toString('base64'));
     }
     
     cb();

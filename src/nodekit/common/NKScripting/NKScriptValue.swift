@@ -51,7 +51,7 @@ public class NKScriptValue: NSObject {
         } else if origin != nil {
             script = "\(origin.namespace).$releaseObject(\(reference))"
         } else {
-            assertionFailure()
+         //   assertionFailure()
             return
         }
         context?.NKevaluateJavaScript(script, completionHandler: nil)
@@ -64,11 +64,6 @@ public class NKScriptValue: NSObject {
     //  func isEqualToObject(value: AnyObject!) -> Bool
     //  func isEqualWithTypeCoercionToObject(value: AnyObject!) -> Bool
     //  func isInstanceOf(value: AnyObject!) -> Bool
-
-    
-    public func testLog() {
-        log("testLog");
-    }
 
     // Async JavaScript object operations
     public func constructWithArguments(arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
@@ -138,9 +133,10 @@ public class NKScriptValue: NSObject {
         return scriptForFetchingProperty(name) + " = " + self.context.NKserialize(value)
     }
     private func scriptForCallingMethod(name: String!, arguments: [AnyObject]?) -> String {
-
+        
         let args = arguments?.map(NKserialize) ?? []
-        return "(function line_eval(){ try { return " + scriptForFetchingProperty(name) + "(" + args.joinWithSeparator(", ") + ")" + "} catch(ex) { console.log(ex.toString()); return ex} })()"
+        let script = scriptForFetchingProperty(name) + "(" + args.joinWithSeparator(", ") + ")"
+        return "(function line_eval(){ try { return " + script + "} catch(ex) { console.log(ex.toString()); return ex} })()"
     }
 
     private func NKserialize(object: AnyObject?) -> String {

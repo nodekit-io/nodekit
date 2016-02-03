@@ -64,18 +64,21 @@ function BootstrapModule(id) {
 
 BootstrapModule.getSource = function(id) {
     
-    var source = atob(native.fs.getSourceSync(id))
-    
-    var append = "\r\n //# sourceURL=io.nodekit.core/" + id + "\r\n";
-    
     if (id.indexOf("/") > -1)
+    {
+        var source = atob(native.fs.getSourceSync(id))
+        var append = "\r\n //# sourceURL=io.nodekit.core/" + id + "\r\n";
         return source + append;
+    }
     
     if (BootstrapModule.nodeSourceExists(id)) {
         return BootstrapModule.getNodeSource(id) + append;
     }
-    
-    return native.fs.getSourceSync(id) + append;
+
+    var source = atob(native.fs.getSourceSync(id))
+    var append = "\r\n //# sourceURL=io.nodekit.core/" + id + "\r\n";
+    return source + append;
+
 }
 
 BootstrapModule._cache = {};

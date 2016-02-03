@@ -40,6 +40,7 @@ WebContentsWK.prototype._deinit = WebContentsUI.prototype._deinit = function() {
 
 //send(channel [[,arg]...] [,callback])
 WebContentsWK.prototype.send = WebContentsUI.prototype.send = function() {
+    var slice = Array.prototype.slice;
     var args, channel;
     channel = arguments[0]
     

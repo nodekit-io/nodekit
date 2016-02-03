@@ -234,74 +234,79 @@ var node = null;
 
 //d3.json("/test/execute/all?fmt=json", function(error, root) {
 
-d3.json("/test/execute?fmt=json", function(error, root) {
+var displayResults = function displayResults(error, result) {
+    var root =  JSON.parse(result, JSON.dateParser);
     node = root;
-        
-      
-        makeMenu(root);
-        
-  var slices = svg.datum(root).selectAll("path")
-      .data(partition.nodes)
-        .enter().append("g");
-        
+    
+    makeMenu(root);
+    
+    var slices = svg.datum(root).selectAll("path")
+    .data(partition.nodes)
+    .enter().append("g");
+    
     var path = slices.append("path")
-      .attr("d", arc)
-      .style("fill", function(d) { return d.depth ? color(d.passed) : "EFEFEF" })
-            .style("fill-rule", "evenodd")
-      .on("click", click)
-        .on("mouseover", function(d) {
-            tooltip
-            .style("display", "block")
-            .html(function() {
-                         return tooltipHtml(d);
-                         });
-            return tooltip.transition()
-            .duration(50)
-            .style("opacity", 0.7);
-            })
+    .attr("d", arc)
+    .style("fill", function(d) { return d.depth ? color(d.passed) : "EFEFEF" })
+    .style("fill-rule", "evenodd")
+    .on("click", click)
+    .on("mouseover", function(d) {
+        tooltip
+        .style("display", "block")
+        .html(function() {
+              return tooltipHtml(d);
+              });
+        return tooltip.transition()
+        .duration(50)
+        .style("opacity", 0.7);
+        })
         .on("mousemove", function(d) {
             return tooltip
             .style("top", (d3.event.pageY-10)+"px")
             .style("left", (d3.event.pageX+10)+"px");
             })
-        
-        .on("mouseout", function(){
-            return tooltip
-            .style("opacity", 0)
-            .style("display", "none");
-            })
-      .each(stash);
-       // .attr("display", function(d) { return d.depth ? "none" : null; }) // only inner ring
-        
-        var text = slices.append("text")
-        .attr("display", function(d) { if ((d.depth === 0)) return null; else return "none"; })
-        .attr("text-anchor", "middle")
-        .text(function(d) {
-              return d.passedCount + "/" + d.totalCount + " in " + d.durationSec + " s";
-              });
-        
-        
-        
-  d3.selectAll("input").on("change", function change() {
-    var value = this.value === "count"
-        ? function() { return 1; }
-        : function(d) { return d.totalCount; };
+            
+            .on("mouseout", function(){
+                return tooltip
+                .style("opacity", 0)
+                .style("display", "none");
+                })
+                .each(stash);
+                // .attr("display", function(d) { return d.depth ? "none" : null; }) // only inner ring
+                
+                var text = slices.append("text")
+                .attr("display", function(d) { if ((d.depth === 0)) return null; else return "none"; })
+                .attr("text-anchor", "middle")
+                .text(function(d) {
+                      return d.passedCount + "/" + d.totalCount + " in " + d.durationSec + " s";
+                      });
+                      
+                      
+                      
+                      d3.selectAll("input").on("change", function change() {
+                                               var value = this.value === "count"
+                                               ? function() { return 1; }
+                                               : function(d) { return d.totalCount; };
+                                               
+                                               path
+                                               .data(partition.value(value).nodes)
+                                               .transition()
+                                               .duration(1000)
+                                               .attrTween("d", arcTweenData);
+                                               });
+                                               
+                                               function click(d) {
+                                                   node = d;
+                                                   path.transition()
+                                                   .duration(1000)
+                                                   .attrTween("d", arcTweenZoom(d));
+                                                   
+                                               }
+}
 
-    path
-        .data(partition.value(value).nodes)
-        .transition()
-        .duration(1000)
-        .attrTween("d", arcTweenData);
-  });
 
-  function click(d) {
-    node = d;
-    path.transition()
-      .duration(1000)
-      .attrTween("d", arcTweenZoom(d));
-        
-     }
-});
+var ipc = require('electro').ipcRenderer;
+ipc.send("nk.TestExecute", displayResults);
+// d3.json("/test/execute?fmt=json", displayResults);
 
 d3.select(self.frameElement).style("height", height + "px");
 

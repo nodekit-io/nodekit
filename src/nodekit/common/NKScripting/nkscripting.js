@@ -120,7 +120,7 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
         var ctor = function() {
             // Instance must can be accessed by native object in global context.
             var ctor = this.constructor;
-            while (ctor[ctor.$lastInstID] != undefined)
+        //    while (ctor[ctor.$lastInstID] != undefined)
                 ++ctor.$lastInstID;
             Object.defineProperty(this, '$instanceID', {'configurable': true,'value': ctor.$lastInstID});
             Object.defineProperty(this, '$properties', {'configurable': true, 'value': {}});
@@ -152,8 +152,10 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
                 '$properties': {'configurable': true,'value': {} }
               });
              this[instance.$instanceID] = instance;
+                   instance.events = {}
+                   
              if (instance._init)  instance._init();
-             return instance;
+              return instance;
         }
                    
         NKScripting.createNamespace(namespace, ctor);
@@ -297,9 +299,11 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
             delete this.$properties;
             delete this.$references;
             delete this.$lastRefID;
+            delete this.events;
+                   
             if (this.$instanceID) {
                 // Dispose instance
-                this.constructor.$lastInstID = this.$instanceID;
+            //    this.constructor.$lastInstID = this.$instanceID + 10;
                 delete this.constructor[this.$instanceID];
                 delete this.$instanceID;
                 this.__proto__ = Object.getPrototypeOf(this.__proto__);
@@ -354,7 +358,7 @@ var NKScripting = (function NKScriptingRunOnce(exports) {
 
     NKScripting.prototype.emit = function (event) {
         var i, listeners, length, args = [].slice.call(arguments, 1);
-
+               
         if (typeof this.events[event] === 'object') {
             listeners = this.events[event].slice();
             length = listeners.length;

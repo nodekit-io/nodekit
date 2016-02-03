@@ -8,20 +8,20 @@ app.on('ready', function(){
        //      io.nodekit.test.logconsole('hello' + result);
        //     p.webContents.send('hello world')
        var jasmine = require('./server.js');
-       var p = new BrowserWindow({'preloadURL': 'http://localhost:3000/test'});
+       var p = new BrowserWindow({'preloadURL': 'file://' + __dirname + '/public/index.html'});
        
        jasmine.run(
                    {
                    'spec_dir': 'spec-node',
                    'spec_files': [
-                           /*       'assertSpec.js',
+                                  'assertSpec.js',
                                   'consoleSpec.js',
                                   'cryptoHashSpec.js',
                                   'cryptoRandomSpec.js',
                                   'cryptoHmacSpec.js',
                                   'cryptoPbkdf2Spec.js',
                                   'cryptoSignCommonSpec.js',
-                            'dgramSpec.js',
+                     //     'dgramSpec.js',
                             'fsSpec.js',
                                   'globalSpec.js',
                                   'modulesSpec.js',
@@ -39,16 +39,17 @@ app.on('ready', function(){
                                   'stringDecoderSpec.js',
                                   'urlSpec.js',
                                   'utilSpec.js',
-                                  'zlibSpec.js', */
+                                  'zlibSpec.js',
                                   /*   'timersSpec.js',  uncomment for full tests */
                                   
-                                   'netServerSpec.js' ,
-                            /* 'httpAgentSpec.js',
+                                'netServerSpec.js' ,
+                                 'tcpSpec.js',
+                             'httpAgentSpec.js',
                                    'httpClientSpec.js',
-                                'httpSpec.js',
-                                  'netPauseSpec.js',
+                           //     'httpSpec.js',
+                             //     'netPauseSpec.js',
                           
-                            */
+                          
                      
                                   
                                   

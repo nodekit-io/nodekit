@@ -129,24 +129,18 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
 
         context.NKinjectJavaScript(NKScriptSource(source: generateStubs(_stdlib_getDemangledTypeName(object)), asFilename: namespace + "/plugin/" + _stdlib_getDemangledTypeName(object) + ".js" ))
 
-        log("+E\(context.NKid) Plugin object \(object) is bound to \(namespace) with channel \(id)")
         return principal as NKScriptValue
     }
 
     public func unbind() {
 
         guard let id = identifier else { return }
-        log("+channel unbind" + id)
-
-        let namespace = principal.namespace
-        let plugin = principal.plugin
-        log("+unbinding Plugin object \(plugin) from \(namespace)")
-        instances.removeAll(keepCapacity: false)
+ 
+         instances.removeAll(keepCapacity: false)
         userContentController?.NKremoveScriptMessageHandlerForName(id)
         userScript = nil
         identifier = nil
-        log("+Plugin object \(plugin) is unbound from \(namespace)")
-    }
+     }
 
     public func userContentController(didReceiveScriptMessage message: NKScriptMessage) {
         // A workaround for crash when postMessage(undefined)
@@ -161,8 +155,8 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
                         unbind()
                     } else if let instance = instances.removeValueForKey(target) {
                         // Dispose instance
-                        log("+E\(context!.NKid) Instance \(target) is unbound from \(instance.namespace)")
-                    } else {
+                        objc_setAssociatedObject(instance.nativeObject, unsafeAddressOf(NKScriptValue), nil, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
+                     } else {
                         log("!Invalid instance id: \(target)")
                     }
                 } else if let member = typeInfo[opcode] where member.isProperty {
@@ -181,7 +175,6 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
                 let args = body["$operand"] as? [AnyObject]
                 let namespace = "\(principal.namespace)[\(target)]"
                 instances[target] = NKScriptValueNative(namespace: namespace, channel: self, arguments: args)
-                log("+E\(context!.NKid) Instance \(target) is bound to \(namespace)")
             } // else Unknown opcode
         } else if let obj = principal.plugin as? NKScriptMessageHandler {
             // Plugin claims for raw messages
@@ -205,9 +198,8 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
                         // Dispose plugin
                         unbind()
                         result = true
-                    } else if let instance = instances.removeValueForKey(target) {
+                    } else if let _ = instances.removeValueForKey(target) {
                         // Dispose instance
-                        log("+E\(context!.NKid) Instance \(target) is unbound from \(instance.namespace)")
                         result = true
                     } else {
                         log("!Invalid instance id: \(target)")
@@ -231,7 +223,6 @@ public class NKScriptChannel: NSObject, NKScriptMessageHandler {
                 let args = body["$operand"] as? [AnyObject]
                 let namespace = "\(principal.namespace)[\(target)]"
                 instances[target] = NKScriptValueNative(namespace: namespace, channel: self, arguments: args)
-                log("+E\(context!.NKid) Instance \(target) is bound to \(namespace)")
                 result = true
             } // else Unknown opcode
         } else if let obj = principal.plugin as? NKScriptMessageHandler {

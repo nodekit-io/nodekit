@@ -54,8 +54,8 @@
     }
 
     private static let exclusion: Set<Selector> = {
-        var methods = instanceMethods(forProtocol: GCDAsyncSocketDelegate.self)
-        //    methods.remove(Selector("invokeDefaultMethodWithArguments:"))
+        var methods = instanceMethods(forProtocol: NKC_SwiftSocketProtocol.self)
+          //    methods.remove(Selector("invokeDefaultMethodWithArguments:"))
         return methods.union([
             //       Selector(".cxx_construct"),
             ])
@@ -74,19 +74,19 @@
     private let connections: NSMutableSet = NSMutableSet()
     private var _addr: String!
     private var _port: Int
-    private var _socket: GCDAsyncSocket?
+    private var _socket: NKC_SwiftSocket?
     private var _server: NKC_SocketTCP?
 
     override init() {
         self._port = 0
         self._addr = nil
-        self._socket = GCDAsyncSocket()
+        self._socket = NKC_SwiftSocket(domain: NKC_DomainAddressFamily.INET, type: NKC_SwiftSocketType.Stream, proto: NKC_CommunicationProtocol.TCP)
         super.init()
         self._socket!.setDelegate(self, delegateQueue: NKScriptChannel.defaultQueue /* dispatch_get_main_queue() */)
     }
 
 
-    init(socket: GCDAsyncSocket, server: NKC_SocketTCP?) {
+    init(socket: NKC_SwiftSocket, server: NKC_SocketTCP?) {
         self._socket = socket
         self._server = server
         self._port = 0
@@ -95,51 +95,57 @@
     }
 
     // public methods
-    func bind(address: String, port: Int) -> Void {
-        self._addr = address as String!
-        self._port = port
+    func bindSync(address: String, port: Int) -> Int {
+        do {
+            try self._socket!.bind(host: address, port: Int32(port))
+        } catch _ {
+            log("Bind Error")
+            return 500
+        }
+        self._addr = self._socket!.localHost ?? address
+        self._port = Int(self._socket!.localPort ?? Int32(port))
+        return self._port
     }
 
     func connect(address: String, port: Int) -> Void {
-        _ = try? self._socket!.connectToHost(address, onPort: UInt16(port))
+        _ = try? self._socket!.connect(host: address, port: Int32(port))
     }
 
     func listen(backlog: Int) -> Void {
-        if (self._addr != "0.0.0.0") {
+        
+       _ = try? self._socket!.listen(Int32(backlog))
+        
+     /*   if (self._addr != "0.0.0.0") {
             _ = try? self._socket!.acceptOnInterface(self._addr, port: UInt16(self._port))
         } else {
             _ = try? self._socket!.acceptOnPort( UInt16(self._port))
-        }
+        } */
     }
 
     func fdSync() -> Int {
-        return self._socket!.hash
+        return Int(self._socket!.fd)
     }
 
     func remoteAddressSync() -> Dictionary<String, AnyObject> {
-        let address: String = self._socket!.connectedHost
-        let port: NSNumber = NSNumber(unsignedShort: self._socket!.connectedPort)
+        let address: String = self._socket?.connectedHost ?? ""
+        let port: Int = Int(self._socket?.connectedPort ?? 0)
         return ["address": address, "port": port]
     }
 
     func localAddressSync() -> Dictionary<String, AnyObject> {
-        let address: String? = self._socket!.localHost
-        let port: Int = Int(self._socket!.localPort)
-        if (address != nil) {
-            return ["address": address!, "port": port]
-        } else {
-            return ["address": "", "port": 0]
-        }
+        let address: String = self._socket!.localHost ?? ""
+        let port: Int = Int(self._socket!.localPort ?? 0)
+        return ["address": address, "port": port]
     }
 
     func writeString(string: String) -> Void {
-        let data = NSData(base64EncodedString: string, options: NSDataBase64DecodingOptions(rawValue: 0))
-        self._socket?.writeData(data, withTimeout: 10, tag: 1)
+        guard let data = NSData(base64EncodedString: string, options: NSDataBase64DecodingOptions(rawValue: 0)) else {return;}
+        _ = try? self._socket?.write(data)
     }
 
     func close() -> Void {
         if (self._socket !== nil) {
-            self._socket!.disconnect()
+           _ = try? self._socket!.close()
         }
         if (self._server !== nil) {
             self._server!.close()
@@ -151,40 +157,45 @@
     }
  }
 
- // DELEGATE METHODS FOR GCDAsyncSocket
- extension NKC_SocketTCP {
+ // DELEGATE METHODS FOR NKC_SwiftSocket
+ extension NKC_SocketTCP: NKC_SwiftSocketProtocol {
     
-
-
-    func socket(socket: GCDAsyncSocket, didAcceptNewSocket newSocket: GCDAsyncSocket) {
+    func socket(socket: NKC_SwiftSocket, didAcceptNewSocket newSocket: NKC_SwiftSocket) {
         let socketConnection = NKC_SocketTCP(socket: newSocket, server: self)
         connections.addObject(socketConnection)
         newSocket.setDelegate(socketConnection, delegateQueue: NKScriptChannel.defaultQueue /* dispatch_get_main_queue() */)
-
+        
         self.emitConnection(socketConnection)
-        newSocket.readDataWithTimeout(30, tag: 1)
-    }
+        _ = try? newSocket.readDataWithTimeout(30, tag: 1)
 
-    func socket(sock: GCDAsyncSocket!, didConnectToHost host: String!, port: UInt16) {
-        self.emitAfterConnect()
-        sock.readDataWithTimeout(30, tag: 1)
     }
-
-    func socket(socket: GCDAsyncSocket!, didReadData data: NSData!, withTag tag: Int) {
+    
+    func socket(socket: NKC_SwiftSocket, didConnectToHost host: String!, port: Int32) {
+        self.emitAfterConnect(host, port: Int(port))
+        _ = try? socket.readDataWithTimeout(30, tag: 1)
+    }
+    
+    func socket(socket: NKC_SwiftSocket, didReceiveData data: NSData!, withTag tag: Int) {
         self.emitData(data)
-        socket.readDataWithTimeout(30, tag: 0)
+        _ = try? socket.readDataWithTimeout(30, tag: 0)
     }
-
-    func socketDidDisconnect(socket: GCDAsyncSocket, withError err: NSError) {
+    
+    func socket(socket: NKC_SwiftSocket, didReceiveData data: NSData!, sender host: NSString?, port: Int32) {
+        self.emitData(data)
+        _ = try? socket.readDataWithTimeout(30, tag: 0)
+    }
+    
+    func socket(socket: NKC_SwiftSocket, didDisconnectWithError err: NSError) {
         self._socket = nil
         self.emitEnd()
-
+        
         if (self._server != nil) {
             self._server!.connectionDidClose(self)
         }
-
+        
         self._server = nil
     }
+
 
     // private methods
 
@@ -193,19 +204,19 @@
     }
 
     private func emitConnection(tcp: NKC_SocketTCP) -> Void {
-        self.NKscriptObject?.invokeMethod("emit", withArguments: ["connection", tcp], completionHandler: nil)
+         self.NKscriptObject?.invokeMethod("emit", withArguments: ["connection", tcp], completionHandler: nil)
     }
 
-    private func emitAfterConnect() {
-        self.NKscriptObject?.invokeMethod("emit", withArguments:["afterConnect", ""], completionHandler: nil)
+    private func emitAfterConnect(host: String, port: Int) {
+        self.NKscriptObject?.invokeMethod("emit", withArguments:["afterConnect", host, port], completionHandler: nil)
     }
 
     private func emitData(data: NSData!) {
-        let str: NSString! = data.base64EncodedStringWithOptions([])
+       let str: NSString! = data.base64EncodedStringWithOptions([])
         self.NKscriptObject?.invokeMethod("emit", withArguments: ["data", str], completionHandler: nil)
     }
 
     private func emitEnd() {
-        self.NKscriptObject?.invokeMethod("emit", withArguments: ["end", ""], completionHandler: nil)
+         self.NKscriptObject?.invokeMethod("emit", withArguments: ["end", ""], completionHandler: nil)
     }
  }

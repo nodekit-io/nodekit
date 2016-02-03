@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+this.global = this;
 
 var NativeTimer = require('platform').Timer;
 var util = require('util');
@@ -26,7 +27,7 @@ function invokeTimeoutHandler() {
 
 function Timer() {
     this._timer = new NativeTimer();
-     this._timer.setOnTimeout(invokeTimeoutHandler.bind(this));
+    this._timer.setOnTimeout(invokeTimeoutHandler.bind(this));
     Handle.call( this, this._timer );
 }
 util.inherits( Timer, Handle );
@@ -39,6 +40,7 @@ Timer.prototype.start = function(msec, repeat) {
 
 Timer.prototype.stop = function() {
     this._timer.stop();
+    this._timer.dispose();
 }
 
 Timer.now = function() { var x = new Date().getTime(); return x }

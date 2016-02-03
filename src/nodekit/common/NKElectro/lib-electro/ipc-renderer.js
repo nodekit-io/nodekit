@@ -29,18 +29,19 @@ ipcRenderer._init = function() {
     
     this.callbacks = {};
     this.counter = 0;
-    
+
     this.on('nk.IPCReplytoRenderer', function(sender, channel, replyId, result) {
-            callbacks[replyId].call(self, result);
-            delete callbacks[replyId];
+            this.callbacks[replyId].call(this, null, result);
+            delete this.callbacks[replyId];
             });
     
     this.on('nk.IPCtoRenderer', function(sender, channel, replyId, result) {
+            
             var event = { 'sender': this }
             
             if ((replyId) !== "") {
             event.sendReply = function(result) {
-               this.sender.ipcReply(0, channel, replyId, JSON.stringify(result));
+               this.sender.ipcReply(0, channel, replyId, result);
             }
             
             Object.defineProperty(event, 'returnValue', {
@@ -57,6 +58,7 @@ ipcRenderer._init = function() {
 
 //send(channel [[,arg]...] [,callback])
 ipcRenderer.send = function() {
+    var slice = Array.prototype.slice;
     var args, channel;
     channel = arguments[0]
     
@@ -92,3 +94,5 @@ ipcRenderer.send = function() {
     
     // TO DO: expire callback table entry in case of non response
 };
+
+ipcRenderer._init();

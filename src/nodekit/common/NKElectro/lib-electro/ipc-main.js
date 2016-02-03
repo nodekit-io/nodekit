@@ -26,13 +26,13 @@
 var ipcMain = io.nodekit.electro.ipcMain
 
 ipcMain.on('nk.IPCtoMain', function (sender, channel, replyId, arg) {
-    var webContents = io.nodeKit.BrowserWindow.fromId(sender).webContents;
+    var webContents = io.nodekit.electro.BrowserWindow.fromId(sender).webContents;
 
     var event = { 'sender': webContents }
 
     if ((replyId) !== "") {
         event.sendReply = function (result) {
-            this.sender.ipcReply(0, channel, replyId, JSON.stringify(result));
+            this.sender.ipcReply(0, channel, replyId, result);
         }
 
         Object.defineProperty(event, 'returnValue', {
@@ -46,7 +46,7 @@ ipcMain.on('nk.IPCtoMain', function (sender, channel, replyId, arg) {
 });
 
 ipcMain.on('nk.IPCReplytoMain', function (sender, channel, replyId, result) {
-    var webContents = io.nodeKit.BrowserWindow.fromId(sender).webContents;
+    var webContents = io.nodekit.electro.BrowserWindow.fromId(sender).webContents;
 
     var event = { 'sender': webContents }
 

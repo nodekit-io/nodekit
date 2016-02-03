@@ -98,6 +98,7 @@ exports.createServer = function (scheme, requestListener) {
     var server = new BrowserServer(scheme);
     if (requestListener)
         server.on('request', requestListener);
+    server.requestListener = requestListener
     return server;
 };
 

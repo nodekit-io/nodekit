@@ -97,6 +97,7 @@ public class NKC_Logging: NKScriptExport {
     }
 
     public func log(message: String, level: Level) {
+        
         pthread_mutex_lock(&lock)
         asl_vlog(client, nil, level.rawValue, message, getVaList([]))
         pthread_mutex_unlock(&lock)

@@ -65,7 +65,7 @@ class NKE_ProtocolLocalFile: NSURLProtocol {
             client.URLProtocolDidFinishLoading(self)
 
         } else {
-            NSLog("Missing File %@", request.URL!)
+            log("!Missing File \(request.URL!)")
             client.URLProtocol(self, didFailWithError: NSError(domain: NSURLErrorDomain, code: NSURLErrorFileDoesNotExist, userInfo:  nil))
         }
     }

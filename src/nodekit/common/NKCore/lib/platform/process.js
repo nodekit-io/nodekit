@@ -61,9 +61,9 @@ process._nextTick = (function () {
                      var canPost = typeof window !== 'undefined'
                      && window.postMessage && window.addEventListener;
                      
-                     if (canSetImmediate) {
-                     return function (f) { return window.setImmediate(f) };
-                     }
+                    if (canSetImmediate) {
+                    return function (f) { return window.setImmediate(f) };
+                   }
                      
                      if (canPost) {
                      var queue = [];
@@ -84,10 +84,7 @@ process._nextTick = (function () {
                      };
                      }
                      
-                     if (canSetTimeOut) {
-                     return function nextTick(fn) { setTimeout(fn, 0); };
-                     }
-                     
+
                      return function (f) { return process.native.nextTick(f); };
                      
                      })();

@@ -54,7 +54,7 @@ class NKE_BrowserWindow: NSObject {
             log("+creating Nitro Renderer")
             self._id = self.createWKWebView(options)
             self._type = "Nitro"
-            let webContents: NKE_WebContentsUI = NKE_WebContentsUI(window: self)
+            let webContents: NKE_WebContentsWK = NKE_WebContentsWK(window: self)
             self._webContents = webContents
         case .UIWebView:
             log("+creating JavaScriptCore Renderer")
@@ -145,5 +145,6 @@ extension NKE_BrowserWindow: NKScriptContextDelegate {
             UIScriptEnvironmentReady()
         }
         log("+E\(id) Renderer Ready")
+        
     }
 }

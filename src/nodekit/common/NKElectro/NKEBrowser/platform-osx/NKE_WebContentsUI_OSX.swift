@@ -40,7 +40,7 @@ class NKE_WebContentsUI: NKE_WebContentsBase {
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
 
-        _window._events.on("did-fail-loading") { (error: String) in
+        _window._events.on("did-fail-loading") { (id: Int, error: String) in
           self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
 
@@ -63,10 +63,12 @@ extension NKE_WebContentsUI: NKE_WebContentsProtocol {
         window._events.emit("nk.IPCtoRenderer", payload)
     }
 
+    // Replies to renderer to the window events queue for that renderer
     func ipcReply(dest: Int, channel: String, replyId: String, result: AnyObject) -> Void {
-        NSException(name: "Illegal function call", reason: "Send only API.  Replies are handled in ipcRenderer and ipcMain that receive message events", userInfo: nil).raise()
+        guard let window = _window else {return;}
+        let payload = NKE_IPC_Event(sender: 0, channel: channel, replyId: replyId, arg: [result])
+        window._events.emit("nk.IPCReplytoRenderer", payload)
     }
-
 
     func loadURL(url: String, options: [String: AnyObject]) -> Void {
         guard let webView = self.webView else {return;}

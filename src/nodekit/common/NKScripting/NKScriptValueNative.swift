@@ -25,6 +25,7 @@ public class NKScriptValueNative: NKScriptValue {
     private let key = unsafeAddressOf(NKScriptValue)
     private var proxy: NKScriptInvocation!
     final var plugin: AnyObject { return proxy.target }
+    internal weak var nativeObject: AnyObject?
 
     // Create from, Convert to and Compare with Native Objects
     //  init!(object value: AnyObject!, inContext context: NKScriptContext!)
@@ -44,7 +45,6 @@ public class NKScriptValueNative: NKScriptValue {
         super.init(namespace: namespace, channel: channel, origin: nil)
     
         channel.instances[id] = self;
-        log("+E\(context!.NKid) Instance \(id) \(unsafeAddressOf(value)) is bound to \(namespace)")
     
         proxy = bindObject(value)
         syncCreationWithProperties()
@@ -53,7 +53,6 @@ public class NKScriptValueNative: NKScriptValue {
     init(namespace: String, channel: NKScriptChannel, object: AnyObject) {
         super.init(namespace: namespace, channel: channel, origin: nil)
         proxy = bindObject(object)
-        log("+E\(context!.NKid) Instance \(unsafeAddressOf(object)) is bound to \(namespace)")
     }
 
     init?(namespace: String, channel: NKScriptChannel, arguments: [AnyObject]?) {
@@ -85,8 +84,6 @@ public class NKScriptValueNative: NKScriptValue {
         syncProperties()
         promise?.invokeMethod("resolve", withArguments: [self], completionHandler: nil)
         
-        log("+E\(context!.NKid) Instance \(unsafeAddressOf(instance)) created for \(namespace)")
-        
     }
 
     deinit {
@@ -95,6 +92,8 @@ public class NKScriptValueNative: NKScriptValue {
     }
 
     private func bindObject(object: AnyObject) -> NKScriptInvocation {
+        nativeObject = object;
+        
         let option: NKScriptInvocation.Option
         if let queue = channel.queue {
             option = .Queue(queue: queue)
@@ -117,6 +116,8 @@ public class NKScriptValueNative: NKScriptValue {
         return proxy
     }
     private func unbindObject(object: AnyObject) {
+        nativeObject = nil;
+        
         objc_setAssociatedObject(object, key, nil, objc_AssociationPolicy.OBJC_ASSOCIATION_ASSIGN)
 
         // Stop KVO
@@ -126,7 +127,6 @@ public class NKScriptValueNative: NKScriptValue {
                 object.removeObserver(self, forKeyPath: key, context: nil)
             }
         }
-
         proxy = nil
     }
     private func syncProperties() {
@@ -184,6 +184,8 @@ public class NKScriptValueNative: NKScriptValue {
 
     // override methods of NKScriptValue
     override public func invokeMethod(method: String!, withArguments arguments: [AnyObject]!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+        if (proxy == nil) {NSException(name: "already disposed", reason: nil, userInfo: nil).raise();}
+        
         if let selector = channel.typeInfo[method]?.selector {
             let result: AnyObject! = proxy.call(selector, withObjects: arguments)
             completionHandler?(result, nil)
@@ -193,6 +195,8 @@ public class NKScriptValueNative: NKScriptValue {
     }
 
      override public func setValue(value: AnyObject!, forProperty property: String!) {
+        if (proxy == nil) {return;}
+        
         if channel.typeInfo[property]?.setter != nil {
             proxy[property] = value
         } else {
@@ -202,6 +206,8 @@ public class NKScriptValueNative: NKScriptValue {
     }
     
     override public func valueForProperty(property: String!, completionHandler: ((AnyObject?, NSError?) -> Void)?) {
+        if (proxy == nil) {return;}
+        
         if let getter = channel.typeInfo[property]?.getter {
             completionHandler?(proxy.call(getter, withObjects: nil), nil)
         }

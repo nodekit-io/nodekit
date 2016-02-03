@@ -27,6 +27,7 @@ class NKE_IpcMain: NSObject, NKE_IpcProtocol {
         super.init()
 
         globalEvents.on("nk.IPCtoMain") { (item: NKE_IPC_Event) -> Void in
+            
               self.NKscriptObject?.invokeMethod("emit", withArguments: ["nk.IPCtoMain", item.sender, item.channel, item.replyId, item.arg], completionHandler: nil)
         }
     }
