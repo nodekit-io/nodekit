@@ -20,6 +20,8 @@
 
 import Darwin
 
+import Foundation
+
 public typealias asl_object_t = COpaquePointer
 
 @asmname("asl_open") func asl_open(ident: UnsafePointer<Int8>, _ facility: UnsafePointer<Int8>, _ opts: UInt32) -> asl_object_t

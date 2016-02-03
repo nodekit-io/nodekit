@@ -16,6 +16,9 @@
  * limitations under the License.
  */
 
+ 
+ import Foundation
+
  class NKC_Process: NSObject, NKScriptExport {
     class func attachTo(context: NKScriptContext) {
         context.NKloadPlugin(NKC_Process(), namespace: "io.nodekit.platform.process", options: [String:AnyObject]())

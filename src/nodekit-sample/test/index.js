@@ -18,7 +18,7 @@ app.on('ready', function(){
                                   'cryptoHmacSpec.js',
                                   'cryptoPbkdf2Spec.js',
                                   'cryptoSignCommonSpec.js',
-                                  //     'dgramSpec.js', WORK IN PROGRESS
+                                  'dgramSpec.js', 
                                   'fsSpec.js',
                                   'globalSpec.js',
                                   'modulesSpec.js',
@@ -42,10 +42,10 @@ app.on('ready', function(){
                                   'tcpSpec.js',
                                   'httpAgentSpec.js',
                                   'httpClientSpec.js',
-                                  //     'httpSpec.js',    WORK IN PROGRESS
-                                  //     'netPauseSpec.js',  WORK IN PROGRESS
+                                       'httpSpec.js',    
                                   ],
                    'spec_todo': [
+                                 'netPauseSpec.js',
                                  'bufferSpec.js',
                                  'childProcessSpec.js',
                                  'clusterSpec.js',

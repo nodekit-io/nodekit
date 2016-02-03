@@ -27,11 +27,11 @@ import Foundation
 import CoreFoundation
 
 @objc protocol NKC_SwiftSocketProtocol: class {
-    func socket(socket: NKC_SwiftSocket, didAcceptNewSocket newSocket: NKC_SwiftSocket)
-    func socket(socket: NKC_SwiftSocket, didConnectToHost host: String!, port: Int32)
-    func socket(socket: NKC_SwiftSocket, didReceiveData data: NSData!, withTag tag: Int)
-    func socket(socket: NKC_SwiftSocket, didReceiveData data: NSData!, sender host: NSString?, port: Int32)
-    func socket(socket: NKC_SwiftSocket, didDisconnectWithError err: NSError)
+  optional func socket(socket: NKC_SwiftSocket, didAcceptNewSocket newSocket: NKC_SwiftSocket)
+  optional  func socket(socket: NKC_SwiftSocket, didConnectToHost host: String!, port: Int32)
+  optional func socket(socket: NKC_SwiftSocket, didReceiveData data: NSData!, withTag tag: Int)
+  func socket(socket: NKC_SwiftSocket, didReceiveData data: NSData!, sender host: String?, port: Int32)
+  optional func socket(socket: NKC_SwiftSocket, didDisconnectWithError err: NSError)
 }
 
 class NKC_SwiftSocket: NSObject {
@@ -155,7 +155,7 @@ class NKC_SwiftSocket: NSObject {
     }
     
     /// Closes the socket.  No further operations allowed
-    func close() throws {
+    func close(cb: (()->Void)? = nil ) throws {
         nkDelegate = nil;
         
         guard isValid else {
@@ -169,8 +169,6 @@ class NKC_SwiftSocket: NSObject {
         
         if sendCount > 0 {
             closeRequested = true
-            // will re-enter close after writing complete
-            return
         }
         
         queue = nil
@@ -188,6 +186,7 @@ class NKC_SwiftSocket: NSObject {
                     throw NKC_SwiftSocketError.CloseFailed(errno)
             }
             closed = true
+            cb?()
         }
     }
     
@@ -251,7 +250,7 @@ class NKC_SwiftSocket: NSObject {
             self.address = self._getLocalAddress()!
             return
         }
-        throw NKC_SwiftSocketError.NoAddressesAvailable(errors)
+        throw NKC_SwiftSocketError.NoAddressesAvailable(errors.first!)
     }
     
     /// Binds the socket to the given address on the file system. Use this for Local
@@ -334,7 +333,7 @@ class NKC_SwiftSocket: NSObject {
                 if let delegate = self.nkDelegate
                 {
                     dispatch_async(self.nkDelegateQueue!) {
-                        delegate.socket(self, didAcceptNewSocket: newSocket)
+                        delegate.socket?(self, didAcceptNewSocket: newSocket)
                     }
                 }
             }
@@ -405,13 +404,12 @@ class NKC_SwiftSocket: NSObject {
             if let delegate = self.nkDelegate
             {
                 dispatch_async(nkDelegateQueue!) {
-                        delegate.socket(self, didConnectToHost: host.hostname!, port: port )
+                        delegate.socket?(self, didConnectToHost: host.hostname!, port: port )
                 }
             }
-     
-            
+            return;
         }
-        throw NKC_SwiftSocketError.NoAddressesAvailable(errors)
+        throw NKC_SwiftSocketError.NoAddressesAvailable(errors.first!)
     }
     
     /// Connects the socket to the given address and port number.
@@ -436,7 +434,7 @@ class NKC_SwiftSocket: NSObject {
         if let delegate = self.nkDelegate
         {
             dispatch_async(nkDelegateQueue!) {
-                delegate.socket(self, didConnectToHost: address.hostname!, port: port )
+                delegate.socket?(self, didConnectToHost: address.hostname!, port: port )
             }
         }
     }
@@ -519,9 +517,7 @@ class NKC_SwiftSocket: NSObject {
         return true
     }
 
-    
-    /// Sends `data` to the connected peer
-    func write(data: UnsafePointer<Void>, length: Int, flags: Int32 = 0,
+    private func _write(data: UnsafePointer<Void>, length: Int, flags: Int32 = 0,
         maxSize: Int = 1024) throws -> Int {
             var data = data
             var bytesLeft = length
@@ -548,8 +544,7 @@ class NKC_SwiftSocket: NSObject {
             return bytesSent
     }
     
-    /// Sends `data` to the specified peer.
-   func write(address: NKC_AddrInfo, data: UnsafePointer<Void>,
+   private func _write(address: NKC_AddrInfo, data: UnsafePointer<Void>,
         length: Int, flags: Int32 = 0, maxSize: Int = 1024) throws -> Int {
             var data = data
             var bytesleft = length
@@ -575,33 +570,60 @@ class NKC_SwiftSocket: NSObject {
             return bytesSent
     }
     
-    /// Sends a string to the peer.
-    func write(str: String, flags: Int32 = 0, maxSize: Int = 1024) throws -> Int {
-        let length = str.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
-        return try self.write(str, length: length, flags: flags, maxSize: maxSize)
+     /// Sends `data` to the remote peer.
+     func write(data: NSData, flags: Int32 = 0, maxSize: Int = 1024) throws -> Int {
+        return try self._write(data.bytes, length: data.length, flags: flags, maxSize: maxSize)
     }
     
-    /// Sends `data` to the peer.
-     func write(data: NSData, flags: Int32 = 0, maxSize: Int = 1024) throws -> Int {
-        let len = data.length
-        return try self.write(data.bytes, length: len, flags: flags, maxSize: maxSize)
+    /// Sends `data` to the specified peer.
+    func write(host hostname: String, port: Int32, data: NSData, flags: Int32 = 0, maxSize: Int = 1024) throws -> Int {
+        
+        guard port >= 0 else {
+            throw NKC_SwiftSocketError.ParameterError(
+                "Invalid port number - port cannot be negative"
+            )
+        }
+        
+        var hints = addrinfo()
+        hints.ai_socktype   = address.addrinfo.ai_socktype
+        hints.ai_protocol   = address.addrinfo.ai_protocol
+        hints.ai_family     = address.addrinfo.ai_family
+        hints.ai_flags      = address.addrinfo.ai_flags
+        
+        var errors: [Int32] = []
+        let hosts = try getaddrinfo(host: hostname, service: nil, hints: &hints)
+        for host in hosts
+        {
+            try host.setPort(port)
+            
+            guard let success = try? self._write(host, data: data.bytes, length: data.length, flags: flags, maxSize: maxSize) else {
+                 errors.append(errno)
+                 continue
+            }
+            
+            return success;
+            
+        }
+        return 0
     }
 
 
-    func readDataWithTimeout(timeout:NSTimeInterval?, tag: Int?) throws -> Self {
-        let hadCB    = readTag != nil
-        
-        if hadCB {
+    func beginReceiving(tag tag: Int?) throws -> Void {
+        if (readTag != nil)
+        {
             stopReadEvents()
         }
         
         readTag = tag
         
-        if tag != nil {
-            try startReadEvents(timeout)
+        try startReadEvents()
+    }
+    
+    func pauseReceiving() -> Void {
+        if (readTag != nil)
+        {
+            stopReadEvents()
         }
-        
-        return self
     }
     
     
@@ -636,7 +658,7 @@ class NKC_SwiftSocket: NSObject {
         if (readCount == 0) {
             stopReadEvents();
             dispatch_async(nkDelegateQueue!) {
-                self.nkDelegate?.socket(self, didDisconnectWithError: NSError(domain: "Socket Empty", code: 0, userInfo: nil))
+                self.nkDelegate?.socket?(self, didDisconnectWithError: NSError(domain: "Socket Empty", code: 0, userInfo: nil))
             }
             
             return false;
@@ -650,7 +672,7 @@ class NKC_SwiftSocket: NSObject {
             }
             else {
                 dispatch_async(nkDelegateQueue!) {
-                    self.nkDelegate?.socket(self, didDisconnectWithError: NSError(domain: "Socket Error", code: Int(errno), userInfo: nil))
+                    self.nkDelegate?.socket?(self, didDisconnectWithError: NSError(domain: "Socket Error", code: Int(errno), userInfo: nil))
                 }
               return false;
             }
@@ -667,7 +689,7 @@ class NKC_SwiftSocket: NSObject {
         }
         
         dispatch_async(nkDelegateQueue!) {
-            self.nkDelegate?.socket(self, didReceiveData: data, withTag: self.readTag ?? 0)
+            self.nkDelegate?.socket?(self, didReceiveData: data, withTag: self.readTag ?? 0)
         }
         return true;
     }
@@ -679,7 +701,7 @@ class NKC_SwiftSocket: NSObject {
         }
     }
     
-    private func startReadEvents(timeout:NSTimeInterval?) throws -> Void {
+    private func startReadEvents() throws -> Void {
         guard readSource == nil else {
             throw NKC_SwiftSocketError.ParameterError(
                 "Read source already setup"
@@ -761,11 +783,53 @@ class NKC_SwiftSocket: NSObject {
             }
     }
     
+    func setSocketOption(layer: Int32 = SOL_SOCKET, option: Int32, setting: Int) throws -> Void {
+        var value: Int32 = Int32(setting)
+        try self.setSocketOption( layer, option: option, value: &value, valueLen: socklen_t(sizeof(Int32)))
+    }
+    
     /// Set a socket into nonblocking mode.
     func setNonblocking() -> Void
     {
         _fcntl(fd: fd, cmd: F_SETFL, value: _fcntl(fd: fd, cmd: F_GETFL, value: 0))
         
+    }
+    
+    func setBroadcast(flag: Bool) throws -> Void
+    {
+        
+        if (self.address.addrinfo.ai_family == PF_INET)
+        {
+            try self.setSocketOption( SOL_SOCKET, option: SO_BROADCAST,  setting: (flag) ? 1 : 0)
+        }
+        
+        // IPv6 does not implement broadcast, the ability to send a packet to all hosts on the attached link.
+        // The same effect can be achieved by sending a packet to the link-local all hosts multicast group.
+    }
+    
+    func addMembership(mcastAddr: String, ifaceAddr: String) throws -> Void {
+        
+        let group = in_addr(s_addr: inet_addr(mcastAddr))
+        let interface = in_addr(s_addr: inet_addr(ifaceAddr))
+        
+        var mcq = ip_mreq(imr_multiaddr: group, imr_interface: interface)
+        try self.setSocketOption(IPPROTO_IP, option: IP_ADD_MEMBERSHIP, value: &mcq, valueLen: socklen_t(strideof(ip_mreq)))
+    }
+    
+    func dropMembership(mcastAddr: String, ifaceAddr: String) throws -> Void {
+        let group = in_addr(s_addr: inet_addr(mcastAddr))
+        let interface = in_addr(s_addr: inet_addr(ifaceAddr))
+        var mcq = ip_mreq(imr_multiaddr: group, imr_interface: interface)
+        try self.setSocketOption(IPPROTO_IP, option: IP_DROP_MEMBERSHIP, value: &mcq, valueLen: socklen_t(strideof(ip_mreq)))
+
+    }
+    
+    func setKeepAlive(flag: Bool) throws -> Void {
+        if (self.address.addrinfo.ai_protocol == IPPROTO_TCP)
+        {
+            var value: Int32 = Int32(flag ? 1 : 0)
+            try self.setSocketOption( SOL_SOCKET, option: SO_KEEPALIVE, value: &value, valueLen: socklen_t(sizeof(Int32)))
+        }
     }
     
     /// Unlinks the file at the given url.
@@ -942,7 +1006,7 @@ enum NKC_ShutdownMethod {
     }
 }
 
-enum NKC_SwiftSocketError : ErrorType {
+enum NKC_SwiftSocketError : ErrorType, NKC_Error {
     /// Thrown when a call to `Darwin.socket()` fails. The associate value holds
     /// the error number returned.
     case CreationFailed(Int32)
@@ -961,7 +1025,7 @@ enum NKC_SwiftSocketError : ErrorType {
     /// Thrown by `bind()` or `connect()` when all possible addresses with the
     /// given information has been exhausted. The associate array holds the
     /// errors returned from the system call.
-    case NoAddressesAvailable([Int32])
+    case NoAddressesAvailable(Int32)
     /// Thrown when binding to a `Local` (aka `Unix`) file address. The
     /// associate value holds the error number returned from `Darwin.unlink()`.
     case UnlinkFailed(Int32)
@@ -1004,6 +1068,45 @@ enum NKC_SwiftSocketError : ErrorType {
     /// Thrown when a call to dispatch queue fails. The associate value holds
     /// the error number returned.
     case DispatchFailed(Int32)
+}
+
+
+enum NetworkUtilitiesError : ErrorType, NKC_Error {
+    case GetHostNameFailed(Int32)
+    case SetHostnameFailed(Int32)
+    case GetAddressInfoFailed(Int32)
+    case GetNameInfoFailed(Int32)
+    case GetHostByNameFailed(Int32)
+    case ParameterError(String)
+}
+
+
+public protocol NKC_Error {
+}
+public protocol NKC_Enum {
+}
+
+
+public extension NKC_Error {
+    public var associated: (label:String, value: Any, posix: String) {
+        get {
+            let mirror = Mirror(reflecting: self)
+            if let associated = mirror.children.first {
+                let posix = POSIXError(rawValue: associated.value as? Int32 ?? 500)?.label ?? ""
+                return (associated.label!, associated.value, posix)
+            }
+            log("WARNING: NKC_Error option of \(self) does not have an associated value")
+            return ("\(self)", 500, "")
+        }
+    }
+}
+
+public extension NKC_Enum {
+    public var label: String {
+        get {
+            return "\(self)"
+        }
+    }
 }
 
 /// NKC_AddrInfo contains a references to address structures and socket address
@@ -1105,15 +1208,6 @@ class NKC_AddrInfo {
                 + " structure which does not use ports.")
         }
     }
-}
-
-enum NetworkUtilitiesError : ErrorType {
-    case GetHostNameFailed(Int32)
-    case SetHostnameFailed(Int32)
-    case GetAddressInfoFailed(Int32)
-    case GetNameInfoFailed(Int32)
-    case GetHostByNameFailed(Int32)
-    case ParameterError(String)
 }
 
 /// Returns the address of `obj`.
@@ -1736,4 +1830,109 @@ extension dispatch_source_t {
             cb(self, data)
         }
     }
+}
+
+public enum POSIXError : Int32, ErrorType, NKC_Enum {
+    
+    public init() {
+        self.init(rawValue: errno)!
+    }
+    
+    case NoError = 0
+    case OperationNotPermitted = 1	/* EPERM */
+    case NoSuchFileOrDirectory = 2	/* ENOENT */
+    case NoSuchProcess = 3	/* ESRCH */
+    case InterruptedSystemCall = 4	/* EINTR */
+    case DeviceNotConfigured = 6	/* ENXIO */
+    case ArgumentListTooLong = 7	/* E2BIG */
+    case ExecFormatError = 8	/* ENOEXEC */
+    case BadFileDescriptor = 9	/* EBADF */
+    case NoChildProcesses = 10	/* ECHILD */
+    case ResourceDeadlockAvoided = 11	/* EDEADLK */
+    case CannotAllocateMemory = 12	/* ENOMEM */
+    case PermissionDenied = 13	/* EACCES */
+    case BadAddress = 14	/* EFAULT */
+    case BlockDeviceRequired = 15	/* ENOTBLK */
+    case FileExists = 17	/* EEXIST */
+    case OperationNotSupportedByDevice = 19	/* ENODEV */
+    case NotADirectory = 20	/* ENOTDIR */
+    case IsADirectory = 21	/* EISDIR */
+    case InvalidArgument = 22	/* EINVAL */
+    case TooManyOpenFilesInSystem = 23	/* ENFILE */
+    case TooManyOpenFiles = 24	/* EMFILE */
+    case InappropriateIoctlForDevice = 25	/* ENOTTY */
+    case TextFileBusy = 26	/* ETXTBSY */
+    case FileTooLarge = 27	/* EFBIG */
+    case NoSpaceLeftOnDevice = 28	/* ENOSPC */
+    case IllegalSeek = 29	/* ESPIPE */
+    case TooManyLinks = 31	/* EMLINK */
+    case BrokenPipe = 32	/* EPIPE */
+    case NumericalArgumentOutOfDomain = 33	/* EDOM */
+    case ResultTooLarge = 34	/* ERANGE */
+    case ResourceTemporarilyUnavailable = 35	/* EAGAIN */
+    case OperationNowInProgress = 36	/* EINPROGRESS */
+    case OperationAlreadyInProgress = 37	/* EALREADY */
+    case DestinationAddressRequired = 39	/* EDESTADDRREQ */
+    case MessageTooLong = 40	/* EMSGSIZE */
+    case ProtocolWrongTypeForSocket = 41	/* EPROTOTYPE */
+    case ProtocolNotAvailable = 42	/* ENOPROTOOPT */
+    case ProtocolNotSupported = 43	/* EPROTONOSUPPORT */
+    case SocketTypeNotSupported = 44	/* ESOCKTNOSUPPORT */
+    case OperationNotSupported = 45	/* ENOTSUP */
+    case ProtocolFamilyNotSupported = 46	/* EPFNOSUPPORT */
+    case AddressFamilyNotSupportedByProtocolFamily = 47	/* EAFNOSUPPORT */
+    case AddressAlreadyInUse = 48	/* EADDRINUSE */
+    case NetworkIsDown = 50	/* ENETDOWN */
+    case NetworkIsUnreachable = 51	/* ENETUNREACH */
+    case NetworkDroppedConnectionOnReset = 52	/* ENETRESET */
+    case SoftwareCausedConnectionAbort = 53	/* ECONNABORTED */
+    case ConnectionResetByPeer = 54	/* ECONNRESET */
+    case NoBufferSpaceAvailable = 55	/* ENOBUFS */
+    case SocketIsAlreadyConnected = 56	/* EISCONN */
+    case SocketIsNotConnected = 57	/* ENOTCONN */
+    case OperationTimedOut = 60	/* ETIMEDOUT */
+    case ConnectionRefused = 61	/* ECONNREFUSED */
+    case TooManyLevelsOfSymbolicLinks = 62	/* ELOOP */
+    case FileNameTooLong = 63	/* ENAMETOOLONG */
+    case HostIsDown = 64	/* EHOSTDOWN */
+    case NoRouteToHost = 65	/* EHOSTUNREACH */
+    case DirectoryNotEmpty = 66	/* ENOTEMPTY */
+    case TooManyProcesses = 67	/* EPROCLIM */
+    case TooManyUsers = 68	/* EUSERS */
+    case DiscQuotaExceeded = 69	/* EDQUOT */
+    case StaleNfsFileHandle = 70	/* ESTALE */
+    case TooManyLevelsOfRemoteInPath = 71	/* EREMOTE */
+    case RpcStructIsBad = 72	/* EBADRPC */
+    case RpcVersionWrong = 73	/* ERPCMISMATCH */
+    case ProgramVersionWrong = 75	/* EPROGMISMATCH */
+    case BadProcedureForProgram = 76	/* EPROCUNAVAIL */
+    case NoLocksAvailable = 77	/* ENOLCK */
+    case FunctionNotImplemented = 78	/* ENOSYS */
+    case InappropriateFileTypeOrFormat = 79	/* EFTYPE */
+    case AuthenticationError = 80	/* EAUTH */
+    case NeedAuthenticator = 81	/* ENEEDAUTH */
+    case DevicePowerIsOff = 82	/* EPWROFF */
+    case ValueTooLargeToBeStoredInDataType = 84	/* EOVERFLOW */
+    case BadExecutable = 85	/* EBADEXEC */
+    case BadCpuTypeInExecutable = 86	/* EBADARCH */
+    case SharedLibraryVersionMismatch = 87	/* ESHLIBVERS */
+    case MalformedMachoFile = 88	/* EBADMACHO */
+    case OperationCanceled = 89	/* ECANCELED */
+    case IdentifierRemoved = 90	/* EIDRM */
+    case NoMessageOfDesiredType = 91	/* ENOMSG */
+    case IllegalByteSequence = 92	/* EILSEQ */
+    case AttributeNotFound = 93	/* ENOATTR */
+    case BadMessage = 94	/* EBADMSG */
+    case Reserved_EMULTIHOP = 95	/* EMULTIHOP */
+    case NoMessageAvailableOnStream = 96	/* ENODATA */
+    case Reserved_ENOLINK = 97	/* ENOLINK */
+    case NoStreamResources = 98	/* ENOSR */
+    case NotAStream = 99	/* ENOSTR */
+    case ProtocolError = 100	/* EPROTO */
+    case StreamIoctlTimeout = 101	/* ETIME */
+    case OperationNotSupportedOnSocket = 102	/* EOPNOTSUPP */
+    case NoSuchPolicyRegistered = 103	/* ENOPOLICY */
+    case StateNotRecoverable = 104	/* ENOTRECOVERABLE */
+    case PreviousOwnerDied = 105	/* EOWNERDEAD */
+    case InterfaceOutputQueueIsFull = 106	/* EQFULL */
 }

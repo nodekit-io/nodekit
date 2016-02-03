@@ -19,10 +19,6 @@
 
 var Udp = io.nodekit.platform.UDP
 
-Udp.prototype._init = function() {
-    
-};
-
 Udp.prototype.close = function() {
     this.disconnect();
     this.dispose();

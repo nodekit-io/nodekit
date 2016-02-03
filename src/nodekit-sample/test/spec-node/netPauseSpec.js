@@ -22,7 +22,9 @@ describe('The net module', function() {
     });
 
     server.on('listening', function() {
-      var client = net.createConnection(8800);
+              var port = server.address().port;
+              
+      var client = net.createConnection(port);
       client.setEncoding('ascii');
       client.on('data', function(d) {
         recv += d;
@@ -44,13 +46,13 @@ describe('The net module', function() {
               expect(recv.length).toBe(chars_recved);
               client.resume();
 
-            }, 1000);
+            }, 250);
 
-          }, 1000);
+          }, 250);
 
-        }, 1000);
+        }, 250);
 
-      }, 1000);
+      }, 250);
 
       client.on('end', function() {
         server.close();
@@ -58,6 +60,6 @@ describe('The net module', function() {
         done()
       });
     });
-    server.listen(8800);
+    server.listen(0);
   });
 });

@@ -10,10 +10,7 @@ console.log("STARTING SAMPLE APPLICATION");
 
 app.on("ready", function(){
        var p = new BrowserWindow({'preloadURL': 'http://localhost:3000'});
-   //    var result = io.nodekit.test.alertSync('hello');
- //      io.nodekit.test.logconsole('hello' + result);
-  //     p.webContents.send('hello world')
-       
+        
        var server = http.createServer( function (request, response) {
                                       console.log(request.url);
                                       var file = path.resolve(__dirname, 'sample.html');

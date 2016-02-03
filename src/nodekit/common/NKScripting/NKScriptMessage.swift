@@ -16,6 +16,8 @@
 * limitations under the License.
 */
 
+import Foundation
+
 public class NKScriptMessage: NSObject {
     public var body: AnyObject
     public var name: String

@@ -16,6 +16,8 @@
 * limitations under the License.
 */
 
+import Foundation
+
 /* Uncomment the following import if using in a standalone project with NodeKit as a framework */
 // import NodeKit
 

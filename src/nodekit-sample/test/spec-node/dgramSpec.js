@@ -67,7 +67,7 @@ describe('The dgram module', function() {
     expect(typeof socket.setMulticastLoopback).toBe('function');
   });
 
-  it('should send and receive packets', function() {
+  it('should send and receive packets', function(done) {
     var peer1 = dgram.createSocket('udp4');
     var peer2 = dgram.createSocket('udp4');
     var buffer = new Buffer('turkey dinner');
@@ -82,8 +82,9 @@ describe('The dgram module', function() {
       peer1.close();
     });
 
-    peer2.bind(54323, function() {
-      peer1.send(buffer, 0, buffer.length, 54321, 'localhost');
+    peer2.bind(0, function() {
+         var port2 = peer2.address().port;
+         peer1.send(buffer, 0, buffer.length, port2, 'localhost');
     });
   });
 
@@ -107,9 +108,10 @@ describe('The dgram module', function() {
       peer1.close();
     });
 
-    peer2.bind(54324, function() {
-      peer1.bind(54325, function() {
-        peer2.send(buffer, 0, buffer.length, 54324, 'localhost');
+    peer2.bind(0, function() {
+      peer1.bind(0, function() {
+        var port1 = peer1.address().port;
+        peer2.send(buffer, 0, buffer.length, port1, 'localhost');
       });
     });
   });

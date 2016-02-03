@@ -15,7 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
+ import Foundation
+ 
   class NKC_SocketUDP: NSObject, NKScriptExport {
 
     class func attachTo(context: NKScriptContext) {
@@ -34,7 +36,7 @@
     }
 
     private static let exclusion: Set<Selector> = {
-        var methods = instanceMethods(forProtocol: GCDAsyncSocketDelegate.self)
+        var methods = instanceMethods(forProtocol: NKC_SwiftSocketProtocol.self)
         //    methods.remove(Selector("invokeDefaultMethodWithArguments:"))
         return methods.union([
             //       Selector(".cxx_construct"),
@@ -68,73 +70,54 @@
     *
     */
 
-    private var _socket: GCDAsyncUdpSocket?
+    private var _socket: NKC_SwiftSocket?
     private var _addr: String!
     private var _port: UInt16
 
     override init() {
         self._port = 0
         self._addr = nil
-        self._socket = GCDAsyncUdpSocket()
-
+        self._socket = NKC_SwiftSocket(domain: NKC_DomainAddressFamily.INET, type: NKC_SwiftSocketType.Datagram, proto: NKC_CommunicationProtocol.UDP)
+        
         super.init()
 
         self._socket?.setDelegate(self, delegateQueue: dispatch_get_main_queue())
     }
 
-    func bindSync(address: String, port: Int, flags: Int) -> String {
+    func bindSync(address: String, port: Int, flags: Int) -> Int {
         self._addr = address as String
         self._port = UInt16(port)
-        var err: NSError? = nil
-
+ 
         if (flags == 4) {  do {
-            try self._socket?.enableReusePort(true)
-        } catch let error as NSError {
-            err = error
+            try self._socket?.setShouldReuseAddress(true)
+        } catch let error as NKC_Error {
+             print("!Socket Bind Socket Option: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+            return error.associated.value as? Int ?? 500
         } catch {
             fatalError()
             }
         }
-
-        if (self._addr != "0.0.0.0") {
-            do {
-                try self._socket?.bindToPort(self._port, interface: self._addr)
-            } catch let error as NSError {
-                err = error
-            } catch {
-                fatalError()
-            }
-        } else {
-            do {
-                try self._socket?.bindToPort(self._port)
-            } catch let error as NSError {
-                err = error
-            } catch {
-                fatalError()
-            }
-
+        
+        do {
+            try self._socket?.bind(host: self._addr, port: Int32(port))
+        } catch let error as NKC_Error {
+            print("!Socket Bind Error: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+            return error.associated.value as? Int ?? 500
+        } catch {
+            fatalError()
         }
 
-        if ((err) != nil) {
-            return err!.description
-        }
-
-        return "OK"
+        return 0
     }
 
     func recvStart() -> Void {
 
-        var err: NSError? = nil
-        do {
-            try self._socket?.beginReceiving()
-        } catch let error as NSError {
-            err = error
+       do {
+            try self._socket?.beginReceiving(tag: nil)
+        } catch let error as NKC_Error {
+            print("Socket Error Receive Start: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
         } catch {
             fatalError()
-        }
-
-        if ((err) != nil) {
-            log("!UDP Error: \(err!.description)")
         }
     }
 
@@ -144,45 +127,92 @@
     }
 
     func send(str: String,  address: String, port: Int) -> Void {
-        let data = NSData(base64EncodedString: str as String, options: NSDataBase64DecodingOptions(rawValue: 0))
-        self._socket!.sendData(data, toHost: address, port: UInt16(port), withTimeout: -1, tag: 0)
-    }
+        guard let data = NSData(base64EncodedString: str, options: NSDataBase64DecodingOptions(rawValue: 0)) else {return;}
+        do {
+            try self._socket!.write(host: address, port: Int32(port), data: data, flags: 0, maxSize: 1024)
+        } catch let error as NKC_Error {
+            print("Socket Send Error: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+        } catch {
+            fatalError()
+        }
+        
+     }
 
     func localAddressSync() -> Dictionary<String, AnyObject> {
-        let address: String = self._socket!.localHost()
-        let port: Int = Int(self._socket!.localPort())
-        return  ["address": address, "port": port]
+        let address: String = self._socket!.localHost ?? ""
+        let port: Int = Int(self._socket!.localPort ?? 0)
+        return ["address": address, "port": port]
     }
 
     func addMembership(mcastAddr: String, ifaceAddr: String) -> Void {
-         _ = try? self._socket?.joinMulticastGroup(mcastAddr as String!, onInterface: ifaceAddr as String!)
-        // self._socket?.beginReceiving(&err)
+        do {
+            try  self._socket?.addMembership(mcastAddr, ifaceAddr: ifaceAddr)
+        } catch let error as NKC_Error {
+            print("Socket Options Error: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+        } catch {
+            fatalError()
+        }
     }
 
     func dropMembership(mcastAddr: String, ifaceAddr: String) -> Void {
-       _ = try? self._socket?.leaveMulticastGroup(mcastAddr as String!, onInterface: ifaceAddr as String!)
-        // self._socket?.beginReceiving(&err)
+       do {
+            try  self._socket?.addMembership(mcastAddr, ifaceAddr: ifaceAddr)
+        } catch let error as NKC_Error {
+            print("Socket Options Error: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+        } catch {
+            fatalError()
+        }
+
     }
 
     func setMulticastTTL(ttl: Int) -> Void {
-        self.setSocketIPOptions(IP_MULTICAST_TTL, setting: ttl )
+        do {
+            try  self._socket?.setSocketOption( IPPROTO_IP, option: IP_MULTICAST_TTL, setting: ttl)
+        } catch let error as NKC_Error {
+            print("Socket Options Error: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+        } catch {
+            fatalError()
+        }
+
     }
 
     func setMulticastLoopback(flag: Bool) -> Void {
-        self.setSocketIPOptions(IP_MULTICAST_LOOP, setting: (flag) ? 1 : 0 )
-    }
+        do {
+            try  self._socket?.setSocketOption( IPPROTO_IP, option: IP_MULTICAST_LOOP,  setting: (flag) ? 1 : 0)
+        } catch let error as NKC_Error {
+            print("Socket Options Error: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+        } catch {
+            fatalError()
+        }
 
+    }
+    
     func setTTL(ttl: Int) -> Void {
-        self.setSocketIPOptions(IP_TTL, setting: ttl )
+        do {
+            try self._socket?.setSocketOption( SOL_SOCKET, option: IP_TTL,  setting: ttl)
+        } catch let error as NKC_Error {
+            print("Socket Options Error: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+        } catch {
+            fatalError()
+        }
+
     }
 
     func setBroadcast(flag: Bool) -> Void {
-       _ = try? self._socket?.enableBroadcast(flag)
+       _ = try? self._socket?.setBroadcast(flag)
+        do {
+            try  self._socket?.setBroadcast(flag)
+        } catch let error as NKC_Error {
+            print("Socket Options Error: \(error.associated.value) \(error.associated.label) \(error.associated.posix)")
+        } catch {
+            fatalError()
+        }
+
     }
 
     func disconnect() -> Void {
         if (self._socket !== nil) {
-            self._socket!.close()
+            _ = try? self._socket!.close()
             self._socket = nil
         }
     }
@@ -192,30 +222,12 @@
         let str: String = data.base64EncodedStringWithOptions([])
         self.NKscriptObject?.invokeMethod("emit", withArguments:["recv", str, host, port ], completionHandler: nil)
     }
-
-    private func setSocketIPOptions(option: Int32, setting: Int) -> Void {
-        guard let socket: GCDAsyncUdpSocket = self._socket! else {return;}
-        var value: Int32 = Int32(setting)
-
-        socket.performBlock({
-            if (socket.isIPv4()) {
-                setsockopt(socket.socketFD(), IPPROTO_IP, option, &value, socklen_t(sizeof(Int32)))
-            } else {
-                setsockopt(socket.socketFD(), IPPROTO_IPV6, option, &value, socklen_t(sizeof(Int32)))
-            }
-
-        })
-    }
-
  }
 
- // GCDAsyncUdpSocket Delegate Methods
- extension NKC_SocketUDP: GCDAsyncUdpSocketDelegate {
-    func udpSocket(sock: GCDAsyncUdpSocket!, didReceiveData data: NSData!, fromAddress address: NSData!, withFilterContext filterContext: AnyObject!) {
-
-        var host: NSString?
-        var port: UInt16 = 0
-        GCDAsyncUdpSocket.getHost(&host, port: &port, fromAddress: address)
-        self.emitRecv(data, host: host as String?, port: Int(port))
+ // NKC_SwiftSocketProtocol Delegate Methods
+ extension NKC_SocketUDP: NKC_SwiftSocketProtocol {
+    func socket(socket: NKC_SwiftSocket, didReceiveData data: NSData!, sender host: String?, port: Int32) {
+          self.emitRecv(data, host: host, port: Int(port))
     }
  }
+ 

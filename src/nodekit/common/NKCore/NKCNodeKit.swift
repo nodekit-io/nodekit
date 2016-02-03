@@ -21,7 +21,7 @@ import Foundation
 //    static let NKeventQueue : dispatch_queue_t! = dispatch_queue_create("io.nodekit.eventQueue", nil)
 //}
 
-public class NKNodeKit: NKScriptContextDelegate {
+@objc public class NKNodeKit: NSObject, NKScriptContextDelegate {
     
     // Common Public Methods
     
@@ -43,7 +43,7 @@ public class NKNodeKit: NKScriptContextDelegate {
     
     // Instance Methods (Not normally Called from Public, but Exposed to Allow Multiple {NK} NodeKit's per process)
     
-     public init() {
+     override public init() {
         self.context = nil
     }
     

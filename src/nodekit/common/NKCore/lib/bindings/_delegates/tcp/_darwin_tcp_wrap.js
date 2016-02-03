@@ -201,7 +201,7 @@ NativeStream.prototype.close = function NativeStreamClose() {
         this._sourcenative.close();
     };
     
-    if (this._sourcenative.events)
+    if (this._sourcenative && this._sourcenative.events)
     {
         this._sourcenative.removeListener('end', this._onEnd);
         this._sourcenative.removeListener('data', this._onData);

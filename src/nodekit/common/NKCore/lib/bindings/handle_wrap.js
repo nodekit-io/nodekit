@@ -30,7 +30,7 @@ Handle.prototype.close = function(callback) {
     this._handle = null;
     }
     if ( callback ) {
-        callback.call( this );
+        process.nextTick(callback.bind(this));
     }
 };
 

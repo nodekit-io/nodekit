@@ -11,13 +11,28 @@ This is a refined preview of the technology and is not intended for production u
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
-## Sample Application
+## Sample Application (using Frameworks)
 
 ``` bash
 git clone https://github.com/nodekit-io/nodekit-sample.git
 cd nodekit-sample
 carthage update
 ```
+
+## Tests and Sample Application (Full Build)
+
+Tests are directly embedded as a {NK} NodeKit application.  One of the the nice things about {NK} NodeKit being in pure Swift 2.x is that it has no external dependencies.  
+
+``` bash
+git clone https://github.com/nodekit-io/nodekit.git
+```
+
+Open `src/nodekit.xcodeproj` in Xcode.  You will see 4 build targets, 2 for the frameworks (on iOS and OSX respectively) and 2 for the sample app. 
+
+Build the nodekit-Mac-sample for My Mac or the nodekit-iOS-sample for the iOS Simulator (e.g., iPhone 6) and run.    All the Node.js tests should run and you should see the results as a graphical chart.  
+
+To switch to the sample app, change the `package.json` main entry to point to `app/sample/index.js` instead of `test/index.js`
+  
 
 ## Simple Configuration
 
@@ -40,10 +55,9 @@ app.on('ready', function() {
 
 The sample app includes a built in web server for serving static and dynamic content; on iOS this can be an http server over a localhost port, but on OSX you may want to use no ports at all and just use built in protocol server.
 
-Build in XCode for both iOS and Mac targets.
+Build in Xcode for both iOS and Mac targets.
 
-## Three Main Components in {NK} Scripting
-
+## Three Main Components in {NK} NodeKit
 
 
 [![{NK} Scripting](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKScripting.png?v01)](https://github.com/nodekit-io/nodekit/blob/master/docs/NKScripting/readme.md)
@@ -97,6 +111,7 @@ Node.js 4.x/5.x updates (we run a very stable 0.12.x for broadest package compat
 Apache 2.0
 
 ## News
+* (February 2016) Removed the last of the Objective-C and C code;  the entire framework on Darwin platforms is now pure Swift 2.x including the rewritten POSIX sockets layer that makes full use of GCD, is non blocking, and contains no external dependencies;  we may end up releasing as `{NK} Sockets` as while there are lots of good Objective-C libraries, there are fewer Swift versions (and almost none without a tiny C dependency which we've eliminated) and we had to cobble this together from a few complementary sources. 
 * (January 2016) Updated to use all core darwin JavaScript Engines, harmonized the API to industry standard (e.g, Electron subset for front end, JavaScriptCore like for back end) and refactored out {NK} Scripting and {NK} Electro and associated docs in the process
 * (December 2015) Updated for Swift 2.0 and refactored for iOS and OS X.
 * Master branch contains Node.js v0.12.x (working).   
