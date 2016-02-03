@@ -1,6 +1,3 @@
-var connect = require('connect');
-var serveStatic = require('serve-static');
-var http = require('http');
 var path = require('path');
 var JasmineRunner = require('./lib/jasmineRunner.js');
 var fs = require('fs');
@@ -28,7 +25,6 @@ start: function(options) {
 },
     
 stop: function() {
-    this.server.close();
 },
     
 run: function(options) {

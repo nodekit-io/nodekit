@@ -44,7 +44,6 @@ internal class NKUIWebViewDelegate: NSObject, UIWebViewDelegate {
         guard let callback = self.delegate else {return;}
         self.context = context
         objc_setAssociatedObject(context, unsafeAddressOf(NKJSContextId), self.id, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC)
-        objc_setAssociatedObject(context, unsafeAddressOf(NKContextQueue), nil, objc_AssociationPolicy.ASSIGN)
         
         callback.NKScriptEngineDidLoad(context)
     }

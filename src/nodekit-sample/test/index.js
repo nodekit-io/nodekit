@@ -4,9 +4,6 @@ var app = require('electro').app;
 console.log('STARTING TEST APPLICATION');
 
 app.on('ready', function(){
-      //    var result = io.nodekit.test.alertSync('hello');
-       //      io.nodekit.test.logconsole('hello' + result);
-       //     p.webContents.send('hello world')
        var jasmine = require('./server.js');
        var p = new BrowserWindow({'preloadURL': 'file://' + __dirname + '/public/index.html'});
        
@@ -21,8 +18,8 @@ app.on('ready', function(){
                                   'cryptoHmacSpec.js',
                                   'cryptoPbkdf2Spec.js',
                                   'cryptoSignCommonSpec.js',
-                     //     'dgramSpec.js',
-                            'fsSpec.js',
+                                  //     'dgramSpec.js', WORK IN PROGRESS
+                                  'fsSpec.js',
                                   'globalSpec.js',
                                   'modulesSpec.js',
                                   'osSpec.js',
@@ -40,20 +37,13 @@ app.on('ready', function(){
                                   'urlSpec.js',
                                   'utilSpec.js',
                                   'zlibSpec.js',
-                                  /*   'timersSpec.js',  uncomment for full tests */
-                                  
-                                'netServerSpec.js' ,
-                                 'tcpSpec.js',
-                             'httpAgentSpec.js',
-                                   'httpClientSpec.js',
-                           //     'httpSpec.js',
-                             //     'netPauseSpec.js',
-                          
-                          
-                     
-                                  
-                                  
-                           
+                                  /* 'timersSpec.js',  uncomment for time-intensive tests, excluded for performance benchmarks */
+                                  'netServerSpec.js' ,
+                                  'tcpSpec.js',
+                                  'httpAgentSpec.js',
+                                  'httpClientSpec.js',
+                                  //     'httpSpec.js',    WORK IN PROGRESS
+                                  //     'netPauseSpec.js',  WORK IN PROGRESS
                                   ],
                    'spec_todo': [
                                  'bufferSpec.js',
@@ -72,54 +62,7 @@ app.on('ready', function(){
                                  
                                  ],
                    
-                   'spec_files2': [
-                                   'assertSpec.js',
-                                   'bufferSpec.js',
-                                   'childProcessSpec.js',
-                                   'clusterSpec.js',
-                                   'consoleSpec.js',
-                                   'cryptoCipherSpec.js',
-                                   'cryptoDHSpec.js',
-                                   'cryptoHashSpec.js',
-                                   'cryptoHmacSpec.js',
-                                   'cryptoPbkdf2Spec.js',
-                                   'cryptoRandomSpec.js',
-                                   'cryptoSignCommonSpec.js',
-                                   'cryptoSignSpec.js',
-                                   'dgramSpec.js',
-                                   'dnsSpec.js',
-                                   'fsSpec.js',
-                                   'fsStatSpec.js',
-                                   'fsStreamSpec.js',
-                                   'fsWatchSpec.js',
-                                   'globalSpec.js',
-                                   'httpAgentSpec.js',
-                                   'httpClientSpec.js',
-                                   'httpSpec.js',
-                                   'modulesSpec.js',
-                                   'netPauseSpec.js',
-                                   'netServerSpec.js' ,
-                                   'osSpec.js',
-                                   'pathSpec.js',
-                                   'processSpec.js',
-                                   'queryStringSpec.js',
-                                   'streamBigPacketSpec.js',
-                                   'streamDuplexSpec.js',
-                                   'streamEndPauseSpec.js',
-                                   'streamPipeAfterEndSpec.js',
-                                   'streamPipeCleanupSpec.js',
-                                   'streamPipeErrorHandlingSpec.js',
-                                   'streamPipeEventSpec.js',
-                                   'streamTransformSpec.js',
-                                   'stringDecoderSpec.js',
-                                   'timersSpec.js',
-                                   'tlsSpec.js',
-                                   'urlSpec.js',
-                                   'utilSpec.js',
-                                   'vmSpec.js',
-                                   'zlibSpec.js'
-                                   ],
-                   'helpers': ['specHelper.js',
+                            'helpers': ['specHelper.js',
                                'helpers/*.js'
                                ]
                    }
@@ -127,7 +70,3 @@ app.on('ready', function(){
        
 
        })
-
-
-
-

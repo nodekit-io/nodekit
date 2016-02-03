@@ -38,11 +38,9 @@ class NKE_WebContentsWK: NKE_WebContentsBase {
             self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-finish-load"], completionHandler: nil)
         }
 
-        _window._events.on("did-fail-loading") { (id, Int, error: String) in
+        _window._events.on("did-fail-loading") { (id: Int, error: String) in
             self.NKscriptObject?.invokeMethod("emit", withArguments: ["did-fail-loading", error], completionHandler: nil)
         }
-
-
 
         webView = _window._webView as? WKWebView
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E43DC5961C6247530060B37E /* SamplePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DEA2EC1C59454900B787AD /* SamplePlugin.swift */; };
 		E46CEEB31C5FEBA600611736 /* NKC_SwiftSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46CEEB21C5FEBA600611736 /* NKC_SwiftSocket.swift */; };
 		E46CEEB41C5FEBA600611736 /* NKC_SwiftSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46CEEB21C5FEBA600611736 /* NKC_SwiftSocket.swift */; };
 		E46CEEB51C5FEBA600611736 /* NKC_SwiftSocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = E46CEEB21C5FEBA600611736 /* NKC_SwiftSocket.swift */; };
@@ -272,7 +273,6 @@
 		E4DEA2E61C591B3F00B787AD /* NKC_Process.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DEA2E21C591B3F00B787AD /* NKC_Process.swift */; };
 		E4DEA2E91C59453C00B787AD /* SamplePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DEA2E71C59453C00B787AD /* SamplePlugin.swift */; };
 		E4DEA2EB1C59453C00B787AD /* SamplePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DEA2E71C59453C00B787AD /* SamplePlugin.swift */; };
-		E4DEA2EE1C59454900B787AD /* SamplePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DEA2EC1C59454900B787AD /* SamplePlugin.swift */; };
 		E4DEA2EF1C59454900B787AD /* SamplePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4DEA2EC1C59454900B787AD /* SamplePlugin.swift */; };
 		E4DEA2F11C5C195000B787AD /* NKJSContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C5E5D1C3F203C006CEF53 /* NKJSContext.swift */; };
 		E4DEA2F21C5C195400B787AD /* NKJSCContextFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = E48C5F131C3F4031006CEF53 /* NKJSCContextFactory.swift */; };
@@ -1076,6 +1076,7 @@
 				E4D8C2D11C416CAD00D07A0F /* NKUIWebViewDelegate.swift in Sources */,
 				E4D8C2D31C416DE000D07A0F /* NKWKWebViewDelegate.swift in Sources */,
 				E48C5F141C3F4031006CEF53 /* NKJSCContextFactory.swift in Sources */,
+				E43DC5961C6247530060B37E /* SamplePlugin.swift in Sources */,
 				E4A8393E1C47446C00514698 /* NKE_BootElectroRenderer.swift in Sources */,
 				E4A838E91C46F26000514698 /* NKE_BrowserWindow_IOS.swift in Sources */,
 				E4A838721C46B80200514698 /* NKEApp.swift in Sources */,
@@ -1135,7 +1136,6 @@
 				E4E35F9C1C52B65500D0F270 /* NKC_Logging.swift in Sources */,
 				E4C253D21C20A5FF001B3388 /* NKMainDesktop.swift in Sources */,
 				E4D8C2D91C418D4C00D07A0F /* NKWVContextFactory.swift in Sources */,
-				E4DEA2EE1C59454900B787AD /* SamplePlugin.swift in Sources */,
 				E4A83D2F1C4993B900514698 /* NKC_Crypto.swift in Sources */,
 				E4A8393B1C47446C00514698 /* NKE_BootElectroMain.swift in Sources */,
 				E4A8392F1C47418900514698 /* NKE_IpcRenderer.swift in Sources */,

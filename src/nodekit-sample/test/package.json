@@ -14,9 +14,7 @@
   "author": "OffGrid Networks",
   "license": "MIT",
   "dependencies": {
-    "connect": "^3.2.0",
-    "glob": "^4.0.6",
     "jasmine-core": "^2.1.0",
-    "serve-static": "^1.6.4"
+    "glob": "^4.0.6"
   }
 }
