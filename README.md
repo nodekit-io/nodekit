@@ -10,6 +10,7 @@ This is a refined preview of the technology and is not intended for production u
 # {NK} NodeKit
 
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![{NK} Roadmap](https://img.shields.io/badge/OpenSource-roadmap-4DA6FD.svg?style=flat-square)](http://roadmap.nodekit.io)
 
 ## Sample Application (using Frameworks)
 
@@ -57,6 +58,7 @@ The sample app includes a built in web server for serving static and dynamic con
 
 Build in Xcode for both iOS and Mac targets.
 
+
 ## Three Main Components in {NK} NodeKit
 
 
@@ -93,6 +95,11 @@ The real motivation for us however, wasn't speed of execution, but rather we did
 
 So on iOS and Macs we use JavaScriptCore or Nitro... on Windows we use Chakra or ChakraCore... and on Android and Linux we use Chromium/V8.   Since the Node JavaScript source runs on each without patching (in some cases we add some polyfills), the only things we had to write (once per platform) were the bindings and again really just the primary four (TCP sockets, UDP sockets, timers and the file system).  Others like buffers, cryptography etc., are replaced by javascript only versions (ok for those following this far, actually for cryptography we just didnt like the idea of random generator being the javascript engine variant, so we dip into the OS for just that one random bytes call for improved security, no OpenSSL dependency just native platform)
 
+## Debugging
+
+Just use Safari Web Inspector to set breakpoints, inspect variables, etc. in both the JavaScriptScore and Nitro script engines (for the main process) as well as the UI and javascript environment of the renderer processes. 
+![Safari WebInspector](https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/screenshot1.png?v01)
+
 ## Supports
 
 iOS 8+, 9+
@@ -111,6 +118,7 @@ Node.js 4.x/5.x updates (we run a very stable 0.12.x for broadest package compat
 Apache 2.0
 
 ## News
+* (February 2016) Added [roadmap](http://roadmap.nodekit.io) for tracking contributions and future plans
 * (February 2016) Removed the last of the Objective-C and C code;  the entire framework on Darwin platforms is now pure Swift 2.x including the rewritten POSIX sockets layer that makes full use of GCD, is non blocking, and contains no external dependencies;  we may end up releasing as `{NK} Sockets` as while there are lots of good Objective-C libraries, there are fewer Swift versions (and almost none without a tiny C dependency which we've eliminated) and we had to cobble this together from a few complementary sources. 
 * (January 2016) Updated to use all core darwin JavaScript Engines, harmonized the API to industry standard (e.g, Electron subset for front end, JavaScriptCore like for back end) and refactored out {NK} Scripting and {NK} Electro and associated docs in the process
 * (December 2015) Updated for Swift 2.0 and refactored for iOS and OS X.
