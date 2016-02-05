@@ -117,6 +117,18 @@ Node.js 4.x/5.x updates (we run a very stable 0.12.x for broadest package compat
 
 Apache 2.0
 
+## Contributions (MasterFlow)
+
+* Fork the repository.
+* There is one eternal branch -- master.  
+* All other branches (feature, release, hotfix, and whatever else we need) are temporary and only used as a convenience to share code with other developers and as a backup measure. They are always removed once the changes present on them land on master.
+* Features are integrated onto the master branch primarily in a way which keeps the history linear
+* Releases are done similarly to GitFlow. We create a new branch for the release, branching off at the point in master that you decide has all the necessary features. From then on new work, aimed for the next release, is pushed to master as always, and any urgent necessary changes are pushed to the release branch (avoided as far as possible)
+* Finally, once the release is ready, we tag the top of the release branch. Then, because there is one eternal branch, there is only one way to get your release to be versioned permanently - and that is to merge the release branch into master and push that changed master. 
+* After that, all the changes that were made during the release are now part of master, and the release branch is deleted.
+* Hotfixes are very similar to releases, except you don't branch from an arbitrary commit on master, but from the release tag that you want to make the fix in. Again, work on master continues as always, and the necessary fixes are pushed to the hotfix branch. Once the fix is ready, the procedure is exactly the same as for a release - tag the top of the branch creating a new release, merge it into master, then delete the hotfix branch
+* Submit pull request.
+
 ## News
 * (February 2016) Added [roadmap](http://roadmap.nodekit.io) for tracking contributions and future plans
 * (February 2016) Removed the last of the Objective-C and C code;  the entire framework on Darwin platforms is now pure Swift 2.x including the rewritten POSIX sockets layer that makes full use of GCD, is non blocking, and contains no external dependencies;  we may end up releasing as `{NK} Sockets` as while there are lots of good Objective-C libraries, there are fewer Swift versions (and almost none without a tiny C dependency which we've eliminated) and we had to cobble this together from a few complementary sources. 
