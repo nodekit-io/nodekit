@@ -9,10 +9,10 @@ This is a refined preview of the technology and is not intended for production u
 
 # {NK} NodeKit
 
-[![Join the chat at https://gitter.im/nodekit-io/nodekit](https://badges.gitter.im/nodekit-io/nodekit.svg)](https://gitter.im/nodekit-io/nodekit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Join the chat at https://gitter.im/nodekit-io/nodekit](https://img.shields.io/badge/Chat-on_gitter-46BC99.svg?style=flat)](https://gitter.im/nodekit-io/nodekit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![{NK} Roadmap](https://img.shields.io/badge/OpenSource-roadmap-4DA6FD.svg?style=flat-square)](http://roadmap.nodekit.io)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![Twitter Follow](https://img.shields.io/twitter/follow/nodekitio.svg?style=social)](https://twitter.com/nodekitio)
 
 ## Sample Application (using Frameworks)
 
