@@ -9,6 +9,8 @@ This is a refined preview of the technology and is not intended for production u
 
 # {NK} NodeKit
 
+[![Join the chat at https://gitter.im/nodekit-io/nodekit](https://badges.gitter.im/nodekit-io/nodekit.svg)](https://gitter.im/nodekit-io/nodekit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![{NK} Roadmap](https://img.shields.io/badge/OpenSource-roadmap-4DA6FD.svg?style=flat-square)](http://roadmap.nodekit.io)
 
