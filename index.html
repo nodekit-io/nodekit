@@ -43,6 +43,7 @@
 <p><a href="https://gitter.im/nodekit-io/nodekit?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://img.shields.io/badge/Chat-on_gitter-46BC99.svg?style=flat" alt="Join the chat at https://gitter.im/nodekit-io/nodekit"></a>
 <a href="http://roadmap.nodekit.io"><img src="https://img.shields.io/badge/OpenSource-roadmap-4DA6FD.svg?style=flat-square" alt="{NK} Roadmap"></a>
 <a href="https://github.com/Carthage/Carthage"><img src="https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat" alt="Carthage compatible"></a>
+<a href="https://www.nuget.org/"><img src="https://img.shields.io/badge/NuGet-coming_soon-55acee.svg?style=flat" alt="NuGet compatible"></a>
 <a href="https://twitter.com/nodekitio"><img src="https://img.shields.io/twitter/follow/nodekitio.svg?style=social" alt="Twitter Follow"></a></p>
 
 <h2>
@@ -55,15 +56,25 @@ carthage update</pre></div>
 <h2>
 <a id="tests-and-sample-application-full-build" class="anchor" href="#tests-and-sample-application-full-build" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tests and Sample Application (Full Build)</h2>
 
-<p>Tests are directly embedded as a {NK} NodeKit application.  One of the the nice things about {NK} NodeKit being in pure Swift 2.x is that it has no external dependencies.  </p>
+<p>Tests are directly embedded as a {NK} NodeKit application.  One of the the nice things about {NK} NodeKit being in pure Swift 2.x and C#/JavaScript is that it has no external dependencies.  </p>
 
-<div class="highlight highlight-source-shell"><pre>git clone https://github.com/nodekit-io/nodekit.git</pre></div>
+<h4>
+<a id="apple-ios-and-os-x-platforms" class="anchor" href="#apple-ios-and-os-x-platforms" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Apple iOS and OS X platforms</h4>
+
+<div class="highlight highlight-source-shell"><pre>git clone https://github.com/nodekit-io/nodekit-darwin.git</pre></div>
 
 <p>Open <code>src/nodekit.xcodeproj</code> in Xcode.  You will see 4 build targets, 2 for the frameworks (on iOS and OSX respectively) and 2 for the sample app. </p>
 
 <p>Build the nodekit-Mac-sample for My Mac or the nodekit-iOS-sample for the iOS Simulator (e.g., iPhone 6) and run.    All the Node.js tests should run and you should see the results as a graphical chart.  </p>
 
 <p>To switch to the sample app, change the <code>package.json</code> main entry to point to <code>app/sample/index.js</code> instead of <code>test/index.js</code></p>
+
+<h4>
+<a id="windows-platforms" class="anchor" href="#windows-platforms" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Windows platforms</h4>
+
+<div class="highlight highlight-source-shell"><pre>git clone https://github.com/nodekit-io/nodekit-windows.git</pre></div>
+
+<p>Open <code>src/nodekit-windows.sln</code> in Visual Studio Community 2015 and follow the instructions equivalent to above.</p>
 
 <h2>
 <a id="simple-configuration" class="anchor" href="#simple-configuration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simple Configuration</h2>
@@ -73,7 +84,12 @@ carthage update</pre></div>
 <div class="highlight highlight-source-swift"><pre><span class="pl-k">import</span> <span class="pl-c1">NodeKit</span>
 NKNodeKit<span class="pl-k">.</span><span class="pl-c1">start</span>();</pre></div>
 
-<p>Then just make sure any standard Node application is in the app/ directory.  This application will run in the <code>main</code> process (a hidden but highly performant JavaScript engine such as Nitro WKWebView or JavaScriptCore).   The first thing the application typically does is open a <code>renderer</code> window, very similar to Atom Electron: </p>
+<p>Two lines in main.cs to launch an embedded Edge view and start the NodeKit engine (already included for you in the sample).  </p>
+
+<div class="highlight highlight-source-cs"><pre><span class="pl-k">using</span> io.nodekit
+NKNodeKit.start();</pre></div>
+
+<p>Then just make sure any standard Node application is in the app/ directory.  This application will run in the <code>main</code> process (a hidden but highly performant JavaScript engine such as Nitro WKWebView, JavaScriptCore, Chakra or ChakraCore).   The first thing the application typically does is open a <code>renderer</code> window, very similar to Atom Electron: </p>
 
 <div class="highlight highlight-source-js"><pre><span class="pl-k">const</span> <span class="pl-c1">app</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>electro<span class="pl-pds">'</span></span>).<span class="pl-smi">app</span>;
 <span class="pl-k">const</span> <span class="pl-c1">BrowserWindow</span> <span class="pl-k">=</span> <span class="pl-c1">require</span>(<span class="pl-s"><span class="pl-pds">'</span>electro<span class="pl-pds">'</span></span>).<span class="pl-smi">BrowserWindow</span>
@@ -85,14 +101,15 @@ NKNodeKit<span class="pl-k">.</span><span class="pl-c1">start</span>();</pre></d
 
 <p>Build in Xcode for both iOS and Mac targets.</p>
 
+<p>Build in Visual Studio or using MBuild for all projects in the solution.</p>
+
 <h2>
 <a id="three-main-components-in-nk-nodekit" class="anchor" href="#three-main-components-in-nk-nodekit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Three Main Components in {NK} NodeKit</h2>
 
 <p><a href="https://github.com/nodekit-io/nodekit/blob/master/docs/NKScripting/readme.md"><img src="https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKScripting.png?v01" alt="{NK} Scripting"></a></p>
 
 <blockquote>
-<p><a href="https://github.com/nodekit-io/nodekit/blob/master/docs/NKScripting/readme.md"><strong>{NK} Scripting</strong></a> is an advanced JavaScript - Native (Swift, Objective-C, .NET C#) bridge for hybrid applications.   It builds upon the core platform bridges such as JavaScriptCore or ChakraCore, but abstracts the implementation details and standardizes across even multiple scripting engine families on the same platform (e.g., Nitro WKWebView and UIWebViews on iOS).
-It is the foundation of {NK} NodeKit and can be used without {NK} Electro or {NK} Core or with substitutes.</p>
+<p><a href="https://github.com/nodekit-io/nodekit/blob/master/docs/NKScripting/readme.md"><strong>{NK} Scripting</strong></a> is an advanced JavaScript - Native (Swift, Objective-C, C#, C++, Visual Basic) bridge for hybrid applications.   It builds upon the core platform bridges such as JavaScriptCore or ChakraCore, but abstracts the implementation details and standardizes across scripting engine families.  It is the foundation of {NK} NodeKit and can be used without {NK} Electro or {NK} Core or with substitutes.</p>
 </blockquote>
 
 <p><a href="https://github.com/nodekit-io/nodekit/blob/master/docs/NKElectro/readme.md"><img src="https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/NKElectro.png?v01" alt="{NK} Electro"></a></p>
@@ -110,9 +127,11 @@ It is the foundation of {NK} NodeKit and can be used without {NK} Electro or {NK
 <h2>
 <a id="distribution" class="anchor" href="#distribution" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Distribution</h2>
 
-<p>The {NK} NodeKit repository contains an XCode project with all the above components (zero dependencies) that compiles to an iOS 8 + and OS X 10.9 + dynamic framework.  Versions for Windows 10 and Android are in active development.</p>
+<p>The {NK} <code>nodekit-darwin</code> repository contains an XCode project with all the above components (zero dependencies) that compiles to an iOS 8 + and OS X 10.9 + dynamic framework.  Versions for Android are in active development.</p>
 
-<p>The single framework file (containing binary code and embedded resources like the core Node.js javascript code) can just be included in any iOS or OS X application.    See the sample app for an example.   You can thus compile and create your own projects;  no app store consumer really needs to know how you built it unless you want to tell them or modify the {NK} NodeKit source. </p>
+<p>The {NK} <code>nodekit-windows</code> repository contains a Visual Studio solution and a set of MSBuild projects with all the above components (zero dependencies) that compiles to Universal Windows Platform and (coming soon) .NET Framework 4.6 binaries (for WPF applications).</p>
+
+<p>The framework / DLL files (containing binary code and embedded resources like the core Node.js javascript code) can just be included in any corresponding iOS, OS X or Windows applications.    See the sample app for an example.   You can thus compile and create your own projects;  no app store consumer really needs to know how you built it unless you want to tell them or modify the {NK} NodeKit source. </p>
 
 <h2>
 <a id="is-it-really-node-" class="anchor" href="#is-it-really-node-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Is it really Node ?</h2>
@@ -135,22 +154,30 @@ It is the foundation of {NK} NodeKit and can be used without {NK} Electro or {NK
 <h2>
 <a id="debugging" class="anchor" href="#debugging" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Debugging</h2>
 
-<p>Just use Safari Web Inspector to set breakpoints, inspect variables, etc. in both the JavaScriptScore and Nitro script engines (for the main process) as well as the UI and javascript environment of the renderer processes. 
-<img src="https://raw.githubusercontent.com/nodekit-io/nodekit/master/docs/images/screenshot1.png?v01" alt="Safari WebInspector"></p>
+<p>On OS X and iOS just use Safari Web Inspector to set breakpoints, inspect variables, etc. in both the JavaScriptScore and Nitro script engines (for the main process) as well as the UI and javascript environment of the renderer processes. </p>
+
+<p><img src="https://raw.githubusercontent.com/nodekit-io/nodekit-windows/master/docs/images/screenshot1.png?v01" alt="Safari WebInspector"></p>
+
+<p>On Windows just use Visual Studio;  either include a "debugger" line in your javascript file to prompty you, or use Visual Studio Attach to Process to attach to the executing app with the debugger set to Scripts.  (The default for an application will be a Common Language Runtime debugger, but when using Chakra or ChakraCore you can use the built in script debugging features.  If you really want, just make your application a JavaScript/HTML application and the default debugger will be as is).</p>
+
+<p><img src="https://raw.githubusercontent.com/nodekit-io/nodekit-windows/master/docs/images/screenshot2.png?v01" alt="Visual Studio Debugger"></p>
 
 <h2>
 <a id="supports" class="anchor" href="#supports" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supports</h2>
 
 <p>iOS 8+, 9+
 OS X 10.9, 10.10, 10.11
-Swift and Objective-C source (we wrote it nearly all in Swift 2.x)
+Windows 10 Universal Platform (October 2015 update or more recent): NKScripting
+Swift source 
+C# source
 Node.js ~0.12.x</p>
 
 <h2>
 <a id="still-in-development" class="anchor" href="#still-in-development" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Still In Development</h2>
 
-<p>Android
-Windows 10
+<p>Windows 10 Universal Platform (October 2015 update or more recent): NKCore and NKElectro
+Windows 7, Vista, 8, 8.1 for desktop applications
+Android
 Node.js 4.x/5.x updates (we run a very stable 0.12.x for broadest package compatibility, and are currently testing the 4.x LTS version in a development branch).</p>
 
 <h2>
@@ -175,9 +202,22 @@ Node.js 4.x/5.x updates (we run a very stable 0.12.x for broadest package compat
 </ul>
 
 <h2>
+<a id="related-repositories-on-github" class="anchor" href="#related-repositories-on-github" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Related Repositories on GitHub</h2>
+
+<ul>
+<li>
+<a href="https://github.com/nodekit-io/nodekit">nodekit-io/nodekit</a> contains the core documents and command line interface</li>
+<li>
+<a href="https://github.com/nodekit-io/nodekit-darwin">nodekit-io/nodekit-darwin</a>, <a href="https://github.com/nodekit-io/nodekit-windows">nodekit-io/nodekit-windows</a>, and <a href="https://github.com/nodekit-io/nodekit-android">nodekit-io/nodekit-android</a> contain the platform specific versions of NKCore, NKElectro and NKScripting (all three included in each).</li>
+</ul>
+
+<h2>
 <a id="news" class="anchor" href="#news" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>News</h2>
 
 <ul>
+<li>(February 2016) Split platform versions into their own repositories on GitHub</li>
+<li>(February 2016) NKScripting uses the Windows Javascript Runtime (jsRT);  this allows very thin projections using standard Windows 10 Universal Component (aka WinRT aka Windows Store app component aka winMD) when consumed in a Windows 10 universal app, but with full support for Windows desktop hosted applications which can only project the builtin Windows space, not custom namespaces.  You can choose which bridge you prefer, either way plugins are invoked dynamically from javascript.</li>
+<li>(February 2016) Initial release of NKScripting using the Chakra engine on Windows 10 platforms;  other engines coming</li>
 <li>(February 2016) Added <a href="http://roadmap.nodekit.io">roadmap</a> for tracking contributions and future plans</li>
 <li>(February 2016) Removed the last of the Objective-C and C code;  the entire framework on Darwin platforms is now pure Swift 2.x including the rewritten POSIX sockets layer that makes full use of GCD, is non blocking, and contains no external dependencies;  we may end up releasing as <code>{NK} Sockets</code> as while there are lots of good Objective-C libraries, there are fewer Swift versions (and almost none without a tiny C dependency which we've eliminated) and we had to cobble this together from a few complementary sources. </li>
 <li>(January 2016) Updated to use all core darwin JavaScript Engines, harmonized the API to industry standard (e.g, Electron subset for front end, JavaScriptCore like for back end) and refactored out {NK} Scripting and {NK} Electro and associated docs in the process</li>
