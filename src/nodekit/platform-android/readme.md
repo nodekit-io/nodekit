@@ -1,0 +1,1 @@
+See [nodekit-io/nodekit-android](https://github.com/nodekit-io/nodekit-android) for the source code repository for Android platforms.
