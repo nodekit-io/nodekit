@@ -162,8 +162,10 @@ Apache 2.0
 * Submit pull request.
 
 ## Related Repositories on GitHub
-* [nodekit-io/nodekit](https://github.com/nodekit-io/nodekit) contains the core documents and command line interface
-* [nodekit-io/nodekit-darwin](https://github.com/nodekit-io/nodekit-darwin), [nodekit-io/nodekit-windows](https://github.com/nodekit-io/nodekit-windows), and [nodekit-io/nodekit-android](https://github.com/nodekit-io/nodekit-android) contain the platform specific versions of NKCore, NKElectro and NKScripting (all three included in each).
+* [nodekit-io/nodekit](https://github.com/nodekit-io/nodekit) contains the core documents and issues tracker
+* [nodekit-io/nodekit-cli](https://github.com/nodekit-io/nodekit) contains the command line tool
+* [nodekit-io/nodekit-darwin](https://github.com/nodekit-io/nodekit-darwin), [nodekit-io/nodekit-windows](https://github.com/nodekit-io/nodekit-windows), and [nodekit-io/nodekit-android](https://github.com/nodekit-io/nodekit-android) contain the platform specific versions of {NK} NodeKit source 
+
 
 ## News
 * (February 2016) Split platform versions into their own repositories on GitHub
