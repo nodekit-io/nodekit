@@ -168,6 +168,7 @@ Apache 2.0
 
 
 ## News
+* (February 2016) NKScripting has now been enhanced for multi-process usage on Windows;  this allows NKElectro to run in separate processes for the Main javascript program from each of the renderers.  This allows for greater application stability.  It is required to support the Chakra javascript engine in Windows Forms and Windows Presentation Framework in combination with a Trident-based WebBrowser user interface (Windows 10 bug).  If you want a single process on Windows you can do so with Universal Windows apps, or use the provided ChakraCore engine.
 * (February 2016) Split platform versions into their own repositories on GitHub
 * (February 2016) NKScripting uses the Windows Javascript Runtime (jsRT);  this allows very thin projections using standard Windows 10 Universal Component (aka WinRT aka Windows Store app component aka winMD) when consumed in a Windows 10 universal app, but with full support for Windows desktop hosted applications which can only project the builtin Windows space, not custom namespaces.  You can choose which bridge you prefer, either way plugins are invoked dynamically from javascript.
 * (February 2016) Initial release of NKScripting using the Chakra engine on Windows 10 platforms;  other engines coming
