@@ -5,33 +5,55 @@ For application developers, the backend can be written in pure Node javascript c
 
 *{NK} NodeKit* enables applications developed for Node to developed once and then run without alteration for any of the above platforms as well as in the browser.
 
-This is a refined preview of the technology and is not intended for production use, but is supporting some production app store applications.  Use at your own caution.  Contributions welcome (details to follow)
-
 # {NK} NodeKit
 
 [![Join the chat at https://gitter.im/nodekit-io/nodekit](https://img.shields.io/badge/Chat-on_gitter-46BC99.svg?style=flat)](https://gitter.im/nodekit-io/nodekit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![{NK} Roadmap](https://img.shields.io/badge/OpenSource-roadmap-4DA6FD.svg?style=flat-square)](http://roadmap.nodekit.io)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![NuGet compatible](https://img.shields.io/badge/NuGet-coming_soon-55acee.svg?style=flat)](https://www.nuget.org/)
-[![Twitter Follow](https://img.shields.io/twitter/follow/nodekitio.svg?style=social)](https://twitter.com/nodekitio)
+[![JitPack compatible](https://img.shields.io/badge/JitPack.io-compatible-4BC51D.svg?style=flat-square)](https://jitpack.io/com/github/nodekit-io/nodekit-android/v1.0.3/build.log)
+[![Contact](https://img.shields.io/twitter/follow/nodekitio.svg?style=social)](https://twitter.com/nodekitio)
 
-## Sample Application (using Frameworks)
+## Installation
+
+Make sure you have Node.js installed (between v4 and v6).
+
+Optimal: nstall Node.js version 6.7 or later and npm 3.10 or later using nvm
 
 ``` bash
-git clone https://github.com/nodekit-io/nodekit-sample.git
-cd nodekit-sample
-carthage update
+npm install -g nodekit
 ```
 
-## Tests and Sample Application (Full Build)
 
-Tests are directly embedded as a {NK} NodeKit application.  One of the the nice things about {NK} NodeKit being in pure Swift 2.x and C#/JavaScript is that it has no external dependencies.  
+## Create and run a Sample Application (Android)
 
-#### Apple iOS and OS X platforms
+(Make sure you have Android Studio installed, even though you wont open it as this installs all the pre-requisites)
+
+``` bash
+nodekit create myapp io.nodekit.myapp myapp
+cd myapp
+nodekit platform add android
+nodekit build
+nodekit run
+```
+
+## Create and run a Sample Application (Apple)
+
+(Make sure you have Xcode and Xcode command line tools installed, even though you wont open it as this installs all the pre-requisites)
+
+``` bash
+nodekit create myapp io.nodekit.myapp myapp
+cd myapp
+nodekit platform add macos
+nodekit platform add ios
+nodekit build
+nodekit run
+```
+
+#### Apple iOS and OS X platforms source code
 ``` bash
 git clone https://github.com/nodekit-io/nodekit-darwin.git
 ```
-
 
 Open `src/nodekit.xcodeproj` in Xcode.  You will see 4 build targets, 2 for the frameworks (on iOS and OSX respectively) and 2 for the sample app. 
 
@@ -39,11 +61,22 @@ Build the nodekit-Mac-sample for My Mac or the nodekit-iOS-sample for the iOS Si
 
 To switch to the sample app, change the `package.json` main entry to point to `app/sample/index.js` instead of `test/index.js`
 
-#### Windows platforms
+#### Windows platforms source code
 
 ``` bash
 git clone https://github.com/nodekit-io/nodekit-windows.git
 ```
+
+Open in Visual Studio
+
+
+#### Android and Amazon Fire OS platforms source code
+
+``` bash
+git clone https://github.com/nodekit-io/nodekit-android.git
+```
+
+Open in Android Studio.
 
   
 Open `src/nodekit-windows.sln` in Visual Studio Community 2015 and follow the instructions equivalent to above.
@@ -129,25 +162,22 @@ On Windows just use Visual Studio;  either include a "debugger" line in your jav
 
 ![Visual Studio Debugger](https://raw.githubusercontent.com/nodekit-io/nodekit-windows/master/docs/images/screenshot2.png?v01)
 
+On Android just use Chrome Web Inspector to set breakpoints, inspect variables, etc. in both the JavaScriptScore and Nitro script engines (for the main process) as well as the UI and javascript environment of the renderer processes. 
+
+![Chrome Web Inspector](chrome://inspect/#devices)
+
 ## Supports
 
-iOS 8+, 9+
-OS X 10.9, 10.10, 10.11
-Windows 10 Universal Platform (October 2015 update or more recent): NKScripting
-Swift source 
-C# source
-Node.js ~0.12.x
+* iOS 8+, 9+, 10+
+* macOS 10.9, 10.10, 10.11, 10.12
+* Android 4.4+, 5.0+, 6.0+
+* Windows 10 Universal Platform (October 2015 update or more recent)
+* Node.js ~0.12.x
 
-## Still In Development
+## Still In development
 
-Windows 10 Universal Platform (October 2015 update or more recent): NKCore and NKElectro
-Windows 7, Vista, 8, 8.1 for desktop applications
-Android
-Node.js 4.x/5.x updates (we run a very stable 0.12.x for broadest package compatibility, and are currently testing the 4.x LTS version in a development branch).
-
-## License
-
-Apache 2.0
+* Windows 7, Vista, 8, 8.1 for desktop applications
+* Node.js 4.x/5.x updates (we run a very stable 0.12.x for broadest package compatibility, and are currently testing the 4.x LTS version in a development branch).
 
 ## Contributions (MasterFlow)
 
@@ -164,13 +194,15 @@ Apache 2.0
 ## Related Repositories on GitHub
 * [nodekit-io/nodekit](https://github.com/nodekit-io/nodekit) contains the core documents and issues tracker
 * [nodekit-io/nodekit-cli](https://github.com/nodekit-io/nodekit-cli) contains the command line tool
-* [nodekit-io/nodekit-darwin](https://github.com/nodekit-io/nodekit-darwin), [nodekit-io/nodekit-windows](https://github.com/nodekit-io/nodekit-windows), and [nodekit-io/nodekit-android](https://github.com/nodekit-io/nodekit-android) contain the platform specific versions of {NK} NodeKit source 
+* [nodekit-io/nodekit-darwin](https://github.com/nodekit-io/nodekit-darwin), [nodekit-io/nodekit-windows](https://github.com/nodekit-io/nodekit-windows), and [nodekit-io/nodekit-android](https://github.com/nodekit-io/nodekit-android) contain the platform specific versions of {NK} NodeKit source
 
+We went for platform specific code to allow searching by language on GitHub to show up appropriately (e.g., trending repositories in Swift, C#), to allow separate version numbers for minor platform-specific changes, and because the repositories are in essence not dependent on each other, but rather complementary language ports with the same functionality and API.
 
 ## News
-* (February 2016) NKScripting has now been enhanced for multi-process usage on Windows;  this allows NKElectro to run in separate processes for the Main javascript program from each of the renderers.  This allows for greater application stability.  It is required to support the Chakra javascript engine in Windows Forms and Windows Presentation Framework in combination with a Trident-based WebBrowser user interface (Windows 10 bug).  If you want a single process on Windows you can do so with Universal Windows apps, or use the provided ChakraCore engine.
+* (October 2016) Command line tooling added for Android
+* (September 2016) Initial Android release (NKScripting and NKElectro only)
+* (March 2016) Added sample application, a beautiful lightweight chat application to highlight how to use {NK} NodeKit 
 * (February 2016) Split platform versions into their own repositories on GitHub
-* (February 2016) NKScripting uses the Windows Javascript Runtime (jsRT);  this allows very thin projections using standard Windows 10 Universal Component (aka WinRT aka Windows Store app component aka winMD) when consumed in a Windows 10 universal app, but with full support for Windows desktop hosted applications which can only project the builtin Windows space, not custom namespaces.  You can choose which bridge you prefer, either way plugins are invoked dynamically from javascript.
 * (February 2016) Initial release of NKScripting using the Chakra engine on Windows 10 platforms;  other engines coming
 * (February 2016) Added [roadmap](http://roadmap.nodekit.io) for tracking contributions and future plans
 * (February 2016) Removed the last of the Objective-C and C code;  the entire framework on Darwin platforms is now pure Swift 2.x including the rewritten POSIX sockets layer that makes full use of GCD, is non blocking, and contains no external dependencies;  we may end up releasing as `{NK} Sockets` as while there are lots of good Objective-C libraries, there are fewer Swift versions (and almost none without a tiny C dependency which we've eliminated) and we had to cobble this together from a few complementary sources. 
