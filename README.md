@@ -18,7 +18,7 @@ For application developers, the backend can be written in pure Node javascript c
 
 Make sure you have Node.js installed (between v4 and v6).
 
-Optimal: nstall Node.js version 6.7 or later and npm 3.10 or later using nvm
+Optimal: install Node.js version 6.7 or later and npm 3.10 or later using nvm
 
 ``` bash
 npm install -g nodekit
@@ -44,7 +44,7 @@ nodekit run
 ``` bash
 nodekit create myapp io.nodekit.myapp myapp
 cd myapp
-nodekit platform add macos
+nodekit platform add osx
 nodekit platform add ios
 nodekit build
 nodekit run
