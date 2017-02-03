@@ -18,28 +18,17 @@ For application developers, the backend can be written in pure Node javascript c
 
 Make sure you have Node.js installed (between v4 and v6).
 
-Optimal: nstall Node.js version 6.7 or later and npm 3.10 or later using nvm
+Optimal: install Node.js version 6.7 or later and npm 3.10 or later using nvm
 
 ``` bash
-npm install -g nodekit
+npm install -g nodekit-cli
 ```
 
 
-## Create and run a Sample Application (Android)
-
-(Make sure you have Android Studio installed, even though you wont open it as this installs all the pre-requisites)
-
-``` bash
-nodekit create myapp io.nodekit.myapp myapp
-cd myapp
-nodekit platform add android
-nodekit build
-nodekit run
-```
 
 ## Create and run a Sample Application (Apple)
 
-(Make sure you have Xcode and Xcode command line tools installed, even though you wont open it as this installs all the pre-requisites)
+(Make sure you have Xcode, Xcode command line tools and CocoaPods installed)
 
 ``` bash
 nodekit create myapp io.nodekit.myapp myapp
@@ -49,6 +38,19 @@ nodekit platform add ios
 nodekit build
 nodekit run
 ```
+
+## Create and run a Sample Application (Android)
+
+(WIP: Should compile but may not be fully functional.  Make sure you have Android Studio installed)
+
+``` bash
+nodekit create myapp io.nodekit.myapp myapp
+cd myapp
+nodekit platform add android
+nodekit build
+nodekit run
+```
+
 
 #### Apple iOS and OS X platforms source code
 ``` bash
